@@ -1,0 +1,19 @@
+[2026-04-05 14:52:53] Device: cuda
+[2026-04-05 14:52:53] Mode: eval
+[2026-04-05 14:52:53] Experiments: ['V7']
+[2026-04-05 14:52:53] AMP requested: True, active: True
+
+[2026-04-05 14:52:54] ======================================================================
+[2026-04-05 14:52:54] Retention Sweep V7: V7_hybrid_hat_with_retention
+[2026-04-05 14:52:54]   checkpoint=checkpoints/V7_hybrid_hat_with_retention_best.pt
+[2026-04-05 14:52:54]   checkpoint_epoch=95, checkpoint_best_acc=87.88
+[2026-04-05 14:52:54]   amp=on
+[2026-04-05 14:52:54]   times=[0, 1, 10, 100, 1000, 10000], mc_runs=10
+[2026-04-05 14:53:39]   t=     0s: acc=19.61% ± 0.33 (min=19.09, max=20.11)
+[2026-04-05 14:54:23]   t=     1s: acc=18.45% ± 0.30 (min=17.88, max=18.77)
+[2026-04-05 14:55:08]   t=    10s: acc=18.27% ± 0.39 (min=17.66, max=18.95)
+[2026-04-05 14:55:53]   t=   100s: acc=18.13% ± 0.32 (min=17.78, max=18.60)
+[2026-04-05 14:56:38]   t=  1000s: acc=18.23% ± 0.31 (min=17.82, max=18.84)
+[2026-04-05 14:57:23]   t= 10000s: acc=18.07% ± 0.39 (min=17.39, max=18.61)
+[2026-04-05 14:57:23] Retention sweep finished for 1 experiment(s).
+[2026-04-05 14:57:23] Result markdown: report_md/_gpt/tinyvit_v7_retention_report_gpt.md

@@ -1,0 +1,10 @@
+mode,gamma_phys,I_dark,shot_noise,accuracy,I_dark_label,elapsed_s
+clean,,,,10.0,,
+compensated,0.7,1e-10,True,10.01,100pA,0.65
+raw,0.7,1e-10,True,10.0,100pA,0.56
+compensated,0.7,1e-09,True,10.01,1nA,0.56
+raw,0.7,1e-09,True,10.0,1nA,0.56
+compensated,1.0,1e-10,True,10.01,100pA,1.01
+raw,1.0,1e-10,True,10.01,100pA,1.1
+compensated,1.0,1e-09,True,10.01,1nA,0.56
+raw,1.0,1e-09,True,10.01,1nA,0.56

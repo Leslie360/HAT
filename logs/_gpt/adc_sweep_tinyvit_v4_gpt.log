@@ -1,0 +1,93 @@
+[2026-04-05 13:13:08] Device: cuda
+[2026-04-05 13:13:08] Model type: tinyvit
+[2026-04-05 13:13:08] Experiment: V4
+[2026-04-05 13:13:08] Sweep type: adc
+[2026-04-05 13:13:08] Eval runs: 10
+[2026-04-05 13:13:09] Checkpoint: checkpoints/V4_hybrid_standard_noise_hat_best.pt
+[2026-04-05 13:13:09] Checkpoint epoch: 99, best_acc=91.94
+[2026-04-05 13:13:09] Calibrating analog output ranges for ADC sweep.
+[2026-04-05 13:13:10] Captured ADC ranges for 42 analog layers.
+[2026-04-05 13:13:10] Running ADC sweep point: 3-bit
+[2026-04-05 13:13:25] 3-bit: mc_run=1/10: test_acc=10.53%
+[2026-04-05 13:13:42] 3-bit: mc_run=2/10: test_acc=10.37%
+[2026-04-05 13:13:56] 3-bit: mc_run=3/10: test_acc=11.26%
+[2026-04-05 13:14:13] 3-bit: mc_run=4/10: test_acc=10.93%
+[2026-04-05 13:14:27] 3-bit: mc_run=5/10: test_acc=10.87%
+[2026-04-05 13:14:44] 3-bit: mc_run=6/10: test_acc=10.31%
+[2026-04-05 13:14:58] 3-bit: mc_run=7/10: test_acc=10.38%
+[2026-04-05 13:15:15] 3-bit: mc_run=8/10: test_acc=10.64%
+[2026-04-05 13:15:29] 3-bit: mc_run=9/10: test_acc=10.50%
+[2026-04-05 13:15:44] 3-bit: mc_run=10/10: test_acc=10.36%
+[2026-04-05 13:15:44] 3-bit: acc=10.62% ± 0.31 (min=10.31, max=11.26)
+[2026-04-05 13:15:44] 3-bit: sparsity_rel=4.31% (scale=0.0100), sparsity_abs=3.17% (th=0.0100) across 42 analog layers
+[2026-04-05 13:15:44] Running ADC sweep point: 4-bit
+[2026-04-05 13:16:01] 4-bit: mc_run=1/10: test_acc=27.10%
+[2026-04-05 13:16:15] 4-bit: mc_run=2/10: test_acc=26.83%
+[2026-04-05 13:16:32] 4-bit: mc_run=3/10: test_acc=27.70%
+[2026-04-05 13:16:46] 4-bit: mc_run=4/10: test_acc=26.40%
+[2026-04-05 13:17:03] 4-bit: mc_run=5/10: test_acc=26.81%
+[2026-04-05 13:17:18] 4-bit: mc_run=6/10: test_acc=26.56%
+[2026-04-05 13:17:34] 4-bit: mc_run=7/10: test_acc=28.07%
+[2026-04-05 13:17:49] 4-bit: mc_run=8/10: test_acc=26.80%
+[2026-04-05 13:18:06] 4-bit: mc_run=9/10: test_acc=26.93%
+[2026-04-05 13:18:20] 4-bit: mc_run=10/10: test_acc=27.76%
+[2026-04-05 13:18:20] 4-bit: acc=27.10% ± 0.56 (min=26.40, max=28.07)
+[2026-04-05 13:18:20] 4-bit: sparsity_rel=5.90% (scale=0.0100), sparsity_abs=3.61% (th=0.0100) across 42 analog layers
+[2026-04-05 13:18:20] Running ADC sweep point: 6-bit
+[2026-04-05 13:18:37] 6-bit: mc_run=1/10: test_acc=80.49%
+[2026-04-05 13:18:51] 6-bit: mc_run=2/10: test_acc=80.83%
+[2026-04-05 13:19:08] 6-bit: mc_run=3/10: test_acc=79.56%
+[2026-04-05 13:19:23] 6-bit: mc_run=4/10: test_acc=80.98%
+[2026-04-05 13:19:39] 6-bit: mc_run=5/10: test_acc=80.39%
+[2026-04-05 13:19:54] 6-bit: mc_run=6/10: test_acc=79.95%
+[2026-04-05 13:20:10] 6-bit: mc_run=7/10: test_acc=79.90%
+[2026-04-05 13:20:25] 6-bit: mc_run=8/10: test_acc=81.63%
+[2026-04-05 13:20:42] 6-bit: mc_run=9/10: test_acc=80.55%
+[2026-04-05 13:20:56] 6-bit: mc_run=10/10: test_acc=80.67%
+[2026-04-05 13:20:56] 6-bit: acc=80.50% ± 0.60 (min=79.56, max=81.63)
+[2026-04-05 13:20:56] 6-bit: sparsity_rel=5.89% (scale=0.0100), sparsity_abs=3.90% (th=0.0100) across 42 analog layers
+[2026-04-05 13:20:56] Running ADC sweep point: 8-bit
+[2026-04-05 13:21:13] 8-bit: mc_run=1/10: test_acc=80.91%
+[2026-04-05 13:21:28] 8-bit: mc_run=2/10: test_acc=81.27%
+[2026-04-05 13:21:44] 8-bit: mc_run=3/10: test_acc=80.99%
+[2026-04-05 13:21:59] 8-bit: mc_run=4/10: test_acc=80.88%
+[2026-04-05 13:22:16] 8-bit: mc_run=5/10: test_acc=80.84%
+[2026-04-05 13:22:30] 8-bit: mc_run=6/10: test_acc=80.96%
+[2026-04-05 13:22:47] 8-bit: mc_run=7/10: test_acc=81.26%
+[2026-04-05 13:23:02] 8-bit: mc_run=8/10: test_acc=81.15%
+[2026-04-05 13:23:18] 8-bit: mc_run=9/10: test_acc=80.92%
+[2026-04-05 13:23:33] 8-bit: mc_run=10/10: test_acc=81.45%
+[2026-04-05 13:23:33] 8-bit: acc=81.06% ± 0.21 (min=80.84, max=81.45)
+[2026-04-05 13:23:33] 8-bit: sparsity_rel=5.85% (scale=0.0100), sparsity_abs=3.94% (th=0.0100) across 42 analog layers
+[2026-04-05 13:23:33] Running ADC sweep point: 10-bit
+[2026-04-05 13:23:50] 10-bit: mc_run=1/10: test_acc=80.27%
+[2026-04-05 13:24:04] 10-bit: mc_run=2/10: test_acc=81.72%
+[2026-04-05 13:24:21] 10-bit: mc_run=3/10: test_acc=81.96%
+[2026-04-05 13:24:35] 10-bit: mc_run=4/10: test_acc=81.35%
+[2026-04-05 13:24:50] 10-bit: mc_run=5/10: test_acc=81.67%
+[2026-04-05 13:25:07] 10-bit: mc_run=6/10: test_acc=82.36%
+[2026-04-05 13:25:21] 10-bit: mc_run=7/10: test_acc=81.05%
+[2026-04-05 13:25:38] 10-bit: mc_run=8/10: test_acc=81.19%
+[2026-04-05 13:25:53] 10-bit: mc_run=9/10: test_acc=81.40%
+[2026-04-05 13:26:10] 10-bit: mc_run=10/10: test_acc=80.67%
+[2026-04-05 13:26:10] 10-bit: acc=81.36% ± 0.61 (min=80.27, max=82.36)
+[2026-04-05 13:26:10] 10-bit: sparsity_rel=5.83% (scale=0.0100), sparsity_abs=3.92% (th=0.0100) across 42 analog layers
+[2026-04-05 13:26:10] Running ADC sweep point: ideal
+[2026-04-05 13:26:17] ideal: mc_run=1/10: test_acc=91.81%
+[2026-04-05 13:26:25] ideal: mc_run=2/10: test_acc=91.65%
+[2026-04-05 13:26:34] ideal: mc_run=3/10: test_acc=91.66%
+[2026-04-05 13:26:42] ideal: mc_run=4/10: test_acc=91.71%
+[2026-04-05 13:26:50] ideal: mc_run=5/10: test_acc=92.04%
+[2026-04-05 13:26:57] ideal: mc_run=6/10: test_acc=91.58%
+[2026-04-05 13:27:07] ideal: mc_run=7/10: test_acc=91.14%
+[2026-04-05 13:27:15] ideal: mc_run=8/10: test_acc=91.47%
+[2026-04-05 13:27:22] ideal: mc_run=9/10: test_acc=91.56%
+[2026-04-05 13:27:30] ideal: mc_run=10/10: test_acc=91.34%
+[2026-04-05 13:27:30] ideal: acc=91.60% ± 0.25 (min=91.14, max=92.04)
+[2026-04-05 13:27:30] ideal: sparsity_rel=6.89% (scale=0.0100), sparsity_abs=3.85% (th=0.0100) across 42 analog layers
+[2026-04-05 13:27:30] Merged rows written: 48
+[2026-04-05 13:27:30] JSON: report_md/_gpt/json_gpt/noise_sweep_results_gpt.json
+[2026-04-05 13:27:30] CSV: report_md/_gpt/csv_gpt/noise_sweep_results_gpt.csv
+[2026-04-05 13:27:30] Sparsity CSV: report_md/_gpt/csv_gpt/activation_sparsity_gpt.csv
+[2026-04-05 13:27:30] Report: report_md/_gpt/noise_sweep_report_gpt.md
+[2026-04-05 13:27:30] Figure: paper/figures/fig9_noise_sensitivity.png

@@ -1,0 +1,11 @@
+[2026-04-05 14:40:36] Device: cuda
+[2026-04-05 14:40:36] Target layer: stages.3.blocks.0.attn
+[2026-04-05 14:40:36] Selected indices: [0, 11, 23, 37]
+[2026-04-05 14:40:37] V1: checkpoint=checkpoints/V1_fp32_digital_baseline_best.pt, epoch=99, best_acc=97.48
+[2026-04-05 14:40:37] V3: checkpoint=checkpoints/V3_hybrid_standard_noise_standard_train_best.pt, epoch=99, best_acc=89.54
+[2026-04-05 14:40:37] V4: checkpoint=checkpoints/V4_hybrid_standard_noise_hat_best.pt, epoch=99, best_acc=91.94
+[2026-04-05 14:40:37] V6: checkpoint=checkpoints/V6_hybrid_hat_with_physical_frontend_best.pt, epoch=96, best_acc=82.58
+[2026-04-05 14:40:38] Figure: paper/figures/fig_attention_maps.png
+[2026-04-05 14:40:38] Difference figure: paper/figures/fig_attention_differences.png
+[2026-04-05 14:40:38] JSON: report_md/_gpt/json_gpt/attention_maps_gpt.json
+[2026-04-05 14:40:38] Markdown: report_md/_gpt/attention_maps_gpt.md

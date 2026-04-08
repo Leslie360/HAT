@@ -1,0 +1,27 @@
+\section{Related Work}
+\label{sec:related-work}
+
+\subsection{Organic Neuromorphic and Optoelectronic Devices}
+\label{subsec:organic-devices}
+
+Organic synaptic and memristive devices have been explored as flexible, low-power candidates for neuromorphic hardware, with attractive properties including optical sensitivity, multilevel conductance tuning, and heterogeneous materials integration \citep{xu2025emerging}. Recent organic and hybrid optoelectronic studies have demonstrated multilevel memory, long retention tails, and proof-of-concept synaptic behavior in several material stacks \citep{guo2024organic,jung2024organicfilaments,zeng2023organicmemristor}. These studies are important because they motivate plausible ranges for conductance windows, state counts, and retention behavior.
+
+At the same time, most of this literature remains device-centric. Network demonstrations are often limited to idealized mappings or small benchmarks, and variability is either absent or treated qualitatively. The most relevant precursor for variability-aware organic simulation remains the Monte Carlo study of Alibart \emph{et al.}, which explicitly sampled device parameters for a simple organic-memristive perceptron \citep{alibart2016physical}. Our work follows that variability-aware spirit but moves to modern deep-learning software, CIFAR-scale tasks, and substantially more expressive backbones.
+
+\subsection{CIM Simulation Frameworks}
+\label{subsec:cim-frameworks}
+
+System-level CIM simulators such as DNN+NeuroSim established a strong template for linking device assumptions, peripheral-circuit costs, and neural-network accuracy \citep{peng2020dnnneurosim}. MemTorch similarly demonstrated how memristive non-idealities can be embedded into PyTorch workflows for end-to-end evaluation \citep{memtorch}, while IBM's AIHWKIT exposed analog hardware-aware training and inference simulation in a practical mixed-signal software stack \citep{rasch2021aihwkit}. These frameworks are highly influential, but they primarily target inorganic resistive memories and do not directly answer the deployment questions raised by organic optoelectronic devices, especially when the target architecture includes both convolutional and transformer operators.
+
+The difference is substantive rather than cosmetic. DNN+NeuroSim is strongest when the goal is calibrated co-estimation of array and peripheral cost under established electrical NVM assumptions, but it does not natively model optically driven transduction or a profile-substitution workflow centered on partial organic-device characterization. MemTorch and AIHWKIT both provide valuable analog-tile abstractions in PyTorch, yet neither is organized around explicit photoresponse-aware frontends, literature-to-profile parameter provenance, or the hybrid operator partition required for Tiny-ViT deployment. We therefore position the present framework as a complementary organic-CIM methodology rather than as a generic replacement for mature inorganic simulators.
+
+Our workflow is therefore complementary rather than competitive. We reuse the general simulator logic of layer replacement, forward-path perturbation, and peripheral-aware accounting, but specialize the parameterization to organic-device operating regimes and to a hybrid mapping policy tuned for Tiny-ViT. That specialization matters because dense projections, depthwise convolutions, patch embedding, and attention-special kernels do not contribute equally to array utilization or digital overhead. Relative to NeuroSim, MemTorch, and AIHWKIT, the present framework differs in three respects: it targets organic optoelectronic devices with explicit photoresponse modeling, it provides a profile-driven substitution interface for arbitrary device technologies, and it jointly evaluates inference accuracy, retention, and energy under a unified protocol across CNN and transformer backbones.
+
+\subsection{Hardware-Aware Training and Hybrid Mapping}
+\label{subsec:hat-hybrid-mapping}
+
+Quantization-aware and hardware-aware training are well established as strategies for recovering accuracy under deployment non-idealities \citep{jacob2018quantization,bengio2013estimating}. In the CIM literature, the same general idea appears under names such as fault-aware, noise-aware, and device-aware training. We use the broader hardware-aware-training terminology in this paper because it covers both quantization and device-physics perturbations within a single optimization loop.
+
+In the CIM context, dense linear operators are generally efficient crossbar targets, whereas depthwise and highly irregular operators often suffer from poor utilization \citep{wu2023bwq,wang2024epim,ge2024allspark}. This observation underlies our mapping policy: query-key-value projections, output projections, feed-forward layers, and patch-embedding convolutions are treated as analog candidates, whereas depthwise convolutions, normalization, and dynamic attention products remain digital.
+
+The present work differs from prior ViT-on-PIM studies in two ways. First, the target device family is organic optoelectronic rather than mature inorganic resistive memory. Second, variability, retention, converter precision, and physical-front-end effects are co-modeled within one framework instead of being reported only through ideal mapping-utilization metrics. We therefore position the work at the intersection of device-aware CIM simulation and architecture-aware mapping for edge-vision transformers.

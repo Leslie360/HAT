@@ -1,0 +1,104 @@
+\begin{thebibliography}{16}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Horowitz(2014)]{horowitz2014computing}
+Mark Horowitz.
+\newblock Computing's energy problem (and what we can do about it).
+\newblock In \emph{IEEE International Solid-State Circuits Conference (ISSCC)},
+  pages 10--14, 2014.
+
+\bibitem[Peng et~al.(2020)]{peng2020dnnneurosim}
+Xingyu Peng et~al.
+\newblock {DNN+NeuroSim} v2.0: An end-to-end benchmarking framework for
+  compute-in-memory accelerators for on-chip training.
+\newblock In \emph{IEEE Asia Pacific Conference on Circuits and Systems}, 2020.
+
+\bibitem[Xu et~al.(2025)]{xu2025emerging}
+Xu et~al.
+\newblock Emerging artificial synaptic devices based on organic semiconductors.
+\newblock \emph{ACS Applied Materials \& Interfaces}, 2025.
+
+\bibitem[Guo et~al.(2024)]{guo2024organic}
+Guo et~al.
+\newblock An organic optoelectronic synapse with multilevel memory.
+\newblock \emph{ACS Applied Materials \& Interfaces}, 2024.
+
+\bibitem[Zeng et~al.(2023)]{zeng2023organicmemristor}
+Zeng et~al.
+\newblock Organic memristor with synaptic plasticity for neuromorphic computing
+  applications.
+\newblock \emph{Nanomaterials}, 13\penalty0 (5):\penalty0 803, 2023.
+
+\bibitem[Jung et~al.(2024)]{jung2024organicfilaments}
+Jung et~al.
+\newblock Formation of cluster-structured metallic filaments in organic
+  memristors.
+\newblock \emph{Advanced Science}, 11\penalty0 (9):\penalty0 2307494, 2024.
+
+\bibitem[Alibart et~al.(2016)]{alibart2016physical}
+Fabien Alibart et~al.
+\newblock Physical realization of a supervised learning system built with
+  organic memristive synapses.
+\newblock \emph{Nature Communications}, 2016.
+
+\bibitem[{MemTorch Developers}(2020)]{memtorch}
+{MemTorch Developers}.
+\newblock Memtorch: A simulation framework for memristive deep learning in
+  pytorch, 2020.
+\newblock Framework reference; exact bibliographic form to be finalized from
+  the project citation target.
+
+\bibitem[Rasch et~al.(2021)Rasch, Moreda, Gokmen, Gallo, Carta, Goldberg,
+  Maghraoui, Sebastian, and Narayanan]{rasch2021aihwkit}
+Malte~J. Rasch, Diego Moreda, Tayfun Gokmen, Manuel~Le Gallo, Fabio Carta,
+  Cindy Goldberg, Kaoutar~El Maghraoui, Abu Sebastian, and Vijay Narayanan.
+\newblock A flexible and fast {PyTorch} toolkit for simulating training and
+  inference on analog crossbar arrays, 2021.
+
+\bibitem[Jacob et~al.(2018)Jacob, Kligys, Chen, Zhu, Tang, Howard, Adam, and
+  Kalenichenko]{jacob2018quantization}
+Benoit Jacob, Skirmantas Kligys, Bo~Chen, Menglong Zhu, Matthew Tang, Andrew
+  Howard, Hartwig Adam, and Dmitry Kalenichenko.
+\newblock Quantization and training of neural networks for efficient
+  integer-arithmetic-only inference.
+\newblock \emph{Proceedings of the IEEE Conference on Computer Vision and
+  Pattern Recognition}, pages 2704--2713, 2018.
+
+\bibitem[Bengio et~al.(2013)Bengio, L{\'e}onard, and
+  Courville]{bengio2013estimating}
+Yoshua Bengio, Nicholas L{\'e}onard, and Aaron Courville.
+\newblock Estimating or propagating gradients through stochastic neurons for
+  conditional computation, 2013.
+
+\bibitem[Wu et~al.(2023)]{wu2023bwq}
+Wu et~al.
+\newblock Block-wise mixed-precision quantization: Enabling high efficiency for
+  practical {ReRAM}-based {DNN} accelerators, 2023.
+
+\bibitem[Wang et~al.(2024)]{wang2024epim}
+Wang et~al.
+\newblock {EPIM}: Efficient processing-in-memory accelerators based on epitome,
+  2024.
+
+\bibitem[Ge et~al.(2024)]{ge2024allspark}
+Ge et~al.
+\newblock Allspark: Workload orchestration for visual transformers on
+  processing in-memory systems.
+\newblock \emph{IEEE Transactions on Computers}, 2024.
+
+\bibitem[Vincze et~al.(2026)]{vincze2026dualplasticity}
+Vincze et~al.
+\newblock Simultaneous dual-plasticity organic synaptic transistor.
+\newblock \emph{Advanced Electronic Materials}, 2026.
+
+\bibitem[Yoon et~al.(2025)]{yoon2025adc}
+Yoon et~al.
+\newblock A novel bit-adjustable column-parallel {ADC} for scalable emerging
+  computing systems.
+\newblock \emph{IEEE Transactions on Circuits and Systems II}, 2025.
+
+\end{thebibliography}

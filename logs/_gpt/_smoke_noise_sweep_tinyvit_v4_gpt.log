@@ -1,0 +1,16 @@
+[2026-04-05 11:20:28] Device: cuda
+[2026-04-05 11:20:28] Model type: tinyvit
+[2026-04-05 11:20:28] Experiment: V4
+[2026-04-05 11:20:28] Sweep type: noise
+[2026-04-05 11:20:28] Eval runs: 1
+[2026-04-05 11:20:29] Checkpoint: checkpoints/V4_hybrid_standard_noise_hat_best.pt
+[2026-04-05 11:20:29] Checkpoint epoch: 99, best_acc=91.94
+[2026-04-05 11:20:29] Running continuous noise sweep.
+[2026-04-05 11:20:38] sigma_c2c=0.05, sigma_d2d=0.10: acc=91.43% ± 0.00 (min=91.43, max=91.43)
+[2026-04-05 11:20:38] sigma_c2c=0.05, sigma_d2d=0.10: sparsity=0.00% across 42 analog layers
+[2026-04-05 11:20:38] Merged rows written: 1
+[2026-04-05 11:20:38] JSON: report_md/_gpt/json_gpt/noise_sweep_results_gpt.json
+[2026-04-05 11:20:38] CSV: report_md/_gpt/csv_gpt/noise_sweep_results_gpt.csv
+[2026-04-05 11:20:38] Sparsity CSV: report_md/_gpt/csv_gpt/activation_sparsity_gpt.csv
+[2026-04-05 11:20:38] Report: report_md/_gpt/noise_sweep_report_gpt.md
+[2026-04-05 11:20:38] Figure: paper/figures/fig9_noise_sensitivity.png

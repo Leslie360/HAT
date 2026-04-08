@@ -1,0 +1,402 @@
+2026-04-03 21:46 +08 Codex
+
+[audit]
+- implemented A2 audit + A3.1 dry-run plan without launching new long training
+- isolated GPT artifacts under report_md/_gpt and logs/_gpt
+
+[validation]
+- py_compile: passed
+- test_analog_layers.py: 50 passed, 0 failed
+- train_tinyvit.py --mode dry-run --experiment V4 --dataset cifar10 --device cpu: passed
+- convnext export-only regression: C1-only report does not include C9
+- physical-noise export-only regression: legacy validation banner present
+
+[outputs]
+- report_md/_gpt/LLM_HANDOFF_gpt.md
+- report_md/_gpt/LLM_CHANGELOG_gpt.md
+- report_md/_gpt/codex_a3_plan_gpt.md
+- report_md/_gpt/tinyvit_hybrid_dryrun_report_gpt.md
+- logs/_gpt/tinyvit_hybrid_dryrun_gpt.log
+
+2026-04-03 23:09 +08 Codex
+
+[convnext-restart]
+- first detached restart attempt failed immediately and left an empty log:
+  - logs/_gpt/train_convnext_restart_20260403_2148_gpt.log
+- second detached restart succeeded:
+  - logs/_gpt/train_convnext_restart_20260403_2154_gpt.log
+
+[convnext-progress]
+- C2 finished in the restarted run with best test accuracy 90.69%
+- C3 is currently running; latest visible progress reached epoch 40
+
+2026-04-03 23:41 +08 Codex
+
+[report-asset-cleanup]
+- added report_asset_paths.py shared helper
+- moved top-level report assets into:
+  - report_md/images
+  - report_md/csv
+  - report_md/json
+- created GPT-scoped asset dirs:
+  - report_md/_gpt/images_gpt
+  - report_md/_gpt/csv_gpt
+  - report_md/_gpt/json_gpt
+- updated exporters:
+  - train_convnext.py
+  - train_resnet18.py
+  - physical_noise_pipeline.py
+  - run_a23_experiments.py
+  - plot_resnet18_results.py
+  - model_profiling.py
+- updated report links:
+  - report_md/a23_physical_compensation_report.md -> images/...
+
+[validation]
+- python -m py_compile on all edited export scripts: passed
+- convnext background run still healthy; latest visible C3 progress reached epoch 140
+
+2026-04-03 23:53 +08 Codex
+
+[tinyvit-followup]
+- expanded train_tinyvit.py beyond dry-run-only usage:
+  - multi-experiment `--experiments`
+  - repeated noisy eval via `--eval-runs`
+  - result exports to:
+    - report_md/_gpt/json_gpt/tinyvit_results_gpt.json
+    - report_md/_gpt/csv_gpt/tinyvit_results_gpt.csv
+    - report_md/_gpt/tinyvit_results_gpt.md
+  - checkpoint auto-resolution from `--checkpoint-dir`
+- added unittest coverage:
+  - test_train_tinyvit.py
+
+[validation]
+- python -m py_compile:
+  - train_tinyvit.py
+  - test_train_tinyvit.py
+- /home/qiaosir/miniconda3/envs/LLM/bin/python -m unittest -q test_train_tinyvit.py
+  - Ran 4 tests ... OK
+- dry-run regression:
+  - /home/qiaosir/miniconda3/envs/LLM/bin/python train_tinyvit.py --mode dry-run --experiments V4 --dataset cifar10 --device cpu
+  - passed
+- Gemini review inbox remains empty:
+  - report_md/Gemini.md
+
+2026-04-04 00:03 +08 Codex
+
+[convnext-report-only]
+- added offline report regeneration to train_convnext.py
+  - --report-only-log
+  - --csv-name
+  - --json-name
+  - --report-name
+- added unittest coverage:
+  - test_train_convnext.py
+- generated GPT-scoped offline export artifacts:
+  - report_md/_gpt/csv_gpt/convnext_results_gpt.csv
+  - report_md/_gpt/json_gpt/convnext_results_gpt.json
+  - report_md/_gpt/convnext_experiment_report_gpt.md
+
+[validation]
+- python -m py_compile:
+  - train_convnext.py
+  - test_train_convnext.py
+- /home/qiaosir/miniconda3/envs/LLM/bin/python -m unittest -q test_train_convnext.py
+  - Ran 2 tests ... OK
+- report-only parse/export dry run:
+  - read live log logs/_gpt/train_convnext_restart_20260403_2154_gpt.log
+  - exported only completed experiments C2 and C3
+  - correctly excluded incomplete C4
+
+2026-04-04 11:47 +08 Codex
+
+[convnext-crash-and-resume]
+- detected live crash in:
+  - logs/_gpt/train_convnext_restart_20260403_2154_gpt.log
+- failure signature:
+  - torch.AcceleratorError: CUDA error: unknown error
+- salvage checks:
+  - C4 checkpoint intact
+  - C5 checkpoint intact and resumable
+  - CUDA still visible to PyTorch after the crash
+- implemented resume support in train_convnext.py:
+  - --resume-existing
+- resumed remaining queue in detached mode:
+  - experiments: C5 C6 C7 C8
+  - log: logs/_gpt/train_convnext_resume_20260404_114606_gpt.log
+
+[validation]
+- detached resumed main process has PPID=1
+- resumed log confirms:
+  - Resuming from checkpoints/C5_4bit_pessimistic_HAT_best.pt
+  - Resume epoch: 167/200
+  - best_acc=87.35%
+
+2026-04-04 15:43 +08 Codex
+
+[convnext-c5c8-complete]
+- resumed queue finished:
+  - C5 best=88.13, MC=87.68±0.14
+  - C6 best=89.62, MC=89.48±0.14
+  - C7 best=89.19, MC=89.03±0.14
+  - C8 best=89.13, MC=88.88±0.14
+- generated:
+  - report_md/_gpt/csv_gpt/convnext_resume_results_gpt.csv
+  - report_md/_gpt/json_gpt/convnext_resume_results_gpt.json
+  - report_md/_gpt/convnext_resume_report_gpt.md
+
+[convnext-c1-next]
+- launched detached C1 continuation:
+  - logs/_gpt/train_convnext_c1_20260404_154258_gpt.log
+- C1 resume state:
+  - epoch 110/200
+  - best_acc=88.96%
+
+[validation]
+- detached C1 main process has PPID=1
+
+2026-04-04 16:39 +08 Codex
+
+[convnext-closure]
+- completed ConvNeXt GPT-scoped closure:
+  - C1 resumed and finished
+  - C9 retention evaluated from C4 checkpoint
+  - C1-C8 + C9 full report assembled
+- final outputs:
+  - report_md/_gpt/convnext_full_report_gpt.md
+  - report_md/_gpt/csv_gpt/convnext_full_results_gpt.csv
+  - report_md/_gpt/json_gpt/convnext_full_results_gpt.json
+  - report_md/_gpt/images_gpt/convnext_accuracy_comparison_gpt.png
+  - report_md/_gpt/images_gpt/convnext_retention_curve_gpt.png
+
+[retention-summary]
+- high-sampling C9 used MC=20
+- results:
+  - 0s: 89.66±0.15
+  - 1s: 86.07±0.17
+  - 10s: 84.30±0.18
+  - 100s: 84.23±0.19
+  - 1000s: 84.33±0.25
+  - 10000s: 84.28±0.19
+- interpretation:
+  - clear early drop
+  - long-time plateau around 84.2~84.3
+  - 1000s slight uptick is within MC uncertainty
+
+[next]
+- Task 4 remains:
+  - Tiny-ViT V1 baseline validation
+
+2026-04-04 17:19 +08 Codex
+
+[tinyvit-v1-started]
+- launched detached Tiny-ViT V1 baseline with pretrained weights:
+  - logs/_gpt/train_tinyvit_v1_20260404_171833_gpt.log
+- GPT-scoped outputs reserved:
+  - report_md/_gpt/json_gpt/tinyvit_v1_results_gpt.json
+  - report_md/_gpt/csv_gpt/tinyvit_v1_results_gpt.csv
+  - report_md/_gpt/tinyvit_v1_results_gpt.md
+
+[validation]
+- CUDA visible inside `/home/qiaosir/miniconda3/envs/LLM/bin/python`
+- detached main trainer PID `401221` has `PPID=1`
+- worker processes are present as expected for DataLoader multiprocessing
+
+2026-04-04 17:36 +08 Codex
+
+[convnext-c9-standalone-record]
+- added standalone C9 reference artifacts:
+  - logs/_gpt/convnext_c9_retention_gpt.log
+  - report_md/_gpt/json_gpt/convnext_c9_retention_gpt.json
+  - report_md/_gpt/convnext_c9_retention_report_gpt.md
+- note:
+  - these files are reconstructed from the final consolidated ConvNeXt outputs
+  - no dedicated original tee log existed for the C9 retention sweep
+
+2026-04-04 19:30 +08 Codex
+
+[tinyvit-v1-complete]
+- detached Tiny-ViT V1 run has finished
+- final metrics:
+  - best_acc=97.48
+  - best_epoch=99
+  - final_test_acc=97.48
+- output bundle:
+  - report_md/_gpt/tinyvit_v1_results_gpt.md
+  - report_md/_gpt/json_gpt/tinyvit_v1_results_gpt.json
+  - report_md/_gpt/csv_gpt/tinyvit_v1_results_gpt.csv
+  - checkpoints/V1_fp32_digital_baseline_best.pt
+
+[interpretation]
+- pretrained weight-transfer validation passed
+- result is above the original 93 to 95 acceptance band
+- future Tiny-ViT batch experiments should keep --pretrained for fair comparison
+
+2026-04-04 19:42 +08 Codex
+
+[tinyvit-resume-support]
+- implemented real Tiny-ViT crash recovery in train_tinyvit.py:
+  - saves `*_last.pt` each epoch
+  - keeps `*_best.pt` for best-accuracy snapshots
+  - adds `--resume-existing` to resume from `*_last.pt`
+- added resume helper tests in `test_train_tinyvit.py`
+- validation:
+  - `py_compile` passed
+  - `unittest` passed: 6 tests
+
+[tinyvit-v2v7-started]
+- launched detached Tiny-ViT batch:
+  - logs/_gpt/train_tinyvit_v2v7_20260404_194225_gpt.log
+  - logs/_gpt/train_tinyvit_v2v7_20260404_194225_driver_gpt.log
+- result targets:
+  - report_md/_gpt/tinyvit_v2v7_results_gpt.md
+  - report_md/_gpt/json_gpt/tinyvit_v2v7_results_gpt.json
+  - report_md/_gpt/csv_gpt/tinyvit_v2v7_results_gpt.csv
+
+2026-04-04 19:57 +08 Codex
+
+[tinyvit-scale-bug]
+- Gemini review caught a real Tiny-ViT hybrid scaling problem
+- broken first-run evidence:
+  - V2 epoch 0 test_acc=11.07
+  - V2 epoch 4 test_acc=14.32
+- root cause:
+  - analog layers normalized by w_abs_max into conductance space
+  - no digital-scale recovery in forward path
+
+[tinyvit-scale-fix]
+- added opt-in `restore_weight_scale` in analog_layers.py
+- enabled it only for Tiny-ViT hybrid build path in train_tinyvit.py
+- kept default backward-compatible for completed A2 experiments
+- added regression checks in test_analog_layers.py
+- validation:
+  - test_analog_layers.py: 52 passed
+
+[tinyvit-v2v7-restart]
+- stopped broken batch run
+- moved broken partial V2 checkpoints to:
+  - checkpoints/_gpt_badscale/
+- relaunched clean batch:
+  - logs/_gpt/train_tinyvit_v2v7_20260404_195408_gpt.log
+- first healthy point after restart:
+  - V2 epoch 0 train_acc=88.50
+  - V2 epoch 0 test_acc=93.41
+
+2026-04-04 23:08 +08 Codex
+
+[claude-task5-7-implemented]
+- AMP support added to:
+  - train_tinyvit.py
+  - train_convnext.py
+  - train_resnet18.py
+- analog quantization math moved under autocast-disabled fp32 helper paths
+- Tiny-ViT eval mode now supports:
+  - --retention-sweep
+  - --retention-times
+  - --eval-runs
+- CIFAR-100 path confirmed by:
+  - `train_tinyvit.py --mode dry-run --experiment V4 --dataset cifar100 --device cpu`
+
+[validation]
+- py_compile: passed
+- test_train_tinyvit.py: `Ran 9 tests ... OK`
+- test_train_convnext.py: `Ran 3 tests ... OK`
+- test_analog_layers.py: `52 passed, 0 failed`
+
+[tinyvit-amp-rerun]
+- stopped the non-AMP Tiny-ViT batch after V2 completed
+- new AMP batch:
+  - logs/_gpt/train_tinyvit_v2v7_amp_20260404_230556_gpt.log
+  - logs/_gpt/train_tinyvit_v2v7_amp_20260404_230556_driver_gpt.log
+- runtime status:
+  - V2 resumed at `100/100` and skipped
+  - V3 resumed from `11/100`
+
+2026-04-04 23:18 +08 Codex
+
+[tinyvit-v3-diagnosis]
+- control eval on the old V3 checkpoint showed the weights were healthy:
+  - noise_off: 94.96
+  - d2d_only: 9.64
+  - d2d_plus_c2c: 9.92
+- interpretation:
+  - old Tiny-ViT standard-noise protocol had an excessively harsh train/eval gap
+
+[tinyvit-v3-protocol-fix]
+- updated train_tinyvit.py:
+  - standard noisy training now keeps fixed D2D active during train
+  - C2C remains off during train
+  - log lines now include timestamps
+- validation:
+  - py_compile passed
+  - test_train_tinyvit.py: `Ran 11 tests ... OK`
+
+[tinyvit-v3-clean-restart]
+- moved old suspect V3 checkpoints to:
+  - checkpoints/_gpt_v3_suspect/
+- launched clean batch:
+  - logs/_gpt/train_tinyvit_v2v7_ampfix_20260404_231605_gpt.log
+  - logs/_gpt/train_tinyvit_v2v7_ampfix_20260404_231605_driver_gpt.log
+- first improved sign:
+  - V3 epoch 0 test_acc=18.05
+  - old protocol epoch 0 test_acc=9.73
+
+2026-04-04 23:47 +08 Codex
+
+[paper-task-9-10]
+- wrote:
+  - paper/01_introduction.md
+  - paper/02_related_work.md
+  - paper/03_methodology.md
+  - paper/04_experimental_setup.md
+  - paper/FIGURE_PLAN.md
+  - paper/plot_paper_figures.py
+- methodology now explicitly covers:
+  - `restore_weight_scale`
+  - A2 vs A3 analog-weight scaling difference
+  - parameter-ratio vs MAC-ratio caveat for Tiny-ViT mapping
+
+[paper-figure-generation]
+- validation:
+  - `/home/qiaosir/miniconda3/envs/LLM/bin/python -m py_compile paper/plot_paper_figures.py`
+  - `/home/qiaosir/miniconda3/envs/LLM/bin/python paper/plot_paper_figures.py`
+- generated:
+  - paper/figures/fig3_snr_curves.png
+  - paper/figures/fig4_accuracy_comparison.png
+  - paper/figures/fig5_hat_recovery.png
+  - paper/figures/fig6_physical_compensation.png
+  - paper/figures/fig7_retention_curve.png
+  - paper/figures/fig8_pareto_energy_accuracy.png
+- env note:
+  - default shell python lacks `matplotlib`
+  - paper plotting should use the `LLM` conda env
+
+[live-status]
+- Tiny-ViT still healthy during paper work:
+  - V3 epoch 34 test_acc=84.18
+  - V3 best=84.60
+
+2026-04-05 00:08 +08 Codex
+
+[paper-review-fixes]
+- addressed Claude `00:15` and Gemini paper-review items:
+  - clarified ADC energy counting to match `EnergyProfiler` (`B*M`, `B*N`)
+  - added ADC DNL modeling (`σ_DNL = 0.5 LSB`) to methodology
+  - expanded introduction with the Alibart-vs-modern-backbone Monte Carlo contrast
+  - updated experimental setup to use the finalized ConvNeXt paper-facing batch size `256`
+  - re-labeled Task 12 / Fig.10 as `Zero-Shot Hardware Transferability`
+
+[paper-figure-extension]
+- extended `paper/plot_paper_figures.py` to cover:
+  - Fig.9 noise sensitivity placeholder
+  - Fig.10 zero-shot transferability placeholder
+  - Fig.11 energy breakdown figure
+  - plus `energy_breakdown_pie.png` and `energy_breakdown_stacked.png`
+- validation:
+  - `/home/qiaosir/miniconda3/envs/LLM/bin/python -m py_compile paper/plot_paper_figures.py`
+  - `/home/qiaosir/miniconda3/envs/LLM/bin/python paper/plot_paper_figures.py`
+
+[live-status]
+- Tiny-ViT V3 continues to improve:
+  - epoch 59 test_acc=87.85
+  - best=87.85

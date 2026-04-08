@@ -1,0 +1,2015 @@
+{
+  "model_name": "tiny_vit_5m_224",
+  "summary": {
+    "total_model_params": 5392764,
+    "analog_params": 4730016,
+    "digital_params": 662748,
+    "analog_ratio_pct": 87.71,
+    "total_arrays_diff_pair": 812,
+    "total_devices": 13303808
+  },
+  "layers": [
+    {
+      "name": "patch_embed.conv1.conv",
+      "layer_type": "Conv2d(k=(3, 3),s=(2, 2))",
+      "weight_shape": [
+        32,
+        3,
+        3,
+        3
+      ],
+      "M": 32,
+      "N": 27,
+      "param_count": 864,
+      "tag": "analog",
+      "n_row_tiles": 1,
+      "n_col_tiles": 1,
+      "arrays_single": 1,
+      "arrays_diff_pair": 2
+    },
+    {
+      "name": "patch_embed.conv2.conv",
+      "layer_type": "Conv2d(k=(3, 3),s=(2, 2))",
+      "weight_shape": [
+        64,
+        32,
+        3,
+        3
+      ],
+      "M": 64,
+      "N": 288,
+      "param_count": 18432,
+      "tag": "analog",
+      "n_row_tiles": 1,
+      "n_col_tiles": 3,
+      "arrays_single": 3,
+      "arrays_diff_pair": 6
+    },
+    {
+      "name": "stages.0.blocks.0.conv1.conv",
+      "layer_type": "Conv2d(k=(1, 1),s=(1, 1))",
+      "weight_shape": [
+        256,
+        64,
+        1,
+        1
+      ],
+      "M": 256,
+      "N": 64,
+      "param_count": 16384,
+      "tag": "digital",
+      "n_row_tiles": 0,
+      "n_col_tiles": 0,
+      "arrays_single": 0,
+      "arrays_diff_pair": 0
+    },
+    {
+      "name": "stages.0.blocks.0.conv2.conv",
+      "layer_type": "DWConv2d(g=256,k=(3, 3))",
+      "weight_shape": [
+        256,
+        1,
+        3,
+        3
+      ],
+      "M": 256,
+      "N": 9,
+      "param_count": 2304,
+      "tag": "digital",
+      "n_row_tiles": 0,
+      "n_col_tiles": 0,
+      "arrays_single": 0,
+      "arrays_diff_pair": 0
+    },
+    {
+      "name": "stages.0.blocks.0.conv3.conv",
+      "layer_type": "Conv2d(k=(1, 1),s=(1, 1))",
+      "weight_shape": [
+        64,
+        256,
+        1,
+        1
+      ],
+      "M": 64,
+      "N": 256,
+      "param_count": 16384,
+      "tag": "digital",
+      "n_row_tiles": 0,
+      "n_col_tiles": 0,
+      "arrays_single": 0,
+      "arrays_diff_pair": 0
+    },
+    {
+      "name": "stages.0.blocks.1.conv1.conv",
+      "layer_type": "Conv2d(k=(1, 1),s=(1, 1))",
+      "weight_shape": [
+        256,
+        64,
+        1,
+        1
+      ],
+      "M": 256,
+      "N": 64,
+      "param_count": 16384,
+      "tag": "digital",
+      "n_row_tiles": 0,
+      "n_col_tiles": 0,
+      "arrays_single": 0,
+      "arrays_diff_pair": 0
+    },
+    {
+      "name": "stages.0.blocks.1.conv2.conv",
+      "layer_type": "DWConv2d(g=256,k=(3, 3))",
+      "weight_shape": [
+        256,
+        1,
+        3,
+        3
+      ],
+      "M": 256,
+      "N": 9,
+      "param_count": 2304,
+      "tag": "digital",
+      "n_row_tiles": 0,
+      "n_col_tiles": 0,
+      "arrays_single": 0,
+      "arrays_diff_pair": 0
+    },
+    {
+      "name": "stages.0.blocks.1.conv3.conv",
+      "layer_type": "Conv2d(k=(1, 1),s=(1, 1))",
+      "weight_shape": [
+        64,
+        256,
+        1,
+        1
+      ],
+      "M": 64,
+      "N": 256,
+      "param_count": 16384,
+      "tag": "digital",
+      "n_row_tiles": 0,
+      "n_col_tiles": 0,
+      "arrays_single": 0,
+      "arrays_diff_pair": 0
+    },
+    {
+      "name": "stages.1.downsample.conv1.conv",
+      "layer_type": "Conv2d(k=(1, 1),s=(1, 1))",
+      "weight_shape": [
+        128,
+        64,
+        1,
+        1
+      ],
+      "M": 128,
+      "N": 64,
+      "param_count": 8192,
+      "tag": "digital",
+      "n_row_tiles": 0,
+      "n_col_tiles": 0,
+      "arrays_single": 0,
+      "arrays_diff_pair": 0
+    },
+    {
+      "name": "stages.1.downsample.conv2.conv",
+      "layer_type": "DWConv2d(g=128,k=(3, 3))",
+      "weight_shape": [
+        128,
+        1,
+        3,
+        3
+      ],
+      "M": 128,
+      "N": 9,
+      "param_count": 1152,
+      "tag": "digital",
+      "n_row_tiles": 0,
+      "n_col_tiles": 0,
+      "arrays_single": 0,
+      "arrays_diff_pair": 0
+    },
+    {
+      "name": "stages.1.downsample.conv3.conv",
+      "layer_type": "Conv2d(k=(1, 1),s=(1, 1))",
+      "weight_shape": [
+        128,
+        128,
+        1,
+        1
+      ],
+      "M": 128,
+      "N": 128,
+      "param_count": 16384,
+      "tag": "digital",
+      "n_row_tiles": 0,
+      "n_col_tiles": 0,
+      "arrays_single": 0,
+      "arrays_diff_pair": 0
+    },
+    {
+      "name": "stages.1.blocks.0.attn.qkv",
+      "layer_type": "Linear",
+      "weight_shape": [
+        384,
+        128
+      ],
+      "M": 384,
+      "N": 128,
+      "param_count": 49536,
+      "tag": "analog",
+      "n_row_tiles": 3,
+      "n_col_tiles": 1,
+      "arrays_single": 3,
+      "arrays_diff_pair": 6
+    },
+    {
+      "name": "stages.1.blocks.0.attn.proj",
+      "layer_type": "Linear",
+      "weight_shape": [
+        128,
+        128
+      ],
+      "M": 128,
+      "N": 128,
+      "param_count": 16512,
+      "tag": "analog",
+      "n_row_tiles": 1,
+      "n_col_tiles": 1,
+      "arrays_single": 1,
+      "arrays_diff_pair": 2
+    },
+    {
+      "name": "stages.1.blocks.0.mlp.fc1",
+      "layer_type": "Linear",
+      "weight_shape": [
+        512,
+        128
+      ],
+      "M": 512,
+      "N": 128,
+      "param_count": 66048,
+      "tag": "analog",
+      "n_row_tiles": 4,
+      "n_col_tiles": 1,
+      "arrays_single": 4,
+      "arrays_diff_pair": 8
+    },
+    {
+      "name": "stages.1.blocks.0.mlp.fc2",
+      "layer_type": "Linear",
+      "weight_shape": [
+        128,
+        512
+      ],
+      "M": 128,
+      "N": 512,
+      "param_count": 65664,
+      "tag": "analog",
+      "n_row_tiles": 1,
+      "n_col_tiles": 4,
+      "arrays_single": 4,
+      "arrays_diff_pair": 8
+    },
+    {
+      "name": "stages.1.blocks.0.local_conv.conv",
+      "layer_type": "DWConv2d(g=128,k=(3, 3))",
+      "weight_shape": [
+        128,
+        1,
+        3,
+        3
+      ],
+      "M": 128,
+      "N": 9,
+      "param_count": 1152,
+      "tag": "digital",
+      "n_row_tiles": 0,
+      "n_col_tiles": 0,
+      "arrays_single": 0,
+      "arrays_diff_pair": 0
+    },
+    {
+      "name": "stages.1.blocks.1.attn.qkv",
+      "layer_type": "Linear",
+      "weight_shape": [
+        384,
+        128
+      ],
+      "M": 384,
+      "N": 128,
+      "param_count": 49536,
+      "tag": "analog",
+      "n_row_tiles": 3,
+      "n_col_tiles": 1,
+      "arrays_single": 3,
+      "arrays_diff_pair": 6
+    },
+    {
+      "name": "stages.1.blocks.1.attn.proj",
+      "layer_type": "Linear",
+      "weight_shape": [
+        128,
+        128
+      ],
+      "M": 128,
+      "N": 128,
+      "param_count": 16512,
+      "tag": "analog",
+      "n_row_tiles": 1,
+      "n_col_tiles": 1,
+      "arrays_single": 1,
+      "arrays_diff_pair": 2
+    },
+    {
+      "name": "stages.1.blocks.1.mlp.fc1",
+      "layer_type": "Linear",
+      "weight_shape": [
+        512,
+        128
+      ],
+      "M": 512,
+      "N": 128,
+      "param_count": 66048,
+      "tag": "analog",
+      "n_row_tiles": 4,
+      "n_col_tiles": 1,
+      "arrays_single": 4,
+      "arrays_diff_pair": 8
+    },
+    {
+      "name": "stages.1.blocks.1.mlp.fc2",
+      "layer_type": "Linear",
+      "weight_shape": [
+        128,
+        512
+      ],
+      "M": 128,
+      "N": 512,
+      "param_count": 65664,
+      "tag": "analog",
+      "n_row_tiles": 1,
+      "n_col_tiles": 4,
+      "arrays_single": 4,
+      "arrays_diff_pair": 8
+    },
+    {
+      "name": "stages.1.blocks.1.local_conv.conv",
+      "layer_type": "DWConv2d(g=128,k=(3, 3))",
+      "weight_shape": [
+        128,
+        1,
+        3,
+        3
+      ],
+      "M": 128,
+      "N": 9,
+      "param_count": 1152,
+      "tag": "digital",
+      "n_row_tiles": 0,
+      "n_col_tiles": 0,
+      "arrays_single": 0,
+      "arrays_diff_pair": 0
+    },
+    {
+      "name": "stages.2.downsample.conv1.conv",
+      "layer_type": "Conv2d(k=(1, 1),s=(1, 1))",
+      "weight_shape": [
+        160,
+        128,
+        1,
+        1
+      ],
+      "M": 160,
+      "N": 128,
+      "param_count": 20480,
+      "tag": "digital",
+      "n_row_tiles": 0,
+      "n_col_tiles": 0,
+      "arrays_single": 0,
+      "arrays_diff_pair": 0
+    },
+    {
+      "name": "stages.2.downsample.conv2.conv",
+      "layer_type": "DWConv2d(g=160,k=(3, 3))",
+      "weight_shape": [
+        160,
+        1,
+        3,
+        3
+      ],
+      "M": 160,
+      "N": 9,
+      "param_count": 1440,
+      "tag": "digital",
+      "n_row_tiles": 0,
+      "n_col_tiles": 0,
+      "arrays_single": 0,
+      "arrays_diff_pair": 0
+    },
+    {
+      "name": "stages.2.downsample.conv3.conv",
+      "layer_type": "Conv2d(k=(1, 1),s=(1, 1))",
+      "weight_shape": [
+        160,
+        160,
+        1,
+        1
+      ],
+      "M": 160,
+      "N": 160,
+      "param_count": 25600,
+      "tag": "digital",
+      "n_row_tiles": 0,
+      "n_col_tiles": 0,
+      "arrays_single": 0,
+      "arrays_diff_pair": 0
+    },
+    {
+      "name": "stages.2.blocks.0.attn.qkv",
+      "layer_type": "Linear",
+      "weight_shape": [
+        480,
+        160
+      ],
+      "M": 480,
+      "N": 160,
+      "param_count": 77280,
+      "tag": "analog",
+      "n_row_tiles": 4,
+      "n_col_tiles": 2,
+      "arrays_single": 8,
+      "arrays_diff_pair": 16
+    },
+    {
+      "name": "stages.2.blocks.0.attn.proj",
+      "layer_type": "Linear",
+      "weight_shape": [
+        160,
+        160
+      ],
+      "M": 160,
+      "N": 160,
+      "param_count": 25760,
+      "tag": "analog",
+      "n_row_tiles": 2,
+      "n_col_tiles": 2,
+      "arrays_single": 4,
+      "arrays_diff_pair": 8
+    },
+    {
+      "name": "stages.2.blocks.0.mlp.fc1",
+      "layer_type": "Linear",
+      "weight_shape": [
+        640,
+        160
+      ],
+      "M": 640,
+      "N": 160,
+      "param_count": 103040,
+      "tag": "analog",
+      "n_row_tiles": 5,
+      "n_col_tiles": 2,
+      "arrays_single": 10,
+      "arrays_diff_pair": 20
+    },
+    {
+      "name": "stages.2.blocks.0.mlp.fc2",
+      "layer_type": "Linear",
+      "weight_shape": [
+        160,
+        640
+      ],
+      "M": 160,
+      "N": 640,
+      "param_count": 102560,
+      "tag": "analog",
+      "n_row_tiles": 2,
+      "n_col_tiles": 5,
+      "arrays_single": 10,
+      "arrays_diff_pair": 20
+    },
+    {
+      "name": "stages.2.blocks.0.local_conv.conv",
+      "layer_type": "DWConv2d(g=160,k=(3, 3))",
+      "weight_shape": [
+        160,
+        1,
+        3,
+        3
+      ],
+      "M": 160,
+      "N": 9,
+      "param_count": 1440,
+      "tag": "digital",
+      "n_row_tiles": 0,
+      "n_col_tiles": 0,
+      "arrays_single": 0,
+      "arrays_diff_pair": 0
+    },
+    {
+      "name": "stages.2.blocks.1.attn.qkv",
+      "layer_type": "Linear",
+      "weight_shape": [
+        480,
+        160
+      ],
+      "M": 480,
+      "N": 160,
+      "param_count": 77280,
+      "tag": "analog",
+      "n_row_tiles": 4,
+      "n_col_tiles": 2,
+      "arrays_single": 8,
+      "arrays_diff_pair": 16
+    },
+    {
+      "name": "stages.2.blocks.1.attn.proj",
+      "layer_type": "Linear",
+      "weight_shape": [
+        160,
+        160
+      ],
+      "M": 160,
+      "N": 160,
+      "param_count": 25760,
+      "tag": "analog",
+      "n_row_tiles": 2,
+      "n_col_tiles": 2,
+      "arrays_single": 4,
+      "arrays_diff_pair": 8
+    },
+    {
+      "name": "stages.2.blocks.1.mlp.fc1",
+      "layer_type": "Linear",
+      "weight_shape": [
+        640,
+        160
+      ],
+      "M": 640,
+      "N": 160,
+      "param_count": 103040,
+      "tag": "analog",
+      "n_row_tiles": 5,
+      "n_col_tiles": 2,
+      "arrays_single": 10,
+      "arrays_diff_pair": 20
+    },
+    {
+      "name": "stages.2.blocks.1.mlp.fc2",
+      "layer_type": "Linear",
+      "weight_shape": [
+        160,
+        640
+      ],
+      "M": 160,
+      "N": 640,
+      "param_count": 102560,
+      "tag": "analog",
+      "n_row_tiles": 2,
+      "n_col_tiles": 5,
+      "arrays_single": 10,
+      "arrays_diff_pair": 20
+    },
+    {
+      "name": "stages.2.blocks.1.local_conv.conv",
+      "layer_type": "DWConv2d(g=160,k=(3, 3))",
+      "weight_shape": [
+        160,
+        1,
+        3,
+        3
+      ],
+      "M": 160,
+      "N": 9,
+      "param_count": 1440,
+      "tag": "digital",
+      "n_row_tiles": 0,
+      "n_col_tiles": 0,
+      "arrays_single": 0,
+      "arrays_diff_pair": 0
+    },
+    {
+      "name": "stages.2.blocks.2.attn.qkv",
+      "layer_type": "Linear",
+      "weight_shape": [
+        480,
+        160
+      ],
+      "M": 480,
+      "N": 160,
+      "param_count": 77280,
+      "tag": "analog",
+      "n_row_tiles": 4,
+      "n_col_tiles": 2,
+      "arrays_single": 8,
+      "arrays_diff_pair": 16
+    },
+    {
+      "name": "stages.2.blocks.2.attn.proj",
+      "layer_type": "Linear",
+      "weight_shape": [
+        160,
+        160
+      ],
+      "M": 160,
+      "N": 160,
+      "param_count": 25760,
+      "tag": "analog",
+      "n_row_tiles": 2,
+      "n_col_tiles": 2,
+      "arrays_single": 4,
+      "arrays_diff_pair": 8
+    },
+    {
+      "name": "stages.2.blocks.2.mlp.fc1",
+      "layer_type": "Linear",
+      "weight_shape": [
+        640,
+        160
+      ],
+      "M": 640,
+      "N": 160,
+      "param_count": 103040,
+      "tag": "analog",
+      "n_row_tiles": 5,
+      "n_col_tiles": 2,
+      "arrays_single": 10,
+      "arrays_diff_pair": 20
+    },
+    {
+      "name": "stages.2.blocks.2.mlp.fc2",
+      "layer_type": "Linear",
+      "weight_shape": [
+        160,
+        640
+      ],
+      "M": 160,
+      "N": 640,
+      "param_count": 102560,
+      "tag": "analog",
+      "n_row_tiles": 2,
+      "n_col_tiles": 5,
+      "arrays_single": 10,
+      "arrays_diff_pair": 20
+    },
+    {
+      "name": "stages.2.blocks.2.local_conv.conv",
+      "layer_type": "DWConv2d(g=160,k=(3, 3))",
+      "weight_shape": [
+        160,
+        1,
+        3,
+        3
+      ],
+      "M": 160,
+      "N": 9,
+      "param_count": 1440,
+      "tag": "digital",
+      "n_row_tiles": 0,
+      "n_col_tiles": 0,
+      "arrays_single": 0,
+      "arrays_diff_pair": 0
+    },
+    {
+      "name": "stages.2.blocks.3.attn.qkv",
+      "layer_type": "Linear",
+      "weight_shape": [
+        480,
+        160
+      ],
+      "M": 480,
+      "N": 160,
+      "param_count": 77280,
+      "tag": "analog",
+      "n_row_tiles": 4,
+      "n_col_tiles": 2,
+      "arrays_single": 8,
+      "arrays_diff_pair": 16
+    },
+    {
+      "name": "stages.2.blocks.3.attn.proj",
+      "layer_type": "Linear",
+      "weight_shape": [
+        160,
+        160
+      ],
+      "M": 160,
+      "N": 160,
+      "param_count": 25760,
+      "tag": "analog",
+      "n_row_tiles": 2,
+      "n_col_tiles": 2,
+      "arrays_single": 4,
+      "arrays_diff_pair": 8
+    },
+    {
+      "name": "stages.2.blocks.3.mlp.fc1",
+      "layer_type": "Linear",
+      "weight_shape": [
+        640,
+        160
+      ],
+      "M": 640,
+      "N": 160,
+      "param_count": 103040,
+      "tag": "analog",
+      "n_row_tiles": 5,
+      "n_col_tiles": 2,
+      "arrays_single": 10,
+      "arrays_diff_pair": 20
+    },
+    {
+      "name": "stages.2.blocks.3.mlp.fc2",
+      "layer_type": "Linear",
+      "weight_shape": [
+        160,
+        640
+      ],
+      "M": 160,
+      "N": 640,
+      "param_count": 102560,
+      "tag": "analog",
+      "n_row_tiles": 2,
+      "n_col_tiles": 5,
+      "arrays_single": 10,
+      "arrays_diff_pair": 20
+    },
+    {
+      "name": "stages.2.blocks.3.local_conv.conv",
+      "layer_type": "DWConv2d(g=160,k=(3, 3))",
+      "weight_shape": [
+        160,
+        1,
+        3,
+        3
+      ],
+      "M": 160,
+      "N": 9,
+      "param_count": 1440,
+      "tag": "digital",
+      "n_row_tiles": 0,
+      "n_col_tiles": 0,
+      "arrays_single": 0,
+      "arrays_diff_pair": 0
+    },
+    {
+      "name": "stages.2.blocks.4.attn.qkv",
+      "layer_type": "Linear",
+      "weight_shape": [
+        480,
+        160
+      ],
+      "M": 480,
+      "N": 160,
+      "param_count": 77280,
+      "tag": "analog",
+      "n_row_tiles": 4,
+      "n_col_tiles": 2,
+      "arrays_single": 8,
+      "arrays_diff_pair": 16
+    },
+    {
+      "name": "stages.2.blocks.4.attn.proj",
+      "layer_type": "Linear",
+      "weight_shape": [
+        160,
+        160
+      ],
+      "M": 160,
+      "N": 160,
+      "param_count": 25760,
+      "tag": "analog",
+      "n_row_tiles": 2,
+      "n_col_tiles": 2,
+      "arrays_single": 4,
+      "arrays_diff_pair": 8
+    },
+    {
+      "name": "stages.2.blocks.4.mlp.fc1",
+      "layer_type": "Linear",
+      "weight_shape": [
+        640,
+        160
+      ],
+      "M": 640,
+      "N": 160,
+      "param_count": 103040,
+      "tag": "analog",
+      "n_row_tiles": 5,
+      "n_col_tiles": 2,
+      "arrays_single": 10,
+      "arrays_diff_pair": 20
+    },
+    {
+      "name": "stages.2.blocks.4.mlp.fc2",
+      "layer_type": "Linear",
+      "weight_shape": [
+        160,
+        640
+      ],
+      "M": 160,
+      "N": 640,
+      "param_count": 102560,
+      "tag": "analog",
+      "n_row_tiles": 2,
+      "n_col_tiles": 5,
+      "arrays_single": 10,
+      "arrays_diff_pair": 20
+    },
+    {
+      "name": "stages.2.blocks.4.local_conv.conv",
+      "layer_type": "DWConv2d(g=160,k=(3, 3))",
+      "weight_shape": [
+        160,
+        1,
+        3,
+        3
+      ],
+      "M": 160,
+      "N": 9,
+      "param_count": 1440,
+      "tag": "digital",
+      "n_row_tiles": 0,
+      "n_col_tiles": 0,
+      "arrays_single": 0,
+      "arrays_diff_pair": 0
+    },
+    {
+      "name": "stages.2.blocks.5.attn.qkv",
+      "layer_type": "Linear",
+      "weight_shape": [
+        480,
+        160
+      ],
+      "M": 480,
+      "N": 160,
+      "param_count": 77280,
+      "tag": "analog",
+      "n_row_tiles": 4,
+      "n_col_tiles": 2,
+      "arrays_single": 8,
+      "arrays_diff_pair": 16
+    },
+    {
+      "name": "stages.2.blocks.5.attn.proj",
+      "layer_type": "Linear",
+      "weight_shape": [
+        160,
+        160
+      ],
+      "M": 160,
+      "N": 160,
+      "param_count": 25760,
+      "tag": "analog",
+      "n_row_tiles": 2,
+      "n_col_tiles": 2,
+      "arrays_single": 4,
+      "arrays_diff_pair": 8
+    },
+    {
+      "name": "stages.2.blocks.5.mlp.fc1",
+      "layer_type": "Linear",
+      "weight_shape": [
+        640,
+        160
+      ],
+      "M": 640,
+      "N": 160,
+      "param_count": 103040,
+      "tag": "analog",
+      "n_row_tiles": 5,
+      "n_col_tiles": 2,
+      "arrays_single": 10,
+      "arrays_diff_pair": 20
+    },
+    {
+      "name": "stages.2.blocks.5.mlp.fc2",
+      "layer_type": "Linear",
+      "weight_shape": [
+        160,
+        640
+      ],
+      "M": 160,
+      "N": 640,
+      "param_count": 102560,
+      "tag": "analog",
+      "n_row_tiles": 2,
+      "n_col_tiles": 5,
+      "arrays_single": 10,
+      "arrays_diff_pair": 20
+    },
+    {
+      "name": "stages.2.blocks.5.local_conv.conv",
+      "layer_type": "DWConv2d(g=160,k=(3, 3))",
+      "weight_shape": [
+        160,
+        1,
+        3,
+        3
+      ],
+      "M": 160,
+      "N": 9,
+      "param_count": 1440,
+      "tag": "digital",
+      "n_row_tiles": 0,
+      "n_col_tiles": 0,
+      "arrays_single": 0,
+      "arrays_diff_pair": 0
+    },
+    {
+      "name": "stages.3.downsample.conv1.conv",
+      "layer_type": "Conv2d(k=(1, 1),s=(1, 1))",
+      "weight_shape": [
+        320,
+        160,
+        1,
+        1
+      ],
+      "M": 320,
+      "N": 160,
+      "param_count": 51200,
+      "tag": "digital",
+      "n_row_tiles": 0,
+      "n_col_tiles": 0,
+      "arrays_single": 0,
+      "arrays_diff_pair": 0
+    },
+    {
+      "name": "stages.3.downsample.conv2.conv",
+      "layer_type": "DWConv2d(g=320,k=(3, 3))",
+      "weight_shape": [
+        320,
+        1,
+        3,
+        3
+      ],
+      "M": 320,
+      "N": 9,
+      "param_count": 2880,
+      "tag": "digital",
+      "n_row_tiles": 0,
+      "n_col_tiles": 0,
+      "arrays_single": 0,
+      "arrays_diff_pair": 0
+    },
+    {
+      "name": "stages.3.downsample.conv3.conv",
+      "layer_type": "Conv2d(k=(1, 1),s=(1, 1))",
+      "weight_shape": [
+        320,
+        320,
+        1,
+        1
+      ],
+      "M": 320,
+      "N": 320,
+      "param_count": 102400,
+      "tag": "digital",
+      "n_row_tiles": 0,
+      "n_col_tiles": 0,
+      "arrays_single": 0,
+      "arrays_diff_pair": 0
+    },
+    {
+      "name": "stages.3.blocks.0.attn.qkv",
+      "layer_type": "Linear",
+      "weight_shape": [
+        960,
+        320
+      ],
+      "M": 960,
+      "N": 320,
+      "param_count": 308160,
+      "tag": "analog",
+      "n_row_tiles": 8,
+      "n_col_tiles": 3,
+      "arrays_single": 24,
+      "arrays_diff_pair": 48
+    },
+    {
+      "name": "stages.3.blocks.0.attn.proj",
+      "layer_type": "Linear",
+      "weight_shape": [
+        320,
+        320
+      ],
+      "M": 320,
+      "N": 320,
+      "param_count": 102720,
+      "tag": "analog",
+      "n_row_tiles": 3,
+      "n_col_tiles": 3,
+      "arrays_single": 9,
+      "arrays_diff_pair": 18
+    },
+    {
+      "name": "stages.3.blocks.0.mlp.fc1",
+      "layer_type": "Linear",
+      "weight_shape": [
+        1280,
+        320
+      ],
+      "M": 1280,
+      "N": 320,
+      "param_count": 410880,
+      "tag": "analog",
+      "n_row_tiles": 10,
+      "n_col_tiles": 3,
+      "arrays_single": 30,
+      "arrays_diff_pair": 60
+    },
+    {
+      "name": "stages.3.blocks.0.mlp.fc2",
+      "layer_type": "Linear",
+      "weight_shape": [
+        320,
+        1280
+      ],
+      "M": 320,
+      "N": 1280,
+      "param_count": 409920,
+      "tag": "analog",
+      "n_row_tiles": 3,
+      "n_col_tiles": 10,
+      "arrays_single": 30,
+      "arrays_diff_pair": 60
+    },
+    {
+      "name": "stages.3.blocks.0.local_conv.conv",
+      "layer_type": "DWConv2d(g=320,k=(3, 3))",
+      "weight_shape": [
+        320,
+        1,
+        3,
+        3
+      ],
+      "M": 320,
+      "N": 9,
+      "param_count": 2880,
+      "tag": "digital",
+      "n_row_tiles": 0,
+      "n_col_tiles": 0,
+      "arrays_single": 0,
+      "arrays_diff_pair": 0
+    },
+    {
+      "name": "stages.3.blocks.1.attn.qkv",
+      "layer_type": "Linear",
+      "weight_shape": [
+        960,
+        320
+      ],
+      "M": 960,
+      "N": 320,
+      "param_count": 308160,
+      "tag": "analog",
+      "n_row_tiles": 8,
+      "n_col_tiles": 3,
+      "arrays_single": 24,
+      "arrays_diff_pair": 48
+    },
+    {
+      "name": "stages.3.blocks.1.attn.proj",
+      "layer_type": "Linear",
+      "weight_shape": [
+        320,
+        320
+      ],
+      "M": 320,
+      "N": 320,
+      "param_count": 102720,
+      "tag": "analog",
+      "n_row_tiles": 3,
+      "n_col_tiles": 3,
+      "arrays_single": 9,
+      "arrays_diff_pair": 18
+    },
+    {
+      "name": "stages.3.blocks.1.mlp.fc1",
+      "layer_type": "Linear",
+      "weight_shape": [
+        1280,
+        320
+      ],
+      "M": 1280,
+      "N": 320,
+      "param_count": 410880,
+      "tag": "analog",
+      "n_row_tiles": 10,
+      "n_col_tiles": 3,
+      "arrays_single": 30,
+      "arrays_diff_pair": 60
+    },
+    {
+      "name": "stages.3.blocks.1.mlp.fc2",
+      "layer_type": "Linear",
+      "weight_shape": [
+        320,
+        1280
+      ],
+      "M": 320,
+      "N": 1280,
+      "param_count": 409920,
+      "tag": "analog",
+      "n_row_tiles": 3,
+      "n_col_tiles": 10,
+      "arrays_single": 30,
+      "arrays_diff_pair": 60
+    },
+    {
+      "name": "stages.3.blocks.1.local_conv.conv",
+      "layer_type": "DWConv2d(g=320,k=(3, 3))",
+      "weight_shape": [
+        320,
+        1,
+        3,
+        3
+      ],
+      "M": 320,
+      "N": 9,
+      "param_count": 2880,
+      "tag": "digital",
+      "n_row_tiles": 0,
+      "n_col_tiles": 0,
+      "arrays_single": 0,
+      "arrays_diff_pair": 0
+    },
+    {
+      "name": "head.fc",
+      "layer_type": "Linear",
+      "weight_shape": [
+        1000,
+        320
+      ],
+      "M": 1000,
+      "N": 320,
+      "param_count": 321000,
+      "tag": "digital",
+      "n_row_tiles": 0,
+      "n_col_tiles": 0,
+      "arrays_single": 0,
+      "arrays_diff_pair": 0
+    }
+  ],
+  "uncategorized_params": [
+    {
+      "name": "patch_embed.conv1.bn.weight",
+      "shape": [
+        32
+      ],
+      "numel": 32,
+      "tag": "digital"
+    },
+    {
+      "name": "patch_embed.conv1.bn.bias",
+      "shape": [
+        32
+      ],
+      "numel": 32,
+      "tag": "digital"
+    },
+    {
+      "name": "patch_embed.conv2.bn.weight",
+      "shape": [
+        64
+      ],
+      "numel": 64,
+      "tag": "digital"
+    },
+    {
+      "name": "patch_embed.conv2.bn.bias",
+      "shape": [
+        64
+      ],
+      "numel": 64,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.0.blocks.0.conv1.bn.weight",
+      "shape": [
+        256
+      ],
+      "numel": 256,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.0.blocks.0.conv1.bn.bias",
+      "shape": [
+        256
+      ],
+      "numel": 256,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.0.blocks.0.conv2.bn.weight",
+      "shape": [
+        256
+      ],
+      "numel": 256,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.0.blocks.0.conv2.bn.bias",
+      "shape": [
+        256
+      ],
+      "numel": 256,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.0.blocks.0.conv3.bn.weight",
+      "shape": [
+        64
+      ],
+      "numel": 64,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.0.blocks.0.conv3.bn.bias",
+      "shape": [
+        64
+      ],
+      "numel": 64,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.0.blocks.1.conv1.bn.weight",
+      "shape": [
+        256
+      ],
+      "numel": 256,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.0.blocks.1.conv1.bn.bias",
+      "shape": [
+        256
+      ],
+      "numel": 256,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.0.blocks.1.conv2.bn.weight",
+      "shape": [
+        256
+      ],
+      "numel": 256,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.0.blocks.1.conv2.bn.bias",
+      "shape": [
+        256
+      ],
+      "numel": 256,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.0.blocks.1.conv3.bn.weight",
+      "shape": [
+        64
+      ],
+      "numel": 64,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.0.blocks.1.conv3.bn.bias",
+      "shape": [
+        64
+      ],
+      "numel": 64,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.1.downsample.conv1.bn.weight",
+      "shape": [
+        128
+      ],
+      "numel": 128,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.1.downsample.conv1.bn.bias",
+      "shape": [
+        128
+      ],
+      "numel": 128,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.1.downsample.conv2.bn.weight",
+      "shape": [
+        128
+      ],
+      "numel": 128,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.1.downsample.conv2.bn.bias",
+      "shape": [
+        128
+      ],
+      "numel": 128,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.1.downsample.conv3.bn.weight",
+      "shape": [
+        128
+      ],
+      "numel": 128,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.1.downsample.conv3.bn.bias",
+      "shape": [
+        128
+      ],
+      "numel": 128,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.1.blocks.0.attn.attention_biases",
+      "shape": [
+        4,
+        49
+      ],
+      "numel": 196,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.1.blocks.0.attn.norm.weight",
+      "shape": [
+        128
+      ],
+      "numel": 128,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.1.blocks.0.attn.norm.bias",
+      "shape": [
+        128
+      ],
+      "numel": 128,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.1.blocks.0.mlp.norm.weight",
+      "shape": [
+        128
+      ],
+      "numel": 128,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.1.blocks.0.mlp.norm.bias",
+      "shape": [
+        128
+      ],
+      "numel": 128,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.1.blocks.0.local_conv.bn.weight",
+      "shape": [
+        128
+      ],
+      "numel": 128,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.1.blocks.0.local_conv.bn.bias",
+      "shape": [
+        128
+      ],
+      "numel": 128,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.1.blocks.1.attn.attention_biases",
+      "shape": [
+        4,
+        49
+      ],
+      "numel": 196,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.1.blocks.1.attn.norm.weight",
+      "shape": [
+        128
+      ],
+      "numel": 128,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.1.blocks.1.attn.norm.bias",
+      "shape": [
+        128
+      ],
+      "numel": 128,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.1.blocks.1.mlp.norm.weight",
+      "shape": [
+        128
+      ],
+      "numel": 128,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.1.blocks.1.mlp.norm.bias",
+      "shape": [
+        128
+      ],
+      "numel": 128,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.1.blocks.1.local_conv.bn.weight",
+      "shape": [
+        128
+      ],
+      "numel": 128,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.1.blocks.1.local_conv.bn.bias",
+      "shape": [
+        128
+      ],
+      "numel": 128,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.2.downsample.conv1.bn.weight",
+      "shape": [
+        160
+      ],
+      "numel": 160,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.2.downsample.conv1.bn.bias",
+      "shape": [
+        160
+      ],
+      "numel": 160,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.2.downsample.conv2.bn.weight",
+      "shape": [
+        160
+      ],
+      "numel": 160,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.2.downsample.conv2.bn.bias",
+      "shape": [
+        160
+      ],
+      "numel": 160,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.2.downsample.conv3.bn.weight",
+      "shape": [
+        160
+      ],
+      "numel": 160,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.2.downsample.conv3.bn.bias",
+      "shape": [
+        160
+      ],
+      "numel": 160,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.2.blocks.0.attn.attention_biases",
+      "shape": [
+        5,
+        196
+      ],
+      "numel": 980,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.2.blocks.0.attn.norm.weight",
+      "shape": [
+        160
+      ],
+      "numel": 160,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.2.blocks.0.attn.norm.bias",
+      "shape": [
+        160
+      ],
+      "numel": 160,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.2.blocks.0.mlp.norm.weight",
+      "shape": [
+        160
+      ],
+      "numel": 160,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.2.blocks.0.mlp.norm.bias",
+      "shape": [
+        160
+      ],
+      "numel": 160,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.2.blocks.0.local_conv.bn.weight",
+      "shape": [
+        160
+      ],
+      "numel": 160,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.2.blocks.0.local_conv.bn.bias",
+      "shape": [
+        160
+      ],
+      "numel": 160,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.2.blocks.1.attn.attention_biases",
+      "shape": [
+        5,
+        196
+      ],
+      "numel": 980,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.2.blocks.1.attn.norm.weight",
+      "shape": [
+        160
+      ],
+      "numel": 160,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.2.blocks.1.attn.norm.bias",
+      "shape": [
+        160
+      ],
+      "numel": 160,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.2.blocks.1.mlp.norm.weight",
+      "shape": [
+        160
+      ],
+      "numel": 160,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.2.blocks.1.mlp.norm.bias",
+      "shape": [
+        160
+      ],
+      "numel": 160,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.2.blocks.1.local_conv.bn.weight",
+      "shape": [
+        160
+      ],
+      "numel": 160,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.2.blocks.1.local_conv.bn.bias",
+      "shape": [
+        160
+      ],
+      "numel": 160,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.2.blocks.2.attn.attention_biases",
+      "shape": [
+        5,
+        196
+      ],
+      "numel": 980,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.2.blocks.2.attn.norm.weight",
+      "shape": [
+        160
+      ],
+      "numel": 160,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.2.blocks.2.attn.norm.bias",
+      "shape": [
+        160
+      ],
+      "numel": 160,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.2.blocks.2.mlp.norm.weight",
+      "shape": [
+        160
+      ],
+      "numel": 160,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.2.blocks.2.mlp.norm.bias",
+      "shape": [
+        160
+      ],
+      "numel": 160,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.2.blocks.2.local_conv.bn.weight",
+      "shape": [
+        160
+      ],
+      "numel": 160,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.2.blocks.2.local_conv.bn.bias",
+      "shape": [
+        160
+      ],
+      "numel": 160,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.2.blocks.3.attn.attention_biases",
+      "shape": [
+        5,
+        196
+      ],
+      "numel": 980,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.2.blocks.3.attn.norm.weight",
+      "shape": [
+        160
+      ],
+      "numel": 160,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.2.blocks.3.attn.norm.bias",
+      "shape": [
+        160
+      ],
+      "numel": 160,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.2.blocks.3.mlp.norm.weight",
+      "shape": [
+        160
+      ],
+      "numel": 160,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.2.blocks.3.mlp.norm.bias",
+      "shape": [
+        160
+      ],
+      "numel": 160,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.2.blocks.3.local_conv.bn.weight",
+      "shape": [
+        160
+      ],
+      "numel": 160,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.2.blocks.3.local_conv.bn.bias",
+      "shape": [
+        160
+      ],
+      "numel": 160,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.2.blocks.4.attn.attention_biases",
+      "shape": [
+        5,
+        196
+      ],
+      "numel": 980,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.2.blocks.4.attn.norm.weight",
+      "shape": [
+        160
+      ],
+      "numel": 160,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.2.blocks.4.attn.norm.bias",
+      "shape": [
+        160
+      ],
+      "numel": 160,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.2.blocks.4.mlp.norm.weight",
+      "shape": [
+        160
+      ],
+      "numel": 160,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.2.blocks.4.mlp.norm.bias",
+      "shape": [
+        160
+      ],
+      "numel": 160,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.2.blocks.4.local_conv.bn.weight",
+      "shape": [
+        160
+      ],
+      "numel": 160,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.2.blocks.4.local_conv.bn.bias",
+      "shape": [
+        160
+      ],
+      "numel": 160,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.2.blocks.5.attn.attention_biases",
+      "shape": [
+        5,
+        196
+      ],
+      "numel": 980,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.2.blocks.5.attn.norm.weight",
+      "shape": [
+        160
+      ],
+      "numel": 160,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.2.blocks.5.attn.norm.bias",
+      "shape": [
+        160
+      ],
+      "numel": 160,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.2.blocks.5.mlp.norm.weight",
+      "shape": [
+        160
+      ],
+      "numel": 160,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.2.blocks.5.mlp.norm.bias",
+      "shape": [
+        160
+      ],
+      "numel": 160,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.2.blocks.5.local_conv.bn.weight",
+      "shape": [
+        160
+      ],
+      "numel": 160,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.2.blocks.5.local_conv.bn.bias",
+      "shape": [
+        160
+      ],
+      "numel": 160,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.3.downsample.conv1.bn.weight",
+      "shape": [
+        320
+      ],
+      "numel": 320,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.3.downsample.conv1.bn.bias",
+      "shape": [
+        320
+      ],
+      "numel": 320,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.3.downsample.conv2.bn.weight",
+      "shape": [
+        320
+      ],
+      "numel": 320,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.3.downsample.conv2.bn.bias",
+      "shape": [
+        320
+      ],
+      "numel": 320,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.3.downsample.conv3.bn.weight",
+      "shape": [
+        320
+      ],
+      "numel": 320,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.3.downsample.conv3.bn.bias",
+      "shape": [
+        320
+      ],
+      "numel": 320,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.3.blocks.0.attn.attention_biases",
+      "shape": [
+        10,
+        49
+      ],
+      "numel": 490,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.3.blocks.0.attn.norm.weight",
+      "shape": [
+        320
+      ],
+      "numel": 320,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.3.blocks.0.attn.norm.bias",
+      "shape": [
+        320
+      ],
+      "numel": 320,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.3.blocks.0.mlp.norm.weight",
+      "shape": [
+        320
+      ],
+      "numel": 320,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.3.blocks.0.mlp.norm.bias",
+      "shape": [
+        320
+      ],
+      "numel": 320,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.3.blocks.0.local_conv.bn.weight",
+      "shape": [
+        320
+      ],
+      "numel": 320,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.3.blocks.0.local_conv.bn.bias",
+      "shape": [
+        320
+      ],
+      "numel": 320,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.3.blocks.1.attn.attention_biases",
+      "shape": [
+        10,
+        49
+      ],
+      "numel": 490,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.3.blocks.1.attn.norm.weight",
+      "shape": [
+        320
+      ],
+      "numel": 320,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.3.blocks.1.attn.norm.bias",
+      "shape": [
+        320
+      ],
+      "numel": 320,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.3.blocks.1.mlp.norm.weight",
+      "shape": [
+        320
+      ],
+      "numel": 320,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.3.blocks.1.mlp.norm.bias",
+      "shape": [
+        320
+      ],
+      "numel": 320,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.3.blocks.1.local_conv.bn.weight",
+      "shape": [
+        320
+      ],
+      "numel": 320,
+      "tag": "digital"
+    },
+    {
+      "name": "stages.3.blocks.1.local_conv.bn.bias",
+      "shape": [
+        320
+      ],
+      "numel": 320,
+      "tag": "digital"
+    },
+    {
+      "name": "head.norm.weight",
+      "shape": [
+        320
+      ],
+      "numel": 320,
+      "tag": "digital"
+    },
+    {
+      "name": "head.norm.bias",
+      "shape": [
+        320
+      ],
+      "numel": 320,
+      "tag": "digital"
+    }
+  ]
+}

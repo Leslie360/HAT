@@ -1,0 +1,7 @@
+experiment,experiment_name,dataset,time_s,test_loss_mean,test_acc_mean,test_acc_std,test_acc_min,test_acc_max,mc_runs,checkpoint_path,checkpoint_epoch,checkpoint_best_acc
+V7,V7_hybrid_hat_with_retention,cifar10,0,7.035854450531006,19.611,0.33217967025893275,19.09,20.11,10,checkpoints/V7_hybrid_hat_with_retention_best.pt,95,87.88
+V7,V7_hybrid_hat_with_retention,cifar10,1,6.8788237890625,18.451999999999998,0.29626564656290055,17.88,18.77,10,checkpoints/V7_hybrid_hat_with_retention_best.pt,95,87.88
+V7,V7_hybrid_hat_with_retention,cifar10,10,6.836825420913696,18.267,0.3858050745591036,17.66,18.95,10,checkpoints/V7_hybrid_hat_with_retention_best.pt,95,87.88
+V7,V7_hybrid_hat_with_retention,cifar10,100,6.854877598648072,18.130000000000003,0.31892179466306636,17.78,18.6,10,checkpoints/V7_hybrid_hat_with_retention_best.pt,95,87.88
+V7,V7_hybrid_hat_with_retention,cifar10,1000,6.830719175186157,18.231,0.3118920753508601,17.82,18.84,10,checkpoints/V7_hybrid_hat_with_retention_best.pt,95,87.88
+V7,V7_hybrid_hat_with_retention,cifar10,10000,6.877183931732178,18.067,0.39052813243378764,17.39,18.61,10,checkpoints/V7_hybrid_hat_with_retention_best.pt,95,87.88

@@ -1,0 +1,35 @@
+[2026-04-05 11:21:21] Device: cuda
+[2026-04-05 11:21:21] Model type: tinyvit
+[2026-04-05 11:21:21] Experiment: V4
+[2026-04-05 11:21:21] Sweep type: noise
+[2026-04-05 11:21:21] Eval runs: 10
+[2026-04-05 11:21:23] Checkpoint: checkpoints/V4_hybrid_standard_noise_hat_best.pt
+[2026-04-05 11:21:23] Checkpoint epoch: 99, best_acc=91.94
+[2026-04-05 11:21:23] Running continuous noise sweep.
+[2026-04-05 11:21:30] sigma_c2c=0.00, sigma_d2d=0.00: mc_run=1/10: test_acc=91.75%
+[2026-04-05 11:21:36] sigma_c2c=0.00, sigma_d2d=0.00: mc_run=2/10: test_acc=91.44%
+[2026-04-05 11:21:43] sigma_c2c=0.00, sigma_d2d=0.00: mc_run=3/10: test_acc=91.89%
+[2026-04-05 11:21:50] sigma_c2c=0.00, sigma_d2d=0.00: mc_run=4/10: test_acc=91.89%
+[2026-04-05 11:21:57] sigma_c2c=0.00, sigma_d2d=0.00: mc_run=5/10: test_acc=91.72%
+[2026-04-05 11:22:03] sigma_c2c=0.00, sigma_d2d=0.00: mc_run=6/10: test_acc=91.20%
+[2026-04-05 11:22:09] sigma_c2c=0.00, sigma_d2d=0.00: mc_run=7/10: test_acc=91.26%
+[2026-04-05 11:22:15] sigma_c2c=0.00, sigma_d2d=0.00: mc_run=8/10: test_acc=91.62%
+[2026-04-05 11:22:23] sigma_c2c=0.00, sigma_d2d=0.00: mc_run=9/10: test_acc=92.12%
+[2026-04-05 11:22:29] sigma_c2c=0.00, sigma_d2d=0.00: mc_run=10/10: test_acc=91.55%
+[2026-04-05 11:22:29] sigma_c2c=0.00, sigma_d2d=0.00: acc=91.64% ± 0.29 (min=91.20, max=92.12)
+[2026-04-05 11:22:29] sigma_c2c=0.00, sigma_d2d=0.00: sparsity=0.00% across 42 analog layers
+[2026-04-05 11:22:35] sigma_c2c=0.02, sigma_d2d=0.00: mc_run=1/10: test_acc=92.19%
+[2026-04-05 11:22:41] sigma_c2c=0.02, sigma_d2d=0.00: mc_run=2/10: test_acc=91.91%
+[2026-04-05 11:22:47] sigma_c2c=0.02, sigma_d2d=0.00: mc_run=3/10: test_acc=91.64%
+[2026-04-05 11:22:55] sigma_c2c=0.02, sigma_d2d=0.00: mc_run=4/10: test_acc=91.34%
+[2026-04-05 11:23:01] sigma_c2c=0.02, sigma_d2d=0.00: mc_run=5/10: test_acc=91.55%
+[2026-04-05 11:23:07] sigma_c2c=0.02, sigma_d2d=0.00: mc_run=6/10: test_acc=91.89%
+[2026-04-05 11:23:13] sigma_c2c=0.02, sigma_d2d=0.00: mc_run=7/10: test_acc=91.88%
+[2026-04-05 11:23:20] sigma_c2c=0.02, sigma_d2d=0.00: mc_run=8/10: test_acc=92.15%
+[2026-04-05 11:23:27] sigma_c2c=0.02, sigma_d2d=0.00: mc_run=9/10: test_acc=92.04%
+[2026-04-05 11:23:33] sigma_c2c=0.02, sigma_d2d=0.00: mc_run=10/10: test_acc=91.87%
+[2026-04-05 11:23:33] sigma_c2c=0.02, sigma_d2d=0.00: acc=91.85% ± 0.27 (min=91.34, max=92.19)
+[2026-04-05 11:23:33] sigma_c2c=0.02, sigma_d2d=0.00: sparsity=0.00% across 42 analog layers
+[2026-04-05 11:23:41] sigma_c2c=0.05, sigma_d2d=0.00: mc_run=1/10: test_acc=91.54%
+[2026-04-05 11:23:47] sigma_c2c=0.05, sigma_d2d=0.00: mc_run=2/10: test_acc=91.59%
+[2026-04-05 11:23:53] sigma_c2c=0.05, sigma_d2d=0.00: mc_run=3/10: test_acc=91.71%

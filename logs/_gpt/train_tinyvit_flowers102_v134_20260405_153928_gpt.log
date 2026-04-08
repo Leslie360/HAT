@@ -1,0 +1,91 @@
+[2026-04-05 19:43:14] Device: cuda
+[2026-04-05 19:43:14] Mode: train
+[2026-04-05 19:43:14] Experiments: ['V1', 'V3', 'V4']
+[2026-04-05 19:43:14] AMP requested: True, active: True
+
+[2026-04-05 19:44:26] ======================================================================
+[2026-04-05 19:44:26] Experiment V1: V1_fp32_digital_baseline
+[2026-04-05 19:44:26]   hybrid=False, noise=False, C2C=0.0, D2D=0.0, HAT=False
+[2026-04-05 19:44:26]   amp=on
+[2026-04-05 19:44:26] ======================================================================
+[2026-04-05 19:44:38]   Epoch   0/100: train_loss=3.9633, train_acc=47.70%, test_acc=81.98% (best=81.98%), lr=0.000500
+[2026-04-05 19:45:02]   Epoch   4/100: train_loss=0.2151, train_acc=99.85%, test_acc=97.19% (best=97.19%), lr=0.000498
+[2026-04-05 19:45:30]   Epoch   9/100: train_loss=0.0324, train_acc=100.00%, test_acc=97.69% (best=97.90%), lr=0.000490
+[2026-04-05 19:45:59]   Epoch  14/100: train_loss=0.0149, train_acc=100.00%, test_acc=97.84% (best=97.97%), lr=0.000476
+[2026-04-05 19:46:27]   Epoch  19/100: train_loss=0.0091, train_acc=100.00%, test_acc=97.84% (best=97.97%), lr=0.000457
+[2026-04-05 19:46:56]   Epoch  24/100: train_loss=0.0063, train_acc=100.00%, test_acc=97.72% (best=97.97%), lr=0.000432
+[2026-04-05 19:47:25]   Epoch  29/100: train_loss=0.0047, train_acc=100.00%, test_acc=97.74% (best=97.97%), lr=0.000403
+[2026-04-05 19:47:53]   Epoch  34/100: train_loss=0.0038, train_acc=100.00%, test_acc=97.74% (best=97.97%), lr=0.000370
+[2026-04-05 19:48:22]   Epoch  39/100: train_loss=0.0031, train_acc=100.00%, test_acc=97.67% (best=97.97%), lr=0.000335
+[2026-04-05 19:48:50]   Epoch  44/100: train_loss=0.0027, train_acc=100.00%, test_acc=97.71% (best=97.97%), lr=0.000297
+[2026-04-05 19:49:19]   Epoch  49/100: train_loss=0.0023, train_acc=100.00%, test_acc=97.61% (best=97.97%), lr=0.000258
+[2026-04-05 19:49:48]   Epoch  54/100: train_loss=0.0021, train_acc=100.00%, test_acc=97.76% (best=97.97%), lr=0.000219
+[2026-04-05 19:50:16]   Epoch  59/100: train_loss=0.0019, train_acc=100.00%, test_acc=97.66% (best=97.97%), lr=0.000180
+[2026-04-05 19:50:45]   Epoch  64/100: train_loss=0.0018, train_acc=100.00%, test_acc=97.63% (best=97.97%), lr=0.000144
+[2026-04-05 19:51:14]   Epoch  69/100: train_loss=0.0017, train_acc=100.00%, test_acc=97.59% (best=97.97%), lr=0.000109
+[2026-04-05 19:51:42]   Epoch  74/100: train_loss=0.0016, train_acc=100.00%, test_acc=97.66% (best=97.97%), lr=0.000079
+[2026-04-05 19:52:11]   Epoch  79/100: train_loss=0.0015, train_acc=100.00%, test_acc=97.64% (best=97.97%), lr=0.000052
+[2026-04-05 19:52:39]   Epoch  84/100: train_loss=0.0015, train_acc=100.00%, test_acc=97.71% (best=97.97%), lr=0.000031
+[2026-04-05 19:53:08]   Epoch  89/100: train_loss=0.0015, train_acc=100.00%, test_acc=97.64% (best=97.97%), lr=0.000015
+[2026-04-05 19:53:37]   Epoch  94/100: train_loss=0.0015, train_acc=100.00%, test_acc=97.63% (best=97.97%), lr=0.000004
+[2026-04-05 19:54:05]   Epoch  99/100: train_loss=0.0015, train_acc=100.00%, test_acc=97.58% (best=97.97%), lr=0.000000
+[2026-04-05 19:54:05]   Finished. Best accuracy: 97.97% at epoch 10; checkpoint=checkpoints/_gpt/flowers102/V1_fp32_digital_baseline_best.pt
+
+[2026-04-05 19:54:06] ======================================================================
+[2026-04-05 19:54:06] Experiment V3: V3_hybrid_standard_noise_standard_train
+[2026-04-05 19:54:06]   hybrid=True, noise=True, C2C=0.05, D2D=0.1, HAT=False
+[2026-04-05 19:54:06]   standard-noise policy: fixed D2D on during train, C2C off during train
+[2026-04-05 19:54:06]   amp=on
+[2026-04-05 19:54:06] ======================================================================
+[2026-04-05 19:54:13]   Epoch   0/100: train_loss=4.5872, train_acc=2.75%, test_acc=1.28% (best=1.28%), lr=0.000500
+[2026-04-05 19:54:38]   Epoch   4/100: train_loss=3.1752, train_acc=27.30%, test_acc=1.84% (best=1.84%), lr=0.000498
+[2026-04-05 19:55:10]   Epoch   9/100: train_loss=1.8665, train_acc=51.91%, test_acc=2.31% (best=2.70%), lr=0.000490
+[2026-04-05 19:55:42]   Epoch  14/100: train_loss=1.0426, train_acc=71.81%, test_acc=3.12% (best=3.12%), lr=0.000476
+[2026-04-05 19:56:14]   Epoch  19/100: train_loss=0.5827, train_acc=84.12%, test_acc=2.00% (best=3.12%), lr=0.000457
+[2026-04-05 19:56:45]   Epoch  24/100: train_loss=0.3213, train_acc=91.76%, test_acc=2.59% (best=3.79%), lr=0.000432
+[2026-04-05 19:57:17]   Epoch  29/100: train_loss=0.2108, train_acc=94.31%, test_acc=2.91% (best=3.79%), lr=0.000403
+[2026-04-05 19:57:48]   Epoch  34/100: train_loss=0.1304, train_acc=97.35%, test_acc=4.81% (best=4.81%), lr=0.000370
+[2026-04-05 19:58:20]   Epoch  39/100: train_loss=0.0679, train_acc=98.82%, test_acc=2.62% (best=4.81%), lr=0.000335
+[2026-04-05 19:58:51]   Epoch  44/100: train_loss=0.0525, train_acc=98.92%, test_acc=2.76% (best=4.81%), lr=0.000297
+[2026-04-05 19:59:23]   Epoch  49/100: train_loss=0.0542, train_acc=98.73%, test_acc=2.46% (best=4.81%), lr=0.000258
+[2026-04-05 19:59:55]   Epoch  54/100: train_loss=0.0220, train_acc=99.51%, test_acc=2.39% (best=4.81%), lr=0.000219
+[2026-04-05 20:00:26]   Epoch  59/100: train_loss=0.0201, train_acc=99.61%, test_acc=1.94% (best=4.81%), lr=0.000180
+[2026-04-05 20:00:58]   Epoch  64/100: train_loss=0.0130, train_acc=99.85%, test_acc=2.44% (best=4.81%), lr=0.000144
+[2026-04-05 20:01:30]   Epoch  69/100: train_loss=0.0090, train_acc=99.90%, test_acc=2.07% (best=4.81%), lr=0.000109
+[2026-04-05 20:02:01]   Epoch  74/100: train_loss=0.0065, train_acc=100.00%, test_acc=2.28% (best=4.81%), lr=0.000079
+[2026-04-05 20:02:33]   Epoch  79/100: train_loss=0.0060, train_acc=99.95%, test_acc=2.81% (best=4.81%), lr=0.000052
+[2026-04-05 20:03:04]   Epoch  84/100: train_loss=0.0047, train_acc=100.00%, test_acc=2.39% (best=4.81%), lr=0.000031
+[2026-04-05 20:03:36]   Epoch  89/100: train_loss=0.0048, train_acc=100.00%, test_acc=3.92% (best=4.81%), lr=0.000015
+[2026-04-05 20:04:07]   Epoch  94/100: train_loss=0.0048, train_acc=100.00%, test_acc=3.46% (best=4.81%), lr=0.000004
+[2026-04-05 20:04:39]   Epoch  99/100: train_loss=0.0077, train_acc=99.90%, test_acc=3.07% (best=4.81%), lr=0.000000
+[2026-04-05 20:04:39]   Finished. Best accuracy: 4.81% at epoch 34; checkpoint=checkpoints/_gpt/flowers102/V3_hybrid_standard_noise_standard_train_best.pt
+
+[2026-04-05 20:04:40] ======================================================================
+[2026-04-05 20:04:40] Experiment V4: V4_hybrid_standard_noise_hat
+[2026-04-05 20:04:40]   hybrid=True, noise=True, C2C=0.05, D2D=0.1, HAT=True
+[2026-04-05 20:04:40]   amp=on
+[2026-04-05 20:04:40] ======================================================================
+[2026-04-05 20:04:47]   Epoch   0/100: train_loss=4.6489, train_acc=1.27%, test_acc=0.75% (best=0.75%), lr=0.000500
+[2026-04-05 20:05:12]   Epoch   4/100: train_loss=4.6245, train_acc=1.52%, test_acc=0.81% (best=1.22%), lr=0.000498
+[2026-04-05 20:05:45]   Epoch   9/100: train_loss=4.3037, train_acc=3.48%, test_acc=1.77% (best=1.90%), lr=0.000490
+[2026-04-05 20:06:18]   Epoch  14/100: train_loss=3.8334, train_acc=5.69%, test_acc=2.75% (best=3.64%), lr=0.000476
+[2026-04-05 20:06:50]   Epoch  19/100: train_loss=3.5549, train_acc=10.25%, test_acc=4.28% (best=5.32%), lr=0.000457
+[2026-04-05 20:07:23]   Epoch  24/100: train_loss=3.3248, train_acc=12.60%, test_acc=6.68% (best=8.80%), lr=0.000432
+[2026-04-05 20:07:55]   Epoch  29/100: train_loss=3.0990, train_acc=15.69%, test_acc=9.55% (best=9.55%), lr=0.000403
+[2026-04-05 20:08:28]   Epoch  34/100: train_loss=2.9188, train_acc=19.12%, test_acc=10.80% (best=10.80%), lr=0.000370
+[2026-04-05 20:09:00]   Epoch  39/100: train_loss=2.7441, train_acc=22.99%, test_acc=13.37% (best=13.37%), lr=0.000335
+[2026-04-05 20:09:32]   Epoch  44/100: train_loss=2.5935, train_acc=27.35%, test_acc=11.60% (best=13.50%), lr=0.000297
+[2026-04-05 20:10:05]   Epoch  49/100: train_loss=2.4983, train_acc=28.77%, test_acc=14.62% (best=15.01%), lr=0.000258
+[2026-04-05 20:10:37]   Epoch  54/100: train_loss=2.4271, train_acc=30.74%, test_acc=15.21% (best=16.38%), lr=0.000219
+[2026-04-05 20:11:10]   Epoch  59/100: train_loss=2.3245, train_acc=32.55%, test_acc=14.90% (best=18.04%), lr=0.000180
+[2026-04-05 20:11:42]   Epoch  64/100: train_loss=2.2207, train_acc=35.29%, test_acc=17.66% (best=20.05%), lr=0.000144
+[2026-04-05 20:12:15]   Epoch  69/100: train_loss=2.1644, train_acc=36.96%, test_acc=21.37% (best=21.37%), lr=0.000109
+[2026-04-05 20:12:48]   Epoch  74/100: train_loss=2.1149, train_acc=37.79%, test_acc=20.20% (best=21.71%), lr=0.000079
+[2026-04-05 20:13:20]   Epoch  79/100: train_loss=2.1054, train_acc=38.04%, test_acc=18.91% (best=21.71%), lr=0.000052
+[2026-04-05 20:13:53]   Epoch  84/100: train_loss=2.0552, train_acc=39.51%, test_acc=20.56% (best=21.71%), lr=0.000031
+[2026-04-05 20:14:25]   Epoch  89/100: train_loss=2.0601, train_acc=40.49%, test_acc=19.06% (best=21.71%), lr=0.000015
+[2026-04-05 20:14:58]   Epoch  94/100: train_loss=2.0735, train_acc=39.90%, test_acc=22.48% (best=22.48%), lr=0.000004
+[2026-04-05 20:15:31]   Epoch  99/100: train_loss=2.0213, train_acc=40.74%, test_acc=20.77% (best=22.48%), lr=0.000000
+[2026-04-05 20:15:31]   Finished. Best accuracy: 22.48% at epoch 94; checkpoint=checkpoints/_gpt/flowers102/V4_hybrid_standard_noise_hat_best.pt
+[2026-04-05 20:15:31] Training finished for 3 experiment(s).
+[2026-04-05 20:15:31] Result markdown: report_md/_gpt/tinyvit_flowers102_v134_results_gpt.md

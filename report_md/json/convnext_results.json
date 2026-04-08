@@ -1,0 +1,68 @@
+{
+  "results": [
+    {
+      "experiment": "C1",
+      "name": "C1_FP32_baseline",
+      "n_states": 16,
+      "sigma_c2c": 0.0,
+      "sigma_d2d": 0.0,
+      "hat_training": false,
+      "best_test_acc": 47.89,
+      "mc_mean_acc": 47.89,
+      "mc_std_acc": 0.0,
+      "total_time_s": 37.843440532684326,
+      "epochs": 2
+    }
+  ],
+  "histories": {
+    "C1": {
+      "train_loss": [
+        2.0016638744354247,
+        1.5344323147964478
+      ],
+      "train_acc": [
+        28.464,
+        43.848
+      ],
+      "test_loss": [
+        1.7186865388870238,
+        1.4385410669326781
+      ],
+      "test_acc": [
+        37.73,
+        47.89
+      ],
+      "lr": [
+        0.002,
+        0.0
+      ]
+    }
+  },
+  "retention": [
+    {
+      "time_s": 0,
+      "mean_acc": 9.91,
+      "std_acc": 0.22917242417009998
+    },
+    {
+      "time_s": 1,
+      "mean_acc": 9.992,
+      "std_acc": 0.24293208927599474
+    },
+    {
+      "time_s": 10,
+      "mean_acc": 9.912,
+      "std_acc": 0.17127755252805266
+    },
+    {
+      "time_s": 100,
+      "mean_acc": 10.076,
+      "std_acc": 0.16954055562018192
+    },
+    {
+      "time_s": 1000,
+      "mean_acc": 10.092,
+      "std_acc": 0.22497999911103223
+    }
+  ]
+}

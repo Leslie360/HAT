@@ -1,0 +1,58 @@
+\section{Discussion}
+\label{sec:discussion}
+
+\subsection{What Actually Limits Organic-CIM Accuracy?}
+
+The combined ResNet, ConvNeXt, and Tiny-ViT analyses revise the intuitive failure hierarchy one might expect from an organic analog accelerator. Standard cycle-to-cycle (C2C) and device-to-device (D2D) variability are not the primary drivers of accuracy loss when paired with hardware-aware training (HAT) and proper scale recovery. Instead, the results point to three more fundamental bottlenecks.
+
+First, \textbf{ADC resolution is the dominant peripheral constraint within the present simulator configuration.} The 6-bit cliff observed in the Tiny-ViT sweep suggests that Transformer-based architectures have a rigid "quantization floor" below which the attention mechanism collapses. This is physically significant: while materials scientists can tune conductance states, the system-level benefit is still gated by the power and area cost of the readout converters.
+
+Second, \textbf{hardware-instance overfitting} is a severe risk for analog foundation models. The collapse of V4 under fresh-instance transfer (10% accuracy) indicates that the model can over-specialize to one fixed realization of manufacturing mismatch rather than becoming truly noise-invariant. This motivated the \textbf{Ensemble HAT} strategy, in which D2D masks are resampled during training; under that protocol, fresh-instance accuracy rises to \(86.37 \pm 1.54\%\). This does not prove universal hardware transferability, but it shows that multi-instance-aware training can mitigate the dominant instance-overfitting failure mode in the present setting.
+
+Third, \textbf{the "Scale Masking" effect provides a conditional rather than universal form of robustness.} The observation that V2 survives standard uniform noise at 97% accuracy is an algorithmic property of the canonical simulator configuration. By rescaling the analog output back to the digital range, the effective perturbation can fall below the 4-bit quantization step. This protection relies on accurate digital post-array gain calibration and does not survive under all physics extensions, as demonstrated by the proportional-noise stress tests.
+
+\subsection{Transformer Sensitivity to Non-Idealities}
+
+Our comparison of dual testbeds—ConvNeXt (CNN) and Tiny-ViT (Transformer)—reveals that global-token architectures are inherently more fragile than local-kernel architectures under realistic device noise.
+
+1. \textbf{State-Dependent Noise Sensitivity}: The sharp collapse of V4 under proportional noise (10% accuracy), contrasted with the relative stability of ConvNeXt under moderate non-linearities, indicates that Transformers rely on the precision of \textit{every} token projection. Because the attention map is a global softmax product, a large noise spike in a single high-conductance device can disrupt the entire spatial focus of the block.
+2. \textbf{Physical Frontend Distortion}: The greater accuracy drop in V6 (Tiny-ViT with optical frontend) compared to ResNet R4 indicates that Transformers convert local pixel noise into sequence-wide attention scatter. This suggests that "materials-pure" synaptic acceleration is insufficient; the precision of the input transduction layer is equally critical.
+3. \textbf{Regime-Specific Recoverability}: The proportional-noise retraining result sharpens the comparison further. Tiny-ViT can recover strongly when trained and evaluated under the same proportional-noise law, yet the resulting checkpoint does not transfer back to the uniform-noise regime. This indicates that transformer robustness in the present framework is highly distribution-matched rather than universally noise-invariant.
+
+\subsection{Task Complexity and Data Starvation}
+
+The multi-dataset results establish a fundamental relationship between task grain and analog robustness. 
+\begin{itemize}
+    \item \textbf{Complexity Scaling}: HAT recovery is most valuable on CIFAR-100, where decision boundaries are fine. On CIFAR-10, the problem is sufficiently easy that even noisy standard models remain functional.
+    \item \textbf{The HAT Data Floor}: The failure on Flowers-102 exposes a critical lower bound. Tiny-ViT still gains relative recovery under HAT, but remains far below its digital baseline, while ConvNeXt does not recover at all. Because HAT uses stochastic hardware noise as a regularizer, it appears to require a minimum effective data volume to converge. On micro-datasets, this regularization can become overly aggressive, preventing the model from reaching a stable basin. However, we acknowledge that domain shift, inappropriate hyperparameters, or architecture mismatches cannot be ruled out as primary causes without comprehensive ablation studies. Therefore, while Flowers-102 currently serves as a failure boundary for our specific HAT recipe, attributing this solely to data starvation remains a hypothesis that requires further validation.
+\end{itemize}
+
+\subsection{The "Analog Ceiling" and Energy Efficiency}
+
+Despite achieving an estimated 11.45x reduction in dense-projection energy, the overall efficiency of Transformer-CIM is limited by the \textbf{digital execution of dynamic attention}. Our energy profiling shows that digital operations still dominate the system-level cost (e.g., 57.9% of total energy in some regimes). This creates an "analog ceiling": as long as the \(QK^\top\) product and Softmax remain in the von Neumann digital domain, the total system speedup will be sub-linear with respect to the analog MAC speedup. True materials-level impact will require either more efficient digital attention backends or fundamentally different mechanisms for accelerating dynamic attention-like operations.
+
+\subsection{Comparison with Inorganic RRAM Baselines}
+
+To contextualize the necessity of a specialized framework for organic optoelectronic devices, we contrast our methodology with mature inorganic simulations (e.g., RRAM arrays modeled via NeuroSim or AIHWKIT). Inorganic devices typically exhibit faster write speeds, larger on/off ratios, and primarily electrical programming dynamics. In contrast, the organic devices modeled here present a different Pareto frontier: they offer multi-modal (optoelectronic) tuning and excellent low-power analog behavior, but often suffer from slower temporal drift, pronounced state-dependent retention, and complex non-linear write asymmetry. While a direct empirical comparison by running identical workloads through AIHWKIT falls outside the present scope, our physical stress tests (e.g., the collapse under \(NL=2.0\) non-linear writing) specifically probe the vulnerabilities unique to emerging organic materials. Thus, rather than claiming to outperform mature RRAM simulators on digital benchmarks, our framework serves as a complementary tool tailored to expose the system-level consequences of organic-specific physical non-idealities, such as shot noise amplification from inverse-gamma frontends.
+
+\subsection{Limitations}
+
+While the framework provides structured system-level insights, several physical idealizations must be explicitly acknowledged as limitations of the present behavioral model:
+\begin{itemize}
+    \item \textbf{First-Order Energy Model}: Array-to-digital interconnect energy is absorbed into the SRAM read/write cost terms. Dedicated routing overhead, including data marshaling between the analog output bus and the digital coprocessor, is not separately itemized. Bounding this unmodeled interconnect overhead at 10\%, 30\%, or even 50\% of the MAC cost proportionally reduces the absolute efficiency gain, but the system-level advantage of the analog crossbar over the digital baseline remains robust.
+    \item \textbf{Hardware Array Non-Idealities}: Position-dependent IR drop along crossbar wordlines and bitlines, as well as sneak-path currents in passive arrays, are not modeled. These effects introduce systematic, input-pattern-dependent weight distortion distinct from stochastic C2C/D2D variability.
+    \item \textbf{Non-Linear Writing}: Our implementation of \texttt{NL\_LTP/NL\_LTD} is a gradient-scaling approximation. In actual pulsed programming, the stochastic nature of ionic/electronic migration may further degrade the HAT recovery.
+    \item \textbf{State-Dependent Drift}: Uniform retention decay is an idealization. If high-conductance states drift significantly faster than low-conductance states, the "stable plateau" at 79% may degrade further without more frequent recalibration.
+    \item \textbf{INL/DNL Complexity}: Real-world non-linear conductance levels will likely introduce systematic biases that are more difficult to overcome than the Gaussian noise modeled here.
+    \item \textbf{Temperature Sensitivity}: Temperature-dependent mobility and threshold voltage shifts, which are significant for organic semiconductors under field deployment conditions, are not modeled in the current framework and represent a priority extension.
+\end{itemize}
+
+\subsection{Future Directions}
+
+The most important next step is to close the loop between laboratory characterization and the simulator. At present, the framework already accepts calibrated JSON device profiles, but the conversion from raw measurements to fitted profile parameters is still manual. A production-ready materials workflow should ingest multilevel programming curves, repeated-write statistics, retention traces, and photoresponse measurements and convert them automatically into \(G_{\min}/G_{\max}\), effective state count, D2D/C2C variability, retention constants, and nonlinearity coefficients. This would turn the current literature-anchored framework into a truly measured-device prediction tool.
+
+The second direction is to improve robustness to hardware-instance shift. The zero-shot transfer experiments show that Tiny-ViT can overfit to a single D2D realization even when it is stable under same-instance noise. A natural remedy is \textbf{multi-instance HAT}, in which the training loop periodically resamples D2D masks rather than keeping a single fixed instance for the entire run. Such a strategy would directly target the failure mode exposed in §5.4 and is likely more valuable than simply increasing nominal noise magnitude during training.
+
+Third, the peripheral stack should become more adaptive rather than uniformly conservative. The ADC sweep indicates that a global 6-bit converter is near the critical threshold for transformer deployment, but the layer-sensitivity results also suggest that not all analog sub-operators deserve the same precision budget. A mixed-precision peripheral design, where the most fragile projections receive higher ADC precision and more robust layers are evaluated with cheaper converters, could improve the energy-accuracy Pareto frontier without requiring better materials alone.
+
+Finally, the present work should be extended beyond first-order behavioral assumptions in two complementary ways. On the device side, future profiles should incorporate measured conductance INL tables, state-dependent retention drift, and more pulse-faithful write dynamics. On the workload side, the conclusions should be validated with larger-scale or domain-specific datasets once the necessary external data and measured-device profiles are available. Together, these steps would preserve the current framework's profile-substitution structure while tightening the physical fidelity needed for device-specific prediction.

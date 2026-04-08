@@ -1,0 +1,33 @@
+[2026-04-05 13:46:46] Device: cuda
+[2026-04-05 13:46:46] Model type: tinyvit
+[2026-04-05 13:46:46] Experiment: V4
+[2026-04-05 13:46:46] Eval runs: 1
+[2026-04-05 13:46:47] Checkpoint: checkpoints/V4_hybrid_standard_noise_hat_best.pt
+[2026-04-05 13:46:47] Checkpoint epoch: 99, best_acc=91.94
+[2026-04-05 13:46:47] Group A (Attention QKV): noisy_layers=10/42
+[2026-04-05 13:46:57] group=A: acc=86.45% ± 0.00 (min=86.45, max=86.45)
+[2026-04-05 13:46:57] group=A: sparsity_rel=6.60% (scale=0.0100), sparsity_abs=3.84% (th=0.0100) across 42 analog layers
+[2026-04-05 13:46:57] Group B (Attention Proj): noisy_layers=10/42
+[2026-04-05 13:47:04] group=B: acc=78.87% ± 0.00 (min=78.87, max=78.87)
+[2026-04-05 13:47:04] group=B: sparsity_rel=6.50% (scale=0.0100), sparsity_abs=3.85% (th=0.0100) across 42 analog layers
+[2026-04-05 13:47:04] Group C (FFN fc1+fc2): noisy_layers=20/42
+[2026-04-05 13:47:11] group=C: acc=10.00% ± 0.00 (min=10.00, max=10.00)
+[2026-04-05 13:47:11] group=C: sparsity_rel=4.78% (scale=0.0100), sparsity_abs=3.85% (th=0.0100) across 42 analog layers
+[2026-04-05 13:47:11] Group D (Patch Embed): noisy_layers=2/42
+[2026-04-05 13:47:21] group=D: acc=10.00% ± 0.00 (min=10.00, max=10.00)
+[2026-04-05 13:47:21] group=D: sparsity_rel=4.72% (scale=0.0100), sparsity_abs=3.86% (th=0.0100) across 42 analog layers
+[2026-04-05 13:47:21] Group E (All analog): noisy_layers=42/42
+[2026-04-05 13:47:29] group=E: acc=10.00% ± 0.00 (min=10.00, max=10.00)
+[2026-04-05 13:47:29] group=E: sparsity_rel=4.71% (scale=0.0100), sparsity_abs=3.85% (th=0.0100) across 42 analog layers
+[2026-04-05 13:47:29] Group F (None): noisy_layers=0/42
+[2026-04-05 13:47:36] group=F: acc=10.00% ± 0.00 (min=10.00, max=10.00)
+[2026-04-05 13:47:36] group=F: sparsity_rel=4.68% (scale=0.0100), sparsity_abs=3.85% (th=0.0100) across 42 analog layers
+[2026-04-05 13:47:36] Phase 2 mixed projection: robust_groups=['A', 'B'], pessimistic_layers=20/42
+[2026-04-05 13:47:43] phase2_mixed: acc=10.00% ± 0.00 (min=10.00, max=10.00)
+[2026-04-05 13:47:43] phase2_mixed: sparsity_rel=4.57% (scale=0.0100), sparsity_abs=3.81% (th=0.0100) across 42 analog layers
+[2026-04-05 13:47:43] Merged rows written: 7
+[2026-04-05 13:47:43] JSON: report_md/_gpt/json_gpt/layer_sensitivity_results_gpt.json
+[2026-04-05 13:47:43] CSV: report_md/_gpt/csv_gpt/layer_sensitivity_results_gpt.csv
+[2026-04-05 13:47:43] Sparsity CSV: report_md/_gpt/csv_gpt/activation_sparsity_gpt.csv
+[2026-04-05 13:47:43] Report: report_md/_gpt/layer_sensitivity_report_gpt.md
+[2026-04-05 13:47:43] Figure: paper/figures/fig_layer_sensitivity.png

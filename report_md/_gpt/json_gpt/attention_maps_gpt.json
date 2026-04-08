@@ -1,0 +1,47 @@
+{
+  "target_layer": "stages.3.blocks.0.attn",
+  "samples": [
+    {
+      "index": 0,
+      "label_name": "cat",
+      "predictions": {
+        "V1": "cat",
+        "V3": "truck",
+        "V4": "cat",
+        "V6": "cat"
+      }
+    },
+    {
+      "index": 11,
+      "label_name": "truck",
+      "predictions": {
+        "V1": "truck",
+        "V3": "truck",
+        "V4": "truck",
+        "V6": "truck"
+      }
+    },
+    {
+      "index": 23,
+      "label_name": "truck",
+      "predictions": {
+        "V1": "truck",
+        "V3": "truck",
+        "V4": "truck",
+        "V6": "cat"
+      }
+    },
+    {
+      "index": 37,
+      "label_name": "automobile",
+      "predictions": {
+        "V1": "truck",
+        "V3": "truck",
+        "V4": "truck",
+        "V6": "automobile"
+      }
+    }
+  ],
+  "figure_path": "paper/figures/fig_attention_maps.png",
+  "difference_figure_path": "paper/figures/fig_attention_differences.png"
+}

@@ -1,0 +1,55 @@
+{
+  "artifact_type": "reconstructed_retention_record",
+  "experiment": "C9_retention_decay",
+  "generated_at": "2026-04-04 17:36 +08",
+  "note": "No dedicated standalone tee log was preserved when C9 was executed during the final ConvNeXt consolidation step. This file is a direct extraction of the C9 subsection from convnext_full_results_gpt.json.",
+  "source_artifacts": [
+    "report_md/_gpt/json_gpt/convnext_full_results_gpt.json",
+    "report_md/_gpt/convnext_full_report_gpt.md"
+  ],
+  "retention_metadata": {
+    "checkpoint_path": "checkpoints/C4_4bit_noise_HAT_best.pt",
+    "source_experiment": "C4_4bit_noise_HAT",
+    "epoch": 197,
+    "best_acc": 89.91,
+    "trained_epochs": 200
+  },
+  "retention": [
+    {
+      "time_s": 0,
+      "mean_acc": 89.662,
+      "std_acc": 0.14955266630856143,
+      "mc_runs": 20
+    },
+    {
+      "time_s": 1,
+      "mean_acc": 86.07,
+      "std_acc": 0.16504544828622283,
+      "mc_runs": 20
+    },
+    {
+      "time_s": 10,
+      "mean_acc": 84.295,
+      "std_acc": 0.17519988584471172,
+      "mc_runs": 20
+    },
+    {
+      "time_s": 100,
+      "mean_acc": 84.22549999999998,
+      "std_acc": 0.18693514918281168,
+      "mc_runs": 20
+    },
+    {
+      "time_s": 1000,
+      "mean_acc": 84.33200000000001,
+      "std_acc": 0.24650760637351374,
+      "mc_runs": 20
+    },
+    {
+      "time_s": 10000,
+      "mean_acc": 84.28050000000002,
+      "std_acc": 0.1919238130092262,
+      "mc_runs": 20
+    }
+  ]
+}

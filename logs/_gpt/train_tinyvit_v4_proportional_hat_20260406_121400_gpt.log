@@ -1,0 +1,34 @@
+[2026-04-06 12:13:34] Device: cuda
+[2026-04-06 12:13:34] Mode: train
+[2026-04-06 12:13:34] Experiments: ['V4']
+[2026-04-06 12:13:34] AMP requested: True, active: True
+
+[2026-04-06 12:13:36] ======================================================================
+[2026-04-06 12:13:36] Experiment V4: V4_hybrid_standard_noise_hat
+[2026-04-06 12:13:36]   hybrid=True, noise=True, C2C=0.05, D2D=0.1, HAT=True
+[2026-04-06 12:13:36]   amp=on
+[2026-04-06 12:13:36] ======================================================================
+[2026-04-06 12:14:36]   Epoch   0/100: train_loss=0.3830, train_acc=87.59%, test_acc=92.07% (best=92.07%), lr=0.000500
+[2026-04-06 12:18:14]   Epoch   4/100: train_loss=0.0813, train_acc=97.20%, test_acc=94.24% (best=94.55%), lr=0.000498
+[2026-04-06 12:22:48]   Epoch   9/100: train_loss=0.0524, train_acc=98.18%, test_acc=94.72% (best=95.54%), lr=0.000490
+[2026-04-06 12:27:18]   Epoch  14/100: train_loss=0.0419, train_acc=98.58%, test_acc=94.68% (best=95.89%), lr=0.000476
+[2026-04-06 12:31:51]   Epoch  19/100: train_loss=0.0318, train_acc=98.93%, test_acc=95.38% (best=95.89%), lr=0.000457
+[2026-04-06 12:36:22]   Epoch  24/100: train_loss=0.0245, train_acc=99.18%, test_acc=95.37% (best=95.89%), lr=0.000432
+[2026-04-06 12:40:56]   Epoch  29/100: train_loss=0.0250, train_acc=99.15%, test_acc=95.32% (best=95.90%), lr=0.000403
+[2026-04-06 12:45:27]   Epoch  34/100: train_loss=0.0240, train_acc=99.20%, test_acc=95.74% (best=95.90%), lr=0.000370
+[2026-04-06 12:50:00]   Epoch  39/100: train_loss=0.0204, train_acc=99.31%, test_acc=95.92% (best=96.02%), lr=0.000335
+[2026-04-06 12:54:31]   Epoch  44/100: train_loss=0.0131, train_acc=99.55%, test_acc=95.18% (best=96.02%), lr=0.000297
+[2026-04-06 12:59:04]   Epoch  49/100: train_loss=0.0115, train_acc=99.60%, test_acc=96.07% (best=96.07%), lr=0.000258
+[2026-04-06 13:03:35]   Epoch  54/100: train_loss=0.0095, train_acc=99.66%, test_acc=96.32% (best=96.32%), lr=0.000219
+[2026-04-06 13:08:08]   Epoch  59/100: train_loss=0.0051, train_acc=99.83%, test_acc=96.03% (best=96.62%), lr=0.000180
+[2026-04-06 13:12:39]   Epoch  64/100: train_loss=0.0035, train_acc=99.89%, test_acc=96.34% (best=96.62%), lr=0.000144
+[2026-04-06 13:17:12]   Epoch  69/100: train_loss=0.0025, train_acc=99.92%, test_acc=96.91% (best=96.94%), lr=0.000109
+[2026-04-06 13:21:41]   Epoch  74/100: train_loss=0.0008, train_acc=99.97%, test_acc=96.73% (best=97.06%), lr=0.000079
+[2026-04-06 13:26:14]   Epoch  79/100: train_loss=0.0006, train_acc=99.98%, test_acc=96.82% (best=97.06%), lr=0.000052
+[2026-04-06 13:30:45]   Epoch  84/100: train_loss=0.0001, train_acc=100.00%, test_acc=97.21% (best=97.27%), lr=0.000031
+[2026-04-06 13:35:18]   Epoch  89/100: train_loss=0.0000, train_acc=100.00%, test_acc=97.26% (best=97.39%), lr=0.000015
+[2026-04-06 13:39:48]   Epoch  94/100: train_loss=0.0000, train_acc=100.00%, test_acc=97.44% (best=97.44%), lr=0.000004
+[2026-04-06 13:44:20]   Epoch  99/100: train_loss=0.0000, train_acc=100.00%, test_acc=97.37% (best=97.48%), lr=0.000000
+[2026-04-06 13:44:20]   Finished. Best accuracy: 97.48% at epoch 95; checkpoint=/home/qiaosir/projects/compute_vit/checkpoints/_gpt/task34_v4_proportional_hat/V4_hybrid_standard_noise_hat_best.pt
+[2026-04-06 13:44:20] Training finished for 1 experiment(s).
+[2026-04-06 13:44:20] Result markdown: /home/qiaosir/projects/compute_vit/report_md/_gpt/v4_proportional_hat_train_results_gpt.md

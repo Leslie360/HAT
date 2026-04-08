@@ -1,0 +1,38 @@
+Device: cuda
+Mode: train
+Experiments: ['V2', 'V3', 'V4', 'V5', 'V6', 'V7']
+
+======================================================================
+Experiment V2: V2_hybrid_no_noise
+  hybrid=True, noise=False, C2C=0.0, D2D=0.0, HAT=False
+======================================================================
+  Epoch   0/100: train_loss=0.3540, train_acc=88.50%, test_acc=93.41% (best=93.41%), lr=0.000500
+  Epoch   4/100: train_loss=0.0792, train_acc=97.29%, test_acc=94.95% (best=95.31%), lr=0.000498
+  Epoch   9/100: train_loss=0.0528, train_acc=98.16%, test_acc=95.57% (best=95.57%), lr=0.000490
+  Epoch  14/100: train_loss=0.0417, train_acc=98.58%, test_acc=95.06% (best=96.07%), lr=0.000476
+  Epoch  19/100: train_loss=0.0332, train_acc=98.84%, test_acc=95.19% (best=96.07%), lr=0.000457
+  Epoch  24/100: train_loss=0.0294, train_acc=99.01%, test_acc=94.55% (best=96.07%), lr=0.000432
+  Epoch  29/100: train_loss=0.0240, train_acc=99.18%, test_acc=95.31% (best=96.07%), lr=0.000403
+  Epoch  34/100: train_loss=0.0227, train_acc=99.19%, test_acc=95.51% (best=96.29%), lr=0.000370
+  Epoch  39/100: train_loss=0.0190, train_acc=99.39%, test_acc=96.04% (best=96.29%), lr=0.000335
+  Epoch  44/100: train_loss=0.0126, train_acc=99.55%, test_acc=95.32% (best=96.29%), lr=0.000297
+  Epoch  49/100: train_loss=0.0079, train_acc=99.75%, test_acc=95.96% (best=96.29%), lr=0.000258
+  Epoch  54/100: train_loss=0.0082, train_acc=99.76%, test_acc=96.48% (best=96.51%), lr=0.000219
+  Epoch  59/100: train_loss=0.0077, train_acc=99.74%, test_acc=96.32% (best=96.70%), lr=0.000180
+  Epoch  64/100: train_loss=0.0041, train_acc=99.87%, test_acc=97.03% (best=97.03%), lr=0.000144
+  Epoch  69/100: train_loss=0.0029, train_acc=99.89%, test_acc=96.49% (best=97.15%), lr=0.000109
+  Epoch  74/100: train_loss=0.0009, train_acc=99.97%, test_acc=96.78% (best=97.15%), lr=0.000079
+  Epoch  79/100: train_loss=0.0001, train_acc=100.00%, test_acc=97.28% (best=97.28%), lr=0.000052
+  Epoch  84/100: train_loss=0.0001, train_acc=100.00%, test_acc=97.28% (best=97.32%), lr=0.000031
+  Epoch  89/100: train_loss=0.0000, train_acc=100.00%, test_acc=97.35% (best=97.36%), lr=0.000015
+  Epoch  94/100: train_loss=0.0000, train_acc=100.00%, test_acc=97.38% (best=97.38%), lr=0.000004
+  Epoch  99/100: train_loss=0.0000, train_acc=100.00%, test_acc=97.30% (best=97.38%), lr=0.000000
+  Finished. Best accuracy: 97.38% at epoch 94; checkpoint=checkpoints/V2_hybrid_no_noise_best.pt
+
+======================================================================
+Experiment V3: V3_hybrid_standard_noise_standard_train
+  hybrid=True, noise=True, C2C=0.05, D2D=0.1, HAT=False
+======================================================================
+  Epoch   0/100: train_loss=0.3516, train_acc=88.63%, test_acc=9.73% (best=9.73%), lr=0.000500
+  Epoch   4/100: train_loss=0.0813, train_acc=97.14%, test_acc=9.84% (best=10.16%), lr=0.000498
+  Epoch   9/100: train_loss=0.0527, train_acc=98.20%, test_acc=9.85% (best=10.16%), lr=0.000490

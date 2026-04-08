@@ -1,0 +1,200 @@
+Loading model: tiny_vit_5m_224
+Total model parameters: 5,392,764
+
+
+── Detailed Layer Profiling ──
+
+| Layer Name                              | Type                      | Weight Shape   | M×N      |   Params | Tag     | Arrays(diff)   |
+|:----------------------------------------|:--------------------------|:---------------|:---------|---------:|:--------|:---------------|
+| patch_embed.conv1.conv                  | Conv2d(k=(3, 3),s=(2, 2)) | 32×3×3×3       | 32×27    |      864 | analog  | 2              |
+| patch_embed.conv2.conv                  | Conv2d(k=(3, 3),s=(2, 2)) | 64×32×3×3      | 64×288   |   18,432 | analog  | 6              |
+| stages.0.blocks.0.conv1.conv            | Conv2d(k=(1, 1),s=(1, 1)) | 256×64×1×1     | 256×64   |   16,384 | digital | —              |
+| stages.0.blocks.0.conv2.conv            | DWConv2d(g=256,k=(3, 3))  | 256×1×3×3      | 256×9    |    2,304 | digital | —              |
+| stages.0.blocks.0.conv3.conv            | Conv2d(k=(1, 1),s=(1, 1)) | 64×256×1×1     | 64×256   |   16,384 | digital | —              |
+| stages.0.blocks.1.conv1.conv            | Conv2d(k=(1, 1),s=(1, 1)) | 256×64×1×1     | 256×64   |   16,384 | digital | —              |
+| stages.0.blocks.1.conv2.conv            | DWConv2d(g=256,k=(3, 3))  | 256×1×3×3      | 256×9    |    2,304 | digital | —              |
+| stages.0.blocks.1.conv3.conv            | Conv2d(k=(1, 1),s=(1, 1)) | 64×256×1×1     | 64×256   |   16,384 | digital | —              |
+| stages.1.downsample.conv1.conv          | Conv2d(k=(1, 1),s=(1, 1)) | 128×64×1×1     | 128×64   |    8,192 | digital | —              |
+| stages.1.downsample.conv2.conv          | DWConv2d(g=128,k=(3, 3))  | 128×1×3×3      | 128×9    |    1,152 | digital | —              |
+| stages.1.downsample.conv3.conv          | Conv2d(k=(1, 1),s=(1, 1)) | 128×128×1×1    | 128×128  |   16,384 | digital | —              |
+| stages.1.blocks.0.attn.qkv              | Linear                    | 384×128        | 384×128  |   49,536 | analog  | 6              |
+| stages.1.blocks.0.attn.proj             | Linear                    | 128×128        | 128×128  |   16,512 | analog  | 2              |
+| stages.1.blocks.0.mlp.fc1               | Linear                    | 512×128        | 512×128  |   66,048 | analog  | 8              |
+| stages.1.blocks.0.mlp.fc2               | Linear                    | 128×512        | 128×512  |   65,664 | analog  | 8              |
+| stages.1.blocks.0.local_conv.conv       | DWConv2d(g=128,k=(3, 3))  | 128×1×3×3      | 128×9    |    1,152 | digital | —              |
+| stages.1.blocks.1.attn.qkv              | Linear                    | 384×128        | 384×128  |   49,536 | analog  | 6              |
+| stages.1.blocks.1.attn.proj             | Linear                    | 128×128        | 128×128  |   16,512 | analog  | 2              |
+| stages.1.blocks.1.mlp.fc1               | Linear                    | 512×128        | 512×128  |   66,048 | analog  | 8              |
+| stages.1.blocks.1.mlp.fc2               | Linear                    | 128×512        | 128×512  |   65,664 | analog  | 8              |
+| stages.1.blocks.1.local_conv.conv       | DWConv2d(g=128,k=(3, 3))  | 128×1×3×3      | 128×9    |    1,152 | digital | —              |
+| stages.2.downsample.conv1.conv          | Conv2d(k=(1, 1),s=(1, 1)) | 160×128×1×1    | 160×128  |   20,480 | digital | —              |
+| stages.2.downsample.conv2.conv          | DWConv2d(g=160,k=(3, 3))  | 160×1×3×3      | 160×9    |    1,440 | digital | —              |
+| stages.2.downsample.conv3.conv          | Conv2d(k=(1, 1),s=(1, 1)) | 160×160×1×1    | 160×160  |   25,600 | digital | —              |
+| stages.2.blocks.0.attn.qkv              | Linear                    | 480×160        | 480×160  |   77,280 | analog  | 16             |
+| stages.2.blocks.0.attn.proj             | Linear                    | 160×160        | 160×160  |   25,760 | analog  | 8              |
+| stages.2.blocks.0.mlp.fc1               | Linear                    | 640×160        | 640×160  |  103,040 | analog  | 20             |
+| stages.2.blocks.0.mlp.fc2               | Linear                    | 160×640        | 160×640  |  102,560 | analog  | 20             |
+| stages.2.blocks.0.local_conv.conv       | DWConv2d(g=160,k=(3, 3))  | 160×1×3×3      | 160×9    |    1,440 | digital | —              |
+| stages.2.blocks.1.attn.qkv              | Linear                    | 480×160        | 480×160  |   77,280 | analog  | 16             |
+| stages.2.blocks.1.attn.proj             | Linear                    | 160×160        | 160×160  |   25,760 | analog  | 8              |
+| stages.2.blocks.1.mlp.fc1               | Linear                    | 640×160        | 640×160  |  103,040 | analog  | 20             |
+| stages.2.blocks.1.mlp.fc2               | Linear                    | 160×640        | 160×640  |  102,560 | analog  | 20             |
+| stages.2.blocks.1.local_conv.conv       | DWConv2d(g=160,k=(3, 3))  | 160×1×3×3      | 160×9    |    1,440 | digital | —              |
+| stages.2.blocks.2.attn.qkv              | Linear                    | 480×160        | 480×160  |   77,280 | analog  | 16             |
+| stages.2.blocks.2.attn.proj             | Linear                    | 160×160        | 160×160  |   25,760 | analog  | 8              |
+| stages.2.blocks.2.mlp.fc1               | Linear                    | 640×160        | 640×160  |  103,040 | analog  | 20             |
+| stages.2.blocks.2.mlp.fc2               | Linear                    | 160×640        | 160×640  |  102,560 | analog  | 20             |
+| stages.2.blocks.2.local_conv.conv       | DWConv2d(g=160,k=(3, 3))  | 160×1×3×3      | 160×9    |    1,440 | digital | —              |
+| stages.2.blocks.3.attn.qkv              | Linear                    | 480×160        | 480×160  |   77,280 | analog  | 16             |
+| stages.2.blocks.3.attn.proj             | Linear                    | 160×160        | 160×160  |   25,760 | analog  | 8              |
+| stages.2.blocks.3.mlp.fc1               | Linear                    | 640×160        | 640×160  |  103,040 | analog  | 20             |
+| stages.2.blocks.3.mlp.fc2               | Linear                    | 160×640        | 160×640  |  102,560 | analog  | 20             |
+| stages.2.blocks.3.local_conv.conv       | DWConv2d(g=160,k=(3, 3))  | 160×1×3×3      | 160×9    |    1,440 | digital | —              |
+| stages.2.blocks.4.attn.qkv              | Linear                    | 480×160        | 480×160  |   77,280 | analog  | 16             |
+| stages.2.blocks.4.attn.proj             | Linear                    | 160×160        | 160×160  |   25,760 | analog  | 8              |
+| stages.2.blocks.4.mlp.fc1               | Linear                    | 640×160        | 640×160  |  103,040 | analog  | 20             |
+| stages.2.blocks.4.mlp.fc2               | Linear                    | 160×640        | 160×640  |  102,560 | analog  | 20             |
+| stages.2.blocks.4.local_conv.conv       | DWConv2d(g=160,k=(3, 3))  | 160×1×3×3      | 160×9    |    1,440 | digital | —              |
+| stages.2.blocks.5.attn.qkv              | Linear                    | 480×160        | 480×160  |   77,280 | analog  | 16             |
+| stages.2.blocks.5.attn.proj             | Linear                    | 160×160        | 160×160  |   25,760 | analog  | 8              |
+| stages.2.blocks.5.mlp.fc1               | Linear                    | 640×160        | 640×160  |  103,040 | analog  | 20             |
+| stages.2.blocks.5.mlp.fc2               | Linear                    | 160×640        | 160×640  |  102,560 | analog  | 20             |
+| stages.2.blocks.5.local_conv.conv       | DWConv2d(g=160,k=(3, 3))  | 160×1×3×3      | 160×9    |    1,440 | digital | —              |
+| stages.3.downsample.conv1.conv          | Conv2d(k=(1, 1),s=(1, 1)) | 320×160×1×1    | 320×160  |   51,200 | digital | —              |
+| stages.3.downsample.conv2.conv          | DWConv2d(g=320,k=(3, 3))  | 320×1×3×3      | 320×9    |    2,880 | digital | —              |
+| stages.3.downsample.conv3.conv          | Conv2d(k=(1, 1),s=(1, 1)) | 320×320×1×1    | 320×320  |  102,400 | digital | —              |
+| stages.3.blocks.0.attn.qkv              | Linear                    | 960×320        | 960×320  |  308,160 | analog  | 48             |
+| stages.3.blocks.0.attn.proj             | Linear                    | 320×320        | 320×320  |  102,720 | analog  | 18             |
+| stages.3.blocks.0.mlp.fc1               | Linear                    | 1280×320       | 1280×320 |  410,880 | analog  | 60             |
+| stages.3.blocks.0.mlp.fc2               | Linear                    | 320×1280       | 320×1280 |  409,920 | analog  | 60             |
+| stages.3.blocks.0.local_conv.conv       | DWConv2d(g=320,k=(3, 3))  | 320×1×3×3      | 320×9    |    2,880 | digital | —              |
+| stages.3.blocks.1.attn.qkv              | Linear                    | 960×320        | 960×320  |  308,160 | analog  | 48             |
+| stages.3.blocks.1.attn.proj             | Linear                    | 320×320        | 320×320  |  102,720 | analog  | 18             |
+| stages.3.blocks.1.mlp.fc1               | Linear                    | 1280×320       | 1280×320 |  410,880 | analog  | 60             |
+| stages.3.blocks.1.mlp.fc2               | Linear                    | 320×1280       | 320×1280 |  409,920 | analog  | 60             |
+| stages.3.blocks.1.local_conv.conv       | DWConv2d(g=320,k=(3, 3))  | 320×1×3×3      | 320×9    |    2,880 | digital | —              |
+| head.fc                                 | Linear                    | 1000×320       | 1000×320 |  321,000 | digital | —              |
+| patch_embed.conv1.bn.weight             | Parameter                 | 32             | —        |       32 | digital | —              |
+| patch_embed.conv1.bn.bias               | Parameter                 | 32             | —        |       32 | digital | —              |
+| patch_embed.conv2.bn.weight             | Parameter                 | 64             | —        |       64 | digital | —              |
+| patch_embed.conv2.bn.bias               | Parameter                 | 64             | —        |       64 | digital | —              |
+| stages.0.blocks.0.conv1.bn.weight       | Parameter                 | 256            | —        |      256 | digital | —              |
+| stages.0.blocks.0.conv1.bn.bias         | Parameter                 | 256            | —        |      256 | digital | —              |
+| stages.0.blocks.0.conv2.bn.weight       | Parameter                 | 256            | —        |      256 | digital | —              |
+| stages.0.blocks.0.conv2.bn.bias         | Parameter                 | 256            | —        |      256 | digital | —              |
+| stages.0.blocks.0.conv3.bn.weight       | Parameter                 | 64             | —        |       64 | digital | —              |
+| stages.0.blocks.0.conv3.bn.bias         | Parameter                 | 64             | —        |       64 | digital | —              |
+| stages.0.blocks.1.conv1.bn.weight       | Parameter                 | 256            | —        |      256 | digital | —              |
+| stages.0.blocks.1.conv1.bn.bias         | Parameter                 | 256            | —        |      256 | digital | —              |
+| stages.0.blocks.1.conv2.bn.weight       | Parameter                 | 256            | —        |      256 | digital | —              |
+| stages.0.blocks.1.conv2.bn.bias         | Parameter                 | 256            | —        |      256 | digital | —              |
+| stages.0.blocks.1.conv3.bn.weight       | Parameter                 | 64             | —        |       64 | digital | —              |
+| stages.0.blocks.1.conv3.bn.bias         | Parameter                 | 64             | —        |       64 | digital | —              |
+| stages.1.downsample.conv1.bn.weight     | Parameter                 | 128            | —        |      128 | digital | —              |
+| stages.1.downsample.conv1.bn.bias       | Parameter                 | 128            | —        |      128 | digital | —              |
+| stages.1.downsample.conv2.bn.weight     | Parameter                 | 128            | —        |      128 | digital | —              |
+| stages.1.downsample.conv2.bn.bias       | Parameter                 | 128            | —        |      128 | digital | —              |
+| stages.1.downsample.conv3.bn.weight     | Parameter                 | 128            | —        |      128 | digital | —              |
+| stages.1.downsample.conv3.bn.bias       | Parameter                 | 128            | —        |      128 | digital | —              |
+| stages.1.blocks.0.attn.attention_biases | Parameter                 | 4×49           | —        |      196 | digital | —              |
+| stages.1.blocks.0.attn.norm.weight      | Parameter                 | 128            | —        |      128 | digital | —              |
+| stages.1.blocks.0.attn.norm.bias        | Parameter                 | 128            | —        |      128 | digital | —              |
+| stages.1.blocks.0.mlp.norm.weight       | Parameter                 | 128            | —        |      128 | digital | —              |
+| stages.1.blocks.0.mlp.norm.bias         | Parameter                 | 128            | —        |      128 | digital | —              |
+| stages.1.blocks.0.local_conv.bn.weight  | Parameter                 | 128            | —        |      128 | digital | —              |
+| stages.1.blocks.0.local_conv.bn.bias    | Parameter                 | 128            | —        |      128 | digital | —              |
+| stages.1.blocks.1.attn.attention_biases | Parameter                 | 4×49           | —        |      196 | digital | —              |
+| stages.1.blocks.1.attn.norm.weight      | Parameter                 | 128            | —        |      128 | digital | —              |
+| stages.1.blocks.1.attn.norm.bias        | Parameter                 | 128            | —        |      128 | digital | —              |
+| stages.1.blocks.1.mlp.norm.weight       | Parameter                 | 128            | —        |      128 | digital | —              |
+| stages.1.blocks.1.mlp.norm.bias         | Parameter                 | 128            | —        |      128 | digital | —              |
+| stages.1.blocks.1.local_conv.bn.weight  | Parameter                 | 128            | —        |      128 | digital | —              |
+| stages.1.blocks.1.local_conv.bn.bias    | Parameter                 | 128            | —        |      128 | digital | —              |
+| stages.2.downsample.conv1.bn.weight     | Parameter                 | 160            | —        |      160 | digital | —              |
+| stages.2.downsample.conv1.bn.bias       | Parameter                 | 160            | —        |      160 | digital | —              |
+| stages.2.downsample.conv2.bn.weight     | Parameter                 | 160            | —        |      160 | digital | —              |
+| stages.2.downsample.conv2.bn.bias       | Parameter                 | 160            | —        |      160 | digital | —              |
+| stages.2.downsample.conv3.bn.weight     | Parameter                 | 160            | —        |      160 | digital | —              |
+| stages.2.downsample.conv3.bn.bias       | Parameter                 | 160            | —        |      160 | digital | —              |
+| stages.2.blocks.0.attn.attention_biases | Parameter                 | 5×196          | —        |      980 | digital | —              |
+| stages.2.blocks.0.attn.norm.weight      | Parameter                 | 160            | —        |      160 | digital | —              |
+| stages.2.blocks.0.attn.norm.bias        | Parameter                 | 160            | —        |      160 | digital | —              |
+| stages.2.blocks.0.mlp.norm.weight       | Parameter                 | 160            | —        |      160 | digital | —              |
+| stages.2.blocks.0.mlp.norm.bias         | Parameter                 | 160            | —        |      160 | digital | —              |
+| stages.2.blocks.0.local_conv.bn.weight  | Parameter                 | 160            | —        |      160 | digital | —              |
+| stages.2.blocks.0.local_conv.bn.bias    | Parameter                 | 160            | —        |      160 | digital | —              |
+| stages.2.blocks.1.attn.attention_biases | Parameter                 | 5×196          | —        |      980 | digital | —              |
+| stages.2.blocks.1.attn.norm.weight      | Parameter                 | 160            | —        |      160 | digital | —              |
+| stages.2.blocks.1.attn.norm.bias        | Parameter                 | 160            | —        |      160 | digital | —              |
+| stages.2.blocks.1.mlp.norm.weight       | Parameter                 | 160            | —        |      160 | digital | —              |
+| stages.2.blocks.1.mlp.norm.bias         | Parameter                 | 160            | —        |      160 | digital | —              |
+| stages.2.blocks.1.local_conv.bn.weight  | Parameter                 | 160            | —        |      160 | digital | —              |
+| stages.2.blocks.1.local_conv.bn.bias    | Parameter                 | 160            | —        |      160 | digital | —              |
+| stages.2.blocks.2.attn.attention_biases | Parameter                 | 5×196          | —        |      980 | digital | —              |
+| stages.2.blocks.2.attn.norm.weight      | Parameter                 | 160            | —        |      160 | digital | —              |
+| stages.2.blocks.2.attn.norm.bias        | Parameter                 | 160            | —        |      160 | digital | —              |
+| stages.2.blocks.2.mlp.norm.weight       | Parameter                 | 160            | —        |      160 | digital | —              |
+| stages.2.blocks.2.mlp.norm.bias         | Parameter                 | 160            | —        |      160 | digital | —              |
+| stages.2.blocks.2.local_conv.bn.weight  | Parameter                 | 160            | —        |      160 | digital | —              |
+| stages.2.blocks.2.local_conv.bn.bias    | Parameter                 | 160            | —        |      160 | digital | —              |
+| stages.2.blocks.3.attn.attention_biases | Parameter                 | 5×196          | —        |      980 | digital | —              |
+| stages.2.blocks.3.attn.norm.weight      | Parameter                 | 160            | —        |      160 | digital | —              |
+| stages.2.blocks.3.attn.norm.bias        | Parameter                 | 160            | —        |      160 | digital | —              |
+| stages.2.blocks.3.mlp.norm.weight       | Parameter                 | 160            | —        |      160 | digital | —              |
+| stages.2.blocks.3.mlp.norm.bias         | Parameter                 | 160            | —        |      160 | digital | —              |
+| stages.2.blocks.3.local_conv.bn.weight  | Parameter                 | 160            | —        |      160 | digital | —              |
+| stages.2.blocks.3.local_conv.bn.bias    | Parameter                 | 160            | —        |      160 | digital | —              |
+| stages.2.blocks.4.attn.attention_biases | Parameter                 | 5×196          | —        |      980 | digital | —              |
+| stages.2.blocks.4.attn.norm.weight      | Parameter                 | 160            | —        |      160 | digital | —              |
+| stages.2.blocks.4.attn.norm.bias        | Parameter                 | 160            | —        |      160 | digital | —              |
+| stages.2.blocks.4.mlp.norm.weight       | Parameter                 | 160            | —        |      160 | digital | —              |
+| stages.2.blocks.4.mlp.norm.bias         | Parameter                 | 160            | —        |      160 | digital | —              |
+| stages.2.blocks.4.local_conv.bn.weight  | Parameter                 | 160            | —        |      160 | digital | —              |
+| stages.2.blocks.4.local_conv.bn.bias    | Parameter                 | 160            | —        |      160 | digital | —              |
+| stages.2.blocks.5.attn.attention_biases | Parameter                 | 5×196          | —        |      980 | digital | —              |
+| stages.2.blocks.5.attn.norm.weight      | Parameter                 | 160            | —        |      160 | digital | —              |
+| stages.2.blocks.5.attn.norm.bias        | Parameter                 | 160            | —        |      160 | digital | —              |
+| stages.2.blocks.5.mlp.norm.weight       | Parameter                 | 160            | —        |      160 | digital | —              |
+| stages.2.blocks.5.mlp.norm.bias         | Parameter                 | 160            | —        |      160 | digital | —              |
+| stages.2.blocks.5.local_conv.bn.weight  | Parameter                 | 160            | —        |      160 | digital | —              |
+| stages.2.blocks.5.local_conv.bn.bias    | Parameter                 | 160            | —        |      160 | digital | —              |
+| stages.3.downsample.conv1.bn.weight     | Parameter                 | 320            | —        |      320 | digital | —              |
+| stages.3.downsample.conv1.bn.bias       | Parameter                 | 320            | —        |      320 | digital | —              |
+| stages.3.downsample.conv2.bn.weight     | Parameter                 | 320            | —        |      320 | digital | —              |
+| stages.3.downsample.conv2.bn.bias       | Parameter                 | 320            | —        |      320 | digital | —              |
+| stages.3.downsample.conv3.bn.weight     | Parameter                 | 320            | —        |      320 | digital | —              |
+| stages.3.downsample.conv3.bn.bias       | Parameter                 | 320            | —        |      320 | digital | —              |
+| stages.3.blocks.0.attn.attention_biases | Parameter                 | 10×49          | —        |      490 | digital | —              |
+| stages.3.blocks.0.attn.norm.weight      | Parameter                 | 320            | —        |      320 | digital | —              |
+| stages.3.blocks.0.attn.norm.bias        | Parameter                 | 320            | —        |      320 | digital | —              |
+| stages.3.blocks.0.mlp.norm.weight       | Parameter                 | 320            | —        |      320 | digital | —              |
+| stages.3.blocks.0.mlp.norm.bias         | Parameter                 | 320            | —        |      320 | digital | —              |
+| stages.3.blocks.0.local_conv.bn.weight  | Parameter                 | 320            | —        |      320 | digital | —              |
+| stages.3.blocks.0.local_conv.bn.bias    | Parameter                 | 320            | —        |      320 | digital | —              |
+| stages.3.blocks.1.attn.attention_biases | Parameter                 | 10×49          | —        |      490 | digital | —              |
+| stages.3.blocks.1.attn.norm.weight      | Parameter                 | 320            | —        |      320 | digital | —              |
+| stages.3.blocks.1.attn.norm.bias        | Parameter                 | 320            | —        |      320 | digital | —              |
+| stages.3.blocks.1.mlp.norm.weight       | Parameter                 | 320            | —        |      320 | digital | —              |
+| stages.3.blocks.1.mlp.norm.bias         | Parameter                 | 320            | —        |      320 | digital | —              |
+| stages.3.blocks.1.local_conv.bn.weight  | Parameter                 | 320            | —        |      320 | digital | —              |
+| stages.3.blocks.1.local_conv.bn.bias    | Parameter                 | 320            | —        |      320 | digital | —              |
+| head.norm.weight                        | Parameter                 | 320            | —        |      320 | digital | —              |
+| head.norm.bias                          | Parameter                 | 320            | —        |      320 | digital | —              |
+
+======================================================================
+SUMMARY: Tiny-ViT-5M Crossbar Array Mapping
+======================================================================
+  Model total params (from model):      5,392,764
+  Categorized params (from scan):       5,392,764
+  ───────────────────────────────────────────
+  Analog-mapped params:                 4,730,016  (87.7%)
+  Digital params:                         662,748  (12.3%)
+  ───────────────────────────────────────────
+  Crossbar array size:               128×128
+  Weight scheme:                     Differential pair (2× arrays)
+  Total crossbar arrays (diff pair):          812
+  Total crossbar devices:              13,303,808
+
+
+Markdown table exported to: report_md/array_mapping_report.md
+JSON data exported to: report_md/array_mapping_data.json

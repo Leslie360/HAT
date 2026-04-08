@@ -1,0 +1,81 @@
+[
+  {
+    "mode": "clean",
+    "gamma_phys": null,
+    "I_dark": null,
+    "shot_noise": null,
+    "accuracy": 10.0
+  },
+  {
+    "mode": "compensated",
+    "gamma_phys": 0.7,
+    "I_dark": 1e-10,
+    "I_dark_label": "100pA",
+    "shot_noise": true,
+    "accuracy": 10.01,
+    "elapsed_s": 0.65
+  },
+  {
+    "mode": "raw",
+    "gamma_phys": 0.7,
+    "I_dark": 1e-10,
+    "I_dark_label": "100pA",
+    "shot_noise": true,
+    "accuracy": 10.0,
+    "elapsed_s": 0.56
+  },
+  {
+    "mode": "compensated",
+    "gamma_phys": 0.7,
+    "I_dark": 1e-09,
+    "I_dark_label": "1nA",
+    "shot_noise": true,
+    "accuracy": 10.01,
+    "elapsed_s": 0.56
+  },
+  {
+    "mode": "raw",
+    "gamma_phys": 0.7,
+    "I_dark": 1e-09,
+    "I_dark_label": "1nA",
+    "shot_noise": true,
+    "accuracy": 10.0,
+    "elapsed_s": 0.56
+  },
+  {
+    "mode": "compensated",
+    "gamma_phys": 1.0,
+    "I_dark": 1e-10,
+    "I_dark_label": "100pA",
+    "shot_noise": true,
+    "accuracy": 10.01,
+    "elapsed_s": 1.01
+  },
+  {
+    "mode": "raw",
+    "gamma_phys": 1.0,
+    "I_dark": 1e-10,
+    "I_dark_label": "100pA",
+    "shot_noise": true,
+    "accuracy": 10.01,
+    "elapsed_s": 1.1
+  },
+  {
+    "mode": "compensated",
+    "gamma_phys": 1.0,
+    "I_dark": 1e-09,
+    "I_dark_label": "1nA",
+    "shot_noise": true,
+    "accuracy": 10.01,
+    "elapsed_s": 0.56
+  },
+  {
+    "mode": "raw",
+    "gamma_phys": 1.0,
+    "I_dark": 1e-09,
+    "I_dark_label": "1nA",
+    "shot_noise": true,
+    "accuracy": 10.01,
+    "elapsed_s": 0.56
+  }
+]

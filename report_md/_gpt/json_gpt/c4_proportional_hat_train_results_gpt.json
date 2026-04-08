@@ -1,0 +1,50 @@
+{
+  "results": [
+    {
+      "experiment": "C4",
+      "name": "C4_4bit_noise_HAT",
+      "dataset": "cifar10",
+      "num_classes": 10,
+      "n_states": 16,
+      "sigma_c2c": 0.05,
+      "sigma_d2d": 0.1,
+      "hat_training": true,
+      "best_test_acc": 91.98,
+      "mc_mean_acc": 91.907,
+      "mc_std_acc": 0.07746612162745986,
+      "total_time_s": 103.01273846626282,
+      "epochs": 200
+    }
+  ],
+  "histories": {
+    "C4": {
+      "train_loss": [
+        0.0015852804325683974,
+        0.0026721313285682116,
+        0.002105438674186589
+      ],
+      "train_acc": [
+        99.952,
+        99.928,
+        99.936
+      ],
+      "test_loss": [
+        0.48564842224121096,
+        0.47869397668838504,
+        0.48485233011245726
+      ],
+      "test_acc": [
+        91.89,
+        91.95,
+        91.81
+      ],
+      "lr": [
+        9.868792685367987e-07,
+        2.4673503667882426e-07,
+        0.0
+      ]
+    }
+  },
+  "retention": null,
+  "retention_metadata": null
+}

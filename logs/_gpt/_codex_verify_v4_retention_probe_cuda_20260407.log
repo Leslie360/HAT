@@ -1,0 +1,17 @@
+[2026-04-07 22:08:12] Device: cuda
+[2026-04-07 22:08:12] Mode: eval
+[2026-04-07 22:08:12] Experiments: ['V4']
+[2026-04-07 22:08:12] AMP requested: False, active: False
+
+[2026-04-07 22:08:13] ======================================================================
+[2026-04-07 22:08:13] Retention Sweep V4: V4_hybrid_standard_noise_hat
+[2026-04-07 22:08:13]   checkpoint=/home/qiaosir/projects/compute_vit/checkpoints/V4_hybrid_standard_noise_hat_best.pt
+[2026-04-07 22:08:13]   checkpoint_epoch=99, checkpoint_best_acc=91.94
+[2026-04-07 22:08:13]   amp=off
+[2026-04-07 22:08:13]   times=[0, 1, 10, 100], mc_runs=3
+[2026-04-07 22:08:29]   t=     0s: acc=91.77% ± 0.28 (min=91.47, max=92.02)
+[2026-04-07 22:08:49]   t=     1s: acc=82.29% ± 1.02 (min=81.50, max=83.44)
+[2026-04-07 22:09:07]   t=    10s: acc=79.71% ± 0.34 (min=79.32, max=79.92)
+[2026-04-07 22:09:24]   t=   100s: acc=78.76% ± 0.47 (min=78.38, max=79.29)
+[2026-04-07 22:09:24] Retention sweep finished for 1 experiment(s).
+[2026-04-07 22:09:24] Result markdown: /home/qiaosir/projects/compute_vit/report_md/_gpt/_codex_verify_v4_retention_probe_cuda_20260407.md

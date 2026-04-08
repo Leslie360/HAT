@@ -1,0 +1,29 @@
+\section{Methodology}
+\label{sec:methodology}
+
+\subsection{Hybrid Analog/Digital Deployment}
+\label{subsec:hybrid-deployment}
+
+We study a hybrid analog/digital inference stack in which dense linear operators are executed on differential-pair crossbar arrays while control-heavy or utilization-poor operators remain digital. For Tiny-ViT-5M, analog execution is assigned to patch-embedding convolutions, the attention projection matrices, the attention output projection, and the feed-forward matrices. By contrast, MBConv blocks, downsampling paths, local depthwise convolutions, the dynamic $\mathbf{QK}^{\top}$ and $\mathbf{AV}$ products, softmax, LayerNorm, activation functions, and the final classification head remain digital. This split is driven by array utilization rather than aesthetic symmetry: dense operators map naturally to static crossbars, whereas depthwise and token-dependent attention operators do not \citep{wu2023bwq,wang2024epim,ge2024allspark}.
+
+\subsection{Differential Conductance Mapping}
+\label{subsec:differential-mapping}
+
+Each analog-mapped weight tensor is converted into a differential-pair conductance representation over a bounded physical range $[G_{\min}, G_{\max}]$. The positive and negative branches are quantized to $n_{\text{states}}$ levels with a straight-through estimator, and the effective analog weight is recovered from the differential conductance. Tiny-ViT additionally uses digital scale recovery after the conductance-domain operations. This mechanism is central to the current framework, but it is also a deliberate first-order approximation: we model scale recovery as ideal calibrated digital post-processing rather than as an explicit physical peripheral circuit.
+
+\subsection{Variability, Nonlinear Write, and Retention}
+\label{subsec:variability-nl-retention}
+
+Device-to-device (D2D) mismatch is modeled as a fixed Gaussian perturbation sampled once at initialization, while cycle-to-cycle (C2C) variation is resampled on each forward pass. The canonical experiments use a state-independent conductance-window-referenced Gaussian model, but the framework also supports a proportional mode in which the noise magnitude scales with the instantaneous conductance state. This extension is important because it lets measured or literature-based state-dependent noise assumptions enter the same code path used by the canonical experiments.
+
+The framework further supports first-order nonlinear write modeling through \texttt{NL\_LTP} and \texttt{NL\_LTD}, which scale the STE backward pass according to the current conductance position. This is not a pulse-accurate device simulator; instead, it is a pragmatic way to inject measured potentiation/depression asymmetry into training-time robustness studies. Retention is modeled through a double-exponential decay law applied after conductance quantization and before read-time variability, with time constants anchored to the DNTT retention regime reported by Vincze \emph{et al.} \citep{vincze2026dualplasticity}. The corrected retention path includes both dynamic scale recalibration and consistent co-decay of the stored D2D buffer.
+
+\subsection{Measurement-to-Simulator Interface}
+\label{subsec:measurement-interface}
+
+The framework is designed so that literature priors and measured device statistics enter through the same structured profile interface. In practical terms, conductance windows map to $(G_{\min}, G_{\max})$, resolvable state counts map to $n_{\text{states}}$, repeated-read statistics map to $\sigma_{\text{C2C}}$, cross-device statistics map to $\sigma_{\text{D2D}}$, retention fits map to $(A_0,\tau_1,\tau_2)$, and photoresponse characterization maps to $(\gamma_{\text{phys}}, \alpha, I_{\text{dark}})$. This calibration structure is one of the core contributions of the project because it enables later in-house measured-device substitution without changing the training or evaluation scripts.
+
+\subsection{Energy Model and Scope}
+\label{subsec:energy-scope}
+
+Hybrid energy is estimated from analog MACs, ADC and DAC conversions, digital operations, and memory traffic. The current profiler charges one ADC conversion per output element and one DAC conversion per input element, and treats interconnect overhead as absorbed into the memory-access terms. ADC differential non-linearity is modeled behaviorally, following the spirit of configurable mixed-precision converter studies \citep{yoon2025adc}, whereas conductance integral non-linearity and state-dependent retention drift remain outside the current implementation. The resulting methodology should therefore be read as a first-order behavioral simulation framework rather than a pulse-accurate or chip-predictive emulator.

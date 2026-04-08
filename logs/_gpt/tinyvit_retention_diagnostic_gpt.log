@@ -1,0 +1,47 @@
+[2026-04-05 14:27:03] Condition: current (recalibrate_scale=False, scale_d2d=False)
+[2026-04-05 14:27:04] current: patch_embed.conv1.conv: decay=0.6390, orig_scale=0.078133, recal_scale=0.122277, eff_scale=0.078133, retained|max|=5.750816, d2d_std_G=0.882724
+[2026-04-05 14:27:04] current: stages.1.blocks.0.attn.qkv: decay=0.6390, orig_scale=0.099828, recal_scale=0.156230, eff_scale=0.099828, retained|max|=5.750816, d2d_std_G=0.904621
+[2026-04-05 14:27:04] current: stages.3.blocks.1.mlp.fc2: decay=0.6390, orig_scale=0.173856, recal_scale=0.272083, eff_scale=0.173856, retained|max|=5.750816, d2d_std_G=0.898736
+[2026-04-05 14:27:10] current: mc_run=1/10: test_acc=10.55%
+[2026-04-05 14:27:15] current: mc_run=2/10: test_acc=10.36%
+[2026-04-05 14:27:19] current: mc_run=3/10: test_acc=10.65%
+[2026-04-05 14:27:23] current: mc_run=4/10: test_acc=10.47%
+[2026-04-05 14:27:28] current: mc_run=5/10: test_acc=10.23%
+[2026-04-05 14:27:32] current: mc_run=6/10: test_acc=10.82%
+[2026-04-05 14:27:36] current: mc_run=7/10: test_acc=10.07%
+[2026-04-05 14:27:41] current: mc_run=8/10: test_acc=10.74%
+[2026-04-05 14:27:45] current: mc_run=9/10: test_acc=10.55%
+[2026-04-05 14:27:49] current: mc_run=10/10: test_acc=10.54%
+[2026-04-05 14:27:49] current: acc=10.50% ± 0.23 (min=10.07, max=10.82)
+[2026-04-05 14:27:49] Condition: recalibrate_scale (recalibrate_scale=True, scale_d2d=False)
+[2026-04-05 14:27:50] recalibrate_scale: patch_embed.conv1.conv: decay=0.6390, orig_scale=0.078133, recal_scale=0.122277, eff_scale=0.122277, retained|max|=5.750816, d2d_std_G=0.882724
+[2026-04-05 14:27:50] recalibrate_scale: stages.1.blocks.0.attn.qkv: decay=0.6390, orig_scale=0.099828, recal_scale=0.156230, eff_scale=0.156230, retained|max|=5.750816, d2d_std_G=0.904621
+[2026-04-05 14:27:50] recalibrate_scale: stages.3.blocks.1.mlp.fc2: decay=0.6390, orig_scale=0.173856, recal_scale=0.272083, eff_scale=0.272083, retained|max|=5.750816, d2d_std_G=0.898736
+[2026-04-05 14:27:55] recalibrate_scale: mc_run=1/10: test_acc=54.41%
+[2026-04-05 14:27:59] recalibrate_scale: mc_run=2/10: test_acc=53.95%
+[2026-04-05 14:28:04] recalibrate_scale: mc_run=3/10: test_acc=54.62%
+[2026-04-05 14:28:08] recalibrate_scale: mc_run=4/10: test_acc=53.37%
+[2026-04-05 14:28:13] recalibrate_scale: mc_run=5/10: test_acc=55.01%
+[2026-04-05 14:28:17] recalibrate_scale: mc_run=6/10: test_acc=54.84%
+[2026-04-05 14:28:21] recalibrate_scale: mc_run=7/10: test_acc=54.71%
+[2026-04-05 14:28:26] recalibrate_scale: mc_run=8/10: test_acc=55.28%
+[2026-04-05 14:28:31] recalibrate_scale: mc_run=9/10: test_acc=54.60%
+[2026-04-05 14:28:35] recalibrate_scale: mc_run=10/10: test_acc=54.60%
+[2026-04-05 14:28:35] recalibrate_scale: acc=54.54% ± 0.54 (min=53.37, max=55.28)
+[2026-04-05 14:28:35] Condition: recalibrate_scale_and_decay_d2d (recalibrate_scale=True, scale_d2d=True)
+[2026-04-05 14:28:36] recalibrate_scale_and_decay_d2d: patch_embed.conv1.conv: decay=0.6390, orig_scale=0.078133, recal_scale=0.122277, eff_scale=0.122277, retained|max|=5.750816, d2d_std_G=0.564042
+[2026-04-05 14:28:36] recalibrate_scale_and_decay_d2d: stages.1.blocks.0.attn.qkv: decay=0.6390, orig_scale=0.099828, recal_scale=0.156230, eff_scale=0.156230, retained|max|=5.750816, d2d_std_G=0.578034
+[2026-04-05 14:28:36] recalibrate_scale_and_decay_d2d: stages.3.blocks.1.mlp.fc2: decay=0.6390, orig_scale=0.173856, recal_scale=0.272083, eff_scale=0.272083, retained|max|=5.750816, d2d_std_G=0.574274
+[2026-04-05 14:28:41] recalibrate_scale_and_decay_d2d: mc_run=1/10: test_acc=83.02%
+[2026-04-05 14:28:45] recalibrate_scale_and_decay_d2d: mc_run=2/10: test_acc=83.02%
+[2026-04-05 14:28:50] recalibrate_scale_and_decay_d2d: mc_run=3/10: test_acc=82.37%
+[2026-04-05 14:28:54] recalibrate_scale_and_decay_d2d: mc_run=4/10: test_acc=82.79%
+[2026-04-05 14:28:59] recalibrate_scale_and_decay_d2d: mc_run=5/10: test_acc=83.28%
+[2026-04-05 14:29:03] recalibrate_scale_and_decay_d2d: mc_run=6/10: test_acc=82.80%
+[2026-04-05 14:29:08] recalibrate_scale_and_decay_d2d: mc_run=7/10: test_acc=81.91%
+[2026-04-05 14:29:12] recalibrate_scale_and_decay_d2d: mc_run=8/10: test_acc=81.66%
+[2026-04-05 14:29:17] recalibrate_scale_and_decay_d2d: mc_run=9/10: test_acc=83.28%
+[2026-04-05 14:29:21] recalibrate_scale_and_decay_d2d: mc_run=10/10: test_acc=81.94%
+[2026-04-05 14:29:21] recalibrate_scale_and_decay_d2d: acc=82.61% ± 0.60 (min=81.66, max=83.28)
+[2026-04-05 14:29:21] JSON: report_md/_gpt/json_gpt/tinyvit_retention_diagnostic_gpt.json
+[2026-04-05 14:29:21] Markdown: report_md/_gpt/tinyvit_retention_diagnostic_gpt.md

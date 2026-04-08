@@ -1,0 +1,69 @@
+Device: cuda
+Dataset: flowers102 (num_classes=102)
+Epochs: 100
+AMP requested: True, active: True
+Experiments to run: ['C1', 'C3', 'C4']
+
+======================================================================
+Experiment C1: C1_FP32_baseline
+  n_states=16, C2C=0.0, D2D=0.0, HAT=False
+======================================================================
+  Parameters: 27,898,566, Analog layers: 0
+  AMP: on
+  Epoch   0/100: train_loss=5.0831, train_acc=2.94%, test_acc=2.55% (best=2.55%), lr=0.003999, time=17s
+  Epoch  20/100: train_loss=2.4321, train_acc=33.82%, test_acc=23.86% (best=23.86%), lr=0.003580, time=147s
+  Epoch  40/100: train_loss=0.8024, train_acc=75.69%, test_acc=28.61% (best=29.26%), lr=0.002558, time=277s
+  Epoch  60/100: train_loss=0.1590, train_acc=95.29%, test_acc=32.17% (best=32.40%), lr=0.001323, time=406s
+  Epoch  80/100: train_loss=0.0496, train_acc=99.02%, test_acc=32.46% (best=33.11%), lr=0.000346, time=536s
+  Epoch  99/100: train_loss=0.0551, train_acc=98.87%, test_acc=32.96% (best=33.22%), lr=0.000000, time=657s
+  Finished in 657s. Best test accuracy: 33.22%
+
+======================================================================
+Experiment C3: C3_4bit_noise_standard
+  n_states=16, C2C=0.05, D2D=0.1, HAT=False
+======================================================================
+  Parameters: 27,898,566, Analog layers: 41
+  AMP: off
+  AMP note: auto-disabled for analog ConvNeXt experiments due non-finite gradients under CUDA AMP
+  Epoch   0/100: train_loss=323.9704, train_acc=0.64%, test_acc=0.65% (best=0.65%), lr=0.003999, time=21s
+  Epoch  20/100: train_loss=5.2154, train_acc=0.93%, test_acc=1.45% (best=2.08%), lr=0.003580, time=346s
+  Epoch  40/100: train_loss=4.7563, train_acc=0.93%, test_acc=0.00% (best=3.79%), lr=0.002558, time=670s
+  Epoch  60/100: train_loss=4.1593, train_acc=3.92%, test_acc=0.10% (best=3.79%), lr=0.001323, time=993s
+  Epoch  80/100: train_loss=3.4157, train_acc=12.75%, test_acc=1.27% (best=3.79%), lr=0.000346, time=1317s
+  Epoch  99/100: train_loss=3.1761, train_acc=19.07%, test_acc=1.37% (best=3.79%), lr=0.000000, time=1625s
+  Finished in 1625s. Best test accuracy: 3.79%
+  Running Monte Carlo evaluation (10 runs)...
+  Monte Carlo: 1.57% ± 0.83%
+
+======================================================================
+Experiment C4: C4_4bit_noise_HAT
+  n_states=16, C2C=0.05, D2D=0.1, HAT=True
+======================================================================
+  Parameters: 27,898,566, Analog layers: 41
+  AMP: off
+  AMP note: auto-disabled for analog ConvNeXt experiments due non-finite gradients under CUDA AMP
+  Epoch   0/100: train_loss=329.5273, train_acc=0.83%, test_acc=0.80% (best=0.80%), lr=0.003999, time=17s
+  Epoch  20/100: train_loss=5.1566, train_acc=0.83%, test_acc=1.54% (best=3.15%), lr=0.003580, time=342s
+  Epoch  40/100: train_loss=4.7706, train_acc=1.13%, test_acc=1.53% (best=3.15%), lr=0.002558, time=667s
+  Epoch  60/100: train_loss=4.8970, train_acc=0.78%, test_acc=0.73% (best=3.35%), lr=0.001323, time=991s
+  Epoch  80/100: train_loss=4.7950, train_acc=0.98%, test_acc=0.98% (best=3.35%), lr=0.000346, time=1315s
+  Epoch  99/100: train_loss=4.6475, train_acc=1.08%, test_acc=0.07% (best=3.35%), lr=0.000000, time=1623s
+  Finished in 1623s. Best test accuracy: 3.35%
+  Running Monte Carlo evaluation (10 runs)...
+  Monte Carlo: 2.03% ± 0.68%
+
+======================================================================
+Exporting results...
+======================================================================
+
+Results exported to:
+  CSV:      /home/qiaosir/projects/compute_vit/report_md/_gpt/csv_gpt/convnext_flowers102_c134_results_gpt.csv
+  JSON:     /home/qiaosir/projects/compute_vit/report_md/_gpt/json_gpt/convnext_flowers102_c134_results_gpt.json
+  Markdown: /home/qiaosir/projects/compute_vit/report_md/_gpt/convnext_flowers102_c134_results_gpt.md
+
+======================================================================
+SUMMARY
+======================================================================
+  C1  (C1_FP32_baseline              ): best=33.22%, MC=33.22±0.00%
+  C3  (C3_4bit_noise_standard        ): best=3.79%, MC=1.57±0.83%
+  C4  (C4_4bit_noise_HAT             ): best=3.35%, MC=2.03±0.68%

@@ -1,0 +1,19 @@
+[2026-04-06 03:12:27] Device: cuda
+[2026-04-06 03:12:27] Mode: train
+[2026-04-06 03:12:27] Experiments: ['V4']
+[2026-04-06 03:12:27] AMP requested: True, active: True
+
+[2026-04-06 03:12:29] ======================================================================
+[2026-04-06 03:12:29] Experiment V4: V4_hybrid_standard_noise_hat
+[2026-04-06 03:12:29]   hybrid=True, noise=True, C2C=0.05, D2D=0.1, HAT=True
+[2026-04-06 03:12:29]   amp=on
+[2026-04-06 03:12:29] ======================================================================
+[2026-04-06 03:13:27]   Epoch   0/100: train_loss=2.0777, train_acc=20.42%, test_acc=16.92% (best=16.92%), lr=0.000500
+[2026-04-06 03:30:04]   Epoch  19/100: train_loss=1.0904, train_acc=61.04%, test_acc=22.78% (best=27.54%), lr=0.000457
+[2026-04-06 03:47:33]   Epoch  39/100: train_loss=0.7704, train_acc=73.17%, test_acc=18.39% (best=27.54%), lr=0.000335
+[2026-04-06 04:05:02]   Epoch  59/100: train_loss=0.6141, train_acc=78.68%, test_acc=15.75% (best=27.54%), lr=0.000180
+[2026-04-06 04:22:30]   Epoch  79/100: train_loss=0.5210, train_acc=82.00%, test_acc=14.83% (best=27.54%), lr=0.000052
+[2026-04-06 04:39:56]   Epoch  99/100: train_loss=0.4953, train_acc=83.14%, test_acc=13.91% (best=27.54%), lr=0.000000
+[2026-04-06 04:39:56]   Finished. Best accuracy: 27.54% at epoch 12; checkpoint=/home/qiaosir/projects/compute_vit/checkpoints/_gpt/task23/v4_nl_severe/V4_hybrid_standard_noise_hat_best.pt
+[2026-04-06 04:39:56] Training finished for 1 experiment(s).
+[2026-04-06 04:39:56] Result markdown: /home/qiaosir/projects/compute_vit/report_md/_gpt/v4_nl_severe_results_gpt.md

@@ -1,0 +1,162 @@
+{
+  "c2c_1_d2d_2": {
+    "eval_runs": 5,
+    "test_loss_mean": 0.7270309133332967,
+    "test_acc_mean": 88.58800000000001,
+    "test_acc_min": 88.5,
+    "test_acc_max": 88.73,
+    "test_acc_std": 0.0858487041253403
+  },
+  "c2c_1_d2d_3": {
+    "eval_runs": 5,
+    "test_loss_mean": 0.7287839070928097,
+    "test_acc_mean": 88.55,
+    "test_acc_min": 88.45,
+    "test_acc_max": 88.69,
+    "test_acc_std": 0.09165151389911562
+  },
+  "c2c_1_d2d_5": {
+    "eval_runs": 5,
+    "test_loss_mean": 0.7364872010916471,
+    "test_acc_mean": 88.34,
+    "test_acc_min": 88.2,
+    "test_acc_max": 88.48,
+    "test_acc_std": 0.11247221879201871
+  },
+  "c2c_1_d2d_10": {
+    "eval_runs": 5,
+    "test_loss_mean": 0.7926120528805256,
+    "test_acc_mean": 87.322,
+    "test_acc_min": 87.15,
+    "test_acc_max": 87.54,
+    "test_acc_std": 0.14254823744964396
+  },
+  "c2c_1_d2d_15": {
+    "eval_runs": 5,
+    "test_loss_mean": 0.9455347687876224,
+    "test_acc_mean": 84.602,
+    "test_acc_min": 84.48,
+    "test_acc_max": 84.69,
+    "test_acc_std": 0.08729261137118009
+  },
+  "c2c_2_d2d_2": {
+    "eval_runs": 5,
+    "test_loss_mean": 0.7270309133332967,
+    "test_acc_mean": 88.58800000000001,
+    "test_acc_min": 88.5,
+    "test_acc_max": 88.73,
+    "test_acc_std": 0.0858487041253403
+  },
+  "c2c_2_d2d_3": {
+    "eval_runs": 5,
+    "test_loss_mean": 0.7287839070928097,
+    "test_acc_mean": 88.55,
+    "test_acc_min": 88.45,
+    "test_acc_max": 88.69,
+    "test_acc_std": 0.09165151389911562
+  },
+  "c2c_2_d2d_5": {
+    "eval_runs": 5,
+    "test_loss_mean": 0.7364872010916471,
+    "test_acc_mean": 88.34,
+    "test_acc_min": 88.2,
+    "test_acc_max": 88.48,
+    "test_acc_std": 0.11247221879201871
+  },
+  "c2c_2_d2d_10": {
+    "eval_runs": 5,
+    "test_loss_mean": 0.7926120528805256,
+    "test_acc_mean": 87.322,
+    "test_acc_min": 87.15,
+    "test_acc_max": 87.54,
+    "test_acc_std": 0.14254823744964396
+  },
+  "c2c_2_d2d_15": {
+    "eval_runs": 5,
+    "test_loss_mean": 0.9455347687876224,
+    "test_acc_mean": 84.602,
+    "test_acc_min": 84.48,
+    "test_acc_max": 84.69,
+    "test_acc_std": 0.08729261137118009
+  },
+  "c2c_5_d2d_2": {
+    "eval_runs": 5,
+    "test_loss_mean": 0.7270309133332967,
+    "test_acc_mean": 88.58800000000001,
+    "test_acc_min": 88.5,
+    "test_acc_max": 88.73,
+    "test_acc_std": 0.0858487041253403
+  },
+  "c2c_5_d2d_3": {
+    "eval_runs": 5,
+    "test_loss_mean": 0.7287839070928097,
+    "test_acc_mean": 88.55,
+    "test_acc_min": 88.45,
+    "test_acc_max": 88.69,
+    "test_acc_std": 0.09165151389911562
+  },
+  "c2c_5_d2d_5": {
+    "eval_runs": 5,
+    "test_loss_mean": 0.7364872010916471,
+    "test_acc_mean": 88.34,
+    "test_acc_min": 88.2,
+    "test_acc_max": 88.48,
+    "test_acc_std": 0.11247221879201871
+  },
+  "c2c_5_d2d_10": {
+    "eval_runs": 5,
+    "test_loss_mean": 0.7926120528805256,
+    "test_acc_mean": 87.322,
+    "test_acc_min": 87.15,
+    "test_acc_max": 87.54,
+    "test_acc_std": 0.14254823744964396
+  },
+  "c2c_5_d2d_15": {
+    "eval_runs": 5,
+    "test_loss_mean": 0.9455347687876224,
+    "test_acc_mean": 84.602,
+    "test_acc_min": 84.48,
+    "test_acc_max": 84.69,
+    "test_acc_std": 0.08729261137118009
+  },
+  "c2c_8_d2d_2": {
+    "eval_runs": 5,
+    "test_loss_mean": 0.7270309133332967,
+    "test_acc_mean": 88.58800000000001,
+    "test_acc_min": 88.5,
+    "test_acc_max": 88.73,
+    "test_acc_std": 0.0858487041253403
+  },
+  "c2c_8_d2d_3": {
+    "eval_runs": 5,
+    "test_loss_mean": 0.7287839070928097,
+    "test_acc_mean": 88.55,
+    "test_acc_min": 88.45,
+    "test_acc_max": 88.69,
+    "test_acc_std": 0.09165151389911562
+  },
+  "c2c_8_d2d_5": {
+    "eval_runs": 5,
+    "test_loss_mean": 0.7364872010916471,
+    "test_acc_mean": 88.34,
+    "test_acc_min": 88.2,
+    "test_acc_max": 88.48,
+    "test_acc_std": 0.11247221879201871
+  },
+  "c2c_8_d2d_10": {
+    "eval_runs": 5,
+    "test_loss_mean": 0.7926120528805256,
+    "test_acc_mean": 87.322,
+    "test_acc_min": 87.15,
+    "test_acc_max": 87.54,
+    "test_acc_std": 0.14254823744964396
+  },
+  "c2c_8_d2d_15": {
+    "eval_runs": 5,
+    "test_loss_mean": 0.9455347687876224,
+    "test_acc_mean": 84.602,
+    "test_acc_min": 84.48,
+    "test_acc_max": 84.69,
+    "test_acc_std": 0.08729261137118009
+  }
+}

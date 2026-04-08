@@ -1,0 +1,75 @@
+{
+  "results": [],
+  "retention": [
+    {
+      "experiment": "V4",
+      "experiment_name": "V4_hybrid_standard_noise_hat",
+      "dataset": "cifar10",
+      "time_s": 0,
+      "test_loss_mean": 0.44105168683441975,
+      "test_acc_mean": 91.76666666666667,
+      "test_acc_std": 0.2775487945088805,
+      "test_acc_min": 91.47,
+      "test_acc_max": 92.02,
+      "mc_runs": 3,
+      "checkpoint_path": "/home/qiaosir/projects/compute_vit/checkpoints/V4_hybrid_standard_noise_hat_best.pt",
+      "checkpoint_epoch": 99,
+      "checkpoint_best_acc": 91.94
+    },
+    {
+      "experiment": "V4",
+      "experiment_name": "V4_hybrid_standard_noise_hat",
+      "dataset": "cifar10",
+      "time_s": 1,
+      "test_loss_mean": 0.9600629641135534,
+      "test_acc_mean": 82.29333333333334,
+      "test_acc_std": 1.0171201174558153,
+      "test_acc_min": 81.5,
+      "test_acc_max": 83.44,
+      "mc_runs": 3,
+      "checkpoint_path": "/home/qiaosir/projects/compute_vit/checkpoints/V4_hybrid_standard_noise_hat_best.pt",
+      "checkpoint_epoch": 99,
+      "checkpoint_best_acc": 91.94
+    },
+    {
+      "experiment": "V4",
+      "experiment_name": "V4_hybrid_standard_noise_hat",
+      "dataset": "cifar10",
+      "time_s": 10,
+      "test_loss_mean": 1.11323548951149,
+      "test_acc_mean": 79.71333333333334,
+      "test_acc_std": 0.3407834111768609,
+      "test_acc_min": 79.32,
+      "test_acc_max": 79.92,
+      "mc_runs": 3,
+      "checkpoint_path": "/home/qiaosir/projects/compute_vit/checkpoints/V4_hybrid_standard_noise_hat_best.pt",
+      "checkpoint_epoch": 99,
+      "checkpoint_best_acc": 91.94
+    },
+    {
+      "experiment": "V4",
+      "experiment_name": "V4_hybrid_standard_noise_hat",
+      "dataset": "cifar10",
+      "time_s": 100,
+      "test_loss_mean": 1.174759400010109,
+      "test_acc_mean": 78.76,
+      "test_acc_std": 0.4731807265728446,
+      "test_acc_min": 78.38,
+      "test_acc_max": 79.29,
+      "mc_runs": 3,
+      "checkpoint_path": "/home/qiaosir/projects/compute_vit/checkpoints/V4_hybrid_standard_noise_hat_best.pt",
+      "checkpoint_epoch": 99,
+      "checkpoint_best_acc": 91.94
+    }
+  ],
+  "retention_metadata": {
+    "checkpoint_path": "/home/qiaosir/projects/compute_vit/checkpoints/V4_hybrid_standard_noise_hat_best.pt",
+    "source_experiment": "V4_hybrid_standard_noise_hat",
+    "experiment": "V4",
+    "epoch": 99,
+    "best_acc": 91.94,
+    "trained_epochs": 100,
+    "dataset": "cifar10",
+    "mc_runs": 3
+  }
+}

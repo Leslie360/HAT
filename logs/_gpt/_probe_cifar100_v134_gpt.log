@@ -1,0 +1,4 @@
+[2026-04-05 15:34:06] Device: cuda
+[2026-04-05 15:34:06] Mode: train
+[2026-04-05 15:34:06] Experiments: ['V1', 'V3', 'V4']
+[2026-04-05 15:34:06] AMP requested: True, active: True

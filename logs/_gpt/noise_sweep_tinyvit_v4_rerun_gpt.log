@@ -1,0 +1,518 @@
+[2026-04-05 11:31:29] Device: cuda
+[2026-04-05 11:31:29] Model type: tinyvit
+[2026-04-05 11:31:29] Experiment: V4
+[2026-04-05 11:31:29] Sweep type: noise
+[2026-04-05 11:31:29] Eval runs: 10
+[2026-04-05 11:31:30] Checkpoint: checkpoints/V4_hybrid_standard_noise_hat_best.pt
+[2026-04-05 11:31:30] Checkpoint epoch: 99, best_acc=91.94
+[2026-04-05 11:31:30] Running continuous noise sweep.
+[2026-04-05 11:31:38] sigma_c2c=0.00, sigma_d2d=0.00: mc_run=1/10: test_acc=91.40%
+[2026-04-05 11:31:44] sigma_c2c=0.00, sigma_d2d=0.00: mc_run=2/10: test_acc=91.64%
+[2026-04-05 11:31:50] sigma_c2c=0.00, sigma_d2d=0.00: mc_run=3/10: test_acc=91.87%
+[2026-04-05 11:31:58] sigma_c2c=0.00, sigma_d2d=0.00: mc_run=4/10: test_acc=91.50%
+[2026-04-05 11:32:04] sigma_c2c=0.00, sigma_d2d=0.00: mc_run=5/10: test_acc=91.32%
+[2026-04-05 11:32:10] sigma_c2c=0.00, sigma_d2d=0.00: mc_run=6/10: test_acc=91.97%
+[2026-04-05 11:32:16] sigma_c2c=0.00, sigma_d2d=0.00: mc_run=7/10: test_acc=91.88%
+[2026-04-05 11:32:22] sigma_c2c=0.00, sigma_d2d=0.00: mc_run=8/10: test_acc=91.77%
+[2026-04-05 11:32:30] sigma_c2c=0.00, sigma_d2d=0.00: mc_run=9/10: test_acc=91.90%
+[2026-04-05 11:32:36] sigma_c2c=0.00, sigma_d2d=0.00: mc_run=10/10: test_acc=91.61%
+[2026-04-05 11:32:36] sigma_c2c=0.00, sigma_d2d=0.00: acc=91.69% ± 0.23 (min=91.32, max=91.97)
+[2026-04-05 11:32:36] sigma_c2c=0.00, sigma_d2d=0.00: sparsity=0.00% across 42 analog layers
+[2026-04-05 11:32:43] sigma_c2c=0.02, sigma_d2d=0.00: mc_run=1/10: test_acc=91.81%
+[2026-04-05 11:32:49] sigma_c2c=0.02, sigma_d2d=0.00: mc_run=2/10: test_acc=91.96%
+[2026-04-05 11:32:55] sigma_c2c=0.02, sigma_d2d=0.00: mc_run=3/10: test_acc=91.13%
+[2026-04-05 11:33:02] sigma_c2c=0.02, sigma_d2d=0.00: mc_run=4/10: test_acc=91.78%
+[2026-04-05 11:33:08] sigma_c2c=0.02, sigma_d2d=0.00: mc_run=5/10: test_acc=91.62%
+[2026-04-05 11:33:14] sigma_c2c=0.02, sigma_d2d=0.00: mc_run=6/10: test_acc=91.79%
+[2026-04-05 11:33:20] sigma_c2c=0.02, sigma_d2d=0.00: mc_run=7/10: test_acc=91.54%
+[2026-04-05 11:33:26] sigma_c2c=0.02, sigma_d2d=0.00: mc_run=8/10: test_acc=91.60%
+[2026-04-05 11:33:34] sigma_c2c=0.02, sigma_d2d=0.00: mc_run=9/10: test_acc=91.94%
+[2026-04-05 11:33:40] sigma_c2c=0.02, sigma_d2d=0.00: mc_run=10/10: test_acc=91.76%
+[2026-04-05 11:33:40] sigma_c2c=0.02, sigma_d2d=0.00: acc=91.69% ± 0.24 (min=91.13, max=91.96)
+[2026-04-05 11:33:40] sigma_c2c=0.02, sigma_d2d=0.00: sparsity=0.00% across 42 analog layers
+[2026-04-05 11:33:46] sigma_c2c=0.05, sigma_d2d=0.00: mc_run=1/10: test_acc=91.64%
+[2026-04-05 11:33:52] sigma_c2c=0.05, sigma_d2d=0.00: mc_run=2/10: test_acc=91.83%
+[2026-04-05 11:33:58] sigma_c2c=0.05, sigma_d2d=0.00: mc_run=3/10: test_acc=91.69%
+[2026-04-05 11:34:06] sigma_c2c=0.05, sigma_d2d=0.00: mc_run=4/10: test_acc=91.41%
+[2026-04-05 11:34:12] sigma_c2c=0.05, sigma_d2d=0.00: mc_run=5/10: test_acc=91.67%
+[2026-04-05 11:34:18] sigma_c2c=0.05, sigma_d2d=0.00: mc_run=6/10: test_acc=91.91%
+[2026-04-05 11:34:24] sigma_c2c=0.05, sigma_d2d=0.00: mc_run=7/10: test_acc=91.62%
+[2026-04-05 11:34:30] sigma_c2c=0.05, sigma_d2d=0.00: mc_run=8/10: test_acc=91.82%
+[2026-04-05 11:34:38] sigma_c2c=0.05, sigma_d2d=0.00: mc_run=9/10: test_acc=91.71%
+[2026-04-05 11:34:44] sigma_c2c=0.05, sigma_d2d=0.00: mc_run=10/10: test_acc=91.39%
+[2026-04-05 11:34:44] sigma_c2c=0.05, sigma_d2d=0.00: acc=91.67% ± 0.17 (min=91.39, max=91.91)
+[2026-04-05 11:34:44] sigma_c2c=0.05, sigma_d2d=0.00: sparsity=0.00% across 42 analog layers
+[2026-04-05 11:34:50] sigma_c2c=0.08, sigma_d2d=0.00: mc_run=1/10: test_acc=91.52%
+[2026-04-05 11:34:56] sigma_c2c=0.08, sigma_d2d=0.00: mc_run=2/10: test_acc=91.71%
+[2026-04-05 11:35:02] sigma_c2c=0.08, sigma_d2d=0.00: mc_run=3/10: test_acc=91.61%
+[2026-04-05 11:35:10] sigma_c2c=0.08, sigma_d2d=0.00: mc_run=4/10: test_acc=91.76%
+[2026-04-05 11:35:16] sigma_c2c=0.08, sigma_d2d=0.00: mc_run=5/10: test_acc=91.66%
+[2026-04-05 11:35:22] sigma_c2c=0.08, sigma_d2d=0.00: mc_run=6/10: test_acc=91.77%
+[2026-04-05 11:35:28] sigma_c2c=0.08, sigma_d2d=0.00: mc_run=7/10: test_acc=91.64%
+[2026-04-05 11:35:34] sigma_c2c=0.08, sigma_d2d=0.00: mc_run=8/10: test_acc=91.79%
+[2026-04-05 11:35:42] sigma_c2c=0.08, sigma_d2d=0.00: mc_run=9/10: test_acc=91.59%
+[2026-04-05 11:35:48] sigma_c2c=0.08, sigma_d2d=0.00: mc_run=10/10: test_acc=91.45%
+[2026-04-05 11:35:48] sigma_c2c=0.08, sigma_d2d=0.00: acc=91.65% ± 0.11 (min=91.45, max=91.79)
+[2026-04-05 11:35:48] sigma_c2c=0.08, sigma_d2d=0.00: sparsity=0.00% across 42 analog layers
+[2026-04-05 11:35:54] sigma_c2c=0.10, sigma_d2d=0.00: mc_run=1/10: test_acc=92.08%
+[2026-04-05 11:36:00] sigma_c2c=0.10, sigma_d2d=0.00: mc_run=2/10: test_acc=91.88%
+[2026-04-05 11:36:06] sigma_c2c=0.10, sigma_d2d=0.00: mc_run=3/10: test_acc=91.59%
+[2026-04-05 11:36:14] sigma_c2c=0.10, sigma_d2d=0.00: mc_run=4/10: test_acc=91.74%
+[2026-04-05 11:36:20] sigma_c2c=0.10, sigma_d2d=0.00: mc_run=5/10: test_acc=91.30%
+[2026-04-05 11:36:26] sigma_c2c=0.10, sigma_d2d=0.00: mc_run=6/10: test_acc=91.91%
+[2026-04-05 11:36:32] sigma_c2c=0.10, sigma_d2d=0.00: mc_run=7/10: test_acc=91.72%
+[2026-04-05 11:36:38] sigma_c2c=0.10, sigma_d2d=0.00: mc_run=8/10: test_acc=91.80%
+[2026-04-05 11:36:46] sigma_c2c=0.10, sigma_d2d=0.00: mc_run=9/10: test_acc=91.55%
+[2026-04-05 11:36:52] sigma_c2c=0.10, sigma_d2d=0.00: mc_run=10/10: test_acc=91.75%
+[2026-04-05 11:36:52] sigma_c2c=0.10, sigma_d2d=0.00: acc=91.73% ± 0.22 (min=91.30, max=92.08)
+[2026-04-05 11:36:52] sigma_c2c=0.10, sigma_d2d=0.00: sparsity=0.00% across 42 analog layers
+[2026-04-05 11:36:58] sigma_c2c=0.15, sigma_d2d=0.00: mc_run=1/10: test_acc=91.88%
+[2026-04-05 11:37:04] sigma_c2c=0.15, sigma_d2d=0.00: mc_run=2/10: test_acc=92.10%
+[2026-04-05 11:37:10] sigma_c2c=0.15, sigma_d2d=0.00: mc_run=3/10: test_acc=91.46%
+[2026-04-05 11:37:17] sigma_c2c=0.15, sigma_d2d=0.00: mc_run=4/10: test_acc=91.69%
+[2026-04-05 11:37:23] sigma_c2c=0.15, sigma_d2d=0.00: mc_run=5/10: test_acc=91.71%
+[2026-04-05 11:37:29] sigma_c2c=0.15, sigma_d2d=0.00: mc_run=6/10: test_acc=91.48%
+[2026-04-05 11:37:35] sigma_c2c=0.15, sigma_d2d=0.00: mc_run=7/10: test_acc=91.43%
+[2026-04-05 11:37:41] sigma_c2c=0.15, sigma_d2d=0.00: mc_run=8/10: test_acc=91.76%
+[2026-04-05 11:37:49] sigma_c2c=0.15, sigma_d2d=0.00: mc_run=9/10: test_acc=91.28%
+[2026-04-05 11:37:55] sigma_c2c=0.15, sigma_d2d=0.00: mc_run=10/10: test_acc=91.48%
+[2026-04-05 11:37:55] sigma_c2c=0.15, sigma_d2d=0.00: acc=91.63% ± 0.25 (min=91.28, max=92.10)
+[2026-04-05 11:37:55] sigma_c2c=0.15, sigma_d2d=0.00: sparsity=0.00% across 42 analog layers
+[2026-04-05 11:38:01] sigma_c2c=0.20, sigma_d2d=0.00: mc_run=1/10: test_acc=91.50%
+[2026-04-05 11:38:09] sigma_c2c=0.20, sigma_d2d=0.00: mc_run=2/10: test_acc=91.38%
+[2026-04-05 11:38:15] sigma_c2c=0.20, sigma_d2d=0.00: mc_run=3/10: test_acc=91.72%
+[2026-04-05 11:38:22] sigma_c2c=0.20, sigma_d2d=0.00: mc_run=4/10: test_acc=91.71%
+[2026-04-05 11:38:28] sigma_c2c=0.20, sigma_d2d=0.00: mc_run=5/10: test_acc=91.70%
+[2026-04-05 11:38:34] sigma_c2c=0.20, sigma_d2d=0.00: mc_run=6/10: test_acc=91.74%
+[2026-04-05 11:38:40] sigma_c2c=0.20, sigma_d2d=0.00: mc_run=7/10: test_acc=91.30%
+[2026-04-05 11:38:46] sigma_c2c=0.20, sigma_d2d=0.00: mc_run=8/10: test_acc=91.47%
+[2026-04-05 11:38:54] sigma_c2c=0.20, sigma_d2d=0.00: mc_run=9/10: test_acc=91.81%
+[2026-04-05 11:39:00] sigma_c2c=0.20, sigma_d2d=0.00: mc_run=10/10: test_acc=91.50%
+[2026-04-05 11:39:00] sigma_c2c=0.20, sigma_d2d=0.00: acc=91.58% ± 0.17 (min=91.30, max=91.81)
+[2026-04-05 11:39:00] sigma_c2c=0.20, sigma_d2d=0.00: sparsity=0.00% across 42 analog layers
+[2026-04-05 11:39:06] sigma_c2c=0.00, sigma_d2d=0.05: mc_run=1/10: test_acc=91.89%
+[2026-04-05 11:39:12] sigma_c2c=0.00, sigma_d2d=0.05: mc_run=2/10: test_acc=91.97%
+[2026-04-05 11:39:20] sigma_c2c=0.00, sigma_d2d=0.05: mc_run=3/10: test_acc=91.73%
+[2026-04-05 11:39:26] sigma_c2c=0.00, sigma_d2d=0.05: mc_run=4/10: test_acc=91.98%
+[2026-04-05 11:39:32] sigma_c2c=0.00, sigma_d2d=0.05: mc_run=5/10: test_acc=91.51%
+[2026-04-05 11:39:38] sigma_c2c=0.00, sigma_d2d=0.05: mc_run=6/10: test_acc=91.62%
+[2026-04-05 11:39:44] sigma_c2c=0.00, sigma_d2d=0.05: mc_run=7/10: test_acc=91.99%
+[2026-04-05 11:39:52] sigma_c2c=0.00, sigma_d2d=0.05: mc_run=8/10: test_acc=91.57%
+[2026-04-05 11:39:59] sigma_c2c=0.00, sigma_d2d=0.05: mc_run=9/10: test_acc=91.78%
+[2026-04-05 11:40:05] sigma_c2c=0.00, sigma_d2d=0.05: mc_run=10/10: test_acc=91.83%
+[2026-04-05 11:40:05] sigma_c2c=0.00, sigma_d2d=0.05: acc=91.79% ± 0.18 (min=91.51, max=91.99)
+[2026-04-05 11:40:05] sigma_c2c=0.00, sigma_d2d=0.05: sparsity=0.00% across 42 analog layers
+[2026-04-05 11:40:11] sigma_c2c=0.02, sigma_d2d=0.05: mc_run=1/10: test_acc=91.66%
+[2026-04-05 11:40:17] sigma_c2c=0.02, sigma_d2d=0.05: mc_run=2/10: test_acc=91.73%
+[2026-04-05 11:40:25] sigma_c2c=0.02, sigma_d2d=0.05: mc_run=3/10: test_acc=91.73%
+[2026-04-05 11:40:31] sigma_c2c=0.02, sigma_d2d=0.05: mc_run=4/10: test_acc=91.91%
+[2026-04-05 11:40:37] sigma_c2c=0.02, sigma_d2d=0.05: mc_run=5/10: test_acc=91.96%
+[2026-04-05 11:40:43] sigma_c2c=0.02, sigma_d2d=0.05: mc_run=6/10: test_acc=91.37%
+[2026-04-05 11:40:49] sigma_c2c=0.02, sigma_d2d=0.05: mc_run=7/10: test_acc=91.43%
+[2026-04-05 11:40:57] sigma_c2c=0.02, sigma_d2d=0.05: mc_run=8/10: test_acc=91.72%
+[2026-04-05 11:41:03] sigma_c2c=0.02, sigma_d2d=0.05: mc_run=9/10: test_acc=91.58%
+[2026-04-05 11:41:09] sigma_c2c=0.02, sigma_d2d=0.05: mc_run=10/10: test_acc=92.30%
+[2026-04-05 11:41:09] sigma_c2c=0.02, sigma_d2d=0.05: acc=91.74% ± 0.27 (min=91.37, max=92.30)
+[2026-04-05 11:41:09] sigma_c2c=0.02, sigma_d2d=0.05: sparsity=0.00% across 42 analog layers
+[2026-04-05 11:41:15] sigma_c2c=0.05, sigma_d2d=0.05: mc_run=1/10: test_acc=91.50%
+[2026-04-05 11:41:22] sigma_c2c=0.05, sigma_d2d=0.05: mc_run=2/10: test_acc=91.47%
+[2026-04-05 11:41:30] sigma_c2c=0.05, sigma_d2d=0.05: mc_run=3/10: test_acc=91.85%
+[2026-04-05 11:41:36] sigma_c2c=0.05, sigma_d2d=0.05: mc_run=4/10: test_acc=91.71%
+[2026-04-05 11:41:42] sigma_c2c=0.05, sigma_d2d=0.05: mc_run=5/10: test_acc=91.75%
+[2026-04-05 11:41:48] sigma_c2c=0.05, sigma_d2d=0.05: mc_run=6/10: test_acc=91.49%
+[2026-04-05 11:41:54] sigma_c2c=0.05, sigma_d2d=0.05: mc_run=7/10: test_acc=91.54%
+[2026-04-05 11:42:02] sigma_c2c=0.05, sigma_d2d=0.05: mc_run=8/10: test_acc=92.03%
+[2026-04-05 11:42:09] sigma_c2c=0.05, sigma_d2d=0.05: mc_run=9/10: test_acc=91.83%
+[2026-04-05 11:42:15] sigma_c2c=0.05, sigma_d2d=0.05: mc_run=10/10: test_acc=91.53%
+[2026-04-05 11:42:15] sigma_c2c=0.05, sigma_d2d=0.05: acc=91.67% ± 0.19 (min=91.47, max=92.03)
+[2026-04-05 11:42:15] sigma_c2c=0.05, sigma_d2d=0.05: sparsity=0.00% across 42 analog layers
+[2026-04-05 11:42:21] sigma_c2c=0.08, sigma_d2d=0.05: mc_run=1/10: test_acc=91.67%
+[2026-04-05 11:42:27] sigma_c2c=0.08, sigma_d2d=0.05: mc_run=2/10: test_acc=91.71%
+[2026-04-05 11:42:35] sigma_c2c=0.08, sigma_d2d=0.05: mc_run=3/10: test_acc=91.78%
+[2026-04-05 11:42:41] sigma_c2c=0.08, sigma_d2d=0.05: mc_run=4/10: test_acc=91.78%
+[2026-04-05 11:42:47] sigma_c2c=0.08, sigma_d2d=0.05: mc_run=5/10: test_acc=91.63%
+[2026-04-05 11:42:53] sigma_c2c=0.08, sigma_d2d=0.05: mc_run=6/10: test_acc=91.83%
+[2026-04-05 11:42:59] sigma_c2c=0.08, sigma_d2d=0.05: mc_run=7/10: test_acc=92.23%
+[2026-04-05 11:43:07] sigma_c2c=0.08, sigma_d2d=0.05: mc_run=8/10: test_acc=91.39%
+[2026-04-05 11:43:13] sigma_c2c=0.08, sigma_d2d=0.05: mc_run=9/10: test_acc=91.55%
+[2026-04-05 11:43:20] sigma_c2c=0.08, sigma_d2d=0.05: mc_run=10/10: test_acc=91.70%
+[2026-04-05 11:43:20] sigma_c2c=0.08, sigma_d2d=0.05: acc=91.73% ± 0.22 (min=91.39, max=92.23)
+[2026-04-05 11:43:20] sigma_c2c=0.08, sigma_d2d=0.05: sparsity=0.00% across 42 analog layers
+[2026-04-05 11:43:26] sigma_c2c=0.10, sigma_d2d=0.05: mc_run=1/10: test_acc=91.35%
+[2026-04-05 11:43:32] sigma_c2c=0.10, sigma_d2d=0.05: mc_run=2/10: test_acc=92.32%
+[2026-04-05 11:43:40] sigma_c2c=0.10, sigma_d2d=0.05: mc_run=3/10: test_acc=91.60%
+[2026-04-05 11:43:46] sigma_c2c=0.10, sigma_d2d=0.05: mc_run=4/10: test_acc=91.68%
+[2026-04-05 11:43:52] sigma_c2c=0.10, sigma_d2d=0.05: mc_run=5/10: test_acc=91.41%
+[2026-04-05 11:43:58] sigma_c2c=0.10, sigma_d2d=0.05: mc_run=6/10: test_acc=91.57%
+[2026-04-05 11:44:04] sigma_c2c=0.10, sigma_d2d=0.05: mc_run=7/10: test_acc=91.84%
+[2026-04-05 11:44:12] sigma_c2c=0.10, sigma_d2d=0.05: mc_run=8/10: test_acc=91.30%
+[2026-04-05 11:44:19] sigma_c2c=0.10, sigma_d2d=0.05: mc_run=9/10: test_acc=91.29%
+[2026-04-05 11:44:25] sigma_c2c=0.10, sigma_d2d=0.05: mc_run=10/10: test_acc=91.64%
+[2026-04-05 11:44:25] sigma_c2c=0.10, sigma_d2d=0.05: acc=91.60% ± 0.31 (min=91.29, max=92.32)
+[2026-04-05 11:44:25] sigma_c2c=0.10, sigma_d2d=0.05: sparsity=0.00% across 42 analog layers
+[2026-04-05 11:44:31] sigma_c2c=0.15, sigma_d2d=0.05: mc_run=1/10: test_acc=91.99%
+[2026-04-05 11:44:37] sigma_c2c=0.15, sigma_d2d=0.05: mc_run=2/10: test_acc=91.88%
+[2026-04-05 11:44:45] sigma_c2c=0.15, sigma_d2d=0.05: mc_run=3/10: test_acc=91.41%
+[2026-04-05 11:44:51] sigma_c2c=0.15, sigma_d2d=0.05: mc_run=4/10: test_acc=91.76%
+[2026-04-05 11:44:57] sigma_c2c=0.15, sigma_d2d=0.05: mc_run=5/10: test_acc=91.98%
+[2026-04-05 11:45:03] sigma_c2c=0.15, sigma_d2d=0.05: mc_run=6/10: test_acc=91.68%
+[2026-04-05 11:45:11] sigma_c2c=0.15, sigma_d2d=0.05: mc_run=7/10: test_acc=91.62%
+[2026-04-05 11:45:18] sigma_c2c=0.15, sigma_d2d=0.05: mc_run=8/10: test_acc=91.46%
+[2026-04-05 11:45:24] sigma_c2c=0.15, sigma_d2d=0.05: mc_run=9/10: test_acc=91.76%
+[2026-04-05 11:45:30] sigma_c2c=0.15, sigma_d2d=0.05: mc_run=10/10: test_acc=91.63%
+[2026-04-05 11:45:30] sigma_c2c=0.15, sigma_d2d=0.05: acc=91.72% ± 0.20 (min=91.41, max=91.99)
+[2026-04-05 11:45:30] sigma_c2c=0.15, sigma_d2d=0.05: sparsity=0.00% across 42 analog layers
+[2026-04-05 11:45:36] sigma_c2c=0.20, sigma_d2d=0.05: mc_run=1/10: test_acc=91.61%
+[2026-04-05 11:45:44] sigma_c2c=0.20, sigma_d2d=0.05: mc_run=2/10: test_acc=91.71%
+[2026-04-05 11:45:50] sigma_c2c=0.20, sigma_d2d=0.05: mc_run=3/10: test_acc=91.37%
+[2026-04-05 11:45:56] sigma_c2c=0.20, sigma_d2d=0.05: mc_run=4/10: test_acc=91.50%
+[2026-04-05 11:46:03] sigma_c2c=0.20, sigma_d2d=0.05: mc_run=5/10: test_acc=91.62%
+[2026-04-05 11:46:09] sigma_c2c=0.20, sigma_d2d=0.05: mc_run=6/10: test_acc=91.48%
+[2026-04-05 11:46:17] sigma_c2c=0.20, sigma_d2d=0.05: mc_run=7/10: test_acc=91.45%
+[2026-04-05 11:46:23] sigma_c2c=0.20, sigma_d2d=0.05: mc_run=8/10: test_acc=91.64%
+[2026-04-05 11:46:29] sigma_c2c=0.20, sigma_d2d=0.05: mc_run=9/10: test_acc=91.57%
+[2026-04-05 11:46:35] sigma_c2c=0.20, sigma_d2d=0.05: mc_run=10/10: test_acc=91.85%
+[2026-04-05 11:46:35] sigma_c2c=0.20, sigma_d2d=0.05: acc=91.58% ± 0.14 (min=91.37, max=91.85)
+[2026-04-05 11:46:35] sigma_c2c=0.20, sigma_d2d=0.05: sparsity=0.00% across 42 analog layers
+[2026-04-05 11:46:41] sigma_c2c=0.00, sigma_d2d=0.10: mc_run=1/10: test_acc=91.78%
+[2026-04-05 11:46:49] sigma_c2c=0.00, sigma_d2d=0.10: mc_run=2/10: test_acc=92.15%
+[2026-04-05 11:46:56] sigma_c2c=0.00, sigma_d2d=0.10: mc_run=3/10: test_acc=91.55%
+[2026-04-05 11:47:02] sigma_c2c=0.00, sigma_d2d=0.10: mc_run=4/10: test_acc=91.68%
+[2026-04-05 11:47:08] sigma_c2c=0.00, sigma_d2d=0.10: mc_run=5/10: test_acc=91.47%
+[2026-04-05 11:47:14] sigma_c2c=0.00, sigma_d2d=0.10: mc_run=6/10: test_acc=91.70%
+[2026-04-05 11:47:22] sigma_c2c=0.00, sigma_d2d=0.10: mc_run=7/10: test_acc=91.39%
+[2026-04-05 11:47:28] sigma_c2c=0.00, sigma_d2d=0.10: mc_run=8/10: test_acc=91.78%
+[2026-04-05 11:47:34] sigma_c2c=0.00, sigma_d2d=0.10: mc_run=9/10: test_acc=91.69%
+[2026-04-05 11:47:41] sigma_c2c=0.00, sigma_d2d=0.10: mc_run=10/10: test_acc=91.55%
+[2026-04-05 11:47:41] sigma_c2c=0.00, sigma_d2d=0.10: acc=91.67% ± 0.21 (min=91.39, max=92.15)
+[2026-04-05 11:47:41] sigma_c2c=0.00, sigma_d2d=0.10: sparsity=0.00% across 42 analog layers
+[2026-04-05 11:47:47] sigma_c2c=0.02, sigma_d2d=0.10: mc_run=1/10: test_acc=91.85%
+[2026-04-05 11:47:55] sigma_c2c=0.02, sigma_d2d=0.10: mc_run=2/10: test_acc=91.73%
+[2026-04-05 11:48:01] sigma_c2c=0.02, sigma_d2d=0.10: mc_run=3/10: test_acc=91.44%
+[2026-04-05 11:48:07] sigma_c2c=0.02, sigma_d2d=0.10: mc_run=4/10: test_acc=91.97%
+[2026-04-05 11:48:13] sigma_c2c=0.02, sigma_d2d=0.10: mc_run=5/10: test_acc=92.02%
+[2026-04-05 11:48:19] sigma_c2c=0.02, sigma_d2d=0.10: mc_run=6/10: test_acc=91.66%
+[2026-04-05 11:48:27] sigma_c2c=0.02, sigma_d2d=0.10: mc_run=7/10: test_acc=91.57%
+[2026-04-05 11:48:34] sigma_c2c=0.02, sigma_d2d=0.10: mc_run=8/10: test_acc=91.77%
+[2026-04-05 11:48:40] sigma_c2c=0.02, sigma_d2d=0.10: mc_run=9/10: test_acc=91.64%
+[2026-04-05 11:48:46] sigma_c2c=0.02, sigma_d2d=0.10: mc_run=10/10: test_acc=91.80%
+[2026-04-05 11:48:46] sigma_c2c=0.02, sigma_d2d=0.10: acc=91.75% ± 0.18 (min=91.44, max=92.02)
+[2026-04-05 11:48:46] sigma_c2c=0.02, sigma_d2d=0.10: sparsity=0.00% across 42 analog layers
+[2026-04-05 11:48:52] sigma_c2c=0.05, sigma_d2d=0.10: mc_run=1/10: test_acc=91.72%
+[2026-04-05 11:49:00] sigma_c2c=0.05, sigma_d2d=0.10: mc_run=2/10: test_acc=91.62%
+[2026-04-05 11:49:06] sigma_c2c=0.05, sigma_d2d=0.10: mc_run=3/10: test_acc=91.64%
+[2026-04-05 11:49:12] sigma_c2c=0.05, sigma_d2d=0.10: mc_run=4/10: test_acc=91.70%
+[2026-04-05 11:49:18] sigma_c2c=0.05, sigma_d2d=0.10: mc_run=5/10: test_acc=91.86%
+[2026-04-05 11:49:25] sigma_c2c=0.05, sigma_d2d=0.10: mc_run=6/10: test_acc=91.50%
+[2026-04-05 11:49:33] sigma_c2c=0.05, sigma_d2d=0.10: mc_run=7/10: test_acc=91.90%
+[2026-04-05 11:49:39] sigma_c2c=0.05, sigma_d2d=0.10: mc_run=8/10: test_acc=92.03%
+[2026-04-05 11:49:45] sigma_c2c=0.05, sigma_d2d=0.10: mc_run=9/10: test_acc=91.70%
+[2026-04-05 11:49:51] sigma_c2c=0.05, sigma_d2d=0.10: mc_run=10/10: test_acc=91.40%
+[2026-04-05 11:49:51] sigma_c2c=0.05, sigma_d2d=0.10: acc=91.71% ± 0.19 (min=91.40, max=92.03)
+[2026-04-05 11:49:51] sigma_c2c=0.05, sigma_d2d=0.10: sparsity=0.00% across 42 analog layers
+[2026-04-05 11:49:59] sigma_c2c=0.08, sigma_d2d=0.10: mc_run=1/10: test_acc=91.80%
+[2026-04-05 11:50:05] sigma_c2c=0.08, sigma_d2d=0.10: mc_run=2/10: test_acc=91.82%
+[2026-04-05 11:50:11] sigma_c2c=0.08, sigma_d2d=0.10: mc_run=3/10: test_acc=92.14%
+[2026-04-05 11:50:18] sigma_c2c=0.08, sigma_d2d=0.10: mc_run=4/10: test_acc=91.58%
+[2026-04-05 11:50:24] sigma_c2c=0.08, sigma_d2d=0.10: mc_run=5/10: test_acc=91.48%
+[2026-04-05 11:50:32] sigma_c2c=0.08, sigma_d2d=0.10: mc_run=6/10: test_acc=91.56%
+[2026-04-05 11:50:38] sigma_c2c=0.08, sigma_d2d=0.10: mc_run=7/10: test_acc=91.74%
+[2026-04-05 11:50:44] sigma_c2c=0.08, sigma_d2d=0.10: mc_run=8/10: test_acc=91.69%
+[2026-04-05 11:50:50] sigma_c2c=0.08, sigma_d2d=0.10: mc_run=9/10: test_acc=91.54%
+[2026-04-05 11:50:56] sigma_c2c=0.08, sigma_d2d=0.10: mc_run=10/10: test_acc=91.83%
+[2026-04-05 11:50:56] sigma_c2c=0.08, sigma_d2d=0.10: acc=91.72% ± 0.19 (min=91.48, max=92.14)
+[2026-04-05 11:50:56] sigma_c2c=0.08, sigma_d2d=0.10: sparsity=0.00% across 42 analog layers
+[2026-04-05 11:51:04] sigma_c2c=0.10, sigma_d2d=0.10: mc_run=1/10: test_acc=91.78%
+[2026-04-05 11:51:11] sigma_c2c=0.10, sigma_d2d=0.10: mc_run=2/10: test_acc=91.50%
+[2026-04-05 11:51:17] sigma_c2c=0.10, sigma_d2d=0.10: mc_run=3/10: test_acc=91.35%
+[2026-04-05 11:51:23] sigma_c2c=0.10, sigma_d2d=0.10: mc_run=4/10: test_acc=91.62%
+[2026-04-05 11:51:29] sigma_c2c=0.10, sigma_d2d=0.10: mc_run=5/10: test_acc=91.52%
+[2026-04-05 11:51:37] sigma_c2c=0.10, sigma_d2d=0.10: mc_run=6/10: test_acc=91.62%
+[2026-04-05 11:51:43] sigma_c2c=0.10, sigma_d2d=0.10: mc_run=7/10: test_acc=91.52%
+[2026-04-05 11:51:49] sigma_c2c=0.10, sigma_d2d=0.10: mc_run=8/10: test_acc=91.62%
+[2026-04-05 11:51:56] sigma_c2c=0.10, sigma_d2d=0.10: mc_run=9/10: test_acc=91.64%
+[2026-04-05 11:52:02] sigma_c2c=0.10, sigma_d2d=0.10: mc_run=10/10: test_acc=91.60%
+[2026-04-05 11:52:02] sigma_c2c=0.10, sigma_d2d=0.10: acc=91.58% ± 0.11 (min=91.35, max=91.78)
+[2026-04-05 11:52:02] sigma_c2c=0.10, sigma_d2d=0.10: sparsity=0.00% across 42 analog layers
+[2026-04-05 11:52:10] sigma_c2c=0.15, sigma_d2d=0.10: mc_run=1/10: test_acc=91.63%
+[2026-04-05 11:52:16] sigma_c2c=0.15, sigma_d2d=0.10: mc_run=2/10: test_acc=91.69%
+[2026-04-05 11:52:22] sigma_c2c=0.15, sigma_d2d=0.10: mc_run=3/10: test_acc=92.09%
+[2026-04-05 11:52:28] sigma_c2c=0.15, sigma_d2d=0.10: mc_run=4/10: test_acc=91.45%
+[2026-04-05 11:52:34] sigma_c2c=0.15, sigma_d2d=0.10: mc_run=5/10: test_acc=91.31%
+[2026-04-05 11:52:43] sigma_c2c=0.15, sigma_d2d=0.10: mc_run=6/10: test_acc=91.88%
+[2026-04-05 11:52:49] sigma_c2c=0.15, sigma_d2d=0.10: mc_run=7/10: test_acc=91.19%
+[2026-04-05 11:52:55] sigma_c2c=0.15, sigma_d2d=0.10: mc_run=8/10: test_acc=91.90%
+[2026-04-05 11:53:01] sigma_c2c=0.15, sigma_d2d=0.10: mc_run=9/10: test_acc=91.82%
+[2026-04-05 11:53:07] sigma_c2c=0.15, sigma_d2d=0.10: mc_run=10/10: test_acc=91.94%
+[2026-04-05 11:53:07] sigma_c2c=0.15, sigma_d2d=0.10: acc=91.69% ± 0.29 (min=91.19, max=92.09)
+[2026-04-05 11:53:07] sigma_c2c=0.15, sigma_d2d=0.10: sparsity=0.00% across 42 analog layers
+[2026-04-05 11:53:15] sigma_c2c=0.20, sigma_d2d=0.10: mc_run=1/10: test_acc=91.87%
+[2026-04-05 11:53:21] sigma_c2c=0.20, sigma_d2d=0.10: mc_run=2/10: test_acc=91.70%
+[2026-04-05 11:53:27] sigma_c2c=0.20, sigma_d2d=0.10: mc_run=3/10: test_acc=91.90%
+[2026-04-05 11:53:34] sigma_c2c=0.20, sigma_d2d=0.10: mc_run=4/10: test_acc=91.49%
+[2026-04-05 11:53:40] sigma_c2c=0.20, sigma_d2d=0.10: mc_run=5/10: test_acc=91.75%
+[2026-04-05 11:53:48] sigma_c2c=0.20, sigma_d2d=0.10: mc_run=6/10: test_acc=91.39%
+[2026-04-05 11:53:54] sigma_c2c=0.20, sigma_d2d=0.10: mc_run=7/10: test_acc=91.67%
+[2026-04-05 11:54:00] sigma_c2c=0.20, sigma_d2d=0.10: mc_run=8/10: test_acc=91.82%
+[2026-04-05 11:54:06] sigma_c2c=0.20, sigma_d2d=0.10: mc_run=9/10: test_acc=92.08%
+[2026-04-05 11:54:13] sigma_c2c=0.20, sigma_d2d=0.10: mc_run=10/10: test_acc=91.38%
+[2026-04-05 11:54:13] sigma_c2c=0.20, sigma_d2d=0.10: acc=91.70% ± 0.23 (min=91.38, max=92.08)
+[2026-04-05 11:54:13] sigma_c2c=0.20, sigma_d2d=0.10: sparsity=0.00% across 42 analog layers
+[2026-04-05 11:54:21] sigma_c2c=0.00, sigma_d2d=0.15: mc_run=1/10: test_acc=91.78%
+[2026-04-05 11:54:27] sigma_c2c=0.00, sigma_d2d=0.15: mc_run=2/10: test_acc=91.95%
+[2026-04-05 11:54:33] sigma_c2c=0.00, sigma_d2d=0.15: mc_run=3/10: test_acc=91.71%
+[2026-04-05 11:54:39] sigma_c2c=0.00, sigma_d2d=0.15: mc_run=4/10: test_acc=91.46%
+[2026-04-05 11:54:47] sigma_c2c=0.00, sigma_d2d=0.15: mc_run=5/10: test_acc=91.62%
+[2026-04-05 11:54:53] sigma_c2c=0.00, sigma_d2d=0.15: mc_run=6/10: test_acc=91.41%
+[2026-04-05 11:54:59] sigma_c2c=0.00, sigma_d2d=0.15: mc_run=7/10: test_acc=91.82%
+[2026-04-05 11:55:05] sigma_c2c=0.00, sigma_d2d=0.15: mc_run=8/10: test_acc=91.80%
+[2026-04-05 11:55:11] sigma_c2c=0.00, sigma_d2d=0.15: mc_run=9/10: test_acc=91.75%
+[2026-04-05 11:55:20] sigma_c2c=0.00, sigma_d2d=0.15: mc_run=10/10: test_acc=91.80%
+[2026-04-05 11:55:20] sigma_c2c=0.00, sigma_d2d=0.15: acc=91.71% ± 0.17 (min=91.41, max=91.95)
+[2026-04-05 11:55:20] sigma_c2c=0.00, sigma_d2d=0.15: sparsity=0.00% across 42 analog layers
+[2026-04-05 11:55:26] sigma_c2c=0.02, sigma_d2d=0.15: mc_run=1/10: test_acc=91.33%
+[2026-04-05 11:55:32] sigma_c2c=0.02, sigma_d2d=0.15: mc_run=2/10: test_acc=91.83%
+[2026-04-05 11:55:38] sigma_c2c=0.02, sigma_d2d=0.15: mc_run=3/10: test_acc=91.66%
+[2026-04-05 11:55:44] sigma_c2c=0.02, sigma_d2d=0.15: mc_run=4/10: test_acc=91.80%
+[2026-04-05 11:55:52] sigma_c2c=0.02, sigma_d2d=0.15: mc_run=5/10: test_acc=91.68%
+[2026-04-05 11:55:59] sigma_c2c=0.02, sigma_d2d=0.15: mc_run=6/10: test_acc=91.51%
+[2026-04-05 11:56:05] sigma_c2c=0.02, sigma_d2d=0.15: mc_run=7/10: test_acc=91.64%
+[2026-04-05 11:56:11] sigma_c2c=0.02, sigma_d2d=0.15: mc_run=8/10: test_acc=92.12%
+[2026-04-05 11:56:17] sigma_c2c=0.02, sigma_d2d=0.15: mc_run=9/10: test_acc=91.67%
+[2026-04-05 11:56:25] sigma_c2c=0.02, sigma_d2d=0.15: mc_run=10/10: test_acc=91.67%
+[2026-04-05 11:56:25] sigma_c2c=0.02, sigma_d2d=0.15: acc=91.69% ± 0.21 (min=91.33, max=92.12)
+[2026-04-05 11:56:25] sigma_c2c=0.02, sigma_d2d=0.15: sparsity=0.00% across 42 analog layers
+[2026-04-05 11:56:31] sigma_c2c=0.05, sigma_d2d=0.15: mc_run=1/10: test_acc=91.85%
+[2026-04-05 11:56:38] sigma_c2c=0.05, sigma_d2d=0.15: mc_run=2/10: test_acc=91.84%
+[2026-04-05 11:56:44] sigma_c2c=0.05, sigma_d2d=0.15: mc_run=3/10: test_acc=91.86%
+[2026-04-05 11:56:50] sigma_c2c=0.05, sigma_d2d=0.15: mc_run=4/10: test_acc=91.60%
+[2026-04-05 11:56:58] sigma_c2c=0.05, sigma_d2d=0.15: mc_run=5/10: test_acc=91.46%
+[2026-04-05 11:57:04] sigma_c2c=0.05, sigma_d2d=0.15: mc_run=6/10: test_acc=91.54%
+[2026-04-05 11:57:10] sigma_c2c=0.05, sigma_d2d=0.15: mc_run=7/10: test_acc=91.57%
+[2026-04-05 11:57:16] sigma_c2c=0.05, sigma_d2d=0.15: mc_run=8/10: test_acc=91.34%
+[2026-04-05 11:57:23] sigma_c2c=0.05, sigma_d2d=0.15: mc_run=9/10: test_acc=91.94%
+[2026-04-05 11:57:31] sigma_c2c=0.05, sigma_d2d=0.15: mc_run=10/10: test_acc=91.14%
+[2026-04-05 11:57:31] sigma_c2c=0.05, sigma_d2d=0.15: acc=91.61% ± 0.26 (min=91.14, max=91.94)
+[2026-04-05 11:57:31] sigma_c2c=0.05, sigma_d2d=0.15: sparsity=0.00% across 42 analog layers
+[2026-04-05 11:57:37] sigma_c2c=0.08, sigma_d2d=0.15: mc_run=1/10: test_acc=91.75%
+[2026-04-05 11:57:43] sigma_c2c=0.08, sigma_d2d=0.15: mc_run=2/10: test_acc=92.05%
+[2026-04-05 11:57:49] sigma_c2c=0.08, sigma_d2d=0.15: mc_run=3/10: test_acc=91.79%
+[2026-04-05 11:57:55] sigma_c2c=0.08, sigma_d2d=0.15: mc_run=4/10: test_acc=91.67%
+[2026-04-05 11:58:03] sigma_c2c=0.08, sigma_d2d=0.15: mc_run=5/10: test_acc=91.30%
+[2026-04-05 11:58:09] sigma_c2c=0.08, sigma_d2d=0.15: mc_run=6/10: test_acc=91.46%
+[2026-04-05 11:58:16] sigma_c2c=0.08, sigma_d2d=0.15: mc_run=7/10: test_acc=91.85%
+[2026-04-05 11:58:22] sigma_c2c=0.08, sigma_d2d=0.15: mc_run=8/10: test_acc=91.73%
+[2026-04-05 11:58:29] sigma_c2c=0.08, sigma_d2d=0.15: mc_run=9/10: test_acc=91.60%
+[2026-04-05 11:58:36] sigma_c2c=0.08, sigma_d2d=0.15: mc_run=10/10: test_acc=91.71%
+[2026-04-05 11:58:36] sigma_c2c=0.08, sigma_d2d=0.15: acc=91.69% ± 0.21 (min=91.30, max=92.05)
+[2026-04-05 11:58:36] sigma_c2c=0.08, sigma_d2d=0.15: sparsity=0.00% across 42 analog layers
+[2026-04-05 11:58:42] sigma_c2c=0.10, sigma_d2d=0.15: mc_run=1/10: test_acc=92.21%
+[2026-04-05 11:58:48] sigma_c2c=0.10, sigma_d2d=0.15: mc_run=2/10: test_acc=91.72%
+[2026-04-05 11:58:54] sigma_c2c=0.10, sigma_d2d=0.15: mc_run=3/10: test_acc=91.84%
+[2026-04-05 11:59:02] sigma_c2c=0.10, sigma_d2d=0.15: mc_run=4/10: test_acc=91.58%
+[2026-04-05 11:59:09] sigma_c2c=0.10, sigma_d2d=0.15: mc_run=5/10: test_acc=91.83%
+[2026-04-05 11:59:15] sigma_c2c=0.10, sigma_d2d=0.15: mc_run=6/10: test_acc=91.59%
+[2026-04-05 11:59:21] sigma_c2c=0.10, sigma_d2d=0.15: mc_run=7/10: test_acc=91.62%
+[2026-04-05 11:59:27] sigma_c2c=0.10, sigma_d2d=0.15: mc_run=8/10: test_acc=91.98%
+[2026-04-05 11:59:35] sigma_c2c=0.10, sigma_d2d=0.15: mc_run=9/10: test_acc=91.43%
+[2026-04-05 11:59:41] sigma_c2c=0.10, sigma_d2d=0.15: mc_run=10/10: test_acc=91.60%
+[2026-04-05 11:59:41] sigma_c2c=0.10, sigma_d2d=0.15: acc=91.74% ± 0.23 (min=91.43, max=92.21)
+[2026-04-05 11:59:41] sigma_c2c=0.10, sigma_d2d=0.15: sparsity=0.00% across 42 analog layers
+[2026-04-05 11:59:47] sigma_c2c=0.15, sigma_d2d=0.15: mc_run=1/10: test_acc=91.75%
+[2026-04-05 11:59:54] sigma_c2c=0.15, sigma_d2d=0.15: mc_run=2/10: test_acc=91.35%
+[2026-04-05 12:00:00] sigma_c2c=0.15, sigma_d2d=0.15: mc_run=3/10: test_acc=91.36%
+[2026-04-05 12:00:08] sigma_c2c=0.15, sigma_d2d=0.15: mc_run=4/10: test_acc=91.40%
+[2026-04-05 12:00:14] sigma_c2c=0.15, sigma_d2d=0.15: mc_run=5/10: test_acc=91.54%
+[2026-04-05 12:00:20] sigma_c2c=0.15, sigma_d2d=0.15: mc_run=6/10: test_acc=91.63%
+[2026-04-05 12:00:26] sigma_c2c=0.15, sigma_d2d=0.15: mc_run=7/10: test_acc=91.43%
+[2026-04-05 12:00:32] sigma_c2c=0.15, sigma_d2d=0.15: mc_run=8/10: test_acc=91.77%
+[2026-04-05 12:00:40] sigma_c2c=0.15, sigma_d2d=0.15: mc_run=9/10: test_acc=91.24%
+[2026-04-05 12:00:46] sigma_c2c=0.15, sigma_d2d=0.15: mc_run=10/10: test_acc=91.37%
+[2026-04-05 12:00:46] sigma_c2c=0.15, sigma_d2d=0.15: acc=91.48% ± 0.18 (min=91.24, max=91.77)
+[2026-04-05 12:00:46] sigma_c2c=0.15, sigma_d2d=0.15: sparsity=0.00% across 42 analog layers
+[2026-04-05 12:00:53] sigma_c2c=0.20, sigma_d2d=0.15: mc_run=1/10: test_acc=91.59%
+[2026-04-05 12:00:59] sigma_c2c=0.20, sigma_d2d=0.15: mc_run=2/10: test_acc=91.79%
+[2026-04-05 12:01:05] sigma_c2c=0.20, sigma_d2d=0.15: mc_run=3/10: test_acc=92.12%
+[2026-04-05 12:01:13] sigma_c2c=0.20, sigma_d2d=0.15: mc_run=4/10: test_acc=91.35%
+[2026-04-05 12:01:19] sigma_c2c=0.20, sigma_d2d=0.15: mc_run=5/10: test_acc=91.86%
+[2026-04-05 12:01:25] sigma_c2c=0.20, sigma_d2d=0.15: mc_run=6/10: test_acc=91.32%
+[2026-04-05 12:01:31] sigma_c2c=0.20, sigma_d2d=0.15: mc_run=7/10: test_acc=91.94%
+[2026-04-05 12:01:37] sigma_c2c=0.20, sigma_d2d=0.15: mc_run=8/10: test_acc=91.63%
+[2026-04-05 12:01:46] sigma_c2c=0.20, sigma_d2d=0.15: mc_run=9/10: test_acc=91.84%
+[2026-04-05 12:01:52] sigma_c2c=0.20, sigma_d2d=0.15: mc_run=10/10: test_acc=91.65%
+[2026-04-05 12:01:52] sigma_c2c=0.20, sigma_d2d=0.15: acc=91.71% ± 0.25 (min=91.32, max=92.12)
+[2026-04-05 12:01:52] sigma_c2c=0.20, sigma_d2d=0.15: sparsity=0.00% across 42 analog layers
+[2026-04-05 12:01:58] sigma_c2c=0.00, sigma_d2d=0.20: mc_run=1/10: test_acc=91.43%
+[2026-04-05 12:02:04] sigma_c2c=0.00, sigma_d2d=0.20: mc_run=2/10: test_acc=91.90%
+[2026-04-05 12:02:10] sigma_c2c=0.00, sigma_d2d=0.20: mc_run=3/10: test_acc=91.73%
+[2026-04-05 12:02:18] sigma_c2c=0.00, sigma_d2d=0.20: mc_run=4/10: test_acc=92.00%
+[2026-04-05 12:02:24] sigma_c2c=0.00, sigma_d2d=0.20: mc_run=5/10: test_acc=91.69%
+[2026-04-05 12:02:31] sigma_c2c=0.00, sigma_d2d=0.20: mc_run=6/10: test_acc=91.60%
+[2026-04-05 12:02:37] sigma_c2c=0.00, sigma_d2d=0.20: mc_run=7/10: test_acc=91.73%
+[2026-04-05 12:02:43] sigma_c2c=0.00, sigma_d2d=0.20: mc_run=8/10: test_acc=91.46%
+[2026-04-05 12:02:51] sigma_c2c=0.00, sigma_d2d=0.20: mc_run=9/10: test_acc=91.60%
+[2026-04-05 12:02:57] sigma_c2c=0.00, sigma_d2d=0.20: mc_run=10/10: test_acc=91.62%
+[2026-04-05 12:02:57] sigma_c2c=0.00, sigma_d2d=0.20: acc=91.68% ± 0.18 (min=91.43, max=92.00)
+[2026-04-05 12:02:57] sigma_c2c=0.00, sigma_d2d=0.20: sparsity=0.00% across 42 analog layers
+[2026-04-05 12:03:03] sigma_c2c=0.02, sigma_d2d=0.20: mc_run=1/10: test_acc=91.67%
+[2026-04-05 12:03:09] sigma_c2c=0.02, sigma_d2d=0.20: mc_run=2/10: test_acc=92.02%
+[2026-04-05 12:03:15] sigma_c2c=0.02, sigma_d2d=0.20: mc_run=3/10: test_acc=91.64%
+[2026-04-05 12:03:23] sigma_c2c=0.02, sigma_d2d=0.20: mc_run=4/10: test_acc=91.63%
+[2026-04-05 12:03:30] sigma_c2c=0.02, sigma_d2d=0.20: mc_run=5/10: test_acc=91.79%
+[2026-04-05 12:03:36] sigma_c2c=0.02, sigma_d2d=0.20: mc_run=6/10: test_acc=91.62%
+[2026-04-05 12:03:42] sigma_c2c=0.02, sigma_d2d=0.20: mc_run=7/10: test_acc=91.87%
+[2026-04-05 12:03:50] sigma_c2c=0.02, sigma_d2d=0.20: mc_run=8/10: test_acc=91.93%
+[2026-04-05 12:03:56] sigma_c2c=0.02, sigma_d2d=0.20: mc_run=9/10: test_acc=91.76%
+[2026-04-05 12:04:02] sigma_c2c=0.02, sigma_d2d=0.20: mc_run=10/10: test_acc=91.49%
+[2026-04-05 12:04:02] sigma_c2c=0.02, sigma_d2d=0.20: acc=91.74% ± 0.16 (min=91.49, max=92.02)
+[2026-04-05 12:04:02] sigma_c2c=0.02, sigma_d2d=0.20: sparsity=0.00% across 42 analog layers
+[2026-04-05 12:04:08] sigma_c2c=0.05, sigma_d2d=0.20: mc_run=1/10: test_acc=91.70%
+[2026-04-05 12:04:14] sigma_c2c=0.05, sigma_d2d=0.20: mc_run=2/10: test_acc=91.57%
+[2026-04-05 12:04:23] sigma_c2c=0.05, sigma_d2d=0.20: mc_run=3/10: test_acc=91.61%
+[2026-04-05 12:04:29] sigma_c2c=0.05, sigma_d2d=0.20: mc_run=4/10: test_acc=91.50%
+[2026-04-05 12:04:35] sigma_c2c=0.05, sigma_d2d=0.20: mc_run=5/10: test_acc=91.86%
+[2026-04-05 12:04:41] sigma_c2c=0.05, sigma_d2d=0.20: mc_run=6/10: test_acc=92.11%
+[2026-04-05 12:04:47] sigma_c2c=0.05, sigma_d2d=0.20: mc_run=7/10: test_acc=91.89%
+[2026-04-05 12:04:55] sigma_c2c=0.05, sigma_d2d=0.20: mc_run=8/10: test_acc=91.32%
+[2026-04-05 12:05:01] sigma_c2c=0.05, sigma_d2d=0.20: mc_run=9/10: test_acc=91.69%
+[2026-04-05 12:05:08] sigma_c2c=0.05, sigma_d2d=0.20: mc_run=10/10: test_acc=90.94%
+[2026-04-05 12:05:08] sigma_c2c=0.05, sigma_d2d=0.20: acc=91.62% ± 0.33 (min=90.94, max=92.11)
+[2026-04-05 12:05:08] sigma_c2c=0.05, sigma_d2d=0.20: sparsity=0.00% across 42 analog layers
+[2026-04-05 12:05:14] sigma_c2c=0.08, sigma_d2d=0.20: mc_run=1/10: test_acc=91.49%
+[2026-04-05 12:05:20] sigma_c2c=0.08, sigma_d2d=0.20: mc_run=2/10: test_acc=91.76%
+[2026-04-05 12:05:28] sigma_c2c=0.08, sigma_d2d=0.20: mc_run=3/10: test_acc=91.86%
+[2026-04-05 12:05:34] sigma_c2c=0.08, sigma_d2d=0.20: mc_run=4/10: test_acc=91.62%
+[2026-04-05 12:05:40] sigma_c2c=0.08, sigma_d2d=0.20: mc_run=5/10: test_acc=91.30%
+[2026-04-05 12:05:47] sigma_c2c=0.08, sigma_d2d=0.20: mc_run=6/10: test_acc=91.96%
+[2026-04-05 12:05:53] sigma_c2c=0.08, sigma_d2d=0.20: mc_run=7/10: test_acc=91.61%
+[2026-04-05 12:06:01] sigma_c2c=0.08, sigma_d2d=0.20: mc_run=8/10: test_acc=91.68%
+[2026-04-05 12:06:07] sigma_c2c=0.08, sigma_d2d=0.20: mc_run=9/10: test_acc=91.41%
+[2026-04-05 12:06:13] sigma_c2c=0.08, sigma_d2d=0.20: mc_run=10/10: test_acc=91.48%
+[2026-04-05 12:06:13] sigma_c2c=0.08, sigma_d2d=0.20: acc=91.62% ± 0.21 (min=91.30, max=91.96)
+[2026-04-05 12:06:13] sigma_c2c=0.08, sigma_d2d=0.20: sparsity=0.00% across 42 analog layers
+[2026-04-05 12:06:19] sigma_c2c=0.10, sigma_d2d=0.20: mc_run=1/10: test_acc=91.61%
+[2026-04-05 12:06:26] sigma_c2c=0.10, sigma_d2d=0.20: mc_run=2/10: test_acc=91.53%
+[2026-04-05 12:06:34] sigma_c2c=0.10, sigma_d2d=0.20: mc_run=3/10: test_acc=91.93%
+[2026-04-05 12:06:40] sigma_c2c=0.10, sigma_d2d=0.20: mc_run=4/10: test_acc=91.88%
+[2026-04-05 12:06:46] sigma_c2c=0.10, sigma_d2d=0.20: mc_run=5/10: test_acc=91.84%
+[2026-04-05 12:06:52] sigma_c2c=0.10, sigma_d2d=0.20: mc_run=6/10: test_acc=91.69%
+[2026-04-05 12:06:58] sigma_c2c=0.10, sigma_d2d=0.20: mc_run=7/10: test_acc=91.70%
+[2026-04-05 12:07:07] sigma_c2c=0.10, sigma_d2d=0.20: mc_run=8/10: test_acc=91.84%
+[2026-04-05 12:07:13] sigma_c2c=0.10, sigma_d2d=0.20: mc_run=9/10: test_acc=91.48%
+[2026-04-05 12:07:19] sigma_c2c=0.10, sigma_d2d=0.20: mc_run=10/10: test_acc=91.32%
+[2026-04-05 12:07:19] sigma_c2c=0.10, sigma_d2d=0.20: acc=91.68% ± 0.20 (min=91.32, max=91.93)
+[2026-04-05 12:07:19] sigma_c2c=0.10, sigma_d2d=0.20: sparsity=0.00% across 42 analog layers
+[2026-04-05 12:07:25] sigma_c2c=0.15, sigma_d2d=0.20: mc_run=1/10: test_acc=91.63%
+[2026-04-05 12:07:31] sigma_c2c=0.15, sigma_d2d=0.20: mc_run=2/10: test_acc=91.90%
+[2026-04-05 12:07:39] sigma_c2c=0.15, sigma_d2d=0.20: mc_run=3/10: test_acc=91.67%
+[2026-04-05 12:07:45] sigma_c2c=0.15, sigma_d2d=0.20: mc_run=4/10: test_acc=91.95%
+[2026-04-05 12:07:52] sigma_c2c=0.15, sigma_d2d=0.20: mc_run=5/10: test_acc=91.78%
+[2026-04-05 12:07:58] sigma_c2c=0.15, sigma_d2d=0.20: mc_run=6/10: test_acc=92.04%
+[2026-04-05 12:08:05] sigma_c2c=0.15, sigma_d2d=0.20: mc_run=7/10: test_acc=91.68%
+[2026-04-05 12:08:12] sigma_c2c=0.15, sigma_d2d=0.20: mc_run=8/10: test_acc=91.47%
+[2026-04-05 12:08:18] sigma_c2c=0.15, sigma_d2d=0.20: mc_run=9/10: test_acc=91.52%
+[2026-04-05 12:08:24] sigma_c2c=0.15, sigma_d2d=0.20: mc_run=10/10: test_acc=91.67%
+[2026-04-05 12:08:24] sigma_c2c=0.15, sigma_d2d=0.20: acc=91.73% ± 0.18 (min=91.47, max=92.04)
+[2026-04-05 12:08:24] sigma_c2c=0.15, sigma_d2d=0.20: sparsity=0.00% across 42 analog layers
+[2026-04-05 12:08:30] sigma_c2c=0.20, sigma_d2d=0.20: mc_run=1/10: test_acc=91.59%
+[2026-04-05 12:08:38] sigma_c2c=0.20, sigma_d2d=0.20: mc_run=2/10: test_acc=91.71%
+[2026-04-05 12:08:45] sigma_c2c=0.20, sigma_d2d=0.20: mc_run=3/10: test_acc=91.51%
+[2026-04-05 12:08:51] sigma_c2c=0.20, sigma_d2d=0.20: mc_run=4/10: test_acc=91.67%
+[2026-04-05 12:08:57] sigma_c2c=0.20, sigma_d2d=0.20: mc_run=5/10: test_acc=91.60%
+[2026-04-05 12:09:03] sigma_c2c=0.20, sigma_d2d=0.20: mc_run=6/10: test_acc=91.78%
+[2026-04-05 12:09:11] sigma_c2c=0.20, sigma_d2d=0.20: mc_run=7/10: test_acc=91.55%
+[2026-04-05 12:09:17] sigma_c2c=0.20, sigma_d2d=0.20: mc_run=8/10: test_acc=91.93%
+[2026-04-05 12:09:23] sigma_c2c=0.20, sigma_d2d=0.20: mc_run=9/10: test_acc=91.23%
+[2026-04-05 12:09:30] sigma_c2c=0.20, sigma_d2d=0.20: mc_run=10/10: test_acc=92.00%
+[2026-04-05 12:09:30] sigma_c2c=0.20, sigma_d2d=0.20: acc=91.66% ± 0.22 (min=91.23, max=92.00)
+[2026-04-05 12:09:30] sigma_c2c=0.20, sigma_d2d=0.20: sparsity=0.00% across 42 analog layers
+[2026-04-05 12:09:36] sigma_c2c=0.00, sigma_d2d=0.30: mc_run=1/10: test_acc=91.65%
+[2026-04-05 12:09:44] sigma_c2c=0.00, sigma_d2d=0.30: mc_run=2/10: test_acc=91.42%
+[2026-04-05 12:09:50] sigma_c2c=0.00, sigma_d2d=0.30: mc_run=3/10: test_acc=91.54%
+[2026-04-05 12:09:56] sigma_c2c=0.00, sigma_d2d=0.30: mc_run=4/10: test_acc=91.71%
+[2026-04-05 12:10:02] sigma_c2c=0.00, sigma_d2d=0.30: mc_run=5/10: test_acc=91.80%
+[2026-04-05 12:10:08] sigma_c2c=0.00, sigma_d2d=0.30: mc_run=6/10: test_acc=91.74%
+[2026-04-05 12:10:17] sigma_c2c=0.00, sigma_d2d=0.30: mc_run=7/10: test_acc=91.62%
+[2026-04-05 12:10:23] sigma_c2c=0.00, sigma_d2d=0.30: mc_run=8/10: test_acc=91.94%
+[2026-04-05 12:10:29] sigma_c2c=0.00, sigma_d2d=0.30: mc_run=9/10: test_acc=91.85%
+[2026-04-05 12:10:35] sigma_c2c=0.00, sigma_d2d=0.30: mc_run=10/10: test_acc=91.32%
+[2026-04-05 12:10:35] sigma_c2c=0.00, sigma_d2d=0.30: acc=91.66% ± 0.19 (min=91.32, max=91.94)
+[2026-04-05 12:10:35] sigma_c2c=0.00, sigma_d2d=0.30: sparsity=0.00% across 42 analog layers
+[2026-04-05 12:10:41] sigma_c2c=0.02, sigma_d2d=0.30: mc_run=1/10: test_acc=91.10%
+[2026-04-05 12:10:49] sigma_c2c=0.02, sigma_d2d=0.30: mc_run=2/10: test_acc=91.68%
+[2026-04-05 12:10:56] sigma_c2c=0.02, sigma_d2d=0.30: mc_run=3/10: test_acc=91.94%
+[2026-04-05 12:11:02] sigma_c2c=0.02, sigma_d2d=0.30: mc_run=4/10: test_acc=91.54%
+[2026-04-05 12:11:08] sigma_c2c=0.02, sigma_d2d=0.30: mc_run=5/10: test_acc=92.00%
+[2026-04-05 12:11:14] sigma_c2c=0.02, sigma_d2d=0.30: mc_run=6/10: test_acc=91.75%
+[2026-04-05 12:11:22] sigma_c2c=0.02, sigma_d2d=0.30: mc_run=7/10: test_acc=92.07%
+[2026-04-05 12:11:28] sigma_c2c=0.02, sigma_d2d=0.30: mc_run=8/10: test_acc=91.97%
+[2026-04-05 12:11:34] sigma_c2c=0.02, sigma_d2d=0.30: mc_run=9/10: test_acc=91.66%
+[2026-04-05 12:11:40] sigma_c2c=0.02, sigma_d2d=0.30: mc_run=10/10: test_acc=91.42%
+[2026-04-05 12:11:40] sigma_c2c=0.02, sigma_d2d=0.30: acc=91.71% ± 0.30 (min=91.10, max=92.07)
+[2026-04-05 12:11:40] sigma_c2c=0.02, sigma_d2d=0.30: sparsity=0.00% across 42 analog layers
+[2026-04-05 12:11:47] sigma_c2c=0.05, sigma_d2d=0.30: mc_run=1/10: test_acc=92.04%
+[2026-04-05 12:11:55] sigma_c2c=0.05, sigma_d2d=0.30: mc_run=2/10: test_acc=91.56%
+[2026-04-05 12:12:01] sigma_c2c=0.05, sigma_d2d=0.30: mc_run=3/10: test_acc=91.75%
+[2026-04-05 12:12:07] sigma_c2c=0.05, sigma_d2d=0.30: mc_run=4/10: test_acc=91.55%
+[2026-04-05 12:12:13] sigma_c2c=0.05, sigma_d2d=0.30: mc_run=5/10: test_acc=91.96%
+[2026-04-05 12:12:19] sigma_c2c=0.05, sigma_d2d=0.30: mc_run=6/10: test_acc=91.71%
+[2026-04-05 12:12:27] sigma_c2c=0.05, sigma_d2d=0.30: mc_run=7/10: test_acc=91.68%
+[2026-04-05 12:12:34] sigma_c2c=0.05, sigma_d2d=0.30: mc_run=8/10: test_acc=91.79%
+[2026-04-05 12:12:40] sigma_c2c=0.05, sigma_d2d=0.30: mc_run=9/10: test_acc=91.43%
+[2026-04-05 12:12:46] sigma_c2c=0.05, sigma_d2d=0.30: mc_run=10/10: test_acc=91.51%
+[2026-04-05 12:12:46] sigma_c2c=0.05, sigma_d2d=0.30: acc=91.70% ± 0.20 (min=91.43, max=92.04)
+[2026-04-05 12:12:46] sigma_c2c=0.05, sigma_d2d=0.30: sparsity=0.00% across 42 analog layers
+[2026-04-05 12:12:53] sigma_c2c=0.08, sigma_d2d=0.30: mc_run=1/10: test_acc=91.75%
+[2026-04-05 12:13:00] sigma_c2c=0.08, sigma_d2d=0.30: mc_run=2/10: test_acc=91.96%
+[2026-04-05 12:13:06] sigma_c2c=0.08, sigma_d2d=0.30: mc_run=3/10: test_acc=91.62%
+[2026-04-05 12:13:12] sigma_c2c=0.08, sigma_d2d=0.30: mc_run=4/10: test_acc=91.61%
+[2026-04-05 12:13:18] sigma_c2c=0.08, sigma_d2d=0.30: mc_run=5/10: test_acc=92.01%
+[2026-04-05 12:13:27] sigma_c2c=0.08, sigma_d2d=0.30: mc_run=6/10: test_acc=91.82%
+[2026-04-05 12:13:33] sigma_c2c=0.08, sigma_d2d=0.30: mc_run=7/10: test_acc=91.82%
+[2026-04-05 12:13:39] sigma_c2c=0.08, sigma_d2d=0.30: mc_run=8/10: test_acc=91.37%
+[2026-04-05 12:13:45] sigma_c2c=0.08, sigma_d2d=0.30: mc_run=9/10: test_acc=91.40%
+[2026-04-05 12:13:51] sigma_c2c=0.08, sigma_d2d=0.30: mc_run=10/10: test_acc=91.35%
+[2026-04-05 12:13:51] sigma_c2c=0.08, sigma_d2d=0.30: acc=91.67% ± 0.24 (min=91.35, max=92.01)
+[2026-04-05 12:13:51] sigma_c2c=0.08, sigma_d2d=0.30: sparsity=0.00% across 42 analog layers
+[2026-04-05 12:13:59] sigma_c2c=0.10, sigma_d2d=0.30: mc_run=1/10: test_acc=91.45%
+[2026-04-05 12:14:06] sigma_c2c=0.10, sigma_d2d=0.30: mc_run=2/10: test_acc=91.74%
+[2026-04-05 12:14:12] sigma_c2c=0.10, sigma_d2d=0.30: mc_run=3/10: test_acc=92.01%
+[2026-04-05 12:14:18] sigma_c2c=0.10, sigma_d2d=0.30: mc_run=4/10: test_acc=91.66%
+[2026-04-05 12:14:24] sigma_c2c=0.10, sigma_d2d=0.30: mc_run=5/10: test_acc=91.81%
+[2026-04-05 12:14:32] sigma_c2c=0.10, sigma_d2d=0.30: mc_run=6/10: test_acc=91.42%
+[2026-04-05 12:14:38] sigma_c2c=0.10, sigma_d2d=0.30: mc_run=7/10: test_acc=91.99%
+[2026-04-05 12:14:44] sigma_c2c=0.10, sigma_d2d=0.30: mc_run=8/10: test_acc=91.36%
+[2026-04-05 12:14:51] sigma_c2c=0.10, sigma_d2d=0.30: mc_run=9/10: test_acc=91.99%
+[2026-04-05 12:14:57] sigma_c2c=0.10, sigma_d2d=0.30: mc_run=10/10: test_acc=91.58%
+[2026-04-05 12:14:57] sigma_c2c=0.10, sigma_d2d=0.30: acc=91.70% ± 0.25 (min=91.36, max=92.01)
+[2026-04-05 12:14:57] sigma_c2c=0.10, sigma_d2d=0.30: sparsity=0.00% across 42 analog layers
+[2026-04-05 12:15:05] sigma_c2c=0.15, sigma_d2d=0.30: mc_run=1/10: test_acc=92.28%
+[2026-04-05 12:15:11] sigma_c2c=0.15, sigma_d2d=0.30: mc_run=2/10: test_acc=91.65%
+[2026-04-05 12:15:17] sigma_c2c=0.15, sigma_d2d=0.30: mc_run=3/10: test_acc=91.59%
+[2026-04-05 12:15:23] sigma_c2c=0.15, sigma_d2d=0.30: mc_run=4/10: test_acc=91.86%
+[2026-04-05 12:15:29] sigma_c2c=0.15, sigma_d2d=0.30: mc_run=5/10: test_acc=91.80%
+[2026-04-05 12:15:38] sigma_c2c=0.15, sigma_d2d=0.30: mc_run=6/10: test_acc=91.82%
+[2026-04-05 12:15:44] sigma_c2c=0.15, sigma_d2d=0.30: mc_run=7/10: test_acc=92.17%
+[2026-04-05 12:15:50] sigma_c2c=0.15, sigma_d2d=0.30: mc_run=8/10: test_acc=91.86%
+[2026-04-05 12:15:56] sigma_c2c=0.15, sigma_d2d=0.30: mc_run=9/10: test_acc=91.42%
+[2026-04-05 12:16:02] sigma_c2c=0.15, sigma_d2d=0.30: mc_run=10/10: test_acc=91.88%
+[2026-04-05 12:16:02] sigma_c2c=0.15, sigma_d2d=0.30: acc=91.83% ± 0.25 (min=91.42, max=92.28)
+[2026-04-05 12:16:02] sigma_c2c=0.15, sigma_d2d=0.30: sparsity=0.00% across 42 analog layers
+[2026-04-05 12:16:10] sigma_c2c=0.20, sigma_d2d=0.30: mc_run=1/10: test_acc=92.10%
+[2026-04-05 12:16:16] sigma_c2c=0.20, sigma_d2d=0.30: mc_run=2/10: test_acc=91.88%
+[2026-04-05 12:16:22] sigma_c2c=0.20, sigma_d2d=0.30: mc_run=3/10: test_acc=91.60%
+[2026-04-05 12:16:29] sigma_c2c=0.20, sigma_d2d=0.30: mc_run=4/10: test_acc=91.66%
+[2026-04-05 12:16:35] sigma_c2c=0.20, sigma_d2d=0.30: mc_run=5/10: test_acc=91.88%
+[2026-04-05 12:16:43] sigma_c2c=0.20, sigma_d2d=0.30: mc_run=6/10: test_acc=91.44%
+[2026-04-05 12:16:49] sigma_c2c=0.20, sigma_d2d=0.30: mc_run=7/10: test_acc=91.60%
+[2026-04-05 12:16:55] sigma_c2c=0.20, sigma_d2d=0.30: mc_run=8/10: test_acc=91.94%
+[2026-04-05 12:17:01] sigma_c2c=0.20, sigma_d2d=0.30: mc_run=9/10: test_acc=91.29%
+[2026-04-05 12:17:07] sigma_c2c=0.20, sigma_d2d=0.30: mc_run=10/10: test_acc=91.35%
+[2026-04-05 12:17:07] sigma_c2c=0.20, sigma_d2d=0.30: acc=91.67% ± 0.27 (min=91.29, max=92.10)
+[2026-04-05 12:17:07] sigma_c2c=0.20, sigma_d2d=0.30: sparsity=0.00% across 42 analog layers
+[2026-04-05 12:17:08] Merged rows written: 42
+[2026-04-05 12:17:08] JSON: report_md/_gpt/json_gpt/noise_sweep_results_gpt.json
+[2026-04-05 12:17:08] CSV: report_md/_gpt/csv_gpt/noise_sweep_results_gpt.csv
+[2026-04-05 12:17:08] Sparsity CSV: report_md/_gpt/csv_gpt/activation_sparsity_gpt.csv
+[2026-04-05 12:17:08] Report: report_md/_gpt/noise_sweep_report_gpt.md
+[2026-04-05 12:17:08] Figure: paper/figures/fig9_noise_sensitivity.png

@@ -1,0 +1,2 @@
+experiment,name,dataset,num_classes,n_states,sigma_c2c,sigma_d2d,hat_training,best_test_acc,mc_mean_acc,mc_std_acc,total_time_s,epochs
+C4,C4_4bit_noise_HAT,cifar10,10,16,0.05,0.1,True,65.86,65.342,0.42199052122056,5533.255100011826,200

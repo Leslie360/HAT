@@ -1,0 +1,205 @@
+{
+  "group1": {
+    "0.5_1e-11": {
+      "gamma": 0.5,
+      "I_dark": 1e-11,
+      "I_dark_label": "10pA",
+      "acc_compensated": 89.79,
+      "acc_raw": 87.71,
+      "delta": 2.0800000000000125
+    },
+    "0.5_1e-10": {
+      "gamma": 0.5,
+      "I_dark": 1e-10,
+      "I_dark_label": "100pA",
+      "acc_compensated": 89.78,
+      "acc_raw": 87.6,
+      "delta": 2.180000000000007
+    },
+    "0.5_1e-09": {
+      "gamma": 0.5,
+      "I_dark": 1e-09,
+      "I_dark_label": "1nA",
+      "acc_compensated": 89.17,
+      "acc_raw": 87.69,
+      "delta": 1.480000000000004
+    },
+    "0.5_1e-08": {
+      "gamma": 0.5,
+      "I_dark": 1e-08,
+      "I_dark_label": "10nA",
+      "acc_compensated": 89.21,
+      "acc_raw": 87.87,
+      "delta": 1.3399999999999892
+    },
+    "0.7_1e-11": {
+      "gamma": 0.7,
+      "I_dark": 1e-11,
+      "I_dark_label": "10pA",
+      "acc_compensated": 89.51,
+      "acc_raw": 88.9,
+      "delta": 0.6099999999999994
+    },
+    "0.7_1e-10": {
+      "gamma": 0.7,
+      "I_dark": 1e-10,
+      "I_dark_label": "100pA",
+      "acc_compensated": 89.72,
+      "acc_raw": 89.24,
+      "delta": 0.480000000000004
+    },
+    "0.7_1e-09": {
+      "gamma": 0.7,
+      "I_dark": 1e-09,
+      "I_dark_label": "1nA",
+      "acc_compensated": 89.92,
+      "acc_raw": 89.11,
+      "delta": 0.8100000000000023
+    },
+    "0.7_1e-08": {
+      "gamma": 0.7,
+      "I_dark": 1e-08,
+      "I_dark_label": "10nA",
+      "acc_compensated": 89.68,
+      "acc_raw": 89.17,
+      "delta": 0.5100000000000051
+    },
+    "1.0_1e-11": {
+      "gamma": 1.0,
+      "I_dark": 1e-11,
+      "I_dark_label": "10pA",
+      "acc_compensated": 89.84,
+      "acc_raw": 89.61,
+      "delta": 0.23000000000000398
+    },
+    "1.0_1e-10": {
+      "gamma": 1.0,
+      "I_dark": 1e-10,
+      "I_dark_label": "100pA",
+      "acc_compensated": 89.61,
+      "acc_raw": 89.46,
+      "delta": 0.15000000000000568
+    },
+    "1.0_1e-09": {
+      "gamma": 1.0,
+      "I_dark": 1e-09,
+      "I_dark_label": "1nA",
+      "acc_compensated": 90.0,
+      "acc_raw": 89.7,
+      "delta": 0.29999999999999716
+    },
+    "1.0_1e-08": {
+      "gamma": 1.0,
+      "I_dark": 1e-08,
+      "I_dark_label": "10nA",
+      "acc_compensated": 89.71,
+      "acc_raw": 89.67,
+      "delta": 0.03999999999999204
+    },
+    "1.5_1e-11": {
+      "gamma": 1.5,
+      "I_dark": 1e-11,
+      "I_dark_label": "10pA",
+      "acc_compensated": 89.56,
+      "acc_raw": 88.28,
+      "delta": 1.2800000000000011
+    },
+    "1.5_1e-10": {
+      "gamma": 1.5,
+      "I_dark": 1e-10,
+      "I_dark_label": "100pA",
+      "acc_compensated": 89.57,
+      "acc_raw": 88.06,
+      "delta": 1.509999999999991
+    },
+    "1.5_1e-09": {
+      "gamma": 1.5,
+      "I_dark": 1e-09,
+      "I_dark_label": "1nA",
+      "acc_compensated": 89.89,
+      "acc_raw": 87.58,
+      "delta": 2.3100000000000023
+    },
+    "1.5_1e-08": {
+      "gamma": 1.5,
+      "I_dark": 1e-08,
+      "I_dark_label": "10nA",
+      "acc_compensated": 89.64,
+      "acc_raw": 88.21,
+      "delta": 1.4300000000000068
+    },
+    "2.0_1e-11": {
+      "gamma": 2.0,
+      "I_dark": 1e-11,
+      "I_dark_label": "10pA",
+      "acc_compensated": 89.85,
+      "acc_raw": 84.04,
+      "delta": 5.809999999999988
+    },
+    "2.0_1e-10": {
+      "gamma": 2.0,
+      "I_dark": 1e-10,
+      "I_dark_label": "100pA",
+      "acc_compensated": 89.61,
+      "acc_raw": 84.29,
+      "delta": 5.319999999999993
+    },
+    "2.0_1e-09": {
+      "gamma": 2.0,
+      "I_dark": 1e-09,
+      "I_dark_label": "1nA",
+      "acc_compensated": 89.99,
+      "acc_raw": 84.47,
+      "delta": 5.519999999999996
+    },
+    "2.0_1e-08": {
+      "gamma": 2.0,
+      "I_dark": 1e-08,
+      "I_dark_label": "10nA",
+      "acc_compensated": 89.87,
+      "acc_raw": 84.22,
+      "delta": 5.650000000000006
+    }
+  },
+  "group2": {
+    "gamma_values": [
+      0.5,
+      0.7,
+      1.0,
+      1.5,
+      2.0
+    ],
+    "x_range": [
+      0.01,
+      1.0
+    ]
+  },
+  "group3": {
+    "hat_clean": 89.84,
+    "std_clean": 95.46,
+    "hat_corrupted": {
+      "gaussian_noise": 21.58,
+      "shot_noise": 30.52,
+      "impulse_noise": 29.46,
+      "defocus_blur": 42.13,
+      "glass_blur": 20.56,
+      "motion_blur": 16.82,
+      "brightness": 86.83,
+      "contrast": 79.63,
+      "jpeg_compression": 65.99
+    },
+    "std_corrupted": {
+      "gaussian_noise": 17.74,
+      "shot_noise": 24.88,
+      "impulse_noise": 29.49,
+      "defocus_blur": 57.97,
+      "glass_blur": 22.47,
+      "motion_blur": 18.34,
+      "brightness": 93.83,
+      "contrast": 92.09,
+      "jpeg_compression": 66.7
+    },
+    "mce_hat": 56.275555555555556,
+    "mce_std": 52.94333333333333
+  }
+}

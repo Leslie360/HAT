@@ -1,0 +1,2 @@
+model,experiment,experiment_name,dataset,checkpoint_path,checkpoint_epoch,checkpoint_best_acc,sweep_type,amp_enabled,sigma_c2c,sigma_d2d,adc_bits,adc_label,eval_runs,test_loss_mean,test_acc_mean,test_acc_min,test_acc_max,test_acc_std
+tinyvit,V2,V2_hybrid_no_noise,cifar10,/home/qiaosir/projects/compute_vit/checkpoints/V2_hybrid_no_noise_best.pt,94,97.38,noise,True,0.05,0.1,,native,10,0.14884702686071397,97.39,97.39,97.39,0.0

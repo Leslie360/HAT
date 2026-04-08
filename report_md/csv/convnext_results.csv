@@ -1,0 +1,2 @@
+experiment,name,n_states,sigma_c2c,sigma_d2d,hat_training,best_test_acc,mc_mean_acc,mc_std_acc,total_time_s,epochs
+C1,C1_FP32_baseline,16,0.0,0.0,False,47.89,47.89,0.0,37.843440532684326,2

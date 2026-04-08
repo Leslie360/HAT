@@ -1,0 +1,125 @@
+============================================================
+Testing analog_layers.py
+============================================================
+
+== Test 8: STE quantize unit test ==
+  [PASS] quantize values correct
+  [PASS] STE grad = ones
+
+== Test 1: Output shape ==
+  [PASS] output shape
+  [PASS] output is finite
+
+== Test 2: Quantization levels ==
+  [PASS] n_states=4: unique G_pos <= 4
+  [PASS] n_states=8: unique G_pos <= 8
+  [PASS] n_states=16: unique G_pos <= 16
+  [PASS] n_states=64: unique G_pos <= 64
+
+== Test 3: D2D noise is fixed across forward calls ==
+  [PASS] d2d_noise unchanged
+
+== Test 4: C2C noise causes output variation ==
+  [PASS] outputs differ with C2C
+  [PASS] outputs identical without noise
+
+== Test 5: STE gradient flows ==
+  [PASS] weight.grad is not None
+  [PASS] weight.grad has non-zero entries
+  [PASS] bias.grad is not None
+
+== Test 6: Retention decay ==
+  [PASS] retention changes output
+  [PASS] decay ratio ≈ 0.6 (got 0.600)
+
+== Test 7: convert_to_hybrid ==
+  Replaced: stages.1.blocks.0.attn.qkv → AnalogLinear(128, 384)
+  Replaced: stages.1.blocks.0.attn.proj → AnalogLinear(128, 128)
+  Replaced: stages.1.blocks.0.mlp.fc1 → AnalogLinear(128, 512)
+  Replaced: stages.1.blocks.0.mlp.fc2 → AnalogLinear(512, 128)
+  Replaced: stages.1.blocks.1.attn.qkv → AnalogLinear(128, 384)
+  Replaced: stages.1.blocks.1.attn.proj → AnalogLinear(128, 128)
+  Replaced: stages.1.blocks.1.mlp.fc1 → AnalogLinear(128, 512)
+  Replaced: stages.1.blocks.1.mlp.fc2 → AnalogLinear(512, 128)
+  Replaced: stages.2.blocks.0.attn.qkv → AnalogLinear(160, 480)
+  Replaced: stages.2.blocks.0.attn.proj → AnalogLinear(160, 160)
+  Replaced: stages.2.blocks.0.mlp.fc1 → AnalogLinear(160, 640)
+  Replaced: stages.2.blocks.0.mlp.fc2 → AnalogLinear(640, 160)
+  Replaced: stages.2.blocks.1.attn.qkv → AnalogLinear(160, 480)
+  Replaced: stages.2.blocks.1.attn.proj → AnalogLinear(160, 160)
+  Replaced: stages.2.blocks.1.mlp.fc1 → AnalogLinear(160, 640)
+  Replaced: stages.2.blocks.1.mlp.fc2 → AnalogLinear(640, 160)
+  Replaced: stages.2.blocks.2.attn.qkv → AnalogLinear(160, 480)
+  Replaced: stages.2.blocks.2.attn.proj → AnalogLinear(160, 160)
+  Replaced: stages.2.blocks.2.mlp.fc1 → AnalogLinear(160, 640)
+  Replaced: stages.2.blocks.2.mlp.fc2 → AnalogLinear(640, 160)
+  Replaced: stages.2.blocks.3.attn.qkv → AnalogLinear(160, 480)
+  Replaced: stages.2.blocks.3.attn.proj → AnalogLinear(160, 160)
+  Replaced: stages.2.blocks.3.mlp.fc1 → AnalogLinear(160, 640)
+  Replaced: stages.2.blocks.3.mlp.fc2 → AnalogLinear(640, 160)
+  Replaced: stages.2.blocks.4.attn.qkv → AnalogLinear(160, 480)
+  Replaced: stages.2.blocks.4.attn.proj → AnalogLinear(160, 160)
+  Replaced: stages.2.blocks.4.mlp.fc1 → AnalogLinear(160, 640)
+  Replaced: stages.2.blocks.4.mlp.fc2 → AnalogLinear(640, 160)
+  Replaced: stages.2.blocks.5.attn.qkv → AnalogLinear(160, 480)
+  Replaced: stages.2.blocks.5.attn.proj → AnalogLinear(160, 160)
+  Replaced: stages.2.blocks.5.mlp.fc1 → AnalogLinear(160, 640)
+  Replaced: stages.2.blocks.5.mlp.fc2 → AnalogLinear(640, 160)
+  Replaced: stages.3.blocks.0.attn.qkv → AnalogLinear(320, 960)
+  Replaced: stages.3.blocks.0.attn.proj → AnalogLinear(320, 320)
+  Replaced: stages.3.blocks.0.mlp.fc1 → AnalogLinear(320, 1280)
+  Replaced: stages.3.blocks.0.mlp.fc2 → AnalogLinear(1280, 320)
+  Replaced: stages.3.blocks.1.attn.qkv → AnalogLinear(320, 960)
+  Replaced: stages.3.blocks.1.attn.proj → AnalogLinear(320, 320)
+  Replaced: stages.3.blocks.1.mlp.fc1 → AnalogLinear(320, 1280)
+  Replaced: stages.3.blocks.1.mlp.fc2 → AnalogLinear(1280, 320)
+
+Total replaced: 40 layers
+  [PASS] AnalogLinear count = 40
+  [PASS] forward pass succeeds
+  [PASS] output shape (1, 1000)
+
+== Test 13: AnalogConv2d ==
+  [PASS] AnalogConv2d output shape
+  [PASS] AnalogConv2d output finite
+  [PASS] AnalogConv2d grad flows
+  [PASS] AnalogConv2d D2D fixed
+
+== Test 14: convert_resnet_to_analog ==
+  [PASS] ResNet analog conv count > 0
+  [PASS] ResNet analog linear count = 1
+  [PASS] ResNet analog forward succeeds
+
+== Test 9: InverseGammaPreprocessor ==
+  [PASS] gamma=1.0 is identity
+  [PASS] noise_var = alpha * P_in
+  [PASS] gamma=0.5: P_in = X^2
+  [PASS] gamma=2.0: P_in = sqrt(X)
+  [PASS] batch shape preserved
+
+== Test 10: PhotocurrentSimulator ==
+  [PASS] raw mode correct
+  [PASS] compensated mode linearizes
+  [PASS] shot noise causes variation
+
+== Test 11: ADCQuantizer ==
+  [PASS] 2-bit quantization levels
+  [PASS] 8-bit max error < 1/255
+  [PASS] DNL offsets are non-zero
+  [PASS] ADC STE gradient flows
+
+== Test 12: EnergyProfiler ==
+  [PASS] analog MACs counted
+  [PASS] ADC conversions counted
+  [PASS] DAC conversions counted
+  [PASS] digital MACs counted
+  [PASS] total energy > 0
+  [PASS] summary has percentage
+  [PASS] percentages sum to ~100
+  [PASS] energy reduction > 1
+  [PASS] reset clears energy
+
+============================================================
+Results: 47 passed, 0 failed
+============================================================
+

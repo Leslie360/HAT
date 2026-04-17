@@ -1,0 +1,82 @@
+__pycache__/
+*.py[cod]
+*.so
+*.swp
+*.swo
+
+# training artifacts
+checkpoints/
+logs/
+
+# local caches and environments
+.pytest_cache/
+.mypy_cache/
+.coverage
+.DS_Store
+.ruff_cache/
+.ipynb_checkpoints/
+
+# local datasets / downloaded corpora
+data/
+data/imagenet/
+data/tiny-imagenet-200/
+
+# LaTeX build artifacts
+paper/latex_gpt/*.aux
+paper/latex_gpt/*.bbl
+paper/latex_gpt/*.blg
+paper/latex_gpt/*.fdb_latexmk
+paper/latex_gpt/*.fls
+paper/latex_gpt/*.log
+paper/latex_gpt/*.out
+paper/latex_gpt/*.synctex.gz
+paper/latex_gpt/main.pdf
+paper/latex_gpt/cover_letter.pdf
+paper/latex_gpt/supplementary_main.pdf
+
+# generated reports that should be curated before release
+report_md/_gpt/json_gpt/
+report_md/_gpt/csv_gpt/
+
+# local archive / scratch outputs
+internal/
+tmp/
+home/
+outputs/
+.vscode/
+auto_fitted_profile.json
+
+# Codex workspace
+.codex/
+
+# root-level LaTeX artifacts
+*.aux
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+cover_letter.pdf
+
+# archived coordination files
+report_md/_gpt/archive/
+
+# large binary visualizations (keep source data, regenerate images)
+report_md/_gpt/visualizations/
+report_md/_gpt/images_gpt/
+
+# generated paper figure exports
+paper/figures/*.png
+paper/figures/*.pdf
+
+# generated LaTeX-side figure exports; keep only curated static assets visible
+paper/latex_gpt/figures/*.png
+paper/latex_gpt/figures/*.pdf
+!paper/latex_gpt/figures/fig1_system_architecture.pdf
+!paper/latex_gpt/figures/fig2_weight_mapping.pdf
+!paper/latex_gpt/figures/figA.png
+!paper/latex_gpt/figures/figB.png
+!paper/latex_gpt/figures/figC.png
+!paper/latex_gpt/figures/figD.png
+!paper/latex_gpt/figures/figS1_asymmetry_concept.png
+!paper/latex_gpt/figures/figS2_nonideality.png
+!paper/latex_gpt/figures/graphical_abstract.png

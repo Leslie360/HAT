@@ -24,12 +24,12 @@ These rules apply to anything created from now on. We are deliberately **not** r
 
 ---
 
-## 2. Top-level map (13 items)
+## 2. Top-level map
 
 ```
 compute_vit/
 ├── README.md, MASTER_PLAN.md, RELEASE_CHECKLIST.md, EXPERIMENT_PROTOCOL.md   live root docs
-├── <80 .py at root>                                                            code (see §5)
+├── <81 .py at root>                                                            code (see §4)
 ├── AGENT_SYNC/             deprecated, replaced by report_md/_gpt/AGENT_SYNC_gpt.md
 ├── _archive/               ← everything retired goes here (§8)
 ├── checkpoints/            24 GB, .pt model weights, gitignored
@@ -65,7 +65,7 @@ compute_vit/
 
 ---
 
-## 4. Root Python (80 files) — grouped
+## 4. Root Python — grouped
 
 ### 4.1 Training entry points (4) — **live**
 
@@ -86,19 +86,17 @@ compute_vit/
 | `eval_fresh_instances.py` | Instance-variation sweep for Fig. 10 |
 | `eval_resnet18_checkpoints.py` | Bulk eval over `checkpoints/R*` |
 
-### 4.3 Experiment drivers — `run_*.py` (44 files, live whitelist)
+### 4.3 Experiment drivers — `run_*.py` (39 files, live whitelist)
 
-All are canonical entry points invoked from `scripts/` or documented in `EXPERIMENT_PROTOCOL.md`. Count unchanged pre/post Dispatch #7.
+All are canonical entry points invoked from `scripts/` or documented in `EXPERIMENT_PROTOCOL.md`.
 
-Families (no individual rows — see `EXPERIMENT_PROTOCOL.md`):
-- `run_crosssim_*` (7): CrossSim comparisons
-- `run_adc_*`, `run_convnext_adc_sweep.py`, `run_resnet18_adc_sweep.py`, `run_pure_digital_adc_sweep.py` (6): ADC-bit sweeps
-- `run_nl_*`, `run_layer_*`, `run_layer_wise_nl_sensitivity.py` (5): nonlinearity / layer sensitivity
-- `run_ensemble_*`, `run_ensemble_hat_ablation_FIXED.py`, `run_ensemble_hat_fixed.py` (3): HAT ablations
-- `run_ir_drop_sensitivity_v3.py` (1): IR-drop sweep (v1/v2 archived)
-- `run_retention_sensitivity.py`, `run_noise_sweep.py`, `run_device_comparison.py`, `run_contour_sweep.py`, `run_combined_nonideality.py`, `run_energy_sensitivity.py`, `run_zhang_sensitivity.py`, `run_sobol_analysis.py`, `run_statistical_validation.py`, `run_spatial_ablation.py` (10): physical/statistical sweeps
-- `run_svhn_training.py`, `run_flowers102_training.py`, `run_cifar100_fast.py`, `run_a23_experiments.py`, `run_framework_comparison.py`, `run_visualization_suite.py`, `run_error_analysis.py`, `run_adc_cliff_analysis.py`, `experiment_nonideality_sweep.py` (9): dataset / framework / misc
-- `ablation_ensemble_hat_vs_iid.py` (1): HAT vs IID ablation
+Representative families (see `EXPERIMENT_PROTOCOL.md` for the exact mapping):
+- `run_crosssim_*`: CrossSim comparisons
+- `run_adc_*`, `run_convnext_adc_sweep.py`, `run_resnet18_adc_sweep.py`, `run_pure_digital_adc_sweep.py`: ADC-bit sweeps
+- `run_nl_*`, `run_layer_*`, `run_layer_wise_nl_sensitivity.py`: nonlinearity / layer sensitivity
+- `run_ensemble_*`, `run_ensemble_hat_ablation_FIXED.py`, `run_ensemble_hat_fixed.py`: HAT ablations
+- `run_ir_drop_sensitivity_v3.py`, `run_retention_sensitivity.py`, `run_noise_sweep.py`, `run_device_comparison.py`, `run_contour_sweep.py`, `run_combined_nonideality.py`, `run_energy_sensitivity.py`, `run_zhang_sensitivity.py`, `run_sobol_analysis.py`, `run_statistical_validation.py`, `run_spatial_ablation.py`: physical/statistical sweeps
+- `run_svhn_training.py`, `run_flowers102_training.py`, `run_cifar100_fast.py`, `run_a23_experiments.py`, `run_framework_comparison.py`, `run_visualization_suite.py`, `run_error_analysis.py`, `run_adc_cliff_analysis.py`: dataset / framework / misc
 
 ### 4.4 Plotting & reporting (5) — **live**
 
@@ -124,7 +122,7 @@ Families (no individual rows — see `EXPERIMENT_PROTOCOL.md`):
 | `model_profiling.py` | Layer-wise profiling pass |
 | `tinyvit_hybrid_utils.py` | Hybrid Tiny-ViT helpers |
 
-### 4.6 Preparation / one-offs kept at root (5) — **live**
+### 4.6 Preparation / legacy-named helpers kept at root (7) — **live**
 
 | Path | Purpose | Kept because |
 |:--|:--|:--|
@@ -133,6 +131,8 @@ Families (no individual rows — see `EXPERIMENT_PROTOCOL.md`):
 | `probe_resnet_ckpts.py` | Sanity-checks `checkpoints/R*` | Referenced by release checklist |
 | `make_appendix.py` | Builds `paper/08_appendix.md` | Still called by paper build |
 | `proxy_sensitivity_sweep_gpt.py` | Proxy-parameter sweep | Cited in Discussion |
+| `experiment_nonideality_sweep.py` | Legacy-named nonideality sweep wrapper | Kept for backwards-compatible experiment entry |
+| `ablation_ensemble_hat_vs_iid.py` | Legacy-named HAT-vs-IID ablation | Kept because rebuttal-side evidence still references it |
 
 ### 4.7 Tests (12) — **live**
 
@@ -162,7 +162,7 @@ All `test_*.py` at root are the actual pytest suite. Do not move.
 | `paper/latex_gpt/sections/07_conclusion.tex` | §7 | live |
 | `paper/latex_gpt/sections/08_appendix.tex` | Appendix | live |
 | `paper/latex_gpt/refs_gpt.bib` | Single canonical bibliography | live |
-| `paper/latex_gpt/figures/` (58 files) | Compiled figures consumed by `.tex` | live |
+| `paper/latex_gpt/figures/` | Compiled figures consumed by `.tex` | live |
 | `paper/latex_gpt/main.pdf` | 16pp, submission | live (frozen build output) |
 | `paper/latex_gpt/supplementary_main.pdf` | 16pp, submission | live |
 | `paper/latex_gpt/cover_letter.pdf` | 2pp | live |
@@ -190,14 +190,12 @@ All `test_*.py` at root are the actual pytest suite. Do not move.
 | `paper/FIGURE_PLAN.md` | Figure plan, referenced by `plot_paper_figures.py` | live |
 | `paper/FIG1_FIG2_BRIEF_gpt.md` | Fig 1/2 design notes | frozen |
 | `paper/FIGURE_CAPTION_DRAFTS_gpt.md` | Caption drafts | frozen |
-| `paper/BANANA_JOURNAL_SCHEMATIC_PROMPTS_20260408_gpt.md` | Nano-banana prompts for Fig 1 | frozen |
-| `paper/NANOBANANA_SCHEMATIC_PROMPTS_gpt.md` | Nano-banana prompts | frozen |
-| `paper/PERPLEXITY_TARGETED_CITATION_PROMPTS_gpt.md` | Citation-hunt prompts | frozen |
 | `paper/参考文献库.md` | Chinese bibliography notes (superseded by `refs_gpt.bib`) | frozen |
 | `paper/plot_paper_figures.py` | Canonical plotter for paper figures | live |
 | `paper/fix_plots.py` | One-shot plot fix | live (referenced) |
 | `paper/generate_schematic_figures_gpt.py` | Fig 1/2 schematic generator | live |
-| `paper/figures/` (42 files) | Source PNG/PDF before latex_gpt/figures/ copy | live |
+| `paper/figures/` (43 files) | Source PNG/PDF before latex_gpt/figures/ copy | live |
+| `_archive/paper-drafts/BANANA_JOURNAL_SCHEMATIC_PROMPTS_20260408_gpt.md`, `NANOBANANA_SCHEMATIC_PROMPTS_gpt.md`, `PERPLEXITY_TARGETED_CITATION_PROMPTS_gpt.md` | Archived prompt-only figure ideation notes | archive |
 
 ---
 
@@ -217,12 +215,13 @@ All `test_*.py` at root are the actual pytest suite. Do not move.
 | `report_md/convnext_experiment_report.md` | ConvNeXt report | frozen |
 | `report_md/physical_noise_report.md` | Noise report | frozen |
 | `report_md/resnet18_experiment_report.md` | ResNet-18 report | frozen |
+| `report_md/Organic_Optoelectronic_Task_Simulation.pdf`, `report_md/Organic_Optoelectronic_Task_Simulation_(2).pptx` | Current internal presentation assets | live |
 | `report_md/*.pdf` (literature PDFs) | Reference papers | reference |
 | `report_md/*.docx` | Doctor's 8th-draft manuscript | reference |
 | `report_md/csv/`, `report_md/images/`, `report_md/json/` | Report assets | live |
 | `report_md/参考文献2.md` | Chinese ref notes | frozen |
 
-### 6.2 `report_md/_gpt/` — live coordination (70 .md files)
+### 6.2 `report_md/_gpt/` — live coordination
 
 Canonical live coordination layer. Key entries:
 
@@ -268,19 +267,20 @@ To list all: `ls report_md/_gpt/*.md`.
 
 ---
 
-## 8. `_archive/` — everything retired (259 files) — **DO NOT READ UNLESS DEBUGGING HISTORY**
+## 8. `_archive/` — everything retired (growing tree) — **DO NOT READ UNLESS DEBUGGING HISTORY**
 
 All reversible via `mv`. Nothing here is on the submission path.
 
 | Subdir | Count | Contents |
 |:--|:--:|:--|
 | `_archive/coordination/` | 179 | Historical dispatches, handoffs, broadcasts, Kimi KX reports, GEMINI_* tasks, old AGENT_SYNC backups |
+| `_archive/figure-drafts/` | 12 | Intermediate `banana` / `clean` / `crop` / `enhanced` figure-art variants |
 | `_archive/historical-dirs/` | 2 | `npj_submission_package/` (pre-NC repositioning), `paper_zh/` (Chinese mirror) |
 | `_archive/logs-pre-april04/` | 11 | `logs/*.log` dated 2026-04-03 |
 | `_archive/old-experiment-data/` | 5 | `exp_asymmetry_*.txt`, `PAPER_METHODS_PARAGRAPH.txt`, `tex_diff.txt` |
 | `_archive/old-experiment-json/` | 19 | Old JSON dumps (adc_nonideality, ir_drop, retention, combined_stress, etc.) |
-| `_archive/paper-drafts/` | 1 | `仿真.tex` (stray Chinese LaTeX scratch) |
-| `_archive/scripts-oneshot/` | 33 | `append_*`, `check_resnet_*`, `debug_*`, `diagnose_*`, `watch_*`, `experiment_asymmetry_*` |
+| `_archive/paper-drafts/` | 4 | `仿真.tex` plus retired prompt-only paper notes |
+| `_archive/scripts-oneshot/` | 51 | one-shot helper scripts and dated shell queues retired from the repo root |
 | `_archive/scripts-versions/` | 9 | Older `_v1`/`_v2` siblings superseded by current `_v3`/`_FIXED`/`_fixed` |
 
 ---
@@ -302,14 +302,13 @@ All reversible via `mv`. Nothing here is on the submission path.
 | Path | Purpose | Status |
 |:--|:--|:--|
 | `scripts/monitor_kimi_ablation_outputs.py` | Watcher for Kimi ablation runs | live |
-| `scripts/_gpt/` (~16 shell + py) | Multi-seed runners, queue scripts, p13 monitors | live |
-| `scripts/archive_20260417/` | 33 files — **already moved to `_archive/scripts-oneshot/`** via git mv | (dir should be gone) |
+| `scripts/_gpt/` (17 shell + py) | Multi-seed runners, queue scripts, p13 monitors | live |
 | `docs/DEVICE_PROFILE_GUIDE.md` | How to build a device profile | live |
 | `docs/EXPERIMENT_REGISTRY.md` | Registry of every experiment | live |
 | `docs/PHYSICS_STACK.md` | Physics assumptions | live |
 | `docs/README.md`, `docs/REPO_HYGIENE_AND_GIT_POLICY.md` | Policy docs | live |
 | `logs/` | `.log` dumps. Pre-2026-04-04 moved to `_archive/logs-pre-april04/`. Active logs remain | live (gitignored) |
-| `tmp/` | Scratch. Everything here is disposable | scratch (gitignored) |
+| `/home/qiaosir/projects/tmp/` | Cross-repo scratch outside `compute_vit/`. Everything there is disposable | scratch (gitignored by location) |
 | `internal/` | Local scratch, gitignored | scratch |
 | `AGENT_SYNC/` (dir) | 7 files, 2026-04-15 artifact. Superseded by `report_md/_gpt/AGENT_SYNC_gpt.md` but kept in place — has a script caller noted in TIDY_MANIFEST | frozen (do not rename) |
 
@@ -327,7 +326,7 @@ All reversible via `mv`. Nothing here is on the submission path.
 
 ## 12. Invariants (these must always hold)
 
-- `compute_vit/run_*.py` count = **44** (experiment driver whitelist).
+- `compute_vit/run_*.py` count = **39** (experiment driver whitelist).
 - `paper/latex_gpt/main.pdf` = 16 pages, `supplementary_main.pdf` = 16 pages, `cover_letter.pdf` = 2 pages.
 - `paper/latex_gpt/refs_gpt.bib` is the only bibliography. Do not create a second `.bib`.
 - `paper/CANONICAL_RESULT_LOCK_gpt.md` holds the one source of truth for all numbers in the paper. Never edit a number in `.tex` without updating the lock file first.

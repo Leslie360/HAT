@@ -27,6 +27,26 @@ Use flat timestamped blocks under the matching section.
 - ...
 ```
 
+## [Codex] 2026-04-17 11:20
+### Topic
+- Implemented the repo-state convergence plan without touching manuscript results or making a commit.
+
+### Status
+- Updated `/home/qiaosir/projects/compute_vit/PROJECT_INDEX.md` to remove stale counts/paths and reflect the current archive/layout.
+- Updated `/home/qiaosir/projects/compute_vit/.gitignore` with safe ignore rules for generated figures, outputs, datasets, `.vscode/`, and local fit scratch.
+- Moved 18 root-level `run_*.sh` queue launchers into `/home/qiaosir/projects/compute_vit/_archive/scripts-oneshot/`.
+- Moved 12 intermediate `banana` / `clean` / `crop` / `enhanced` figure-art files into `/home/qiaosir/projects/compute_vit/_archive/figure-drafts/`.
+- Wrote `/home/qiaosir/projects/compute_vit/report_md/_gpt/READY_TO_STAGE_SHORTLIST_20260417.md`.
+
+### Evidence
+- `/home/qiaosir/projects/compute_vit/report_md/_gpt/PROJECT_INDEX_AUDIT_20260417.md`
+- `/home/qiaosir/projects/compute_vit/report_md/_gpt/GIT_HYGIENE_LEDGER_20260417.md`
+- `/home/qiaosir/projects/compute_vit/report_md/_gpt/READY_TO_STAGE_SHORTLIST_20260417.md`
+
+### Notes
+- Blocked draft files under `paper/` remain in place because live `paper/latex_gpt/*.md` callers still reference them.
+- `git status --short` dropped from 388 lines at the ledger baseline to 349 lines after the ignore/archive pass.
+
 Rules:
 - Do not delete earlier blocks; append new ones.
 - Prefer exact file paths and concrete metrics.
@@ -20496,3 +20516,38 @@ The earlier wording about `第三页/a/小图.txt` has been tightened.
 
 ### Not committed
 User reviews `PROJECT_INDEX.md` and the `_archive/` layout first. Commit is gated on user approval.
+[Codex] 2026-04-17 10:58
+
+- Executed Claude Dispatch #9 (`CODEX_DISPATCH_20260417_index_gpt.md`) through the requested no-edit/no-commit scope.
+- Wrote `/home/qiaosir/projects/compute_vit/report_md/_gpt/PROJECT_INDEX_AUDIT_20260417.md`.
+  - Section verdicts: `§3 ✅`, `§4 ⚠️`, `§5 ⚠️`, `§6 ⚠️`, `§7 ✅`, `§8 ⚠️`, `§9 ✅`, `§10 ⚠️`, `§12 ⚠️`.
+  - Hard mismatches found: root `*.py` count `81` not `80`; `run_*.py` count `39` not `44`; `paper/figures/` count `43` not `42`; `report_md/_gpt/*.md` count `71` pre-audit, not `70`; `_archive/` file count `270` not `259`; `_archive/paper-drafts/` now `4` not `1`; `scripts/archive_20260417/` row points to a removed path; repo-local `tmp/` path does not exist.
+- TX-32 follow-through:
+  - Moved safe prompt files into `/home/qiaosir/projects/compute_vit/_archive/paper-drafts/`:
+    - `paper/BANANA_JOURNAL_SCHEMATIC_PROMPTS_20260408_gpt.md`
+    - `paper/NANOBANANA_SCHEMATIC_PROMPTS_gpt.md`
+    - `paper/PERPLEXITY_TARGETED_CITATION_PROMPTS_gpt.md`
+  - Blocked and therefore kept in `paper/`: `01`–`07` draft markdowns, `PAPER_OUTLINE.md`, `FIG1_FIG2_BRIEF_gpt.md`, `FIGURE_CAPTION_DRAFTS_gpt.md`, `参考文献库.md` because live `paper/latex_gpt/*.md` callers still reference them. TX-32 status marked `⛔` in `CLAUDE_TASK_gpt.md` for that reason.
+- Wrote `/home/qiaosir/projects/compute_vit/report_md/_gpt/GIT_HYGIENE_LEDGER_20260417.md`.
+  - Bucket sizes from current `git status --porcelain=v1 -z`: `TRACK 204`, `IGNORE 91`, `ARCHIVE 93` (`TOTAL 388`).
+  - No `git add`, no commit, no `.gitignore` edits performed.
+
+[Codex] 2026-04-17 11:22
+
+- Completed the follow-through packaging pass for the cleanup/paper split; still no staging and no commit.
+- Repo-organization changes now in place:
+  - Updated `/home/qiaosir/projects/compute_vit/PROJECT_INDEX.md` to reflect the real post-archive layout and counts.
+  - Added `/home/qiaosir/projects/compute_vit/.gitignore` rules for local data/output clutter and generated paper figure exports while preserving curated static assets under `paper/latex_gpt/figures/`.
+  - Archived 12 intermediate figure-art variants to `/home/qiaosir/projects/compute_vit/_archive/figure-drafts/`.
+  - Archived 18 root-level one-shot `run_*.sh` launchers to `/home/qiaosir/projects/compute_vit/_archive/scripts-oneshot/`.
+- Wrote packaging / handoff docs:
+  - `/home/qiaosir/projects/compute_vit/report_md/_gpt/READY_TO_STAGE_SHORTLIST_20260417.md`
+  - `/home/qiaosir/projects/compute_vit/report_md/_gpt/COMMIT_TRACKS_20260417.md`
+- `COMMIT_TRACKS_20260417.md` now defines two explicit staging bundles:
+  - `cleanup-only`
+  - `paper/core`
+- Validation status:
+  - All 91 ordinary `git add` paths listed in `COMMIT_TRACKS_20260417.md` were checked and exist.
+  - The "missing" entries in the cleanup deletion block are intentional `git add -u` removals, not document errors.
+  - Key cleanup assets verified present: `.gitignore`, `PROJECT_INDEX.md`, `PROJECT_INDEX_AUDIT_20260417.md`, `GIT_HYGIENE_LEDGER_20260417.md`, `READY_TO_STAGE_SHORTLIST_20260417.md`, `COMMIT_TRACKS_20260417.md`, `_archive/figure-drafts/`, `_archive/paper-drafts/`, `_archive/scripts-oneshot/`.
+- Result: the repo now has a reproducible split plan for "organization cleanup" vs "paper/core manuscript" without requiring any additional interpretation at staging time.

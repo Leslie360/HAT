@@ -629,3 +629,15 @@ Status: COMPLETE
 | TX-30b | Triage residual `report_md/_gpt/archive/` (md/, json/, loose txt) into `_archive/coordination/`, `_archive/old-experiment-json/`, `_archive/old-experiment-data/` | ✅ |
 | TX-30c | Write `compute_vit/PROJECT_INDEX.md` master registry + naming convention + invariants | ✅ |
 | TX-30d | Commit TX-30a..c | ⏳ pending user approval |
+
+---
+
+## 2026-04-17 — Dispatch #9 (assigned to Codex)
+
+Brief: `CODEX_DISPATCH_20260417_index_gpt.md`
+
+| TX | Description | Status |
+|:--|:--|:--:|
+| TX-31 | Audit `PROJECT_INDEX.md` §3-§12 against reality; output `PROJECT_INDEX_AUDIT_20260417.md` with ✅/⚠️/⛔ per section and recommended diffs (no apply) | ✅ |
+| TX-32 | Move remaining `paper/` draft-superseded `.md` (01-07, outline, prompt files, Chinese bib) to `_archive/paper-drafts/` after grep cross-ref check; KEEP 08_appendix.md (regen target), CANONICAL_RESULT_LOCK, FIGURE_CAPTION_LOCK, FIGURE_PLAN | ⛔ |
+| TX-33 | Classify 252 untracked + 68 unstaged into TRACK / IGNORE / ARCHIVE; write `GIT_HYGIENE_LEDGER_20260417.md` report only (no `git add`, no commit, no `.gitignore` edits) | ✅ |

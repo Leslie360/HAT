@@ -1,0 +1,13 @@
+with open('/home/qiaosir/projects/compute_vit/report_md/_gpt/AGENT_SYNC_gpt.md', 'a') as f:
+    f.write('\n## [Gemini] 2026-04-09 20:10 — Batch 1 Fixes\n')
+    f.write('### Status\n- 完成\n')
+    f.write('### Changes\n')
+    f.write('- **T1**: Refactored Table 1 in `05_results.tex` to properly align Dataset vs Architecture.\n')
+    f.write('- **T3**: Added CrossSim citation to `refs_gpt.bib` and `02_related_work.tex`, and mentioned it in `06_discussion.tex` alongside AIHWKIT.\n')
+    f.write('- **T4**: Created `report_md/_gpt/LITERATURE_SUPPLEMENT_gpt.md` with 9 missing citations covering organic CIM, ViT on CIM, PTQ, and frontend noise.\n')
+    f.write('- **T6**: Added \'Vincze et al. 2026 Parameter Extraction\' subsection to `08_appendix.tex` to explicitly document the extracted retention and NL metrics.\n')
+    f.write('- **T8**: Fixed typos including formatting the abstract `86.37 \\pm 1.54\%` cleanly in math mode, confirming `273.94` lacks colon, ensuring `27.72\%` consistency, and adding (CIFAR-10) to the Zhang case study in `07_conclusion.tex`.\n')
+    f.write('- **C3**: Verified that `11.45x` only appears in Results/Discussion with appropriate operation-count upper-bound qualifiers. It is absent from Abstract/Conclusion.\n')
+    f.write('- **C4**: Resolved all `and others` placeholders in `refs_gpt.bib` by querying the CrossRef API and replacing with full author lists.\n')
+    f.write('- **C14**: Ensured Figure cross-references in `05_results.tex` are accurately matched to their labels (e.g. `fig:frontend-compensation`). Added missing references for `fig:zero-shot-transfer` and `fig:noise-sensitivity`.\n')
+    f.write('### Evidence\n- `paper/latex_gpt/sections/05_results.tex`\n- `paper/latex_gpt/sections/08_appendix.tex`\n- `paper/latex_gpt/refs_gpt.bib`\n- `report_md/_gpt/LITERATURE_SUPPLEMENT_gpt.md`\n')

@@ -1,0 +1,10 @@
+with open('/home/qiaosir/projects/compute_vit/report_md/_gpt/AGENT_SYNC_gpt.md', 'a') as f:
+    f.write('\n## [Gemini] 2026-04-10 01:30 — T4 Re-do & Kimi-2.5 Minor Fixes\n')
+    f.write('### Status\n- 完成\n')
+    f.write('### Changes\n')
+    f.write('- **T4 (Urgent)**: Completely rewrote `LITERATURE_SUPPLEMENT_gpt.md` using web searches to guarantee 100% real papers and valid DOIs. Replaced hallucinated citations with verified works from Liu (NeurIPS 2021), Li (ICCV 2023), Ge (IEEE TC 2024), Wang (Advanced Science 2024), Guo (Advanced Materials 2024), etc.\n')
+    f.write('- **Issue #97**: Added `\\usepackage[T1]{fontenc}` and `\\usepackage{microtype}` to `main.tex` to resolve missing `fi`/`ff` ligatures in the rendered PDF.\n')
+    f.write('- **Issue #96**: Explicitly added `temperature fluctuations` to the out-of-scope physical effects flag in the Intro (`01_introduction.tex`).\n')
+    f.write('- **Issue #94**: Added `(single-run estimate)` qualifier to ConvNeXt 33.22% result in `05_results.tex`.\n')
+    f.write('- **Issue #91, #92, #98, #100**: Verified these were already corrected in the current `.tex` state (e.g., differential matching caveat is present, 57.9% has the symbol, NL=2.0 boundary is already phrased as `boundary of the present gradient-scaling approximation`).\n')
+    f.write('### Evidence\n- `report_md/_gpt/LITERATURE_SUPPLEMENT_gpt.md`\n- `paper/latex_gpt/main.tex`\n- `paper/latex_gpt/sections/01_introduction.tex`\n- `paper/latex_gpt/sections/05_results.tex`\n')

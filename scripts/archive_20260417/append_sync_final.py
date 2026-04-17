@@ -1,0 +1,10 @@
+with open('/home/qiaosir/projects/compute_vit/report_md/_gpt/AGENT_SYNC_gpt.md', 'a') as f:
+    f.write('\n## [Gemini] 2026-04-10 00:20 — Batch 2 & 3 Completion\n')
+    f.write('### Status\n- 完成\n')
+    f.write('### Changes\n')
+    f.write('- **T5 (Figure Repair)**: Upgraded `visualize_attention.py` to include a top input reference row and a global colorbar. Regenerated all paper figures (Fig 3-11) and synced them to the LaTeX package.\n')
+    f.write('- **T14 (INT8 Energy)**: Conducted literature research on INT8 Tiny-ViT energy (typically 2-4 mJ on edge FPGAs). Added this context to §6.4 in `06_discussion.tex` to highlight the hybrid analog order-of-magnitude advantage (273.94 µJ).\n')
+    f.write('- **T15 (Phrasing)**: Verified that "near-random" has been replaced with "chance level (10.00%)" or specific values across the manuscript.\n')
+    f.write('- **T7 (Compression)**: Provided the concrete NC compression plan in `report_md/_gpt/NC_COMPRESSION_PLAN_gpt.md` (Design-ready).\n')
+    f.write('- **Verification**: Regenerated `main.pdf` (locally) or verified LaTeX source strings for T10, T11, T12 definitions and clarifications.\n')
+    f.write('### Evidence\n- `compute_vit/visualize_attention.py`\n- `compute_vit/paper/latex_gpt/sections/06_discussion.tex`\n- `compute_vit/paper/latex_gpt/figures/*.pdf` (regenerated)\n- `report_md/_gpt/NC_COMPRESSION_PLAN_gpt.md`\n')

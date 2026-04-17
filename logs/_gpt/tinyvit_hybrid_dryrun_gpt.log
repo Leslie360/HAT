@@ -1,20 +1,36 @@
-[2026-04-07 11:41:55] Device: cuda
-[2026-04-07 11:41:55] Mode: train
-[2026-04-07 11:41:55] Experiments: ['V4']
-[2026-04-07 11:41:55] AMP requested: True, active: True
+[2026-04-08 16:56:38] Device: cuda
+[2026-04-08 16:56:38] Mode: dry-run
+[2026-04-08 16:56:38] Experiments: ['V4']
+[2026-04-08 16:56:38] AMP requested: False, active: False
+[2026-04-08 16:56:39] ======================================================================
+[2026-04-08 16:56:39] Tiny-ViT Hybrid Dry-Run
+[2026-04-08 16:56:39] ======================================================================
+[2026-04-08 16:56:39] Model: tiny_vit_5m_224
+[2026-04-08 16:56:39] Reference experiment: V4 / V4_hybrid_standard_noise_hat
+[2026-04-08 16:56:39] Tracked layers: 99
+[2026-04-08 16:56:39] Total arrays (diff pair): 812
+[2026-04-08 16:56:39] Total devices: 13,303,808
+[2026-04-08 16:56:39] Estimated hybrid energy: 273.9383 µJ
+[2026-04-08 16:56:39] Dry-run report: report_md/_gpt/tinyvit_hybrid_dryrun_report_gpt.md
 
-[2026-04-07 11:41:56] ======================================================================
-[2026-04-07 11:41:56] Experiment V4: V4_hybrid_standard_noise_hat
-[2026-04-07 11:41:56]   hybrid=True, noise=True, C2C=0.05, D2D=0.1, HAT=True
-[2026-04-07 11:41:56]   amp=on
-[2026-04-07 11:41:56] ======================================================================
-[2026-04-07 11:41:56]   Ensemble HAT active: Resampled D2D mismatch for 42 analog modules.
-[2026-04-07 11:42:54]   Epoch   0/100: train_loss=1.2172, train_acc=56.02%, test_acc=65.37% (best=65.37%), lr=0.000500
-[2026-04-07 11:59:07]   Epoch  19/100: train_loss=0.1304, train_acc=95.47%, test_acc=87.95% (best=87.95%), lr=0.000457
-[2026-04-07 12:16:13]   Epoch  39/100: train_loss=0.0508, train_acc=98.20%, test_acc=88.53% (best=88.78%), lr=0.000335
-[2026-04-07 12:33:21]   Epoch  59/100: train_loss=0.0178, train_acc=99.40%, test_acc=89.09% (best=89.69%), lr=0.000180
-[2026-04-07 12:50:23]   Epoch  79/100: train_loss=0.0029, train_acc=99.90%, test_acc=90.59% (best=90.98%), lr=0.000052
-[2026-04-07 13:07:26]   Epoch  99/100: train_loss=0.0006, train_acc=99.99%, test_acc=90.63% (best=91.13%), lr=0.000000
-[2026-04-07 13:07:26]   Finished. Best accuracy: 91.13% at epoch 94; checkpoint=checkpoints/_ensemble/V4_hybrid_standard_noise_hat_best.pt
-[2026-04-07 13:07:26] Training finished for 1 experiment(s).
-[2026-04-07 13:07:26] Result markdown: report_md/_gpt/v4_ensemble_report_gpt.md
+[2026-04-08 16:56:39] Experiment matrix V1-V7:
+[2026-04-08 16:56:39] | Exp | Hybrid | Noise | C2C | D2D | HAT | Physical FE | Retention |
+[2026-04-08 16:56:39] |:---:|:------:|:-----:|:---:|:---:|:---:|:-----------:|:---------:|
+[2026-04-08 16:56:39] | V1 | no | off | 0.0 | 0.0 | no | no | off |
+[2026-04-08 16:56:39] | V2 | yes | off | 0.0 | 0.0 | no | no | off |
+[2026-04-08 16:56:39] | V3 | yes | on | 0.05 | 0.1 | no | no | off |
+[2026-04-08 16:56:39] | V4 | yes | on | 0.05 | 0.1 | yes | no | off |
+[2026-04-08 16:56:39] | V5 | yes | on | 0.1 | 0.2 | yes | no | off |
+[2026-04-08 16:56:39] | V6 | yes | on | 0.05 | 0.1 | yes | yes | off |
+[2026-04-08 16:56:39] | V7 | yes | on | 0.05 | 0.1 | yes | no | 1000s |
+[2026-04-08 16:56:39] | V8 | yes | on | 0.05 | 0.1 | yes | no | 1000s |
+
+[2026-04-08 16:56:39] Top analog layers:
+[2026-04-08 16:56:39]   patch_embed.conv1.conv: M=32, N=27, arrays=2, batch_tokens=12544
+[2026-04-08 16:56:39]   patch_embed.conv2.conv: M=64, N=288, arrays=6, batch_tokens=3136
+[2026-04-08 16:56:39]   stages.1.blocks.0.attn.qkv: M=384, N=128, arrays=6, batch_tokens=784
+[2026-04-08 16:56:39]   stages.1.blocks.0.attn.proj: M=128, N=128, arrays=2, batch_tokens=784
+[2026-04-08 16:56:39]   stages.1.blocks.0.mlp.fc1: M=512, N=128, arrays=8, batch_tokens=784
+[2026-04-08 16:56:39]   stages.1.blocks.0.mlp.fc2: M=128, N=512, arrays=8, batch_tokens=784
+[2026-04-08 16:56:39]   stages.1.blocks.1.attn.qkv: M=384, N=128, arrays=6, batch_tokens=784
+[2026-04-08 16:56:39]   stages.1.blocks.1.attn.proj: M=128, N=128, arrays=2, batch_tokens=784

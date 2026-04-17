@@ -1,0 +1,56 @@
+{
+  "model": "ResNet-18",
+  "dataset": "CIFAR-100",
+  "checkpoint": "checkpoints/resnet18_cifar100/R4_4bit_noise_HAT_best.pt",
+  "results": [
+    {
+      "adc_bits": 2,
+      "n_states": 4,
+      "description": "2-bit (4 levels)",
+      "mean_accuracy": 1.0,
+      "std_accuracy": 0.0
+    },
+    {
+      "adc_bits": 3,
+      "n_states": 8,
+      "description": "3-bit (8 levels)",
+      "mean_accuracy": 1.0,
+      "std_accuracy": 0.0
+    },
+    {
+      "adc_bits": 4,
+      "n_states": 16,
+      "description": "4-bit (16 levels)",
+      "mean_accuracy": 1.0,
+      "std_accuracy": 0.0
+    },
+    {
+      "adc_bits": 5,
+      "n_states": 32,
+      "description": "5-bit (32 levels)",
+      "mean_accuracy": 1.0,
+      "std_accuracy": 0.0
+    },
+    {
+      "adc_bits": 6,
+      "n_states": 64,
+      "description": "6-bit (64 levels)",
+      "mean_accuracy": 1.0,
+      "std_accuracy": 0.0
+    },
+    {
+      "adc_bits": 7,
+      "n_states": 128,
+      "description": "7-bit (128 levels)",
+      "mean_accuracy": 1.0,
+      "std_accuracy": 0.0
+    },
+    {
+      "adc_bits": 8,
+      "n_states": 256,
+      "description": "8-bit (256 levels)",
+      "mean_accuracy": 1.0,
+      "std_accuracy": 0.0
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "target_layer": "stages.3.blocks.0.attn",
+  "samples": [
+    {
+      "index": 0,
+      "label_name": "cat",
+      "predictions": {
+        "V1": "cat",
+        "V3": "truck",
+        "V4": "cat",
+        "V6": "cat"
+      },
+      "mean_entropy": {
+        "V1": 3.3079,
+        "V3": 3.5996,
+        "V4": 2.8189,
+        "V6": 3.1663
+      }
+    },
+    {
+      "index": 23,
+      "label_name": "truck",
+      "predictions": {
+        "V1": "truck",
+        "V3": "truck",
+        "V4": "truck",
+        "V6": "cat"
+      },
+      "mean_entropy": {
+        "V1": 3.42,
+        "V3": 3.6145,
+        "V4": 3.1245,
+        "V6": 3.1333
+      }
+    },
+    {
+      "index": 37,
+      "label_name": "automobile",
+      "predictions": {
+        "V1": "truck",
+        "V3": "truck",
+        "V4": "truck",
+        "V6": "dog"
+      },
+      "mean_entropy": {
+        "V1": 3.3974,
+        "V3": 3.6013,
+        "V4": 3.2558,
+        "V6": 2.974
+      }
+    }
+  ],
+  "figure_path": "paper/figures/fig_attention_maps.png",
+  "difference_figure_path": "paper/figures/fig_attention_differences.png"
+}

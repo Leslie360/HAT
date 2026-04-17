@@ -1,0 +1,61 @@
+% !TeX program = tectonic
+\documentclass[11pt,a4paper]{letter}
+\usepackage[margin=1in]{geometry}
+\usepackage[colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue]{hyperref}
+\usepackage{enumitem}
+\setlist{nosep}
+
+\signature{Songqiao Li}
+\address{OrgOptEdge Research\\Email: songqiao.li@orgoptedge.ai}
+
+\begin{document}
+
+\begin{letter}{Editorial Office\\Nature Communications\\Springer Nature}
+
+\opening{Dear Editors,}
+
+\textbf{Submission:} Profile-Driven Hardware Simulation for Organic Optoelectronic Edge Vision
+
+\textbf{Article Type:} Article
+
+\textbf{Reviewer Information:} Suggested and excluded reviewers will be provided through the submission system.
+
+\vspace{0.5em}
+\textbf{Editorial Summary (150 words)}
+
+We present a prospective first-order behavioral simulation study of organic optoelectronic CIM inference for edge vision. The manuscript is motivated by a practical systems question: how far currently reported organic-device characteristics can support modern deployment before full array hardware is available. Across Tiny-ViT-5M and complementary CNN baselines, we find that standard hardware-aware training overfits a single fixed device instance. An Ensemble HAT strategy that resamples D2D masks raises fresh-instance accuracy from 10.00\% to 86.37$\pm$1.54\%. A profile-driven simulation interface then translates literature-derived device assumptions into task-level risk, including a literature-anchored OPECT case study reaching 88.53\% zero-shot transfer accuracy. We therefore position the framework as a materials-to-system decision aid rather than as a chip-predictive emulator, and we state energy advantages only as first-order system-level upper bounds prior to routed-chip implementation. To further anchor this scope, the revision also includes shared-regime sanity checks against AIHWKIT and CrossSim, framing the present workflow as an organic-specific complement rather than as a replacement for mature inorganic simulators.
+
+\vspace{0.5em}
+\textbf{Why Nature Communications?}
+
+This work sits at the intersection of materials science, machine learning systems, and emerging computing paradigms---a strong fit for Nature Communications' cross-disciplinary readership. We provide a PyTorch-native prospective simulation methodology that enables materials researchers to evaluate device assumptions on modern vision tasks before full hardware closure. The Ensemble HAT contribution (multi-instance training for D2D robustness) represents a systems-level insight with implications beyond organic devices, while the profile-substitution interface offers a reusable route from reported device metrics to deployment-oriented evaluation.
+
+\vspace{0.5em}
+\textbf{Key Contributions}
+
+\begin{enumerate}
+    \item Ensemble HAT: training-time D2D resampling raises fresh-instance accuracy from chance level (10\%) to 86.37$\pm$1.54\%
+    \item Profile-driven, PyTorch-native behavioral simulator for organic optoelectronic CIM with explicit device-profile substitution
+    \item Hybrid analog/digital deployment decomposition demonstrated on Tiny-ViT, ConvNeXt, and ResNet backbones
+    \item Approximation-scoped nonlinear-write stress test: $NL=2.0$ remains unrecovered at 27.72$\pm$0.82\% under the present gradient-scaling surrogate
+    \item Literature-profile case study (Zhang 2025 OPECT) illustrating cross-paper profile transfer within a shared workflow
+\end{enumerate}
+
+\vspace{0.5em}
+\textbf{Transparency Disclosures}
+
+\begin{itemize}
+    \item \textbf{Preprint:} None; this work is submitted exclusively to Nature Communications.
+    \item \textbf{Prior Publication:} None; the framework was developed for this submission.
+    \item \textbf{Code Availability:} A reviewer-accessible archive matching the submission package will be provided at submission; a curated public release will be finalized at acceptance.
+    \item \textbf{Source Data:} Source-data tables for plotted figures and summary statistics will be supplied for editorial review at submission and released publicly at acceptance.
+    \item \textbf{Competing Interests:} The authors declare no competing interests.
+\end{itemize}
+
+\vspace{0.5em}
+The manuscript is currently 16 pages (including figures) with a 15-page supplementary information document. All datasets are publicly available. All key quantitative claims carry error bars from multiple Monte Carlo runs or training seeds, and auxiliary single-run controls are explicitly labeled as such.
+
+\closing{Sincerely,}
+
+\end{letter}
+\end{document}

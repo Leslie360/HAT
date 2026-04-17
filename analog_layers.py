@@ -63,10 +63,82 @@ class AnalogLinearConfig:
     inference_time: float = 0.0  # seconds since programming
     retention_recalibrate_scale: bool = False  # recompute digital scale after retention decay
     retention_scales_d2d: bool = False  # decay stored D2D conductance mismatch with the same factor
+    retention_state_dependent: bool = False  # high-conductance states decay faster
 
     # Control flags
     noise_enabled: bool = True   # Master switch for noise injection
     restore_weight_scale: bool = False  # Recover digital weight scale after conductance-domain ops
+    asymmetry_factor: float = 0.0  # Asymmetry between G_pos and G_neg (0.0 to 1.0)
+    ir_drop_factor: float = 0.0    # IR drop factor (0.0 to 0.03)
+    sneak_factor: float = 0.0      # Sneak path factor (0.0 to 0.02)
+    inl_table: Optional[torch.Tensor] = None  # Non-uniform conductance lookup table
+
+    def __post_init__(self):
+        self.noise_mode = str(self.noise_mode).lower().strip()
+        if not (-1.0 < self.asymmetry_factor < 1.0):
+             raise ValueError(f"AnalogLinearConfig.asymmetry_factor must be in (-1, 1), got {self.asymmetry_factor}")
+        if not (0.0 <= self.ir_drop_factor <= 1.0):
+             raise ValueError(f"AnalogLinearConfig.ir_drop_factor must be in [0, 1], got {self.ir_drop_factor}")
+        if not (0.0 <= self.sneak_factor <= 1.0):
+             raise ValueError(f"AnalogLinearConfig.sneak_factor must be in [0, 1], got {self.sneak_factor}")
+        if self.n_states < 2:
+            raise ValueError(f"AnalogLinearConfig.n_states must be >= 2, got {self.n_states}")
+        if self.G_min <= 0:
+            raise ValueError(f"AnalogLinearConfig.G_min must be > 0, got {self.G_min}")
+        if self.G_max <= self.G_min:
+            raise ValueError(
+                f"AnalogLinearConfig.G_max must be > G_min ({self.G_min}), got {self.G_max}"
+            )
+        if self.sigma_c2c < 0 or self.sigma_d2d < 0:
+            raise ValueError("AnalogLinearConfig sigma_c2c and sigma_d2d must be non-negative")
+        if self.noise_mode not in {"uniform", "proportional"}:
+            raise ValueError(
+                f"AnalogLinearConfig.noise_mode must be 'uniform' or 'proportional', got {self.noise_mode}"
+            )
+        if self.tau_1 <= 0 or self.tau_2 <= 0:
+            raise ValueError(
+                f"AnalogLinearConfig.tau_1 and tau_2 must be > 0, got {self.tau_1}, {self.tau_2}"
+            )
+        if not (0.0 <= self.A_0 <= 1.0):
+            raise ValueError(f"AnalogLinearConfig.A_0 must be in [0, 1], got {self.A_0}")
+        if self.inference_time < 0:
+            raise ValueError(
+                f"AnalogLinearConfig.inference_time must be >= 0, got {self.inference_time}"
+            )
+        if self.inl_table is not None:
+            table = torch.as_tensor(self.inl_table, dtype=torch.float32)
+            if table.ndim != 1 or table.numel() < 2:
+                raise ValueError("AnalogLinearConfig.inl_table must be a 1D tensor/list with >= 2 entries")
+            if not torch.isfinite(table).all():
+                raise ValueError("AnalogLinearConfig.inl_table must contain only finite values")
+            if not bool(torch.all(table[1:] > table[:-1]).item()):
+                raise ValueError("AnalogLinearConfig.inl_table must be strictly increasing")
+            self.inl_table = table.clone()
+
+
+def _require_positive_int(name: str, value: int):
+    if not isinstance(value, int) or value <= 0:
+        raise ValueError(f"{name} must be a positive integer, got {value!r}")
+
+
+def _normalize_positive_2tuple(name: str, value, allow_zero: bool = False):
+    if isinstance(value, tuple):
+        items = value
+    else:
+        items = (value, value)
+    if len(items) != 2:
+        raise ValueError(f"{name} must be an int or 2-tuple, got {value!r}")
+    normalized = []
+    for item in items:
+        if not isinstance(item, int):
+            raise ValueError(f"{name} entries must be integers, got {value!r}")
+        if allow_zero:
+            if item < 0:
+                raise ValueError(f"{name} entries must be >= 0, got {value!r}")
+        elif item <= 0:
+            raise ValueError(f"{name} entries must be > 0, got {value!r}")
+        normalized.append(item)
+    return tuple(normalized)
 
 
 # ─────────────────────────────────────────────
@@ -83,7 +155,8 @@ class StraightThroughQuantize(torch.autograd.Function):
     @staticmethod
     def forward(ctx, x: torch.Tensor, n_levels: int,
                 x_min: float, x_max: float,
-                nl_ltp: float = 1.0, nl_ltd: float = -1.0) -> torch.Tensor:
+                nl_ltp: float = 1.0, nl_ltd: float = -1.0,
+                inl_table: Optional[torch.Tensor] = None) -> torch.Tensor:
         eps = 1e-8
         scale = x_max - x_min + eps
         # Clamp to valid range
@@ -93,12 +166,28 @@ class StraightThroughQuantize(torch.autograd.Function):
         ctx.x_max = float(x_max)
         ctx.nl_ltp = float(nl_ltp)
         ctx.nl_ltd = float(nl_ltd)
-        # Normalize to [0, 1]
-        x_norm = (x_clamped - x_min) / scale
-        # Quantize to n_levels discrete values
-        x_quant = torch.round(x_norm * (n_levels - 1)) / (n_levels - 1)
-        # Denormalize back to [x_min, x_max]
-        return x_quant * scale + x_min
+
+        if inl_table is not None:
+            # Nearest-neighbor lookup in the INL table.
+            # Assume inl_table is a 1D tensor of shape [n_levels].
+            # We must find the index that minimizes |x_clamped - inl_table[i]|.
+            # Reshape for broadcasting
+            # x_clamped: [*, 1], inl_table: [1, n_levels]
+            x_flat = x_clamped.flatten()
+            # This can be memory-intensive for large tensors.
+            # Using torch.bucketize or similar might be better if inl_table is sorted.
+            # If not sorted, we can use:
+            dist = torch.abs(x_flat.unsqueeze(1) - inl_table.unsqueeze(0))
+            indices = torch.argmin(dist, dim=1)
+            x_quant_flat = inl_table[indices]
+            return x_quant_flat.view_as(x_clamped)
+        else:
+            # Normalize to [0, 1]
+            x_norm = (x_clamped - x_min) / scale
+            # Quantize to n_levels discrete values
+            x_quant = torch.round(x_norm * (n_levels - 1)) / (n_levels - 1)
+            # Denormalize back to [x_min, x_max]
+            return x_quant * scale + x_min
 
     @staticmethod
     def backward(ctx, grad_output: torch.Tensor):
@@ -129,14 +218,15 @@ class StraightThroughQuantize(torch.autograd.Function):
 
         grad_input = torch.where(grad_output >= 0, grad_output * ltp_scale, grad_output * ltd_scale)
         # No gradient for quantizer hyperparameters.
-        return grad_input, None, None, None, None, None
+        return grad_input, None, None, None, None, None, None
 
 
 def ste_quantize(x: torch.Tensor, n_levels: int,
                  x_min: float, x_max: float,
-                 nl_ltp: float = 1.0, nl_ltd: float = -1.0) -> torch.Tensor:
+                 nl_ltp: float = 1.0, nl_ltd: float = -1.0,
+                 inl_table: Optional[torch.Tensor] = None) -> torch.Tensor:
     """Convenience wrapper for StraightThroughQuantize."""
-    return StraightThroughQuantize.apply(x, n_levels, x_min, x_max, nl_ltp, nl_ltd)
+    return StraightThroughQuantize.apply(x, n_levels, x_min, x_max, nl_ltp, nl_ltd, inl_table)
 
 
 def _init_sparsity_state(module: nn.Module):
@@ -257,6 +347,8 @@ class AnalogLinear(nn.Module):
     def __init__(self, in_features: int, out_features: int,
                  bias: bool = True, config: Optional[AnalogLinearConfig] = None):
         super().__init__()
+        _require_positive_int("in_features", in_features)
+        _require_positive_int("out_features", out_features)
         self.in_features = in_features
         self.out_features = out_features
         self.config = config or AnalogLinearConfig()
@@ -323,8 +415,35 @@ class AnalogLinear(nn.Module):
             G_neg = cfg.G_min + W_neg_norm * G_range
 
             # Quantize to discrete conductance levels
-            G_pos = ste_quantize(G_pos, cfg.n_states, cfg.G_min, cfg.G_max, cfg.NL_LTP, cfg.NL_LTD)
-            G_neg = ste_quantize(G_neg, cfg.n_states, cfg.G_min, cfg.G_max, cfg.NL_LTP, cfg.NL_LTD)
+            G_pos = ste_quantize(G_pos, cfg.n_states, cfg.G_min, cfg.G_max, cfg.NL_LTP, cfg.NL_LTD, cfg.inl_table)
+            G_neg = ste_quantize(G_neg, cfg.n_states, cfg.G_min, cfg.G_max, cfg.NL_LTP, cfg.NL_LTD, cfg.inl_table)
+
+            # Apply asymmetry (if any) with offset correction
+            if cfg.asymmetry_factor != 0.0:
+                G_pos = G_pos * (1.0 + cfg.asymmetry_factor)
+                G_neg = G_neg * (1.0 - cfg.asymmetry_factor)
+                # Subtract the constant DC bias: G_min*(1+alpha) - G_min*(1-alpha) = 2*G_min*alpha
+                offset = 2.0 * cfg.G_min * cfg.asymmetry_factor
+                G_pos = G_pos - offset
+
+            # Apply IR drop (position-dependent conductance reduction)
+            if cfg.ir_drop_factor > 0.0:
+                # Simplified model: random drop per device based on distance
+                # In a real array, this would be a function of (row, col)
+                ir_drop_pos = torch.rand_like(G_pos) * cfg.ir_drop_factor
+                ir_drop_neg = torch.rand_like(G_neg) * cfg.ir_drop_factor
+                G_pos = G_pos * (1.0 - ir_drop_pos)
+                G_neg = G_neg * (1.0 - ir_drop_neg)
+
+            # Apply Sneak path (leakage current)
+            if cfg.sneak_factor > 0.0:
+                # Model as random additive noise relative to G_max
+                sneak_noise_pos = torch.randn_like(G_pos) * cfg.sneak_factor * cfg.G_max
+                sneak_noise_neg = torch.randn_like(G_neg) * cfg.sneak_factor * cfg.G_max
+                # Clamp to 10% of G_max to keep it realistic
+                limit = cfg.G_max * 0.1
+                G_pos = G_pos + sneak_noise_pos.clamp(-limit, limit)
+                G_neg = G_neg + sneak_noise_neg.clamp(-limit, limit)
 
         return G_pos, G_neg
 
@@ -354,10 +473,15 @@ class AnalogLinear(nn.Module):
         if not cfg.retention_enabled or cfg.inference_time <= 0:
             return G_pos, G_neg
 
-        decay_factor = _retention_decay_factor(cfg)
-
-        G_pos_decayed = cfg.G_min + (G_pos - cfg.G_min) * decay_factor
-        G_neg_decayed = cfg.G_min + (G_neg - cfg.G_min) * decay_factor
+        if cfg.retention_state_dependent:
+            decay_pos = _retention_decay_factor(cfg, G_pos)
+            decay_neg = _retention_decay_factor(cfg, G_neg)
+            G_pos_decayed = cfg.G_min + (G_pos - cfg.G_min) * decay_pos
+            G_neg_decayed = cfg.G_min + (G_neg - cfg.G_min) * decay_neg
+        else:
+            decay_factor = _retention_decay_factor(cfg)
+            G_pos_decayed = cfg.G_min + (G_pos - cfg.G_min) * decay_factor
+            G_neg_decayed = cfg.G_min + (G_neg - cfg.G_min) * decay_factor
 
         return G_pos_decayed, G_neg_decayed
 
@@ -455,12 +579,23 @@ class AnalogConv2d(nn.Module):
                  groups: int = 1, bias: bool = True,
                  config: Optional[AnalogLinearConfig] = None):
         super().__init__()
+        _require_positive_int("in_channels", in_channels)
+        _require_positive_int("out_channels", out_channels)
+        _require_positive_int("groups", groups)
+        self.kernel_size = _normalize_positive_2tuple("kernel_size", kernel_size)
+        self.stride = _normalize_positive_2tuple("stride", stride)
+        self.padding = _normalize_positive_2tuple("padding", padding, allow_zero=True)
+        self.dilation = _normalize_positive_2tuple("dilation", dilation)
+        if in_channels % groups != 0:
+            raise ValueError(
+                f"in_channels ({in_channels}) must be divisible by groups ({groups})"
+            )
+        if out_channels % groups != 0:
+            raise ValueError(
+                f"out_channels ({out_channels}) must be divisible by groups ({groups})"
+            )
         self.in_channels = in_channels
         self.out_channels = out_channels
-        self.kernel_size = kernel_size if isinstance(kernel_size, tuple) else (kernel_size, kernel_size)
-        self.stride = stride if isinstance(stride, tuple) else (stride, stride)
-        self.padding = padding if isinstance(padding, tuple) else (padding, padding)
-        self.dilation = dilation if isinstance(dilation, tuple) else (dilation, dilation)
         self.groups = groups
         self.config = config or AnalogLinearConfig()
 
@@ -511,8 +646,36 @@ class AnalogConv2d(nn.Module):
             G_range = cfg.G_max - cfg.G_min
             G_pos = cfg.G_min + W_pos_norm * G_range
             G_neg = cfg.G_min + W_neg_norm * G_range
-            G_pos = ste_quantize(G_pos, cfg.n_states, cfg.G_min, cfg.G_max, cfg.NL_LTP, cfg.NL_LTD)
-            G_neg = ste_quantize(G_neg, cfg.n_states, cfg.G_min, cfg.G_max, cfg.NL_LTP, cfg.NL_LTD)
+            G_pos = ste_quantize(G_pos, cfg.n_states, cfg.G_min, cfg.G_max, cfg.NL_LTP, cfg.NL_LTD, cfg.inl_table)
+            G_neg = ste_quantize(G_neg, cfg.n_states, cfg.G_min, cfg.G_max, cfg.NL_LTP, cfg.NL_LTD, cfg.inl_table)
+
+            # Apply asymmetry (if any) with offset correction
+            if cfg.asymmetry_factor != 0.0:
+                G_pos = G_pos * (1.0 + cfg.asymmetry_factor)
+                G_neg = G_neg * (1.0 - cfg.asymmetry_factor)
+                # Subtract the constant DC bias: G_min*(1+alpha) - G_min*(1-alpha) = 2*G_min*alpha
+                offset = 2.0 * cfg.G_min * cfg.asymmetry_factor
+                G_pos = G_pos - offset
+
+            # Apply IR drop (position-dependent conductance reduction)
+            if cfg.ir_drop_factor > 0.0:
+                # Simplified model: random drop per device based on distance
+                # In a real array, this would be a function of (row, col)
+                ir_drop_pos = torch.rand_like(G_pos) * cfg.ir_drop_factor
+                ir_drop_neg = torch.rand_like(G_neg) * cfg.ir_drop_factor
+                G_pos = G_pos * (1.0 - ir_drop_pos)
+                G_neg = G_neg * (1.0 - ir_drop_neg)
+
+            # Apply Sneak path (leakage current)
+            if cfg.sneak_factor > 0.0:
+                # Model as random additive noise relative to G_max
+                sneak_noise_pos = torch.randn_like(G_pos) * cfg.sneak_factor * cfg.G_max
+                sneak_noise_neg = torch.randn_like(G_neg) * cfg.sneak_factor * cfg.G_max
+                # Clamp to 10% of G_max to keep it realistic
+                limit = cfg.G_max * 0.1
+                G_pos = G_pos + sneak_noise_pos.clamp(-limit, limit)
+                G_neg = G_neg + sneak_noise_neg.clamp(-limit, limit)
+
         return G_pos, G_neg
 
     def _conductance_to_weight_scale(self, W: torch.Tensor,
@@ -535,10 +698,17 @@ class AnalogConv2d(nn.Module):
         cfg = self.config
         if not cfg.retention_enabled or cfg.inference_time <= 0:
             return G_pos, G_neg
-        decay_pos = _retention_decay_factor(cfg, G_pos)
-        decay_neg = _retention_decay_factor(cfg, G_neg)
-        G_pos_d = cfg.G_min + (G_pos - cfg.G_min) * decay_pos
-        G_neg_d = cfg.G_min + (G_neg - cfg.G_min) * decay_neg
+
+        if cfg.retention_state_dependent:
+            decay_pos = _retention_decay_factor(cfg, G_pos)
+            decay_neg = _retention_decay_factor(cfg, G_neg)
+            G_pos_d = cfg.G_min + (G_pos - cfg.G_min) * decay_pos
+            G_neg_d = cfg.G_min + (G_neg - cfg.G_min) * decay_neg
+        else:
+            decay_factor = _retention_decay_factor(cfg)
+            G_pos_d = cfg.G_min + (G_pos - cfg.G_min) * decay_factor
+            G_neg_d = cfg.G_min + (G_neg - cfg.G_min) * decay_factor
+
         return G_pos_d, G_neg_d
 
     def _apply_noise(self, G_pos, G_neg):

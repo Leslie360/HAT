@@ -22,7 +22,7 @@ import torchvision
 import torchvision.transforms as transforms
 
 from report_asset_paths import asset_path
-from train_tinyvit import DATASET_STATS, RunLogger, build_model, get_v_experiment_configs
+from train_tinyvit import DATASET_STATS, build_model, get_v_experiment_configs
 
 
 DEFAULT_JSON_PATH = asset_path("report_md/_gpt", "json", "attention_maps_gpt.json")
@@ -30,8 +30,43 @@ DEFAULT_MD_PATH = "report_md/_gpt/attention_maps_gpt.md"
 DEFAULT_FIGURE_PATH = "paper/figures/fig_attention_maps.png"
 DEFAULT_DIFF_PATH = "paper/figures/fig_attention_differences.png"
 DEFAULT_LOG_PATH = "logs/_gpt/visualize_attention_gpt.log"
-DEFAULT_IMAGE_INDICES = [0, 11, 23, 37]
+DEFAULT_IMAGE_INDICES = [0, 23, 37]
 DEFAULT_EXPERIMENT_ORDER = ["V1", "V3", "V4", "V6"]
+
+plt.rcParams.update({
+    "pdf.fonttype": 42,
+    "ps.fonttype": 42,
+    "figure.dpi": 300,
+    "savefig.dpi": 300,
+    "font.family": "serif",
+    "font.serif": ["STIXGeneral", "DejaVu Serif"],
+    "font.style": "normal",
+    "font.size": 8,
+    "axes.titlesize": 8,
+    "axes.titleweight": "semibold",
+    "axes.labelsize": 8,
+    "legend.fontsize": 7,
+    "xtick.labelsize": 7,
+    "ytick.labelsize": 7,
+    "mathtext.fontset": "stix",
+    "mathtext.default": "regular",
+})
+
+
+class RunLogger:
+    """Minimal local logger to avoid coupling visualization to training internals."""
+
+    def __init__(self, log_path: str):
+        self.log_path = log_path
+        ensure_parent_dir(log_path)
+        self._fh = open(log_path, "w", encoding="utf-8")
+
+    def log(self, message: str):
+        self._fh.write(f"{message}\n")
+        self._fh.flush()
+
+    def close(self):
+        self._fh.close()
 
 
 def ensure_parent_dir(path: Optional[str]):
@@ -40,6 +75,14 @@ def ensure_parent_dir(path: Optional[str]):
     parent = os.path.dirname(path)
     if parent:
         os.makedirs(parent, exist_ok=True)
+
+
+def save_figure(fig, output_path: str, **kwargs):
+    kwargs.setdefault("dpi", 300)
+    fig.savefig(output_path, **kwargs)
+    root, ext = os.path.splitext(output_path)
+    if ext.lower() == ".png":
+        fig.savefig(f"{root}.pdf", **kwargs)
 
 
 def get_eval_transform():
@@ -181,12 +224,13 @@ def extract_attention_map(model, target_layer: str, image_tensor: torch.Tensor,
     return attn_map, prediction, mean_entropy
 
 
-def overlay_heatmap(ax, image_np: np.ndarray, heatmap: np.ndarray, title: str, row_label: Optional[str] = None):
+def overlay_heatmap(ax, image_np: np.ndarray, heatmap: np.ndarray, title: str = "", row_label: Optional[str] = None):
     ax.imshow(image_np)
     ax.imshow(heatmap, cmap="magma", alpha=0.45, interpolation="bilinear")
     ax.set_xticks([])
     ax.set_yticks([])
-    ax.set_title(title, fontsize=10)
+    if title:
+        ax.set_title(title, fontsize=9.5, pad=4)
     if row_label is not None:
         ax.set_ylabel(row_label, rotation=90, fontsize=11)
 
@@ -194,33 +238,43 @@ def overlay_heatmap(ax, image_np: np.ndarray, heatmap: np.ndarray, title: str, r
 def plot_attention_grid(samples: List[dict], output_path: str):
     ensure_parent_dir(output_path)
     rows = DEFAULT_EXPERIMENT_ORDER
-    fig, axes = plt.subplots(len(rows), len(samples), figsize=(3.3 * len(samples), 3.0 * len(rows)))
+    # Add one extra row for input image reference
+    fig, axes = plt.subplots(len(rows) + 1, len(samples), figsize=(3.9 * len(samples), 2.9 * (len(rows) + 1)))
     if len(samples) == 1:
-        axes = np.array(axes).reshape(len(rows), 1)
-
+        axes = axes.reshape(len(rows) + 1, 1)
+    
     for col, sample in enumerate(samples):
+        # Top row: Input reference
+        ax_top = axes[0, col]
+        ax_top.imshow(sample["image_np"])
+        ax_top.set_title(f"Input: {sample['label_name']} (id {sample['index']})", fontsize=10)
+        ax_top.set_xticks([])
+        ax_top.set_yticks([])
+        if col == 0:
+            ax_top.set_ylabel("Original", rotation=90, fontsize=11, labelpad=10)
+
         for row_idx, exp_id in enumerate(rows):
-            pred_label = sample["predictions"][exp_id]
-            class_name = sample["label_name"]
-            title = f"{class_name} → {pred_label}"
-            row_label = exp_id if col == 0 else None
             overlay_heatmap(
-                axes[row_idx, col],
+                axes[row_idx + 1, col],
                 sample["image_np"],
                 sample["maps"][exp_id],
-                title=title,
-                row_label=row_label,
+                row_label=exp_id if col == 0 else None
             )
 
-    fig.suptitle("Attention map degradation and recovery under analog noise")
-    fig.savefig(output_path, bbox_inches="tight")
+    # Add a global colorbar
+    cbar_ax = fig.add_axes([0.93, 0.15, 0.02, 0.7])
+    sm = plt.cm.ScalarMappable(cmap="magma", norm=plt.Normalize(vmin=0, vmax=1))
+    fig.colorbar(sm, cax=cbar_ax, label="Attention Intensity")
+
+    fig.subplots_adjust(top=0.94, bottom=0.06, left=0.1, right=0.91, wspace=0.05, hspace=0.2)
+    save_figure(fig, output_path, bbox_inches="tight")
     plt.close(fig)
 
 
 def plot_difference_grid(samples: List[dict], output_path: str):
     ensure_parent_dir(output_path)
     rows = [("V3", "|V3 - V1|"), ("V4", "|V4 - V1|"), ("V6", "|V6 - V1|")]
-    fig, axes = plt.subplots(len(rows), len(samples), figsize=(3.3 * len(samples), 3.0 * len(rows)))
+    fig, axes = plt.subplots(len(rows), len(samples), figsize=(3.9 * len(samples), 2.9 * len(rows)))
     if len(samples) == 1:
         axes = np.array(axes).reshape(len(rows), 1)
 
@@ -228,17 +282,14 @@ def plot_difference_grid(samples: List[dict], output_path: str):
         baseline = sample["maps"]["V1"]
         for row_idx, (exp_id, label) in enumerate(rows):
             diff = np.abs(sample["maps"][exp_id] - baseline)
-            row_label = label if col == 0 else None
             overlay_heatmap(
                 axes[row_idx, col],
                 sample["image_np"],
                 diff,
-                title=sample["label_name"],
-                row_label=row_label,
             )
 
-    fig.suptitle("Attention distortion relative to the digital baseline")
-    fig.savefig(output_path, bbox_inches="tight")
+    fig.subplots_adjust(top=0.95, bottom=0.04, wspace=0.03, hspace=0.06)
+    save_figure(fig, output_path, bbox_inches="tight")
     plt.close(fig)
 
 
@@ -283,6 +334,7 @@ def export_metadata(samples: List[dict], json_path: str, md_path: str,
                 "index": sample["index"],
                 "label_name": sample["label_name"],
                 "predictions": sample["predictions"],
+                "mean_entropy": sample.get("mean_entropy", {}),
             }
             for sample in samples
         ],
@@ -361,9 +413,10 @@ def main():
                 "image_np": image_np,
                 "maps": {},
                 "predictions": {},
+                "mean_entropy": {},
             }
             for exp_id, model in models.items():
-                attn_map, pred_idx = extract_attention_map(
+                attn_map, pred_idx, mean_entropy = extract_attention_map(
                     model,
                     target_layer=args.target_layer,
                     image_tensor=image_tensor,
@@ -371,6 +424,7 @@ def main():
                 )
                 sample_record["maps"][exp_id] = attn_map
                 sample_record["predictions"][exp_id] = dataset.classes[pred_idx]
+                sample_record["mean_entropy"][exp_id] = round(float(mean_entropy), 4)
             samples.append(sample_record)
 
         plot_attention_grid(samples, args.figure_path)

@@ -72,9 +72,9 @@ Draft submission-ready captions now live in `paper/FIGURE_CAPTION_DRAFTS_gpt.md`
 - This figure is reserved for the continuous noise-sensitivity sweep introduced in Task 11.
 - Tiny-ViT V4 data are available now; a ConvNeXt companion panel can be added if a matching sweep is exported later.
 - Current visual grammar:
-  - left/middle: annotated heatmap panels with a shared color scale
+  - left/middle: annotated heatmap panels with a shared color scale when multiple models are available
   - right: ADC sensitivity curve with a marked `6-bit` knee
-  - missing ConvNeXt sweep data are shown as a formal pending-data panel, not a fake or empty heatmap
+  - if only one model has continuous-noise data, the figure should show the available heatmap only and must not fabricate a placeholder heatmap for the missing model
 
 ### Fig. 10
 - This figure must be described as `Zero-Shot Hardware Transferability`, not as a universal cross-device peak-performance comparison.
@@ -83,6 +83,8 @@ Draft submission-ready captions now live in `paper/FIGURE_CAPTION_DRAFTS_gpt.md`
 - Current visual grammar:
   - one horizontal-panel comparison per architecture
   - dashed source-checkpoint reference line in each panel
+  - both panels should show the device-profile labels to keep cross-panel scanning easy
+  - missing architecture/profile combinations should be labeled explicitly as `n/a`, not left as unlabeled blank rows
   - short caption note clarifying that this is transferability, not device-specific peak optimization
 
 ### Fig. 11
@@ -94,6 +96,7 @@ Draft submission-ready captions now live in `paper/FIGURE_CAPTION_DRAFTS_gpt.md`
 ### Fig. 12
 - This figure is intentionally qualitative and is produced by the standalone `visualize_attention.py` script rather than the batch `plot_paper_figures.py` pipeline.
 - The default comparison is now V1 vs V3 vs V4 vs V6 on a small fixed set of CIFAR-10 test images.
+- Export at 300 DPI or better because the figure is often placed near full page width in the supplement.
 - A companion difference-map output is allowed even if only `fig_attention_maps.png` is cited in the main paper.
 
 ## Planned Follow-up

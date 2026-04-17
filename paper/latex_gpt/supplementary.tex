@@ -1,0 +1,467 @@
+% !TeX root = supplementary_main.tex
+\section{Supplementary Information}
+\label{sec:supplementary}
+
+\renewcommand{\thefigure}{S\arabic{figure}}
+\renewcommand{\thetable}{S\arabic{table}}
+\setcounter{figure}{0}
+\setcounter{table}{0}
+
+\subsection{Detailed Experiment Matrix}
+\label{subsec:detailed-experiment-matrix}
+
+Tiny-ViT experiments span a digital baseline, a quantized hybrid control, a fixed-mask noisy deployment baseline, a uniform-noise HAT model, and several physical-extension studies. For brevity, these regimes are denoted V1--V8 throughout the Supplementary Information. V3 uses fixed D2D masking, analogous to ConvNeXt C3, while V7--V8 represent early retention-aware explorations excluded from the main analysis.
+
+Four physical-extension studies probe richer device regimes on CIFAR-10:
+\begin{itemize}[leftmargin=1.4em,itemsep=2pt,topsep=2pt]
+    \item \textbf{Proportional-noise HAT} (\texttt{V4\_proportional\_HAT}) repeats V4 for \(100\) epochs with state-dependent proportional noise and uses \(10\)-run Monte Carlo sweeps under both proportional and uniform-noise semantics.
+    \item \textbf{Nonlinear-write HAT} (\texttt{V4\_NL2\_HAT}) repeats V4 for \(100\) epochs with nonlinear-write dynamics active during STE gradient computation (\(\mathrm{NL}_{\mathrm{LTP}}=+2.0\), \(\mathrm{NL}_{\mathrm{LTD}}=-2.0\)) and uses the same \(10\)-run Monte Carlo evaluation.
+    \item \textbf{Ensemble HAT} (\texttt{V4\_Ensemble\_HAT}) keeps the canonical V4 recipe but resamples the fixed D2D realization at each epoch; transferability is then reported on \(10\) fresh hardware instances with \(5\) Monte Carlo evaluations per instance.
+    \item \textbf{ConvNeXt proportional-noise HAT} (\texttt{C4}) applies the same proportional-noise HAT protocol to ConvNeXt-Tiny for \(200\) epochs as a cross-architecture comparison.
+\end{itemize}
+These runs are treated as physical-extension studies rather than as part of the grouped cross-dataset comparisons in the main text.
+
+\subsection{Evaluation Protocol Details}
+\label{subsec:eval-protocol-details}
+
+For each training run, we record the best test accuracy across epochs and retain the corresponding model state for later inference sweeps. When analog noise is active at inference time, evaluation uses Monte Carlo resampling so that each retained model yields a mean accuracy and standard deviation over repeated stochastic forward passes; retention is evaluated by reloading a fixed model and sweeping the programmed-weight age over logarithmically spaced times. Energy estimates are reported separately from training accuracy, but use the same mapping rules as the deployment workflow so that analog coverage and energy savings remain tied to the actual crossbar assignment. The same protocol can later be rerun with measured device profiles in place of the current literature-anchored priors.
+
+\subsection{Parameter Provenance}
+\label{subsec:parameter-provenance}
+
+This section consolidates parameter provenance and the sensitivity checks used to bound the main claims. Whenever a value is not directly reported in the source literature, we label it explicitly as a proxy estimate or analytical assumption.
+
+\subsubsection{Three-Seed Summary for the Canonical V4 Path}
+
+To document the reproducibility of the canonical Tiny-ViT HAT path, we report the three-seed V4 summary directly in the Supplementary Information. Each seed was evaluated with a \(10\)-run noisy Monte Carlo sweep under the canonical deployment regime, and the final cross-seed statistic is computed from the three seed means.
+
+\begin{table}[ht]
+\centering
+\caption{Three-seed reproducibility summary for the uniform-noise HAT regime (V4).}
+\label{tab:v4-three-seed-summary}
+\begin{tabular}{lcc}
+\toprule
+\textbf{Seed / Aggregate} & \textbf{Noisy MC Accuracy} & \textbf{Statistic Type} \\
+\midrule
+42 & \(87.64 \pm 0.48\)\% & 10-run mean \(\pm\) std \\
+123 & \(88.10 \pm 0.33\)\% & 10-run mean \(\pm\) std \\
+2026 & \(88.11 \pm 0.47\)\% & 10-run mean \(\pm\) std \\
+\midrule
+Cross-seed aggregate & \(\mathbf{87.95 \pm 0.27}\)\% & mean \(\pm\) std of seed means \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\FloatBarrier
+
+\begin{table}[ht]
+\centering
+\caption{Parameter provenance tracking matrix.}
+\label{tab:provenance}
+\scriptsize
+\setlength{\tabcolsep}{1.8pt}
+\renewcommand{\arraystretch}{1.1}
+\begin{tabular}{>{\raggedright\arraybackslash}p{2.1cm}>{\raggedright\arraybackslash}p{1.9cm}>{\raggedright\arraybackslash}p{2.2cm}>{\raggedright\arraybackslash}p{2.0cm}>{\raggedright\arraybackslash}p{5.0cm}}
+\toprule
+\textbf{Parameter} & \textbf{Canonical Organic Profile} & \textbf{Zhang 2025 OPECT Case Study} & \textbf{Nonlinear-Write Stress Tests} & \textbf{Provenance / Derivation Notes} \\
+\midrule
+ Conductance Range (\(G_{\max}/G_{\min}\)) & 10 & 47.3 & 10 & Canonical anchored to scalable OPECTs; Zhang derives from reported max/min current levels \citep{zhang2026opect}. \\ 
+ Effective States ($n_{states}$) & 16 (4-bit) & 34 & 16 (4-bit) & Canonical matches general low-precision target. Zhang anchored to Fig.3h \& Supp.Fig.8 \citep{zhang2026opect}. \\ 
+ Cycle-to-Cycle Noise (\(\sigma_{\text{C2C}}\)) & 5\% & 2\% & 5\% (Proportional) & Zhang value is a proxy estimate from 8-cycle repeatability (Supp.Fig.15) \citep{zhang2026opect}. Proportional stress scales \(\sigma \propto |G|\). \\
+  Device-to-Device Mismatch (\(\sigma_{\text{D2D}}\)) & 10\% & 3\% & 10\% (Proportional) & Zhang uses 3\% as a conservative conductance-domain proxy from the reported $\sim$1\% $V_{th}$ spread \citep{zhang2026opect}. \\
+ Retention Decay (\(\tau_1, \tau_2, A_0\)) & 140ms, 610ms, 0.6 & Not fitted & 140ms, 610ms, 0.6 & Canonical dual-exponential fit anchored to Vincze \citep{vincze2026dualplasticity}. Zhang (Fig.2d) is qualitative only. \\ 
+ Nonlinear Write Asymmetry (\(NL\)) & 1.0 (LTP), -1.0 (LTD) & Canonical defaults retained & 2.0 (LTP), -2.0 (LTD) & Zhang does not report a pulse-level NL fit, so the case study keeps the canonical symmetric-write defaults rather than injecting a separate literature-fit NL term. Stress tests (\(NL=2\)) enforce severe gradient-scaling asymmetry. \\ 
+ Noise Mode & Uniform & Uniform & Proportional & Uniform injects noise normalized to full range. Proportional applies state-dependent noise magnitudes. \\ 
+\bottomrule
+\end{tabular}
+\end{table}
+
+\FloatBarrier
+
+\subsubsection{Vincze et al. 2025 Parameter Extraction}
+
+Because Vincze et al.\ \citep{vincze2026dualplasticity} is currently available as a 2025 Early Access paper, we list the extracted parameters used to define the canonical organic profile explicitly here:
+
+\begin{itemize}
+    \item \textbf{Conductance Window}: $G_{\max}/G_{\min} \approx 10$, anchored to the scalable operation regime.
+    \item \textbf{Retention Time Constants}: The dual-exponential fit for temporal drift yields a fast decay constant $\tau_1 = 140$~ms, a slow decay constant $\tau_2 = 610$~ms, and an initial amplitude ratio $A_0 = 0.6$. These align with the short-term and long-term plasticity dynamics reported for the device.
+    \item \textbf{Nonlinear Write Asymmetry ($NL$)}: While the canonical profile uses symmetric writes ($NL=1.0$), the physical profile derived from the literature indicates moderate write non-linearity corresponding to $NL_{LTP} = 2.0$ and $NL_{LTD} = -2.0$. In our simulations, $NL=2.0$ maps to a conductance saturation asymmetry (LTP vs. LTD magnitude at the window midpoint) of approximately 3:1, a regime consistent with reported long-pulse dynamics in DNTT-based organic synaptic transistors \citep{vincze2026dualplasticity}. We evaluate this directly in our severe stress tests.
+\end{itemize}
+
+Listing these parameters explicitly allows readers to reproduce the canonical device assumptions without requiring access to the source materials paper.
+
+\subsubsection{Proxy Estimate Sensitivity Analysis}
+
+The Zhang 2025 OPECT values for \(\sigma_{\text{C2C}}\) and \(\sigma_{\text{D2D}}\) are transparent proxy estimates rather than directly measured full-array noise distributions. We therefore ran a compact \(4 \times 5\) sensitivity sweep on the Ensemble HAT model, spanning \(\sigma_{\text{C2C}} \in \{1, 2, 5, 8\}\%\) and \(\sigma_{\text{D2D}} \in \{2, 3, 5, 10, 15\}\%\) while keeping the remaining case-study settings fixed. Figure~\ref{fig:supp-contour-map} shows that the conclusion is insensitive to the exact proxy choice: performance changes primarily along the D2D axis, whereas the tested C2C range remains effectively masked by the digital recovery path.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.72\textwidth]{fig_proxy_sensitivity_map}
+    \caption{\textbf{Zhang-proxy C2C/D2D sensitivity sweep.} Cell annotations report the mean accuracy over \(10\) Monte Carlo evaluations at each operating point. The nominal proxy point \((\sigma_{\text{C2C}}=2\%, \sigma_{\text{D2D}}=3\%)\) is outlined. Across the tested range, accuracy changes are almost entirely driven by D2D mismatch, while the C2C axis remains flat to within the Monte Carlo uncertainty.}
+    \label{fig:supp-contour-map}
+\end{figure}
+
+\begin{table}[ht]
+\centering
+\caption{Ensemble HAT accuracy under a Zhang-proxy C2C/D2D sensitivity sweep.}
+\label{tab:sensitivity}
+\small
+\begin{tabular}{lccccc}
+\toprule
+\textbf{C2C \textbackslash D2D} & \textbf{2\%} & \textbf{3\% (Nominal)} & \textbf{5\%} & \textbf{10\%} & \textbf{15\%} \\
+\midrule
+\textbf{1\%} & 88.57\% & 88.53\% & 88.33\% & 87.30\% & 84.59\% \\
+\textbf{2\% (Nominal)} & 88.57\% & 88.53\% & 88.33\% & 87.30\% & 84.59\% \\
+\textbf{5\%} & 88.57\% & 88.53\% & 88.33\% & 87.30\% & 84.59\% \\
+\textbf{8\%} & 88.57\% & 88.53\% & 88.33\% & 87.30\% & 84.59\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[ht]
+\centering
+\caption{Confidence intervals for the Zhang-proxy sensitivity sweep in Table~\ref{tab:sensitivity}.}
+\label{tab:sensitivity-ci}
+\begin{tabular}{lccc}
+\toprule
+\textbf{D2D} & \textbf{Nominal Acc.} & \textbf{95\% CI} & \(\mathbf{\Delta_{\max}}\) \textbf{across C2C sweep} \\
+\midrule
+2\%  & 88.57\% & [88.52, 88.62]\% & 0.00 pp \\
+3\%  & 88.53\% & [88.48, 88.58]\% & 0.00 pp \\
+5\%  & 88.33\% & [88.27, 88.38]\% & 0.00 pp \\
+10\% & 87.30\% & [87.22, 87.38]\% & 0.00 pp \\
+15\% & 84.59\% & [84.51, 84.66]\% & 0.00 pp \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textit{Interpretation.} Identical rows reflect scale-masking: C2C noise falls below the 4-bit LSB threshold during digital recovery in the main-text quantization analysis. Static D2D spatial mismatch dominates; per-forward C2C noise remains sub-resolution. Even at 15\% D2D, the model maintains 80\% accuracy, far from the 10\% collapse of the standard V4 model. Figure~\ref{fig:supp-sobol} quantifies the same observation with first-order Sobol indices: ADC resolution explains nearly all global variance across the full grid, but once the analysis is restricted to the operational region (\(\sigma_{\text{D2D}} \le 15\%\), ADC \(\ge 6\) bits), the dominant source of remaining variation shifts to D2D mismatch.
+
+\begin{table}[ht]
+\centering
+\caption{Hook-based ADC non-ideality check for the canonical Tiny-ViT V4 deployment. Offset, gain, and INL are injected at calibrated analog-layer outputs during full-test inference on CIFAR-10.}
+\label{tab:adc-nonideality}
+\begin{tabular}{lccc}
+\toprule
+\textbf{Configuration} & \textbf{Mean Acc. (\%)} & \textbf{Std. (\%)} & \textbf{\(\Delta\) vs. ideal (pp)} \\
+\midrule
+Ideal & 82.04 & 0.16 & +0.00 \\
+Offset \(\pm 0.5\) LSB & 82.07 & 0.21 & +0.03 \\
+Gain \(\pm 5\%\) & 81.87 & 0.30 & -0.17 \\
+INL \(0.5\) LSB & 80.85 & 0.12 & -1.19 \\
+Combined realistic & 81.86 & 0.28 & -0.18 \\
+Combined pessimistic & 76.90 & 0.27 & -5.14 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textit{Interpretation.} This full-test hook-based check qualifies the scale-masking discussion in the main text. Moderate ADC calibration errors do not erase the protected regime: a realistic combination of \(\pm 0.5\) LSB offset, \(\pm 5\%\) gain error, and \(0.5\) LSB INL changes accuracy by only \(0.18\) percentage points relative to the ideal hook-based baseline. By contrast, a deliberately pessimistic combination produces a clearer \(5.14\) percentage-point drop, indicating that peripheral precision still acts as a gate-keeping condition once ADC non-idealities move well beyond the moderate range.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.74\textwidth]{fig_sobol_sensitivity}
+    \caption{\textbf{First-order Sobol sensitivity indices derived from the contour sweep.} Over the full grid, ADC resolution dominates the variance budget. Inside the deployment-relevant operating region, the remaining variance is driven primarily by D2D mismatch after ADC precision has saturated.}
+    \label{fig:supp-sobol}
+\end{figure}
+
+\FloatBarrier
+
+\subsubsection{Uniform vs. State-Dependent Retention Comparison}
+
+We compared uniform retention with a state-dependent model where high-conductance states decay 20\% faster. The retained Ensemble-HAT CIFAR-10 model serves as the test case.
+
+\begin{table}[ht]
+\centering
+\caption{Retention accuracy comparison: uniform vs. state-dependent decay.}
+\label{tab:retention-comparison}
+\begin{tabular}{lccc}
+\toprule
+\textbf{Time (s)} & \textbf{Uniform (\%)} & \textbf{State-Dep (\%)} & \textbf{Diff (pp)} \\
+\midrule
+0    & 90.77 & 90.80 & +0.03 \\
+1    & 90.07 & 90.08 & +0.01 \\
+10   & 89.78 & 89.81 & +0.03 \\
+100  & 89.87 & 89.89 & +0.02 \\
+1000 & 89.82 & 89.90 & +0.08 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The accuracy difference stays below 0.1 percentage points. This validates the uniform retention assumption for Ensemble-HAT CIFAR-10; it does not claim state dependence is negligible in general.
+
+\FloatBarrier
+
+\begin{table}[ht]
+\centering
+\caption{Classification accuracy (\%) on Flowers-102 across physical regimes. The asterisk marks a single-run ConvNeXt boundary estimate and should not be interpreted as a stable cross-architecture baseline.}
+\label{tab:supp-flowers-results}
+\begin{tabular}{llc}
+\toprule
+\textbf{Architecture} & \textbf{Regime} & \textbf{Flowers-102} \\
+\midrule
+Tiny-ViT-5M & FP32 Digital & 97.97 \\
+ConvNeXt-Tiny & FP32 Digital & 33.22* \\
+Tiny-ViT-5M & V3 (Canonical Noise) & 4.81 ± 1.25 \\
+Tiny-ViT-5M & V4 (Canonical HAT) & 22.48 ± 1.82 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Because the ConvNeXt Flowers-102 baseline is available only as a single-run estimate, we use this dataset primarily as a low-data stress test rather than as a definitive cross-architecture comparison point.
+
+\FloatBarrier
+
+\subsection{Supplementary Methods}
+\label{subsec:supp-methods}
+
+\subsubsection{Differential Conductance Mapping Details}
+
+Each analog-mapped weight tensor is converted into a differential-pair conductance representation over a bounded physical range $[G_{\min}, G_{\max}]$. The positive and negative branches are quantized to $n_{\text{states}}$ levels with a straight-through estimator (STE), and the effective analog weight is recovered from the differential conductance. We model scale recovery as ideal calibrated digital post-processing rather than as an explicit physical peripheral circuit. Deterministic positive/negative branch asymmetry is not separately parameterized beyond the sampled D2D/C2C perturbations; any perfect common-mode cancellation implied by the differential form is a simplifying layout-level assumption.
+
+\subsubsection{Variability and Write Dynamics Modeling}
+
+Device-to-device (D2D) mismatch is modeled as a fixed Gaussian perturbation $\delta g \sim \mathcal{N}(0, \sigma_{D2D})$ sampled once at initialization. Cycle-to-cycle (C2C) variation is resampled on each forward pass as $\delta g \sim \mathcal{N}(0, \sigma_{C2C})$. In proportional mode, the noise magnitude scales with the instantaneous conductance state $G$ such that $\sigma \propto |G|$. 
+
+Nonlinear write modeling utilizes \texttt{NL\_LTP} and \texttt{NL\_LTD} coefficients to scale the STE backward pass. Specifically, the gradient $\partial L / \partial G$ is scaled by a factor derived from the behavioral exponential model of conductance potentiation/depression. Retention follows a double-exponential decay law: $G(t) = G_0 [A_0 e^{-t/\tau_1} + (1-A_0) e^{-t/\tau_2}]$, with parameters anchored to measured DNTT transients \citep{vincze2026dualplasticity}.
+
+\subsubsection{Energy Profiler Implementation}
+
+The analytical energy model estimates cost across four categories:
+\begin{enumerate}
+    \item \textbf{Analog MAC}: $E_{\text{MAC}} = N_{\text{ops}} \cdot E_{\text{cell}}$, where the released code sets $E_{\text{cell}}=100$~fJ per differential-pair MAC in the default profiler.
+    \item \textbf{Data Conversion}: ADC energy is charged per output element and DAC energy per input element, with behavioral DNL/INL modeling. The default implementation uses $E_{\text{ADC},8b}=25$~fJ, $E_{\text{DAC},8b}=30$~fJ, and $t_{\text{ADC},8b}=100$~ns for a SAR-like 8-bit readout proxy.
+    \item \textbf{Digital Operations}: Fixed-point costs for Softmax, LayerNorm, and scaling.
+    \item \textbf{Memory Traffic}: SRAM read/write energy for weight programming and intermediate activation buffering.
+\end{enumerate}
+These constants are analytical placeholders for a first-order edge-node model, not measured circuit values. Interconnect overhead is behaviorally absorbed into the memory-access terms.
+
+\subsection{Supplementary Figures}
+\label{subsec:supplementary-figures}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.96\textwidth]{fig9_noise_sensitivity}
+    \caption{\textbf{Continuous noise sensitivity and ADC sweep.}}
+    \label{fig:supp-noise-sensitivity}
+\end{figure}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.96\textwidth]{fig_fresh_instance_ablation}
+    \caption{\textbf{Fresh-instance robustness and D2D-resampling ablation.} \textbf{Left:} evaluation on \(10\) unseen fixed D2D realizations. Standard HAT collapses to chance on every fresh array (10.00\%), whereas Ensemble HAT preserves \(86.37 \pm 1.54\%\) accuracy across the same deployment set. \textbf{Right:} held-out accuracy under different D2D-resampling cadences during training. Per-epoch resampling performs best (88.41\%), outperforming fixed-mask training, slower resampling schedules, and per-batch perturbation. The ablation shows that the cadence of mismatch-map refresh matters: per-epoch exposure provides the best trade-off between diversity and stability.}
+    \label{fig:supp-zero-shot-transfer}
+\end{figure}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.985\textwidth]{fig_attention_maps}
+    \caption{\textbf{Attention heatmaps for three representative CIFAR-10 samples under the digital baseline, fixed-mask noisy deployment, uniform-noise HAT, and front-end-compensated deployment.} Columns show cat, truck, and automobile; rows show the four deployment regimes.}
+    \label{fig:supp-attention-maps}
+\end{figure}
+
+To complement the qualitative maps in Supplementary Fig.~\ref{fig:supp-attention-maps}, we also tracked the mean head-averaged attention entropy for the three representative samples shown there. Averaged across the samples, the entropy rises from \textbf{3.38} in the digital baseline to \textbf{3.61} under standard noisy deployment, indicating a broader and less selective spatial focus. Under HAT, the entropy drops to \textbf{3.07}, and the model recovers the correct class label on all three displayed examples, whereas the fixed-mask noisy model is correct on only one. These examples provide a compact quantitative complement to the attention maps by showing that HAT restores a sharper task-aligned focus pattern.
+
+\subsection{Extended Results: Retention and Frontend Distortion}
+\label{subsec:extended-results}
+
+\subsubsection{Retention and Temporal Drift Details}
+
+Supplementary Figure~\ref{fig:supp-retention-curve} shows the corrected V4 retention decay with dynamic scale recalibration and co-decay of the retained D2D buffers. The curve exhibits a two-phase behavior: a rapid early drop from 91.63\% to 82.66\% at 1 s, followed by a broad plateau near \textbf{79\% accuracy} from 10 s to $10{,}000$ s (79.13\%, 79.05\%, 79.35\%, and 79.51\% at 10, 100, 1000, and $10{,}000$ s, respectively). Under the present first-order retention model, this indicates that long-horizon analog inference remains partially viable once gain recalibration is included in the inference stack. The retention results reported here were obtained under the same uniform double-exponential decay model described in the main-text methodology section. The codebase now additionally supports true state-dependent retention where high-conductance states decay faster, but the canonical V4 results in this paper use the uniform model. A direct comparison between these two models (detailed in Section~\ref{subsec:parameter-provenance}) shows that the accuracy difference remains below 0.1 percentage points across all tested time intervals, validating the sufficiency of the uniform model for the present parameter regime.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.92\textwidth]{fig7_retention_curve}
+    \caption{\textbf{Corrected Tiny-ViT V4 retention curve.}}
+    \label{fig:supp-retention-curve}
+\end{figure}
+
+\subsubsection{Physical Frontend Compensation Details}
+
+We evaluated the impact of the organic phototransistor's sub-linear response ($\gamma_{\text{phys}}$) and dark current ($I_{\text{dark}}$) on system-level accuracy. Supplementary Figure~\ref{fig:supp-frontend-compensation} summarizes the ResNet-18 (R4) and Tiny-ViT (V6) results under various frontend configurations. The inverse-gamma compensation mechanism successfully restores accuracy for high $\gamma_{\text{phys}}$ (e.g., $\gamma=2.0$), providing a gain of up to +5.8 pp compared to the raw physical response. However, we observe that for $\gamma < 1$, the compensation is less effective due to shot-noise amplification. Our analytical SNR analysis (Supplementary Figure~\ref{fig:supp-snr-curves}) confirms that while inverse-gamma preprocessing linearizes the signal, it amplifies noise variance across the entire intensity range when $1/\gamma > 1$.
+
+\textbf{Core Value Conclusion}: Inverse-gamma compensation provides a physical-level regularization effect in low-light/dark scenarios; however, in high-intensity regions, noise variance increases with the compensation exponent, constituting a fundamental \textbf{design trade-off}. Consequently, the frontend benefit is most pronounced in high-dark-current regimes where signal recovery outweighs noise amplification.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.92\textwidth]{fig6_physical_compensation}
+    \caption{\textbf{Impact of frontend non-linearity and dark current.} Inverse-gamma compensation helps in dark regimes but amplifies noise elsewhere.}
+    \label{fig:supp-frontend-compensation}
+\end{figure}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.85\textwidth]{fig3_snr_curves}
+    \caption{\textbf{Analytical SNR trends under inverse-gamma compensation derived from the frontend response model used in the simulator.}}
+    \label{fig:supp-snr-curves}
+\end{figure}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.88\textwidth]{fig8_pareto_energy_accuracy}
+    \caption{\textbf{Energy--accuracy placement of the digital baseline and hybrid V2--V7 family.}}
+    \label{fig:supp-pareto}
+\end{figure}
+
+\subsubsection{Retention Sensitivity Analysis}
+\label{subsec:retention-sensitivity}
+To assess the robustness of the retention drift predictions against uncertainties in the literature-derived proxy parameters, we conducted a sensitivity sweep over the persistent fraction ($A_0$) and the inference time $t$. As summarized in Table~\ref{tab:retention-sensitivity}, the system conclusions remain qualitatively unchanged within a $\pm 50\%$ variance of retention proxy parameters. Even when the conductance persistent fraction is reduced to 40\% ($A_0 = 0.4$), the model retains $\sim$87.6\% accuracy up to $10{,}000$ s, confirming that the identified retention trends are robust to local variations in the proxy decay constants.
+
+\begin{table}[ht]
+\centering
+\caption{\textbf{Retention sensitivity to the persistent fraction $A_0$ across time scales.}}
+\label{tab:retention-sensitivity}
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+\textbf{Persistent Fraction ($A_0$)} & \textbf{1 s} & \textbf{100 s} & \textbf{1,000 s} & \textbf{10,000 s} \\
+\midrule
+$0.8$ & 90.55\% & 90.49\% & 90.49\% & 90.49\% \\
+$0.6$ (Canonical) & -- & 89.88\% & 89.88\% & 89.88\% \\
+$0.4$ & 88.62\% & 87.61\% & 87.61\% & 87.61\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Differential-Pair Asymmetry Sensitivity}
+\label{subsec:supp-asymmetry-sensitivity}
+
+Systematic asymmetry between the positive and negative branches of differential weight mapping is evaluated by injecting controlled mismatch into the canonical uniform-noise HAT model. The asymmetry model follows:
+\begin{equation}
+G^{+}_{\text{effective}} = G^{+} \times (1 + \alpha), \quad G^{-}_{\text{effective}} = G^{-} \times (1 - \alpha)
+\end{equation}
+where $\alpha \in [0, 0.10]$ is the asymmetry factor. Table~\ref{tab:asymmetry-sensitivity} summarizes the accuracy degradation.
+
+\begin{table}[ht]
+\centering
+\caption{\textbf{Differential-pair asymmetry sensitivity.} Accuracy degradation under systematic branch mismatch for Tiny-ViT V4 (CIFAR-10).}
+\label{tab:asymmetry-sensitivity}
+\begin{tabular}{@{}lccc@{}}
+\toprule
+\textbf{Asymmetry $\alpha$} & \textbf{Mean Accuracy} & \textbf{Std Dev} & \textbf{Degradation} \\
+\midrule
+0.0 (baseline) & 91.78\% & 0.10\% & — \\
+0.01 (1\%) & 90.29\% & 0.15\% & 1.49\% \\
+0.02 (2\%) & 85.73\% & 0.59\% & 6.05\% \\
+0.05 (5\%) & 33.81\% & 1.76\% & 57.97\% \\
+0.10 (10\%) & 10.00\% & 0.00\% & 81.78\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.85\textwidth]{figS1_asymmetry_concept}
+    \caption{\textbf{Differential pair asymmetry concept.} 
+    Systematic mismatch between positive and negative branches 
+    (asymmetry factor $\alpha$) degrades the effective differential signal.
+    Quantitative sensitivity analysis shows tolerance up to 1\% asymmetry 
+    with $<$2\% accuracy degradation, but nonlinear collapse beyond 2\%.}
+    \label{fig:supp-asymmetry-concept}
+\end{figure}
+
+The results indicate that differential-pair symmetry is a critical layout constraint: asymmetry up to 1\% is well-tolerated, but performance degrades nonlinearly beyond 2\%, with complete failure at 10\%. This motivates the need for explicit mismatch calibration or resistance balancing circuits in fabricated organic CIM arrays.
+
+\subsection{Physical Non-Ideality Sensitivity}
+\label{subsec:supp-nonideality-sensitivity}
+
+Position-dependent IR drop and sneak-path currents are evaluated by injecting controlled non-idealities into the canonical uniform-noise HAT model. The non-ideality models follow:
+\begin{align}
+G_{\text{effective}} &= G \times (1 - \delta_{\text{IR}}) \quad \text{(IR drop)} \\
+G_{\text{effective}} &= G + \mathcal{N}(0, \sigma_{\text{sneak}} \cdot G_{\max}) \quad \text{(sneak paths)}
+\end{align}
+where $\delta_{\text{IR}} \in [0, 0.03]$ and $\sigma_{\text{sneak}} \in [0, 0.02]$ based on ReRAM literature estimates. Table~\ref{tab:nonideality-sensitivity} summarizes the accuracy degradation.
+
+\begin{table}[ht]
+\centering
+\caption{\textbf{Physical non-ideality sensitivity.} Accuracy degradation under IR drop and sneak-path effects for Tiny-ViT V4 (CIFAR-10).}
+\label{tab:nonideality-sensitivity}
+\small
+\begin{tabular}{@{}lccc@{}}
+\toprule
+\textbf{IR Drop} & \textbf{Sneak Path} & \textbf{Mean Accuracy} & \textbf{Degradation} \\
+\midrule
+0.0\% & 0.0\% & 91.86\% & — \\
+0.0\% & 1.0\% & 90.90\% & 0.96\% \\
+0.0\% & 2.0\% & 89.36\% & 2.50\% \\
+1.0\% & 0.0\% & 91.45\% & 0.41\% \\
+1.0\% & 1.0\% & 91.31\% & 0.55\% \\
+1.0\% & 2.0\% & 90.03\% & 1.83\% \\
+2.0\% & 0.0\% & 91.29\% & 0.57\% \\
+2.0\% & 1.0\% & 91.21\% & 0.65\% \\
+2.0\% & 2.0\% & 89.88\% & 1.98\% \\
+3.0\% & 0.0\% & 91.12\% & 0.74\% \\
+3.0\% & 1.0\% & 91.11\% & 0.75\% \\
+3.0\% & 2.0\% & 89.70\% & 2.16\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.95\textwidth]{figS2_nonideality}
+    \caption{\textbf{Physical non-idealities in resistive arrays.} 
+    (Left) IR drop causes position-dependent voltage loss along wordlines. 
+    (Right) Sneak paths create unintended current leakage through adjacent cells.
+    Quantitative sensitivity analysis (Table~\ref{tab:nonideality-sensitivity}) 
+    indicates these non-idealities degrade accuracy by $<$2.2\% for typical 
+    1--3\% effect magnitudes, suggesting the qualitative advantage is robust 
+    to moderate array-level effects.}
+    \label{fig:supp-nonideality}
+\end{figure}
+
+The results demonstrate that the hybrid-analog architecture maintains reasonable accuracy even under combined non-idealities. The worst-case degradation (2.16\% at 3\% IR + 2\% sneak) remains limited within the tested lower-bound probe range and therefore provides a sensitivity check consistent with the use of first-order behavioral models for early-stage design space exploration, rather than a full parasitic-validation result for scaled organic arrays.
+
+\subsection{Comparison with Inorganic RRAM Baselines}
+\label{subsec:inorganic-comparison}
+
+To contextualize the specialized framework for organic optoelectronic devices, we contrast our methodology with mature inorganic simulations (e.g., RRAM arrays modeled via NeuroSim, CrossSim, or AIHWKIT) \citep{peng2020dnnneurosim,crosssim2026,rasch2021aihwkit}. Inorganic devices typically exhibit faster write speeds, larger on/off ratios, and primarily electrical programming dynamics. In contrast, the organic devices modeled here offer multi-modal (optoelectronic) tuning and excellent low-power analog behavior, but often suffer from slower temporal drift, pronounced state-dependent retention, and complex non-linear write asymmetry.
+
+As a methodological consistency check in a shared regime, we evaluated an existing ResNet-18/CIFAR-10 model over the full 10k-sample test set under matched 4-bit/noise assumptions: the digital baseline reached \(95.46\%\), while an AIHWKIT analog-tile baseline reached \(90.08 \pm 0.21\%\) over 10 runs. We use this result only to verify numerical consistency between the present simulator and a mature inorganic toolkit under one matched regime; it does not establish physical validation for retention, photoresponse, or organic non-linear writing. Thus, rather than claiming to outperform mature RRAM simulators on digital benchmarks, our framework serves as a complementary tool tailored to expose the system-level consequences of organic-specific physical non-idealities, such as shot noise amplification from inverse-gamma frontends.
+
+\subsection{Automated Profile Fitting Pipeline}
+
+For later measured-device studies, we also provide an automated fitting utility that ingests four raw-data categories:
+\begin{enumerate}
+    \item \textbf{Pulsed Programming Curves}: Fits the conductance range ($G_{\min}, G_{\max}$) and non-linearity coefficients ($NL_{LTP}, NL_{LTD}$) using a behavioral exponential model.
+    \item \textbf{Cycle-to-Cycle (C2C) Statistics}: Extracts the $\sigma_{\text{C2C}}$ noise parameter from repeated write-verify measurements at identical target states.
+    \item \textbf{Device-to-Device (D2D) Mismatch}: Calculates the $\sigma_{\text{D2D}}$ parameter from conductance distributions across multiple physical devices in an array.
+    \item \textbf{Retention Decay}: Fits the double-exponential decay constants ($\tau_1, \tau_2, A_0$) from long-term conductance-vs-time measurements.
+\end{enumerate}
+
+The output is a standardized device-profile specification that can be used directly in the inference and HAT workflow. In the present manuscript, this fitter is included as supporting infrastructure for future measured-device calibration rather than as a core source of the reported headline results.
+
+\subsection{Parameter Risk Matrix \& Sensitivity Analysis}
+\label{subsec:parameter-risk-matrix}
+
+To contextualize the simulation-only behavioral methodology of the present study, Table~\ref{tab:parameter-risk} provides a risk assessment of the key proxy parameters used in the modeling framework. By transparently disclosing the range of physical uncertainty and its consequent impact on system-level conclusions, we establish the robustness boundaries of the reported results.
+
+\begin{table}[ht]
+\centering
+\caption{\textbf{Core Parameter Risk and Robustness Assessment.}}
+\label{tab:parameter-risk}
+\resizebox{\textwidth}{!}{
+\begin{tabular}{@{}ll>{\raggedright\arraybackslash}p{3cm}>{\raggedright\arraybackslash}p{6cm}>{\raggedright\arraybackslash}p{5cm}@{}}
+\toprule
+\textbf{Parameter} & \textbf{Nominal Value} & \textbf{Uncertainty Range} & \textbf{Impact on Conclusions} & \textbf{Framework Check} \\
+\midrule
+D2D Variability ($\sigma_{D2D}$) & 3.0\% (Zhang 2025) & 1.0\% -- 15.0\% & \textbf{High.} Directly drives the need for Ensemble HAT. If $\sigma_{D2D} < 1\%$, the relative value of HAT diminishes. & Table~\ref{tab:asymmetry-sensitivity} demonstrates robustness under a 1\%--15\% sweep, confirming HAT maintains >80\% accuracy even at 15\% extreme mismatch. \\
+\addlinespace
+C2C Variability ($\sigma_{C2C}$) & 2.0\% (Zhang 2025) & 1.0\% -- 8.0\% & \textbf{Low.} Barely affects final Top-1 accuracy within this range due to scale-masking. & Explained mechanistically in the main text via the scale-masking effect. \\
+\addlinespace
+Retention ($\tau$, $A_0$) & $\tau=140/610$ms & $\pm 50\%$ & \textbf{Medium.} Affects long-term drift predictions. Extremely fast decay limits HAT recovery. & Sensitivity sweeps (Section~\ref{subsec:retention-sensitivity}) confirm conclusions remain stable over $\pm 50\%$ variations. \\
+\addlinespace
+Write Non-linearity ($NL$) & 2.0 (Proxy scaled) & 1.0 -- 3.0 & \textbf{High.} A sharp accuracy drop exists near $NL=2.0$. & $NL=2.0$ is defined as the approximation-limit boundary for the current surrogate, guiding future device design limits. \\
+\bottomrule
+\end{tabular}
+}
+\end{table}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.88\textwidth]{fig_nl_gradient_distortion}
+    \caption{\textbf{Group-wise gradient distortion under severe nonlinear write.} A deterministic diagnostic on the frozen Tiny-ViT V4 checkpoint compares the \texttt{NL=1.0} baseline against matched forward passes where \texttt{NL=2.0} is activated only for one analog module group at a time. Results aggregate eight CIFAR-10 train batches with preserved checkpoint D2D buffers and $\sigma_{\mathrm{C2C}}=0$ so that only the backward surrogate changes.}
+    \label{fig:supp-nl-gradient}
+\end{figure}
+
+\textit{Interpretation.} Because the present \texttt{NL} implementation perturbs only the backward surrogate, this diagnostic isolates where the training signal is distorted without changing the forward loss. The result is highly structured rather than uniform: activating \texttt{NL=2.0} only in the MLP blocks drives the affected-parameter gradient cosine down to \texttt{0.815} and the norm ratio down to \texttt{0.671}, while patch embedding, attention QKV, and attention projection remain effectively unchanged at \texttt{1.00}. The all-analog setting matches the MLP result almost exactly (\texttt{0.816}), indicating that the current nonlinear-write bottleneck is dominated by the MLP analog path rather than by a transformer-wide failure. At the same time, the mean loss delta stays numerically zero across all groups, confirming that this is a backward-surrogate distortion effect rather than a forward-path mismatch.
+
+In summary, the core conclusions regarding deployment risk ranking remain qualitatively consistent within a reasonable $\pm 50\%$ fluctuation of the proxy parameters. This supports the framework's use as a materials-to-system decision bridge. It is not intended to be pulse-accurate, but it still identifies the main architectural bottlenecks and operating boundaries.

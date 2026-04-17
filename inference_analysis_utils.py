@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import csv
+import inspect
 import json
 import os
 from dataclasses import dataclass
@@ -27,19 +28,36 @@ from analog_layers import (
 from device_profile_utils import DeviceProfile
 from amp_utils import amp_enabled_for_device, autocast_context
 from train_convnext import (
+    DATASET_STATS as CONVNEXT_DATASET_STATS,
     build_model as build_convnext_model,
     evaluate as evaluate_convnext,
     get_dataloaders as get_convnext_dataloaders,
     get_experiment_configs,
 )
-from train_tinyvit import (
-    TinyViTPhysicalFrontEnd,
-    build_model as build_tinyvit_model,
-    evaluate as evaluate_tinyvit,
-    get_dataloaders as get_tinyvit_dataloaders,
-    get_num_classes,
-    get_v_experiment_configs,
-)
+try:
+    from train_tinyvit import (
+        build_model as build_tinyvit_model,
+        evaluate as evaluate_tinyvit,
+        get_dataloaders as get_tinyvit_dataloaders,
+        get_v_experiment_configs,
+    )
+except ImportError:
+    build_tinyvit_model = None
+    evaluate_tinyvit = None
+    get_tinyvit_dataloaders = None
+    get_v_experiment_configs = None
+
+try:
+    from train_tinyvit_ensemble import (
+        TinyViTPhysicalFrontEnd,
+        get_num_classes,
+    )
+except ImportError:
+    try:
+        from train_tinyvit import TinyViTPhysicalFrontEnd  # type: ignore
+    except ImportError:
+        TinyViTPhysicalFrontEnd = None  # type: ignore
+    get_num_classes = None  # type: ignore
 
 
 ANALOG_MODULE_TYPES = (AnalogLinear, AnalogConv2d)
@@ -80,6 +98,7 @@ def iter_analog_modules(model: nn.Module):
 def snapshot_analog_state(model: nn.Module) -> Dict[str, dict]:
     state = {}
     for name, module in iter_analog_modules(model):
+        inl = getattr(module.config, "inl_table", None)
         state[name] = {
             "n_states": int(module.config.n_states),
             "G_min": float(module.config.G_min),
@@ -94,6 +113,7 @@ def snapshot_analog_state(model: nn.Module) -> Dict[str, dict]:
             "inference_time": float(module.config.inference_time),
             "retention_recalibrate_scale": bool(getattr(module.config, "retention_recalibrate_scale", False)),
             "retention_scales_d2d": bool(getattr(module.config, "retention_scales_d2d", False)),
+            "inl_table": inl.detach().cpu().tolist() if isinstance(inl, torch.Tensor) else inl,
         }
     return state
 
@@ -116,6 +136,15 @@ def restore_analog_state(model: nn.Module, state: Dict[str, dict]):
         module.config.inference_time = saved["inference_time"]
         module.config.retention_recalibrate_scale = saved.get("retention_recalibrate_scale", False)
         module.config.retention_scales_d2d = saved.get("retention_scales_d2d", False)
+        saved_inl = saved.get("inl_table")
+        if saved_inl is None:
+            module.config.inl_table = None
+        else:
+            module.config.inl_table = torch.tensor(
+                saved_inl,
+                dtype=torch.float32,
+                device=module.weight.device,
+            )
 
 
 def set_uniform_noise(model: nn.Module, sigma_c2c: float, sigma_d2d: float,
@@ -162,6 +191,14 @@ def apply_device_profile(model: nn.Module, profile: DeviceProfile,
             module.config.tau_2 = float(profile.tau_2)
         if profile.A_0 is not None:
             module.config.A_0 = float(profile.A_0)
+        if profile.inl_table is not None:
+            module.config.inl_table = torch.tensor(
+                profile.inl_table,
+                dtype=torch.float32,
+                device=module.weight.device,
+            )
+        else:
+            module.config.inl_table = None
         active += 1
     if resample_d2d:
         resample_d2d_buffers(model)
@@ -311,24 +348,33 @@ def _resolve_tinyvit_bundle(experiment: str, dataset: str, device: str,
     )
 
 
-def _resolve_convnext_bundle(experiment: str, device: str,
+def _resolve_convnext_bundle(experiment: str, dataset: str, device: str,
                              checkpoint_path: Optional[str], checkpoint_dir: str,
                              data_root: str, num_workers: int,
                              batch_size: Optional[int], amp_enabled: bool) -> ModelBundle:
     configs = get_experiment_configs()
     if experiment not in configs:
         raise ValueError(f"Unknown ConvNeXt experiment: {experiment}")
+    if dataset not in CONVNEXT_DATASET_STATS:
+        raise ValueError(f"Unsupported ConvNeXt dataset: {dataset}")
     exp_cfg = configs[experiment]
     if batch_size is not None:
         exp_cfg.batch_size = batch_size
+    dataset_stats = CONVNEXT_DATASET_STATS[dataset]
     ckpt_path = checkpoint_path or os.path.join(checkpoint_dir, f"{exp_cfg.name}_best.pt")
     if not os.path.exists(ckpt_path):
         raise FileNotFoundError(f"Checkpoint not found: {ckpt_path}")
 
-    model = build_convnext_model(exp_cfg, device=device)
+    model = build_convnext_model(
+        exp_cfg,
+        num_classes=dataset_stats["num_classes"],
+        image_size=dataset_stats["image_size"],
+        device=device,
+    )
     ckpt = torch.load(ckpt_path, map_location=device, weights_only=False)
     model.load_state_dict(ckpt["model_state_dict"])
     _, testloader = get_convnext_dataloaders(
+        dataset=dataset,
         batch_size=exp_cfg.batch_size,
         num_workers=num_workers,
         data_root=data_root,
@@ -337,7 +383,7 @@ def _resolve_convnext_bundle(experiment: str, device: str,
         model_type="convnext",
         experiment=experiment,
         experiment_name=exp_cfg.name,
-        dataset="cifar10",
+        dataset=dataset,
         device=device,
         model=model,
         exp_cfg=exp_cfg,
@@ -371,6 +417,7 @@ def load_model_bundle(model_type: str, experiment: str, device: str,
     if model_type == "convnext":
         return _resolve_convnext_bundle(
             experiment=experiment,
+            dataset=dataset,
             device=device,
             checkpoint_path=checkpoint_path,
             checkpoint_dir=checkpoint_dir,
@@ -384,13 +431,23 @@ def load_model_bundle(model_type: str, experiment: str, device: str,
 
 def evaluate_once(bundle: ModelBundle) -> Tuple[float, float]:
     if bundle.model_type == "tinyvit":
+        params = inspect.signature(evaluate_tinyvit).parameters
+        if "frontend" in params:
+            return evaluate_tinyvit(
+                bundle.model,
+                bundle.testloader,
+                bundle.criterion,
+                bundle.device,
+                bundle.exp_cfg,
+                frontend=bundle.frontend,
+                amp_enabled=bundle.amp_enabled,
+            )
         return evaluate_tinyvit(
             bundle.model,
             bundle.testloader,
             bundle.criterion,
             bundle.device,
             bundle.exp_cfg,
-            bundle.frontend,
             amp_enabled=bundle.amp_enabled,
         )
     return evaluate_convnext(

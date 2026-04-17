@@ -19,7 +19,8 @@ It is the shared normalization reference for:
 | `Zeng et al. 2023` | `zeng2023organicmemristor` |
 | `Jung et al. 2024` | `jung2024organicfilaments` |
 | `Vincze et al. 2026` | `vincze2026dualplasticity` |
-| `MemTorch` | `memtorch` |
+| `MemTorch` | `lammie2022memtorch` |
+| `Fault-Aware Training Survey` | `sun2024survey` |
 | `Wu et al. 2023` | `wu2023bwq` |
 | `Wang et al. 2024` | `wang2024epim` |
 | `Ge et al. 2024` | `ge2024allspark` |
@@ -28,15 +29,11 @@ It is the shared normalization reference for:
 | `Yoon et al. 2025` | `yoon2025adc` |
 | `Li et al. 2022` | `li2022timemultiplexing` |
 | `Gebregiorgis et al. 2023` | `gebregiorgis2023organiccim` |
+| `Zhang et al. 2026` | `zhang2026opect` |
 
 ## Still Unresolved
 
-These placeholders should not be silently fabricated into final journal citations until the exact target reference is chosen.
-
-| Placeholder | Current handling |
-|:--|:--|
-| `Fault-Aware Training Survey` | keep as narrative placeholder in markdown; do not force a BibTeX key yet |
-| `MemTorch` final bibliographic form | current `memtorch` entry is usable for draft LaTeX, but the exact venue/source should be finalized later |
+None. All submission-critical placeholders are mapped.
 
 ## Usage Rule
 

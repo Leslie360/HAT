@@ -21,11 +21,37 @@ from device_profile_utils import DeviceProfile, load_device_profiles_json, selec
 from inference_analysis_utils import apply_device_profile
 from report_asset_paths import asset_path
 from train_tinyvit import (
-    RunLogger,
     TinyViTExperimentConfig,
     build_model,
     evaluate,
 )
+from datetime import datetime
+
+class RunLogger:
+    """Simple stdout + file logger for evaluation outputs."""
+    def __init__(self, path: Optional[str] = None):
+        self.path = path
+        self._fh = None
+        if path:
+            parent = os.path.dirname(path)
+            if parent:
+                os.makedirs(parent, exist_ok=True)
+            self._fh = open(path, "w", encoding="utf-8")
+
+    def log(self, message: str = ""):
+        if message:
+            stamped = f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] {message}"
+        else:
+            stamped = ""
+        print(stamped)
+        if self._fh is not None:
+            self._fh.write(stamped + "\n")
+            self._fh.flush()
+
+    def close(self):
+        if self._fh is not None:
+            self._fh.close()
+            self._fh = None
 
 
 IMAGENET_MEAN = (0.485, 0.456, 0.406)
@@ -55,6 +81,7 @@ def resolve_imagenet_val_dir(data_root: str, explicit_val_dir: Optional[str] = N
         data_root_path / "validation",
         data_root_path / "imagenet" / "val",
         data_root_path / "imagenet" / "validation",
+        data_root_path / "tiny-imagenet-200" / "val", # Local extraction path
     ])
 
     for candidate in candidates:
@@ -113,7 +140,7 @@ def resolve_device_profile(profile_json: Optional[str], profile_name: Optional[s
 
 def run_condition(label: str, exp_cfg: TinyViTExperimentConfig, device: str, val_loader,
                   checkpoint_path: Optional[str], eval_runs: int, logger: RunLogger,
-                  device_profile: Optional[DeviceProfile] = None):
+                  device_profile: Optional[DeviceProfile] = None, num_classes: int = 1000):
     eval_cfg = replace(exp_cfg)
     if device_profile is not None and eval_cfg.use_hybrid:
         eval_cfg.n_states = device_profile.n_states
@@ -121,7 +148,7 @@ def run_condition(label: str, exp_cfg: TinyViTExperimentConfig, device: str, val
             eval_cfg.sigma_c2c = device_profile.sigma_c2c
             eval_cfg.sigma_d2d = device_profile.sigma_d2d
 
-    model = build_model(eval_cfg, num_classes=1000, device=device, pretrained=True)
+    model = build_model(eval_cfg, num_classes=num_classes, device=device, pretrained=(num_classes == 1000))
     if checkpoint_path:
         checkpoint = torch.load(checkpoint_path, map_location=device, weights_only=False)
         try:
@@ -165,7 +192,6 @@ def run_condition(label: str, exp_cfg: TinyViTExperimentConfig, device: str, val
             criterion,
             device,
             eval_cfg,
-            frontend=None,
             amp_enabled=torch.cuda.is_available() and device.startswith("cuda"),
         )
         losses.append(test_loss)
@@ -270,6 +296,8 @@ def main():
                         help="Optional measured-device profile JSON.")
     parser.add_argument("--profile-name", type=str, default=None,
                         help="Profile name inside --device-profile-json when multiple entries are present.")
+    parser.add_argument("--num-classes", type=int, default=1000,
+                        help="Number of output classes (1000 for ImageNet-1K, 200 for Tiny-ImageNet).")
     parser.add_argument("--results-json-path", type=str, default=DEFAULT_JSON_PATH)
     parser.add_argument("--results-csv-path", type=str, default=DEFAULT_CSV_PATH)
     parser.add_argument("--results-md-path", type=str, default=DEFAULT_MD_PATH)
@@ -310,6 +338,7 @@ def main():
             eval_runs=1,
             logger=logger,
             device_profile=device_profile,
+            num_classes=args.num_classes,
         ))
 
         rows.append(run_condition(
@@ -328,6 +357,7 @@ def main():
             eval_runs=1,
             logger=logger,
             device_profile=device_profile,
+            num_classes=args.num_classes,
         ))
 
         rows.append(run_condition(
@@ -346,6 +376,7 @@ def main():
             eval_runs=args.eval_runs,
             logger=logger,
             device_profile=device_profile,
+            num_classes=args.num_classes,
         ))
 
         if args.hat_checkpoint:
@@ -365,6 +396,7 @@ def main():
                 eval_runs=args.eval_runs,
                 logger=logger,
                 device_profile=device_profile,
+                num_classes=args.num_classes,
             ))
         else:
             logger.log("No --hat-checkpoint provided; skipping hybrid_hat_checkpoint condition.")

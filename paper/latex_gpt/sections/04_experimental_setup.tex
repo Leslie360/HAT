@@ -1,33 +1,32 @@
+% !TeX root = ../main.tex
 \section{Experimental Setup}
 \label{sec:experimental-setup}
 
-\subsection{Models and Datasets}
-\label{subsec:models-datasets}
+We evaluate ResNet-18 on CIFAR-10 as an entry validation platform, ConvNeXt-Tiny trained from scratch as the higher-capacity CNN testbed, and Tiny-ViT-5M fine-tuned from ImageNet as the deployment-oriented transformer setting. CIFAR-10, CIFAR-100, and Flowers-102 provide a progression from easier to harder classification settings and from relatively data-rich to data-limited regimes.
 
-We evaluate three vision backbones spanning increasing architectural complexity. ResNet-18 serves as the initial end-to-end validation platform on CIFAR-10. ConvNeXt-Tiny is trained from scratch and acts as a convolutional adaptation-from-random-initialization testbed. Tiny-ViT-5M is fine-tuned from ImageNet-pretrained weights and serves as the deployment-oriented transformer testbed for compact foundation-model transfer into the analog regime. The study uses CIFAR-10, CIFAR-100, and Flowers-102 to probe how hardware-aware training behaves as task complexity and effective data volume change.
+The experiments fall into three groups: ResNet baseline quantization and front-end trends, ConvNeXt retention and proportional-noise studies, and Tiny-ViT hardware-aware training together with physical-extension tests such as nonlinear write and fresh-instance transfer. Detailed optimization settings and the Monte Carlo evaluation protocol are summarized in the Supplementary Information.
 
-\subsection{Experiment Matrix}
-\label{subsec:experiment-matrix}
+\begin{table}[t]
+    \centering
+    \caption{Notation used for the Tiny-ViT experiment family in the main text.}
+    \label{tab:exp-notation}
+    \scriptsize
+    \begin{tabular}{lp{0.73\textwidth}}
+        \toprule
+        \textbf{ID} & \textbf{Meaning} \\
+        \midrule
+        V1 & FP32 digital baseline \\
+        V2 & Quantized hybrid control without analog noise \\
+        V3 & Standard training with a fixed D2D realization; noisy deployment baseline \\
+        V4 & Uniform-noise hardware-aware training result used as the canonical deployment model \\
+        V5 & Pessimistic robustness stress test with larger uniform noise \\
+        V6 & V4 plus physical front-end compensation \\
+        V7 & Legacy retention-aware model, excluded from the canonical claims \\
+        V8 & Corrected retention-aware follow-up used only for retention checks \\
+        \bottomrule
+    \end{tabular}
+\end{table}
 
-The experimental program is organized into three families. The ResNet series establishes the baseline quantization, noise, and front-end trends. The ConvNeXt series extends those studies to a higher-capacity convolutional model and includes retention and proportional-noise stress tests. The Tiny-ViT series implements the final hybrid analog/digital deployment target and includes canonical HAT, physical-front-end experiments, cross-dataset validation, proportional-noise retraining, and nonlinear-write stress tests.
+For ConvNeXt, C1--C4 denote the analogous FP32, quantized/no-noise, noisy-baseline, and hardware-aware training runs; C4 also anchors the proportional-noise and retention follow-up studies described in the Supplementary Information.
 
-For Tiny-ViT, the canonical family consists of V1--V6. V3 is defined precisely as ``standard train with fixed D2D,'' not as a direct one-to-one analog of the ConvNeXt C3 setting. The legacy V7 retention-aware checkpoint is excluded from the canonical results because it predates the corrected retention semantics.
-
-In addition to the canonical matrix, four CIFAR-10 physical-extension experiments were run to test richer device laws. \texttt{V4\_proportional\_HAT} repeats the V4 protocol for \(100\) epochs with state-dependent proportional noise and is evaluated with \(10\)-run Monte Carlo sweeps under both proportional and uniform-noise semantics. \texttt{V4\_NL2\_HAT} repeats V4 for \(100\) epochs with nonlinear-write dynamics active during STE gradient computation (\(\mathrm{NL}_{\mathrm{LTP}}=+2.0\), \(\mathrm{NL}_{\mathrm{LTD}}=-2.0\)) and is also evaluated with \(10\)-run Monte Carlo sampling. \texttt{V4\_Ensemble\_HAT} keeps the canonical Tiny-ViT V4 recipe but resamples the fixed D2D realization at each training epoch; its final transferability result is reported on \(10\) fresh hardware instances with \(5\) Monte Carlo evaluations per instance. \texttt{C4\_proportional\_HAT} applies the proportional-noise HAT protocol to ConvNeXt-Tiny for \(200\) epochs as a cross-architecture comparison. These experiments are treated as physical-extension studies rather than as part of the canonical grouped cross-dataset figures.
-
-\subsection{Reproducibility and Transparency}
-\label{subsec:repro-transparency}
-
-We centralize the execution metadata, checkpoint identities, and Monte Carlo semantics used throughout the paper. The current archived code path does not yet expose a single project-wide \texttt{--seed} interface for every training script, so the present guarantee is execution-trace reproducibility through logs, configuration files, and checkpoint lineage rather than strict bitwise determinism. A summary of device parameter derivations and source literature is provided in the Appendix to guarantee transparent parameter provenance. The simulator, device-profile schema, and experiment scripts are organized for public release with the submission package upon publication.
-
-\subsection{Evaluation Protocol}
-\label{subsec:evaluation-protocol}
-
-For each training run, we record the best test accuracy across epochs and save checkpoints for later inference sweeps. When analog noise is active at inference time, evaluation uses Monte Carlo resampling so that each checkpoint yields a mean accuracy and standard deviation over repeated stochastic forward passes. Retention is evaluated by reloading a fixed checkpoint and sweeping the programmed-weight age over logarithmically spaced times.
-
-Energy estimates are reported separately from training accuracy. The hybrid profiler uses the same mapping rules as the deployment code so that reported analog coverage and energy savings remain tied to the actual crossbar assignment. The same principle applies to future measured-device studies: once in-house characterization data are available, the identical evaluation protocol can be rerun by substituting measured JSON profiles for the current literature-anchored priors.
-
-\subsection{Calibration Status}
-\label{subsec:calibration-status}
-
-All default device parameters in this paper should be interpreted as literature-anchored calibration baselines rather than final claims about a single fabricated device. This is intentional. The framework is already parameterized around explicit conductance-window, state-count, variability, retention, and photoresponse fields, which means that later measured-device substitution changes only the calibration layer and not the training or inference code path.
+Parameter provenance is summarized in the Supplementary Information, together with the optimization settings and evaluation conditions used for the reported runs. The present study therefore targets reproducible reruns through archived configurations, logs, and model lineage. We also emphasize that the framework operates at the simulation level: all device parameters are literature-derived or proxy-calibrated rather than extracted from fabricated devices under direct measurement. Validation against physical hardware remains for future work.

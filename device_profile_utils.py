@@ -29,8 +29,64 @@ class DeviceProfile:
     NL_LTP: Optional[float] = None
     NL_LTD: Optional[float] = None
     pulse_count_max: Optional[int] = None
+    inl_table: Optional[List[float]] = None
     profile_kind: str = "literature"
     notes: str = ""
+
+    def __post_init__(self):
+        noise_mode = str(self.noise_mode).lower().strip()
+        if not str(self.device_type).strip():
+            raise ValueError("DeviceProfile.device_type must be a non-empty string")
+        if not str(self.source).strip():
+            raise ValueError("DeviceProfile.source must be a non-empty string")
+        if self.G_min <= 0:
+            raise ValueError(f"DeviceProfile.G_min must be > 0, got {self.G_min}")
+        if self.dynamic_range <= 1.0:
+            raise ValueError(
+                f"DeviceProfile.dynamic_range must be > 1.0 so G_max > G_min, got {self.dynamic_range}"
+            )
+        if self.n_states < 2:
+            raise ValueError(f"DeviceProfile.n_states must be >= 2, got {self.n_states}")
+        if self.sigma_c2c < 0 or self.sigma_d2d < 0:
+            raise ValueError(
+                "DeviceProfile sigma_c2c and sigma_d2d must be non-negative"
+            )
+        if noise_mode not in {"uniform", "proportional"}:
+            raise ValueError(
+                f"DeviceProfile.noise_mode must be 'uniform' or 'proportional', got {self.noise_mode}"
+            )
+        if self.tau_1 is not None and self.tau_1 <= 0:
+            raise ValueError(f"DeviceProfile.tau_1 must be > 0, got {self.tau_1}")
+        if self.tau_2 is not None and self.tau_2 <= 0:
+            raise ValueError(f"DeviceProfile.tau_2 must be > 0, got {self.tau_2}")
+        if self.A_0 is not None and not (0.0 <= self.A_0 <= 1.0):
+            raise ValueError(f"DeviceProfile.A_0 must be in [0, 1], got {self.A_0}")
+        if self.gamma_phys is not None and self.gamma_phys <= 0:
+            raise ValueError(f"DeviceProfile.gamma_phys must be > 0, got {self.gamma_phys}")
+        if self.I_dark is not None and self.I_dark < 0:
+            raise ValueError(f"DeviceProfile.I_dark must be >= 0, got {self.I_dark}")
+        if self.responsivity_alpha is not None and self.responsivity_alpha < 0:
+            raise ValueError(
+                f"DeviceProfile.responsivity_alpha must be >= 0, got {self.responsivity_alpha}"
+            )
+        if self.pulse_count_max is not None and self.pulse_count_max <= 0:
+            raise ValueError(
+                f"DeviceProfile.pulse_count_max must be > 0, got {self.pulse_count_max}"
+            )
+        if self.inl_table is not None:
+            if not isinstance(self.inl_table, list) or len(self.inl_table) < 2:
+                raise ValueError("DeviceProfile.inl_table must be a list with at least 2 entries")
+            last = None
+            for value in self.inl_table:
+                value = float(value)
+                if last is not None and value <= last:
+                    raise ValueError("DeviceProfile.inl_table must be strictly increasing")
+                last = value
+
+        object.__setattr__(self, "noise_mode", noise_mode)
+        object.__setattr__(self, "device_type", str(self.device_type).strip())
+        object.__setattr__(self, "source", str(self.source).strip())
+        object.__setattr__(self, "notes", str(self.notes).strip())
 
     @property
     def G_max(self) -> float:
@@ -142,6 +198,7 @@ def _profile_from_payload(payload: dict, default_source: str) -> DeviceProfile:
         NL_LTP=_maybe_float(payload.get("NL_LTP", plasticity.get("NL_LTP"))),
         NL_LTD=_maybe_float(payload.get("NL_LTD", plasticity.get("NL_LTD"))),
         pulse_count_max=int(payload.get("pulse_count_max", plasticity.get("pulse_count_max"))) if payload.get("pulse_count_max", plasticity.get("pulse_count_max")) is not None else None,
+        inl_table=payload.get("inl_table"),
         profile_kind=str(payload.get("profile_kind", "measured")),
         notes=str(payload.get("notes", "")),
     )

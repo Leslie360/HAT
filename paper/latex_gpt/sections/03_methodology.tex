@@ -1,29 +1,120 @@
+% !TeX root = ../main.tex
 \section{Methodology}
 \label{sec:methodology}
 
 \subsection{Hybrid Analog/Digital Deployment}
 \label{subsec:hybrid-deployment}
 
-We study a hybrid analog/digital inference stack in which dense linear operators are executed on differential-pair crossbar arrays while control-heavy or utilization-poor operators remain digital. For Tiny-ViT-5M, analog execution is assigned to patch-embedding convolutions, the attention projection matrices, the attention output projection, and the feed-forward matrices. By contrast, MBConv blocks, downsampling paths, local depthwise convolutions, the dynamic $\mathbf{QK}^{\top}$ and $\mathbf{AV}$ products, softmax, LayerNorm, activation functions, and the final classification head remain digital. This split is driven by array utilization rather than aesthetic symmetry: dense operators map naturally to static crossbars, whereas depthwise and token-dependent attention operators do not \citep{wu2023bwq,wang2024epim,ge2024allspark}.
+We adopt a hybrid analog/digital inference stack: dense linear operators execute on differential-pair crossbars; control-heavy operators remain digital. Figure~\ref{fig:system-architecture} summarizes this division at the system level, and Table~\ref{tab:operator-mapping} lists the operator-level rationale following established practice in heterogeneous CIM accelerators \citep{wu2023bwq,wang2024epim,ge2024allspark,kim2025hemlet,lin2024hardsea}.
 
-\subsection{Differential Conductance Mapping}
-\label{subsec:differential-mapping}
+Under this mapping, 87.7\% of parameters are assigned to analog execution, whereas 57.9\% of the estimated energy remains in the digital domain, largely because of attention operations. This split reflects a basic architectural constraint: analog crossbars are well suited to weight-stationary matrix multiplication, but much less suited to dynamic, input-dependent computations \citep{kim2025hemlet}. Recent heterogeneous CIM accelerators for Vision Transformers follow the same logic, keeping attention digital even as linear projections move to analog arrays \citep{lin2024hardsea,wang2024epim,ge2024allspark}. The present organic device literature likewise demonstrates regular static array programming more naturally than fully dynamic interaction engines \citep{gebregiorgis2023organiccim,zhang2026opect}.
 
-Each analog-mapped weight tensor is converted into a differential-pair conductance representation over a bounded physical range $[G_{\min}, G_{\max}]$. The positive and negative branches are quantized to $n_{\text{states}}$ levels with a straight-through estimator, and the effective analog weight is recovered from the differential conductance. Tiny-ViT additionally uses digital scale recovery after the conductance-domain operations. This mechanism is central to the current framework, but it is also a deliberate first-order approximation: we model scale recovery as ideal calibrated digital post-processing rather than as an explicit physical peripheral circuit.
+\begin{figure}[t]
+    \centering
+    \resizebox{0.98\textwidth}{!}{
+    \begin{tikzpicture}[
+        >=Latex,
+        font=\small\rmfamily\upshape,
+        node distance=6mm and 8mm,
+        stage/.style={draw=black!60, rounded corners=4pt, thick, fill=black!2, minimum height=30mm, align=center},
+        analog/.style={draw=teal!70!black, rounded corners=4pt, thick, fill=teal!8, minimum height=13mm, align=center},
+        digital/.style={draw=black!55, rounded corners=4pt, thick, fill=black!5, minimum height=11mm, align=center},
+        arrow/.style={->, thick, draw=black!65}
+    ]
+    \node[stage, minimum width=27mm] (input) {\textbf{Input}\\edge-vision image};
+    \node[stage, minimum width=34mm, right=of input, draw=teal!70!black, fill=teal!10] (front) {\textbf{Physical frontend}\\photoresponse\\preprocessing};
 
-\subsection{Variability, Nonlinear Write, and Retention}
-\label{subsec:variability-nl-retention}
+    \node[draw=black!45, dashed, rounded corners=6pt, inner sep=6pt, fit={(0,0) (0,0)}] (dummy) {};
+    \node[analog, minimum width=54mm, right=13mm of front, yshift=8mm] (analogpath) {\textbf{Analog CIM path}\\patch embedding, QKV / output, MLP};
+    \node[digital, minimum width=54mm, below=7mm of analogpath] (digitalpath) {\textbf{Digital path}\\depthwise conv, attention, softmax, LN, head};
+    \node[draw=black!45, dashed, rounded corners=6pt, inner sep=8pt, fit={(analogpath)(digitalpath)}] (backbone) {};
+    \node[font=\bfseries, fill=white, inner sep=2pt, above=1mm of backbone.north] {Hybrid backbone};
 
-Device-to-device (D2D) mismatch is modeled as a fixed Gaussian perturbation sampled once at initialization, while cycle-to-cycle (C2C) variation is resampled on each forward pass. The canonical experiments use a state-independent conductance-window-referenced Gaussian model, but the framework also supports a proportional mode in which the noise magnitude scales with the instantaneous conductance state. This extension is important because it lets measured or literature-based state-dependent noise assumptions enter the same code path used by the canonical experiments.
+    \node[stage, minimum width=38mm, right=11mm of analogpath, yshift=-8mm] (periph) {\textbf{Peripheral / calibration}\\ADC / DAC\\scale recovery};
+    \node[stage, minimum width=25mm, right=of periph] (output) {\textbf{Output}\\classifier\\prediction};
 
-The framework further supports first-order nonlinear write modeling through \texttt{NL\_LTP} and \texttt{NL\_LTD}, which scale the STE backward pass according to the current conductance position. This is not a pulse-accurate device simulator; instead, it is a pragmatic way to inject measured potentiation/depression asymmetry into training-time robustness studies. Retention is modeled through a double-exponential decay law applied after conductance quantization and before read-time variability, with time constants anchored to the DNTT retention regime reported by Vincze \emph{et al.} \citep{vincze2026dualplasticity}. The corrected retention path includes both dynamic scale recalibration and consistent co-decay of the stored D2D buffer.
+    \draw[arrow] (input.east) -- (front.west);
+    \draw[arrow, draw=teal!75!black] (front.east) -- ++(6mm,0) |- (analogpath.west);
+    \draw[arrow] (front.east) -- ++(6mm,0) |- (digitalpath.west);
+    \draw[arrow, draw=teal!75!black] (analogpath.east) -- (periph.west |- analogpath.east);
+    \draw[arrow] (digitalpath.east) -- (periph.west |- digitalpath.east);
+    \draw[arrow] (periph.east) -- (output.west);
 
-\subsection{Measurement-to-Simulator Interface}
-\label{subsec:measurement-interface}
+    \end{tikzpicture}
+    }
+    \caption{\textbf{Hybrid organic-CIM inference stack.} Dense weight-stationary operators are executed on analog crossbars, whereas dynamic attention and control-heavy operators remain in the digital path.}
+    \label{fig:system-architecture}
+\end{figure}
 
-The framework is designed so that literature priors and measured device statistics enter through the same structured profile interface. In practical terms, conductance windows map to $(G_{\min}, G_{\max})$, resolvable state counts map to $n_{\text{states}}$, repeated-read statistics map to $\sigma_{\text{C2C}}$, cross-device statistics map to $\sigma_{\text{D2D}}$, retention fits map to $(A_0,\tau_1,\tau_2)$, and photoresponse characterization maps to $(\gamma_{\text{phys}}, \alpha, I_{\text{dark}})$. This calibration structure is one of the core contributions of the project because it enables later in-house measured-device substitution without changing the training or evaluation scripts.
+\begin{table}[t]
+\centering
+\caption{\textbf{Analog/digital operator mapping rationale.} The split maximizes array utilization for weight-stationary operations while preserving precision for dynamic, irregular computations.}
+\label{tab:operator-mapping}
+\small
+\begin{tabular}{@{}ll>{\raggedright\arraybackslash}p{6.5cm}@{}}
+\toprule
+\textbf{Operator} & \textbf{Domain} & \textbf{Rationale} \\
+\midrule
+Patch embedding (conv) & Analog & High weight reuse, regular access pattern; natural fit for crossbar MVM \\
+QKV projections & Analog & Dense matrix-vector multiplications; weights stationary during inference \\
+Attention output proj. & Analog & Post-attention linear projection; same characteristics as QKV \\
+Feed-forward networks & Analog & MLP layers dominate parameter count; efficient crossbar utilization \\
+\midrule
+Depthwise convolutions & Digital & Low weight reuse, irregular spatial access; poor crossbar utilization \citep{wu2023bwq} \\
+Layer normalization & Digital & Requires mean/variance computation across features; hard to parallelize on crossbar \\
+$\mathbf{QK}^{\top}$ (attention scores) & Digital & Dynamic, input-dependent computation; irregular memory access \citep{lin2024hardsea} \\
+Softmax & Digital & Non-linear transcendental function; precision-critical; no efficient analog implementation \citep{bettayeb2024memristorattention} \\
+\bottomrule
+\end{tabular}
+\end{table}
 
-\subsection{Energy Model and Scope}
-\label{subsec:energy-scope}
+\subsection{Modeling Physical Non-Idealities}
+\label{subsec:modeling-nonidealities}
 
-Hybrid energy is estimated from analog MACs, ADC and DAC conversions, digital operations, and memory traffic. The current profiler charges one ADC conversion per output element and one DAC conversion per input element, and treats interconnect overhead as absorbed into the memory-access terms. ADC differential non-linearity is modeled behaviorally, following the spirit of configurable mixed-precision converter studies \citep{yoon2025adc}, whereas conductance integral non-linearity and state-dependent retention drift remain outside the current implementation. The resulting methodology should therefore be read as a first-order behavioral simulation framework rather than a pulse-accurate or chip-predictive emulator.
+The framework injects quantization, cycle-to-cycle (C2C) and device-to-device (D2D) variability, ADC distortion, retention drift, and nonlinear-write surrogates directly into the forward path. Each analog-mapped weight $W_{ij}$ is converted into a differential conductance representation quantized to $n_{\text{states}}$ levels. We first decompose the weight into positive and negative branches:
+\begin{equation}
+    W_{ij}^{+} = \max(0, W_{ij}), \quad W_{ij}^{-} = \max(0, -W_{ij})
+\end{equation}
+These are then mapped to the physical conductance window $[G_{\min}, G_{\max}]$:
+\begin{equation}
+    G_{pos,ij} = G_{\min} + \frac{W_{ij}^{+}}{\max|W|} (G_{\max} - G_{\min})
+\end{equation}
+with $G_{neg,ij}$ calculated symmetrically. The differential-pair scheme enables signed-weight representation while partially suppressing common-mode noise \citep{wei2020voltagedifferential,kim2024sttmram}.
+ Hardware-aware training (HAT) is implemented by keeping these forward perturbations active during optimization while propagating gradients through a straight-through estimator. For transformer deployments, the recovered post-array weight scale is modeled as an ideal calibrated digital rescaling step with fixed layer-wise factors, and its control overhead is therefore not itemized separately in the energy model.
+
+First-order modeling of nonlinear write (\texttt{NL\_LTP/NL\_LTD}) and double-exponential retention is supported, with parameters anchored to measured DNTT transients \citep{vincze2026dualplasticity}. For optoelectronic sensing, we incorporate a physical frontend model (V6) characterized by the photoresponse exponent $\gamma_{phys}$, representing the power-law relation between light intensity and conductance, and the dark current $I_{dark}$, which sets the dynamic range floor. The released profiler uses representative edge-node energy and latency parameters.
+
+
+\begin{figure}[ht]
+    \centering
+    \resizebox{0.98\textwidth}{!}{
+    \begin{tikzpicture}[
+        >=Latex,
+        font=\small\rmfamily\upshape,
+        box/.style={draw=black!60, rounded corners=4pt, thick, fill=black!3, minimum height=18mm, minimum width=28mm, align=center},
+        accent/.style={draw=teal!70!black, fill=teal!10},
+        arrow/.style={->, thick, draw=black!65}
+    ]
+    \node[box] (fp) {\textbf{FP32 weights}\\tensor $W$};
+    \node[box, right=7mm of fp] (split) {\textbf{Branch split}\\$W_{ij}^{+}$ and $W_{ij}^{-}$};
+    \node[box, accent, right=7mm of split] (map) {\textbf{Conductance map}\\$[G_{\min}, G_{\max}]$\\$n_{\mathrm{states}}$ levels};
+    \node[box, accent, right=7mm of map] (profile) {\textbf{Profile effects}\\D2D / C2C\\retention / NL};
+    \node[box, right=7mm of profile, minimum width=40mm] (readout) {\textbf{Readout + calibration}\\$G_{\mathrm{eff}} = G_{pos} - G_{neg}$\\$\hat{W}$};
+
+    \draw[arrow] (fp.east) -- (split.west);
+    \draw[arrow] (split.east) -- (map.west);
+    \draw[arrow] (map.east) -- (profile.west);
+    \draw[arrow] (profile.east) -- (readout.west);
+
+    \end{tikzpicture}
+    }
+    \caption{\textbf{Behavioral weight-to-conductance mapping.} Floating-point weights are split into differential branches, mapped to a bounded conductance window, quantized, and perturbed by the selected device profile before differential readout.}
+    \label{fig:weight-mapping}
+\end{figure}
+
+\subsection{Profile-Driven Substitution Interface}
+\label{subsec:profile-interface}
+
+The profile interface allows technology-specific parameters $(\sigma_{\text{D2D}}, \sigma_{\text{C2C}}, n_{\text{states}}, G_{\max}/G_{\min})$ to be substituted directly into the simulation workflow. In practice, this means that the same framework can absorb literature priors at present and measured-device characterizations later without changing the underlying evaluation pipeline. We therefore archive the optimization settings and random seeds needed for independent reruns. The resulting methodology is intended as a first-order behavioral framework for deployment-facing risk assessment, rather than as a pulse-accurate emulator.
+
+\FloatBarrier

@@ -1,36 +1,52 @@
+% !TeX program = tectonic
 \documentclass[11pt,a4paper]{article}
 
 \usepackage[margin=1in]{geometry}
 \usepackage{graphicx}
 \graphicspath{{./figures/}}
 \usepackage{booktabs}
+\usepackage{array}
 \usepackage{amsmath,amssymb}
+\usepackage{microtype}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,fit,calc}
 \usepackage{subcaption}
-\usepackage[numbers,sort&compress]{natbib}
+\usepackage[font=small,labelfont=bf]{caption}
+\usepackage{placeins}
+\usepackage{enumitem}
+\usepackage[super,sort&compress]{natbib}
 \usepackage[colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue]{hyperref}
 
-\title{Hardware-Aware Simulation of Organic Optoelectronic\\
-Compute-in-Memory Inference for Edge Vision}
-\author{Songqiao Li\\
-\textit{To be submitted to Nature Communications}
-}
-\date{\today}
+\setlength{\textfloatsep}{10pt plus 2pt minus 2pt}
+\setlength{\floatsep}{8pt plus 2pt minus 2pt}
+\setlength{\intextsep}{8pt plus 2pt minus 2pt}
+\setlength{\abovecaptionskip}{5pt}
+\setlength{\belowcaptionskip}{0pt}
+\setlength{\emergencystretch}{1.5em}
+\setlist[enumerate]{topsep=3pt,itemsep=2pt,leftmargin=1.4em}
+\newcommand{\SuppFigNoiseSweep}{S3}
+\newcommand{\SuppFigZeroShot}{S4}
+\newcommand{\SuppFigRetention}{S6}
+\newcommand{\SuppFigFrontend}{S7}
+\newcommand{\SuppFigSnr}{S8}
+\newcommand{\SuppTableFlowers}{S6}
+\title{Profile-Driven Hardware Simulation for Organic\\
+Optoelectronic Edge Vision}
+\author{Songqiao Li}
+\date{}
 
 \begin{document}
 
 \maketitle
 
 \input{sections/00_abstract}
+
 \input{sections/01_introduction}
-\input{sections/02_related_work}
-\input{sections/03_methodology}
-\input{sections/04_experimental_setup}
 \input{sections/05_results}
 \input{sections/06_discussion}
+\input{sections/03_methodology}
+\input{sections/04_experimental_setup}
 \input{sections/07_conclusion}
-
-\appendix
-\input{sections/08_appendix}
 
 \bibliographystyle{unsrtnat}
 \bibliography{refs_gpt}

@@ -1,156 +1,128 @@
+% !TeX root = ../main.tex
 \section{Results}
 \label{sec:results}
 
 \subsection{Baseline Digital Performance}
 \label{subsec:baseline-digital}
 
-We first establish the digital FP32 baselines for all architectures across the three target datasets. Table 4 summarizes these results. ResNet-18 and Tiny-ViT-5M both perform strongly on CIFAR-10, while Tiny-ViT benefits from transfer learning and reaches the highest accuracy. On CIFAR-100, the gap between the pre-trained Tiny-ViT deployment setting and the from-scratch ConvNeXt training setting widens further, highlighting that the two testbeds serve different but complementary roles: ConvNeXt probes analog adaptation from random initialization, whereas Tiny-ViT probes analog deployment of a compact foundation model. The low-data Flowers-102 regime makes that distinction even sharper: ConvNeXt-Tiny reaches only 33.22\% from scratch, while Tiny-ViT retains 97.97\% after fine-tuning.
+We establish digital FP32 baselines (Table~\ref{tab:fp32-baselines}). Tiny-ViT-5M reaches 98.06\% on CIFAR-10 in the locked three-seed baseline, while ConvNeXt-Tiny trains from scratch to 90.74\%. The gap widens on CIFAR-100 and Flowers-102, highlighting complementary testbeds: ConvNeXt probes analog adaptation from random initialization, whereas Tiny-ViT probes foundation-model deployment.
 
-| Architecture | Dataset | FP32 Accuracy (%) |
-|:--|:--|--:|
-| ResNet-18 | CIFAR-10 | 94.98 |
-| ConvNeXt-Tiny | CIFAR-10 | 90.74 |
-| Tiny-ViT-5M | CIFAR-10 | 97.48 |
-| ConvNeXt-Tiny | CIFAR-100 | 64.12 |
-| Tiny-ViT-5M | CIFAR-100 | 86.94 |
-| ConvNeXt-Tiny | Flowers-102 | 33.22 |
-| Tiny-ViT-5M | Flowers-102 | 97.97 |
+\begin{table}[t]
+    \centering
+    \caption{Digital FP32 baselines for the evaluated backbones and datasets. Tiny-ViT CIFAR-10 reports the locked three-seed mean; the asterisk marks a single-run estimate for ConvNeXt--Flowers-102.}
+    \label{tab:fp32-baselines}
+    \begin{tabular}{lccc}
+        \toprule
+        \textbf{Dataset} & \textbf{ResNet-18} & \textbf{ConvNeXt-Tiny} & \textbf{Tiny-ViT-5M} \\
+        \midrule
+        CIFAR-10 & 95.46\% & 90.74\% & 98.06\% \\
+        CIFAR-100 & 78.64\% & 64.12\% & 86.94\% \\
+        \bottomrule
+    \end{tabular}
+\end{table}
 
-\subsection{Quantization and the ``Scale Masking'' Effect}
-\label{subsec:scale-masking}
+\subsection{Quantization and Noise Resilience}
+\label{subsec:quantization-noise}
 
-Evaluation of the 4-bit hybrid models without explicit noise exposure (Experiment V2/C2) shows that quantization alone is a minor penalty under the canonical mapping. For Tiny-ViT, the more surprising observation is that V2 still attains 97.39\% when evaluated under the standard uniform-noise setting. Our diagnostic interpretation is the \textbf{scale-masking effect}: digital scale recovery compresses the effective analog perturbation below the 4-bit LSB, so the deployment noise is largely absorbed by the quantized weight bins. However, this protection is model-specific rather than unconditional. As Section 5.9 will show, it does not survive under proportional state-dependent noise.
-
-\subsection{Task Complexity Scaling}
-\label{subsec:complexity-scaling}
+Quantization alone introduces only a modest penalty in 4-bit hybrid models. The zero-noise hybrid control (V2) retains 97.39\%, suggesting that 4-bit mapping by itself is not the dominant source of error in the present setup. Under the canonical uniform-noise profile, digital scale recovery suppresses much of the effective analog perturbation below the 4-bit least significant bit, so many noisy conductance realizations are mapped back into the same recovered weight bin after calibration. This behavior disappears once the noise law becomes state-dependent (§\ref{subsec:nl-hat-stress}).
 
 \begin{figure}[t]
     \centering
-    \includegraphics[width=0.85\textwidth]{fig4_accuracy_comparison}
-    \caption{Cross-dataset accuracy comparison for ConvNeXt-Tiny and Tiny-ViT-5M across three complexity tiers (CIFAR-10, CIFAR-100, and Flowers-102). Tiny-ViT benefits from pre-training but exhibits higher noise sensitivity on complex tasks.}
+    \includegraphics[width=0.96\textwidth]{fig4_accuracy_comparison}
+    \caption{Cross-dataset accuracy under canonical deployment (4-bit quantization, 5\% C2C, 10\% D2D variability). Error bars denote $\pm 1$ standard deviation where Monte Carlo statistics are available; bars without visible error bars indicate deterministic baselines or currently available point estimates.}
     \label{fig:accuracy-comparison}
 \end{figure}
 
 \begin{figure}[t]
     \centering
-    \includegraphics[width=0.85\textwidth]{fig5_hat_recovery}
-    \caption{Degradation and recovery summary. Left: Accuracy drop from FP32 to standard noisy evaluation. Right: Recovery gained via Hardware-Aware Training (HAT). Absolute FP32 baselines are indicated to ensure transparency in low-performing regimes like Flowers-102.}
+    \includegraphics[width=0.96\textwidth]{fig5_hat_recovery}
+    \caption{Accuracy degradation from FP32 to noisy deployment and HAT recovery. Tiny-ViT: 10-run MC; ConvNeXt: single-run estimates shown.}
     \label{fig:hat-recovery}
 \end{figure}
 
-Figures~\ref{fig:accuracy-comparison} and~\ref{fig:hat-recovery} show the central system-level conclusion of this study: \textbf{noise fragility scales with task complexity, and the value of HAT scales with it.}
+Deployment fragility increases with task complexity (Figs.~\ref{fig:accuracy-comparison}--\ref{fig:hat-recovery}). On CIFAR-100, hardware-aware training improves Tiny-ViT from 44.06\% to 65.48\% and ConvNeXt from 23.86\% to 60.54\%. Results on Flowers-102 (Supplementary Table~\SuppTableFlowers) show limited recovery, consistent with the noise-sensitivity pattern at fine-grained tasks; however, the zero-noise hybrid control (V2) reaches 91.30\% ($\pm$0.00\% over 10 runs), indicating that the failure is driven by noise-data interaction rather than by hybrid deployment alone. Because the ConvNeXt Flowers-102 digital baseline is only a single-run boundary estimate, we use that dataset primarily as a low-data stress test rather than as a stable cross-architecture ranking benchmark.
 
-On CIFAR-10, the canonical Tiny-ViT degradation from V1 to V3 is modest and HAT provides only a small additional gain. On CIFAR-100, the situation changes sharply: Tiny-ViT drops from 86.94\% to 44.06\% under standard noisy deployment, and HAT recovers the model to 65.48\% (+21.42 pp over V3). ConvNeXt exhibits the same qualitative trend, dropping from 64.12\% to 23.86\% and recovering to 60.54\% (+36.68 pp over C3). This cross-architecture agreement is important because it shows that the complexity-dependent role of HAT is not a transformer-only artifact.
-
-Flowers-102 reveals the opposite boundary condition. Tiny-ViT still benefits from HAT in relative terms (4.81\% to 22.48\%), but remains far below its FP32 baseline of 97.97\%. ConvNeXt does not recover at all (dropping slightly from 3.79\% to 3.35\%). We therefore hypothesize that stochastic hardware-aware regularization has a \textbf{data-volume floor}. Under a shared training recipe and extremely limited supervision, HAT can become too strong for stable convergence, causing the CNN baseline to marginally underperform even the unregularized noisy evaluation. However, this remains a hypothesis that requires further ablation to fully decouple from potential domain-shift factors.
-
-\subsection{ADC and Quantization Thresholds}
-\label{subsec:adc-thresholds}
-
-\begin{figure}[t]
-    \centering
-    \includegraphics[width=0.85\textwidth]{fig9_noise_sensitivity}
-    \caption{Continuous noise sensitivity and ADC threshold analysis. The \(6\)-bit ADC knee is a critical practical threshold for Transformer-based CIM architectures.}
-    \label{fig:noise-sensitivity}
-\end{figure}
-
-The ADC bit-width sweep identifies \textbf{6-bit as the critical practical threshold} for Transformer-based CIM under the present simulator assumptions. At 4-bit ADC resolution, accuracy drops to ~27\%, while a jump to 6-bit restores it to over 80\%. This indicates that the attention mechanism is more constrained by the precision of the summation results than by the static weight programming.
+An extended ADC sweep over five bit-widths (4, 6, 8, 10, 12 bits; 10 Monte Carlo runs each) supports the same 6-bit threshold on ConvNeXt-Tiny: accuracy jumps from 48.4\% at 4-bit ($\pm$16.2\%) to 88.6\% at 6-bit ($\pm$0.3\%), saturating at 89.7\% by 12-bit (Supplementary Fig.~\SuppFigNoiseSweep). The iso-accuracy contour analysis (Section~\ref{subsec:iso-accuracy}) further shows that this 6-bit cliff is largely independent of device variability, producing a consistent $\sim$7~pp transition across all tested $\sigma_{\text{D2D}}$ levels. Readout precision emerges as a stronger constraint than static weight programming \citep{liu2021ptqvit,li2022qvit}.
 
 \subsection{Retention and Temporal Drift}
 \label{subsec:retention-drift}
 
-\begin{figure}[t]
-    \centering
-    \includegraphics[width=0.8\textwidth]{fig7_retention_curve}
-    \caption{Retention decay for the corrected Tiny-ViT V4 model. The model exhibits a two-phase behavior: a rapid early drop followed by a stable plateau near 79\% accuracy extending out to \(10{,}000\) s.}
-    \label{fig:retention-curve}
-\end{figure}
-
-Fig.~\ref{fig:retention-curve} shows the corrected V4 retention decay with dynamic scale recalibration and co-decay of the retained D2D buffers. The curve exhibits a two-phase behavior: a rapid early drop from 91.63\% to 82.66\% at 1 s, followed by a broad plateau near \textbf{79\% accuracy} from 10 s to $10{,}000$ s (79.13\%, 79.05\%, 79.35\%, and 79.51\% at 10, 100, 1000, and $10{,}000$ s, respectively). Under the present first-order retention model, this indicates that long-horizon analog inference remains partially viable once gain recalibration is included in the inference stack. The retention results reported here were obtained under the uniform double-exponential decay model (§3). The codebase now additionally supports true state-dependent retention where high-conductance states decay faster, but the canonical V4 results in this paper use the uniform model.
+The corrected retention-aware follow-up model (V8) exhibits a plateau near \textbf{79\% accuracy} through 10~000~s (Supplementary Fig.~\SuppFigRetention), consistent with the uniform decay model being adequate in the present regime.
 
 \subsection{Hardware-Instance Transferability}
 \label{subsec:hardware-transferability}
 
-\begin{figure}[t]
-    \centering
-    \includegraphics[width=0.85\textwidth]{fig10_zero_shot_transferability}
-    \caption{Zero-shot hardware transferability across different device profiles. Tiny-ViT exhibits severe instance overfitting, while ConvNeXt-Tiny maintains structural robustness across fresh D2D realizations.}
-    \label{fig:zero-shot-transfer}
-\end{figure}
-
-Experiments on fresh hardware instances (Task 12) reveal a severe weakness in current transformer deployment. Tiny-ViT V4 collapses to near-random performance when evaluated on arrays with a different fixed D2D realization, whereas ConvNeXt retains partial functionality under some transferred device profiles. The key lesson is not that CNNs are universally robust, but that the present Tiny-ViT training procedure remains strongly susceptible to \textbf{hardware-instance overfitting}. This makes same-instance robustness and fresh-instance robustness fundamentally different evaluation targets and motivates multi-instance HAT as a next-step training strategy.
+Experiments on fresh hardware instances (Supplementary Fig.~\SuppFigZeroShot) reveal an important limitation in transformer deployment. The standard fixed-mask HAT model (V4) collapses to chance level (10.00\%) when evaluated on arrays with different fixed D2D realizations, indicating pronounced hardware-instance overfitting. This observation motivates the Ensemble HAT strategy discussed in Section~\ref{subsec:nl-hat-stress}.
 
 \subsection{Physical Front-end Compensation}
 \label{subsec:frontend-compensation}
 
-\begin{figure}[t]
-    \centering
-    \includegraphics[width=0.8\textwidth]{fig6_physical_compensation}
-    \caption{Impact of organic phototransistor non-linearity and dark current. Inverse-gamma compensation provides signal recovery in dark regimes but amplifies shot noise elsewhere.}
-    \label{fig:frontend-compensation}
-\end{figure}
+Inverse-gamma compensation restores accuracy for high photoresponse non-linearity ($\gamma=2.0$, +5.8 pp), but amplifies noise variance at high intensities---a design trade-off (Supplementary Figs.~\SuppFigFrontend--\SuppFigSnr).
 
-We evaluate the impact of the organic phototransistor's sub-linear response ($\gamma_{\text{phys}}$) and dark current ($I_{\text{dark}}$) on system-level accuracy. Figure 6 summarizes the ResNet-18 (R4) and Tiny-ViT (V6) results under various frontend configurations.
+\subsection{Iso-Accuracy Operating Envelope}
+\label{subsec:iso-accuracy}
 
-The inverse-gamma compensation mechanism successfully restores accuracy for high $\gamma_{\text{phys}}$ (e.g., $\gamma=2.0$), providing a gain of up to +5.8 pp compared to the raw physical response. However, we observe that for $\gamma < 1$, the compensation is less effective due to shot-noise amplification. Our SNR analysis (Group 2) confirms that while inverse-gamma preprocessing linearizes the signal, it amplifies noise variance across the entire intensity range when $1/\gamma > 1$.
+To characterize the joint tolerance of the Ensemble HAT model to device variability and readout precision, we perform a 63-point sweep over $\sigma_{\text{D2D}}$ and ADC resolution. The grid spans $\sigma_{\text{D2D}} \in \{1, 3, 5, 8, 10, 15, 20\}\%$ and ADC resolution $\in \{2, 3, 4, 5, 6, 7, 8, 10, 12\}$ bits. Each point is evaluated with 10 Monte Carlo runs at $\sigma_{\text{C2C}}=5\%$ and $NL=1.0$. Figure~\ref{fig:contour-map} presents the resulting iso-accuracy contour map.
 
-\textbf{Core Value Conclusion}: Inverse-gamma compensation provides a physical-level regularization effect in low-light/dark scenarios; however, in high-intensity regions, noise variance increases with the compensation exponent, constituting a fundamental \textbf{design trade-off}. Consequently, the frontend benefit is most pronounced in high-dark-current regimes where signal recovery outweighs noise amplification.
+Three regimes emerge. Below 5-bit ADC, accuracy collapses to near-chance regardless of D2D magnitude. The transition from 5-bit to 6-bit yields a consistent $\sim$7~pp jump across all D2D levels, identifying 6-bit readout as the minimum viable precision. Above 6-bit, accuracy saturates and the remaining degradation is dominated by D2D variability: at $\sigma_{\text{D2D}} \leq 10\%$ the model maintains $>$84\%, while $\sigma_{\text{D2D}} = 20\%$ reduces it to 71--77\%.
 
-\subsection{Physical Non-Idealities}
-\label{subsec:non-idealities}
-
-Stress testing the "Scale Masking" and "HAT Recovery" conclusions under more realistic device models reveals substantial risks when models are not explicitly trained for these conditions:
-
-\begin{enumerate}
-    \item \textbf{State-Dependent Noise Evaluation}: When a model trained under uniform noise (V4) is evaluated under state-dependent proportional noise, accuracy collapses to \textbf{10.0\%}. This indicates that the uniform window-referenced noise model likely overestimates the intrinsic robustness of cross-device transfer.
-    \item \textbf{Nonlinear Writing Evaluation}: Similarly, evaluating V4 under a non-linear writing constraint ($NL=2.0$) during inference-only tests degrades accuracy to \textbf{27.9\%}. This confirms that the global attention mechanism is fundamentally sensitive to weight distortions that deviate from the training-time noise distribution.
-\end{enumerate}
-
-\subsection{HAT Recovery under Physical Stress}
-\label{subsec:hat-recovery-stress}
-
-To test whether hardware-aware training can overcome these hard physical constraints, we performed dedicated retraining under proportional noise and non-linear writing dynamics for both architectures.
-
-\begin{enumerate}
-    \item \textbf{Proportional Noise HAT (Task 34 \& 36)}: Hardware-aware training can recover performance when the training and evaluation physics are aligned. For \textbf{Tiny-ViT-5M}, proportional-noise HAT reaches \textbf{97.48\%} in training and \textbf{97.37 ± 0.05\%} under proportional-noise Monte Carlo evaluation, recovering performance within the matched proportional-noise regime. However, this robustness is highly regime-specific: the same checkpoint falls to \textbf{10.38 ± 0.44\%} when evaluated under the original uniform-noise semantics. For \textbf{ConvNeXt-Tiny}, proportional-noise HAT reaches \textbf{91.98\%} with \textbf{91.91 ± 0.08\%} Monte Carlo performance. Because this slightly exceeds the nominal C1 baseline under the current training recipe, we interpret it as a stochastic-regularization effect under this specific matched setting, not as evidence that analog proportional noise is broadly accuracy-improving.
-
-    \item \textbf{Nonlinear Writing HAT (Task 35)}: In contrast, HAT remains unable to recover performance under severe write non-linearity ($NL=2.0$) for the Transformer backbone. Despite 100 epochs of retraining, Tiny-ViT-5M peaks at \textbf{27.37\%}, and the corresponding evaluation remains at \textbf{27.72 ± 0.82\%}. This is only marginally different from the inference-only degradation, indicating that first-order gradient scaling is not sufficient to bridge the non-linearity gap for the current transformer deployment.
-
-    \item \textbf{Ensemble HAT (Task 37)}: To address the hardware-instance overfitting identified in Section 5.6, we evaluate a "top-tier" model trained with per-epoch D2D resampling. While the standard HAT model (V4) overfits to its training instance and collapses to \textbf{10.00\%} when evaluated on fresh device instantiations, the Ensemble HAT model demonstrates remarkable zero-shot transferability. Across 10 fresh hardware instances with different spatial mismatch maps, the Ensemble HAT model maintains an average accuracy of \textbf{86.37 ± 1.54\%}. This confirms that learning weight basins invariant to specific D2D realizations is a viable algorithmic path to cross-device generalizability for Transformer-class models. While this multi-instance strategy successfully mitigates hardware overfitting, it introduces a measurable training-cost overhead. Because the D2D mismatch mask is resampled every epoch, the forward-pass graph cannot be statically optimized for a single noise realization, which marginally increases the effective training time. However, this one-time offline cost is an acceptable trade-off for achieving zero-shot transferability during inference.
-\end{enumerate}
-
-Taken together, these findings revise the physical ranking of bottlenecks. Under the canonical uniform-noise model, standard stochastic device noise is not the dominant limit. Under more realistic extensions, however, the picture becomes regime-dependent: proportional noise can be retrained around, but \textbf{nonlinear write dynamics} and \textbf{instance-specific mismatch} remain the primary challenges for deploying Transformer-class models.
-
-\subsection{Energy Efficiency Profile}
-\label{subsec:energy-profile}
+A first-order Sobol sensitivity analysis supports this two-phase structure. Over the full parameter space the ADC index $S_{\text{ADC}} = 0.98$, reflecting the sub-6-bit collapse. Within the operational region ($\geq$6-bit, $\sigma_{\text{D2D}} \leq 15\%$), the D2D index $S_{\text{D2D}} = 0.92$, indicating that device variability becomes the binding constraint once minimum readout precision is satisfied. The interaction term is negligible in both regimes ($<$4\%), indicating that ADC and D2D impairments decouple to first order.
 
 \begin{figure}[t]
     \centering
-    \includegraphics[width=0.8\textwidth]{fig11_energy_breakdown}
-    \caption{Inference energy breakdown for the Tiny-ViT hybrid architecture. Despite analog acceleration of linear layers, digital attention operations remain the dominant energy consumer.}
-    \label{fig:energy-breakdown}
+    \includegraphics[width=0.92\textwidth]{fig_contour_map}
+    \caption{\textbf{Iso-accuracy contour map} for the Ensemble HAT Tiny-ViT model under joint $\sigma_{\text{D2D}}$ and ADC precision sweep ($\sigma_{\text{C2C}}=5\%$, $NL=1.0$, 10 MC runs per point). The 6-bit ADC cliff and the D2D-dominated degradation in the operational regime are visible.}
+    \label{fig:contour-map}
 \end{figure}
+
+\subsection{Non-Linear Writing and Hardware-Aware Training}
+\label{subsec:nl-hat-stress}
+
+Stress testing HAT recovery under richer device laws reveals a strongly regime-dependent outcome. Under matched proportional-noise HAT, Tiny-ViT recovers to 97.37 $\pm$ 0.05\%, whereas severe write non-linearity ($NL=2.0$) limits recovery to 27.72 $\pm$ 0.82\% under the present gradient-scaling approximation. For ConvNeXt-Tiny, proportional-noise HAT reaches 91.98\% in the best individual run, but the corresponding three-seed reproducibility evaluation yields \textbf{84.75 $\pm$ 0.72\%}. The gap between the best run and the cross-seed mean indicates notable seed sensitivity, underscoring the importance of reporting reproducible analog HAT results rather than isolated favorable runs. Resampling D2D masks during training alleviates instance overfitting, preserving 86.37 $\pm$ 1.54\% across 10 fresh arrays. The accompanying frequency ablation (Supplementary Fig.~\SuppFigZeroShot) indicates that per-epoch resampling performs best in the present setup: epoch-level resampling yields 88.41\%, compared with 87.76\% (every 20 epochs), 87.31\% (every 5), 87.18\% (fixed at initialization), and 86.16\% (per-batch). The single-epoch cadence balances sufficient exposure to diverse mismatch maps against training stability, while leaving overall training time effectively unchanged in our logged runs. Figure~\ref{fig:ensemble-hat-concept} illustrates the distinction: standard HAT trains against a single fixed D2D realization, whereas Ensemble HAT resamples D2D masks each epoch to target the mismatch structure encountered across distinct hardware instances.
 
 \begin{figure}[t]
     \centering
-    \includegraphics[width=0.8\textwidth]{fig8_pareto_energy_accuracy}
-    \caption{Pareto-style energy/accuracy summary across various hardware and training configurations.}
-    \label{fig:pareto}
+    \includegraphics[width=0.95\textwidth]{figS3_ensemble_hat}
+    \caption{\textbf{Ensemble HAT concept.} Standard HAT reuses one fixed D2D mismatch map throughout training, whereas Ensemble HAT resamples the mismatch map each epoch. The fresh-instance transfer panel highlights the resulting generalization gap between the two training protocols.}
+    \label{fig:ensemble-hat-concept}
 \end{figure}
 
-\begin{figure}[t]
+The accuracy results are summarized in Table~\ref{tab:result-summary}. Tiny-ViT demonstrates superior baseline accuracy and significant recovery under HAT, especially on complex tasks, though it remains sensitive to nonlinear write dynamics.
+
+\begin{table}[ht]
     \centering
-    \includegraphics[width=0.9\textwidth]{fig_attention_maps}
-    \caption{Qualitative attention map comparison across V1, V3, V4, and V6 configurations. HAT effectively restores the spatial attention patterns disrupted by hardware non-idealities.}
-    \label{fig:attention-maps}
-\end{figure}
-
-The analytical energy model (visualized in Fig. 11) estimates a total inference cost of \textbf{$273.94~\mu$J} for Tiny-ViT-5M, corresponding to an \textbf{11.45x reduction} relative to the FP32 digital reference under the present operation-count assumptions. In the current Pareto view (Fig. 8), this places the hybrid Tiny-ViT regime on a favorable energy-accuracy frontier, but not as a universally optimal point independent of future measured-device calibration or alternative peripheral assumptions. Digital attention operations (\(QK^{\top}\) and Softmax) still account for \textbf{57.9\%} of the total cost, confirming the "analog ceiling" discussed in §6.4.
-
+    \caption{Summary of classification accuracy (\%) across architectures and physical regimes. Cross-dataset deployment rows report locked best-checkpoint values; entries with $\pm$ denote stochastic physical-extension evaluations. The asterisk marks the ConvNeXt--Flowers-102 single-run baseline.}
+    \label{tab:result-summary}
+    \begin{tabular}{llcc}
+        \toprule
+        \textbf{Architecture} & \textbf{Regime} & \textbf{CIFAR-10} & \textbf{CIFAR-100} \\
+        \midrule
+        ResNet-18 & FP32 Digital & 95.46 & 78.64 \\
+        ResNet-18 & Standard noisy deployment (R3) & 16.48 & 1.00 \\
+        ResNet-18 & Uniform-noise HAT (R4) & 90.37 & 1.00 \\
+        Tiny-ViT-5M & FP32 Digital & 98.06 & 86.94 \\
+        ConvNeXt-Tiny & FP32 Digital & 90.74 & 64.12 \\
+        ConvNeXt-Tiny & Standard noisy deployment (C3) & 70.48 & 23.86 \\
+        ConvNeXt-Tiny & Uniform-noise HAT (C4) & 89.91 & 60.54 \\
+        ConvNeXt-Tiny & Proportional-noise HAT (3-seed extension) & - & 84.75 ± 0.72 \\
+        \midrule
+        Tiny-ViT-5M & Standard noisy deployment (V3) & 89.54 & 44.06 \\
+        Tiny-ViT-5M & Uniform-noise HAT (V4) & 91.94 & 65.48 \\
+        Tiny-ViT-5M & Front-end compensation (V6) & 95.82 ± 0.12 & - \\
+        \bottomrule
+    \end{tabular}
+\end{table}
 
 \subsection{Case Study: Zero-Shot Transfer to a Literature-Calibrated Device}
 \label{subsec:case-study}
 
-To demonstrate the practical utility of our framework for evaluating realistic hardware, we conducted a case study simulating zero-shot transfer to a recent state-of-the-art organic optoelectronic synapse array, calibrated directly from literature. We defined a literature-derived profile (`literature\_fitted\_profile.json`) using parameters fitted from the physical device characterization in Zhang et al., \textit{Nature Communications} \textbf{17:197} (2026): a conductance range of $G_{\max}/G_{\min} = 47.3$ with 34 effective programming states, and transparent proxy estimates for programming variability ($\sigma_{c2c}=2\%$, $\sigma_{d2d}=3\%$) derived from the reported supplementary cycling and threshold voltage ($V_{th}$) uniformity data.
+To provide a literature-anchored reference point against reported device data, we conducted a case study simulating zero-shot transfer to a recent 2025 OPECT array calibrated from literature \citep{zhang2026opect} (conductance range 47.3, 34 states). Using noise parameters derived from the reported characteristics ($\sigma_{\text{C2C}}=2\%, \sigma_{\text{D2D}}=3\%$), the standard HAT model collapses to 10.00\% on this unseen hardware profile. In contrast, the Ensemble HAT model successfully maintains \textbf{88.53\%} accuracy (Figure~\ref{fig:case-study-transfer}).
 
-By loading this literature-derived organic profile into the simulator, we evaluated the pre-trained Tiny-ViT checkpoints without any device-specific fine-tuning. The standard HAT model (V4), having overfitted to its original training instance, collapsed to \textbf{10.00\%} on the new array parameters. In contrast, the Ensemble HAT model (Task 37) successfully maintained an accuracy of \textbf{88.53\%}. This workflow explicitly confirms that the framework can be employed to benchmark the system-level viability of externally characterized CIM materials, effectively bridging the gap between raw device measurements and algorithm deployment.
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=0.94\textwidth]{fig10_zero_shot_transferability}
+    \caption{\textbf{Zero-shot transfer across alternative device profiles.} Tiny-ViT trained with standard HAT collapses to chance level (10.00\%) when evaluated on literature-calibrated or measured profiles (OPECT 2025 \citep{zhang2026opect}, PCM \citep{joshi2020accurate}, RRAM \citep{peng2020dnnneurosim}, and a measured suboptimal organic sample profile), whereas Ensemble HAT recovers $>80\%$ accuracy across the profiled regimes.}
+    \label{fig:case-study-transfer}
+\end{figure}
+
+This literature-anchored case study illustrates how the framework links reported physical metrics to algorithm deployment risk. The stark contrast between standard and Ensemble HAT on literature-calibrated benchmarks suggests that addressing spatial mismatch map overfitting is important for realizing the potential of emerging organic optoelectronic arrays.

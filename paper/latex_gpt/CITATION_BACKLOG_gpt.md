@@ -14,14 +14,12 @@ Use it together with:
 
 ## Remaining Submission-Relevant Items
 
+None. All mapped in `CITATION_MAP_gpt.md`.
+
 ### Main English manuscript
 
-- `Fault-Aware Training Survey`
-  - still intentionally unresolved
-  - keep explicit until the exact survey/review reference is chosen
-- `MemTorch`
-  - the draft key is usable
-  - the final bibliographic form may still need venue-specific refinement
+- `Fault-Aware Training Survey` (RESOLVED: `sun2024survey`)
+- `MemTorch` (RESOLVED: `lammie2022memtorch`)
 
 ### Historical / non-submission documents
 

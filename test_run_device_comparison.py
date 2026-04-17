@@ -73,6 +73,43 @@ class DeviceComparisonTests(unittest.TestCase):
         self.assertAlmostEqual(profile.tau_1, 0.2)
         self.assertAlmostEqual(profile.tau_2, 0.8)
 
+    def test_invalid_noise_mode_is_rejected(self):
+        payload = {
+            "profiles": [
+                {
+                    "device_type": "Bad Device",
+                    "G_min": 1.0,
+                    "G_max": 10.0,
+                    "n_states": 8,
+                    "noise": {"sigma_c2c": 0.01, "sigma_d2d": 0.02, "mode": "mystery"},
+                }
+            ]
+        }
+        with tempfile.NamedTemporaryFile("w", suffix=".json", encoding="utf-8") as fh:
+            json.dump(payload, fh)
+            fh.flush()
+            with self.assertRaises(ValueError):
+                load_device_profiles_json(fh.name)
+
+    def test_invalid_conductance_span_is_rejected(self):
+        payload = {
+            "profiles": [
+                {
+                    "device_type": "Flat Device",
+                    "G_min": 5.0,
+                    "G_max": 5.0,
+                    "n_states": 8,
+                    "sigma_c2c": 0.01,
+                    "sigma_d2d": 0.02,
+                }
+            ]
+        }
+        with tempfile.NamedTemporaryFile("w", suffix=".json", encoding="utf-8") as fh:
+            json.dump(payload, fh)
+            fh.flush()
+            with self.assertRaises(ValueError):
+                load_device_profiles_json(fh.name)
+
 
 if __name__ == "__main__":
     unittest.main()

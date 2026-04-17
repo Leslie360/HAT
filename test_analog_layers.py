@@ -347,6 +347,27 @@ def test_retention_scales_d2d_preserves_noisy_output():
           f"t0={y_t0.tolist()}, fixed={y_scale_and_d2d.tolist()}, err={err_scale_and_d2d:.6f}")
 
 
+def test_invalid_analog_config_rejected():
+    print("\n== Test 6d: Invalid analog config rejected ==")
+    try:
+        AnalogLinearConfig(noise_mode="mystery")
+        check("invalid noise_mode rejected", False, "expected ValueError")
+    except ValueError:
+        check("invalid noise_mode rejected", True)
+
+    try:
+        AnalogLinearConfig(G_min=2.0, G_max=2.0)
+        check("degenerate conductance span rejected", False, "expected ValueError")
+    except ValueError:
+        check("degenerate conductance span rejected", True)
+
+    try:
+        AnalogLinearConfig(inl_table=torch.tensor([1.0, 0.5, 2.0]))
+        check("non-monotonic INL table rejected", False, "expected ValueError")
+    except ValueError:
+        check("non-monotonic INL table rejected", True)
+
+
 def test_convert_to_hybrid():
     print("\n== Test 7: convert_to_hybrid ==")
     try:
@@ -444,6 +465,27 @@ def test_analog_conv2d():
     check("AnalogConv2d scale recovery matches digital",
           torch.allclose(y_ref, y_scaled, atol=1e-6),
           f"max diff = {(y_ref - y_scaled).abs().max().item():.6f}")
+
+
+def test_invalid_layer_dimensions_rejected():
+    print("\n== Test 13a: Invalid layer dimensions rejected ==")
+    try:
+        AnalogLinear(0, 4)
+        check("AnalogLinear rejects in_features=0", False, "expected ValueError")
+    except ValueError:
+        check("AnalogLinear rejects in_features=0", True)
+
+    try:
+        AnalogConv2d(3, 4, kernel_size=3, groups=2)
+        check("AnalogConv2d rejects bad channel/group pairing", False, "expected ValueError")
+    except ValueError:
+        check("AnalogConv2d rejects bad channel/group pairing", True)
+
+    try:
+        AnalogConv2d(3, 4, kernel_size=0)
+        check("AnalogConv2d rejects non-positive kernel_size", False, "expected ValueError")
+    except ValueError:
+        check("AnalogConv2d rejects non-positive kernel_size", True)
 
 
 def test_sparsity_tracking():
@@ -656,6 +698,46 @@ def test_energy_profiler():
     check("reset clears energy", profiler.total_energy() == 0.0)
 
 
+def test_inl_quantization():
+    print("\n== Test 13: INL quantization levels ==")
+    n_states = 4
+    # Non-uniform table: 1.0, 2.5, 3.0, 10.0 (G_min=1.0, G_max=10.0)
+    inl_table = torch.tensor([1.0, 2.5, 3.0, 10.0])
+    cfg = AnalogLinearConfig(n_states=n_states, sigma_c2c=0, sigma_d2d=0, noise_enabled=False, inl_table=inl_table)
+    layer = AnalogLinear(4, 4, config=cfg)
+
+    # Test ste_quantize directly
+    x = torch.tensor([1.1, 2.4, 2.8, 9.0])
+    y = ste_quantize(x, n_states, 1.0, 10.0, inl_table=inl_table)
+    expected = torch.tensor([1.0, 2.5, 3.0, 10.0])
+    check("ste_quantize with INL table", torch.allclose(y, expected), f"got {y.tolist()}")
+
+    # Test AnalogLinear weight_to_conductance
+    # Force weights to map to specific normalized values
+    # W_pos_norm = W_pos / w_abs_max. W_pos_norm in [0, 1].
+    # G = G_min + W_pos_norm * (G_max - G_min)
+    # For G_min=1, G_max=10, G_range=9:
+    # G = 1 + W_pos_norm * 9
+    # W_pos_norm = (G - 1) / 9
+    # G=1.0 -> W_pos_norm=0.0
+    # G=2.5 -> W_pos_norm=1.5/9 = 0.1666
+    # G=3.0 -> W_pos_norm=2.0/9 = 0.2222
+    # G=10.0 -> W_pos_norm=1.0
+    with torch.no_grad():
+        layer.weight.copy_(torch.tensor([
+            [0.0, 0.16, 0.23, 1.0],
+            [0.0, 0.0, 0.0, 0.0],
+            [0.0, 0.0, 0.0, 0.0],
+            [0.0, 0.0, 0.0, 0.0]
+        ]))
+    G_pos, G_neg = layer._weight_to_conductance(layer.weight)
+    unique_pos = torch.sort(torch.unique(G_pos))[0]
+    # Should only contain values from inl_table
+    check("AnalogLinear with INL table: unique values match",
+          all(val in inl_table for val in unique_pos.tolist()),
+          f"got {unique_pos.tolist()}")
+
+
 if __name__ == "__main__":
     print("=" * 60)
     print("Testing analog_layers.py")
@@ -673,14 +755,17 @@ if __name__ == "__main__":
     test_retention_decay()
     test_retention_recalibrate_scale_restores_clean_output()
     test_retention_scales_d2d_preserves_noisy_output()
+    test_invalid_analog_config_rejected()
     test_convert_to_hybrid()
     test_analog_conv2d()
+    test_invalid_layer_dimensions_rejected()
     test_sparsity_tracking()
     test_convert_resnet_to_analog()
     test_inverse_gamma()
     test_photocurrent_simulator()
     test_adc_quantizer()
     test_energy_profiler()
+    test_inl_quantization()
 
     print("\n" + "=" * 60)
     print(f"Results: {PASS} passed, {FAIL} failed")

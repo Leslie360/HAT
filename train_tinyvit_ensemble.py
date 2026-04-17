@@ -1298,9 +1298,18 @@ def export_dry_run_report(report_path: str, exp_id: str, exp_cfg: TinyViTExperim
             )
 
         f.write("\n## Energy Breakdown\n\n")
+
+        def format_share(key: str, value_uJ: float, pct: float) -> str:
+            if key == "buffer" and value_uJ == 0.0:
+                return "not separately modeled"
+            if value_uJ > 0.0 and pct < 0.1:
+                return "<0.1%"
+            return f"{pct:.1f}%"
+
         for key, value in summary["energy_breakdown_J"].items():
+            value_uJ = value * 1e6
             pct = summary.get("percentage", {}).get(key, 0.0)
-            f.write(f"- {key}: {value * 1e6:.4f} µJ ({pct:.1f}%)\n")
+            f.write(f"- {key}: {value_uJ:.4f} µJ ({format_share(key, value_uJ, pct)})\n")
 
         f.write("\n## Latency Estimate\n\n")
         f.write(f"- Estimated total latency: {latency['total_latency_us']:.4f} µs / inference\n")
@@ -1315,7 +1324,7 @@ def export_dry_run_report(report_path: str, exp_id: str, exp_cfg: TinyViTExperim
 
         f.write("\n## Notes / TODO\n\n")
         f.write("- Attention energy uses a hook-based estimate for QK^T, softmax, and A·V.\n")
-        f.write("- Buffer/SRAM/DRAM terms are still approximated as zero in this dry-run.\n")
+        f.write("- Buffer/SRAM/DRAM terms are not yet separately itemized in this dry-run and should not be interpreted as physically zero.\n")
         f.write("- Physical front-end min-max normalization remains a Claude-review item.\n")
 
 

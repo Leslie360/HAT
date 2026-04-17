@@ -26,7 +26,7 @@ import json
 import os
 import sys
 import time
-from dataclasses import dataclass, asdict
+from dataclasses import dataclass, asdict, fields
 from typing import Optional
 
 # Unbuffer stdout for real-time log output via tee/pipe
@@ -61,6 +61,7 @@ class ExperimentConfig:
     noise_enabled: bool = False
     use_analog: bool = False     # whether to use AnalogConv2d/AnalogLinear
     hat_training: bool = False   # HAT = noise ON during training
+    restore_weight_scale: bool = True # Whether to restore FP32 weight scale
 
     # Training hyperparameters
     epochs: int = 200
@@ -68,6 +69,23 @@ class ExperimentConfig:
     momentum: float = 0.9
     weight_decay: float = 5e-4
     batch_size: int = 128
+
+
+def load_experiment_config_from_checkpoint(ckpt: dict) -> ExperimentConfig:
+    """Rebuild ExperimentConfig with compatibility for legacy ResNet checkpoints.
+
+    Older CIFAR-10 analog checkpoints were saved before `restore_weight_scale`
+    was serialized in `exp_cfg`. Those runs used the analog-layer default
+    (`False`), while the current ExperimentConfig default is `True`. Falling
+    back to the current default breaks legacy checkpoint replay and collapses
+    analog accuracy to chance level.
+    """
+    raw_cfg = dict(ckpt.get("exp_cfg", {}))
+    valid = {field.name for field in fields(ExperimentConfig)}
+    filtered = {k: v for k, v in raw_cfg.items() if k in valid}
+    if "restore_weight_scale" not in raw_cfg:
+        filtered["restore_weight_scale"] = False
+    return ExperimentConfig(**filtered)
 
 
 def get_experiment_configs(epochs: int = 200) -> dict:
@@ -129,21 +147,23 @@ def create_resnet18_cifar(num_classes: int = 10):
     return model
 
 
-def build_model(exp_cfg: ExperimentConfig, device: str = 'cpu'):
+def build_model(exp_cfg: ExperimentConfig, num_classes: int = 10, device: str = 'cpu'):
     """Build model according to experiment configuration.
 
     For R1 (FP32): standard ResNet-18
     For R2-R6: convert applicable layers to AnalogConv2d/AnalogLinear
     """
-    model = create_resnet18_cifar()
+    model = create_resnet18_cifar(num_classes=num_classes)
 
     if exp_cfg.use_analog:
         analog_cfg = AnalogLinearConfig(
             n_states=exp_cfg.n_states,
-            sigma_c2c=exp_cfg.sigma_c2c if exp_cfg.hat_training else 0.0,
+            sigma_c2c=exp_cfg.sigma_c2c,
             sigma_d2d=exp_cfg.sigma_d2d,
             noise_enabled=exp_cfg.hat_training and exp_cfg.noise_enabled,
+            restore_weight_scale=exp_cfg.restore_weight_scale,
         )
+
         model = convert_resnet_to_analog(
             model, config=analog_cfg,
             skip_first_conv=False,  # include all conv layers for ResNet
@@ -187,26 +207,35 @@ def set_noise_for_train(model: nn.Module, exp_cfg: ExperimentConfig):
 # Data
 # ─────────────────────────────────────────────
 
-def get_dataloaders(batch_size: int = 128, num_workers: int = 4,
+def get_dataloaders(dataset: str = "cifar10", batch_size: int = 128, num_workers: int = 4,
                     data_root: str = './data'):
-    """CIFAR-10 train/test loaders with standard augmentation."""
+    """CIFAR-10/100 train/test loaders with standard augmentation."""
+    if dataset == "cifar10":
+        mean, std = (0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)
+        ds_class = torchvision.datasets.CIFAR10
+    elif dataset == "cifar100":
+        mean, std = (0.5071, 0.4867, 0.4408), (0.2675, 0.2565, 0.2761)
+        ds_class = torchvision.datasets.CIFAR100
+    else:
+        raise ValueError(f"Unknown dataset {dataset}")
+
     transform_train = transforms.Compose([
         transforms.RandomCrop(32, padding=4),
         transforms.RandomHorizontalFlip(),
         transforms.ToTensor(),
-        transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
+        transforms.Normalize(mean, std),
     ])
     transform_test = transforms.Compose([
         transforms.ToTensor(),
-        transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
+        transforms.Normalize(mean, std),
     ])
 
-    trainset = torchvision.datasets.CIFAR10(
+    trainset = ds_class(
         root=data_root, train=True, download=True, transform=transform_train)
     trainloader = torch.utils.data.DataLoader(
         trainset, batch_size=batch_size, shuffle=True, num_workers=num_workers)
 
-    testset = torchvision.datasets.CIFAR10(
+    testset = ds_class(
         root=data_root, train=False, download=True, transform=transform_test)
     testloader = torch.utils.data.DataLoader(
         testset, batch_size=batch_size, shuffle=False, num_workers=num_workers)
@@ -275,6 +304,7 @@ def evaluate(model, testloader, criterion, device, exp_cfg, amp_enabled=False):
 
 
 def run_experiment(exp_id: str, exp_cfg: ExperimentConfig, device: str,
+                   dataset: str = "cifar10", seed: int = 42,
                    data_root: str = './data', save_dir: str = 'checkpoints',
                    verbose: bool = True, amp_enabled: bool = False):
     """Run a single experiment configuration end-to-end.
@@ -283,13 +313,21 @@ def run_experiment(exp_id: str, exp_cfg: ExperimentConfig, device: str,
         dict with final metrics and training history
     """
     print(f"\n{'='*70}")
-    print(f"Experiment {exp_id}: {exp_cfg.name}")
+    print(f"Experiment {exp_id}: {exp_cfg.name} on {dataset} (seed={seed})")
     print(f"  n_states={exp_cfg.n_states}, C2C={exp_cfg.sigma_c2c}, "
           f"D2D={exp_cfg.sigma_d2d}, HAT={exp_cfg.hat_training}")
     print(f"{'='*70}")
 
+    import random
+    import numpy as np
+    torch.manual_seed(seed)
+    np.random.seed(seed)
+    random.seed(seed)
+
+    num_classes = 100 if dataset == "cifar100" else 10
+
     # Build model
-    model = build_model(exp_cfg, device)
+    model = build_model(exp_cfg, num_classes=num_classes, device=device)
     n_params = sum(p.numel() for p in model.parameters())
     n_analog = sum(1 for m in model.modules()
                    if isinstance(m, (AnalogLinear, AnalogConv2d)))
@@ -297,7 +335,7 @@ def run_experiment(exp_id: str, exp_cfg: ExperimentConfig, device: str,
 
     # Data
     trainloader, testloader = get_dataloaders(
-        exp_cfg.batch_size, num_workers=4, data_root=data_root)
+        dataset=dataset, batch_size=exp_cfg.batch_size, num_workers=4, data_root=data_root)
 
     # Optimizer & scheduler
     optimizer = optim.SGD(model.parameters(), lr=exp_cfg.lr,
@@ -466,6 +504,8 @@ def main():
     parser = argparse.ArgumentParser(description="A2.1: ResNet-18 Experiments on CIFAR-10")
     parser.add_argument("--experiments", nargs='+', default=None,
                         help="Which experiments to run (e.g., R1 R4). Default: all")
+    parser.add_argument("--dataset", type=str, choices=["cifar10", "cifar100"], default="cifar10")
+    parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--epochs", type=int, default=200,
                         help="Training epochs (default: 200)")
     parser.add_argument("--batch-size", type=int, default=128)
@@ -479,6 +519,8 @@ def main():
 
     device = args.device or ("cuda" if torch.cuda.is_available() else "cpu")
     print(f"Device: {device}")
+    print(f"Dataset: {args.dataset}")
+    print(f"Seed: {args.seed}")
     print(f"Epochs: {args.epochs}")
     print(f"AMP requested: {args.amp}, active: {amp_enabled_for_device(args.amp, device)}")
 
@@ -501,6 +543,8 @@ def main():
     for exp_id, exp_cfg in configs.items():
         result, history = run_experiment(
             exp_id, exp_cfg, device,
+            dataset=args.dataset,
+            seed=args.seed,
             data_root=args.data_root,
             save_dir=args.save_dir,
             amp_enabled=args.amp,

@@ -20551,3 +20551,52 @@ User reviews `PROJECT_INDEX.md` and the `_archive/` layout first. Commit is gate
   - The "missing" entries in the cleanup deletion block are intentional `git add -u` removals, not document errors.
   - Key cleanup assets verified present: `.gitignore`, `PROJECT_INDEX.md`, `PROJECT_INDEX_AUDIT_20260417.md`, `GIT_HYGIENE_LEDGER_20260417.md`, `READY_TO_STAGE_SHORTLIST_20260417.md`, `COMMIT_TRACKS_20260417.md`, `_archive/figure-drafts/`, `_archive/paper-drafts/`, `_archive/scripts-oneshot/`.
 - Result: the repo now has a reproducible split plan for "organization cleanup" vs "paper/core manuscript" without requiring any additional interpretation at staging time.
+
+[Codex] 2026-04-17 12:18
+
+- Completed the full follow-through commit split after the planning documents were written.
+- Local repo author identity was set only at repository scope to match existing history:
+  - `Leslie360 <2622507532@qq.com>`
+  - Reason: `git commit` was blocked by missing identity, and the existing commit history in this repo already uses that author line.
+
+### Commits created
+
+1. `5b2c49586e47ac72aad4646f5925b5c19f3045af`
+   - `repo: archive one-shot artifacts and refresh project index`
+2. `1974d647690aefd5895aa867d9e31d09d8ad4fcb`
+   - `paper: sync NC manuscript, active code, and canonical assets`
+3. `6b2891585f7cdce2cf04526cc8379e052ba0bbc6`
+   - `experiments: add runtime scripts and result artifacts`
+4. `f28e8f1f1b7219ac73de38633dafd2b1e2906d03`
+   - `docs: add office reference and review materials`
+
+### What each commit covers
+
+- `repo: ...`
+  - `.gitignore`
+  - `PROJECT_INDEX.md`
+  - archive moves under `_archive/`
+  - cleanup bookkeeping docs such as `PROJECT_INDEX_AUDIT_20260417.md`, `GIT_HYGIENE_LEDGER_20260417.md`, `READY_TO_STAGE_SHORTLIST_20260417.md`, `COMMIT_TRACKS_20260417.md`
+- `paper: ...`
+  - active paper/manuscript source
+  - active code and tests tied to the NC manuscript
+  - curated static assets under `paper/latex_gpt/figures/`
+  - current submission/reviewer packet docs
+- `experiments: ...`
+  - runtime `run_*.py`, `test_*.py`, and `scripts/`
+  - generated figure exports under `paper/figures/` and non-curated `paper/latex_gpt/figures/`
+  - runtime logs under `logs/_gpt/`
+  - experiment JSON/CSV/TSV artifacts under `report_md/_gpt/` and `report_md/json/`
+- `docs: ...`
+  - `README.md`, `LICENSE`, `EXPERIMENT_PROTOCOL.md`, `RELEASE_CHECKLIST.md`
+  - `docs/`, `AGENT_SYNC/`
+  - office/reference assets and review materials under `report_md/`
+  - legacy `paper/01` to `paper/07` markdown drafts
+  - `paper/latex_gpt/main.pdf`
+
+### Final worktree state
+
+- After the four commits above, `git status --short` was reduced to a single remaining untracked path:
+  - `数据_博士/`
+- That directory was intentionally left out of all commits in this round.
+- Net effect: the tracked repo content is now commit-complete for the cleanup + paper + experiments + documentation lines; only raw doctor-side source data remains outside git.

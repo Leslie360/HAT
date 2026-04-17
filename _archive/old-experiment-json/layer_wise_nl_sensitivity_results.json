@@ -1,0 +1,63 @@
+{
+  "experiment": "Layer-Wise NL Sensitivity",
+  "checkpoint": "checkpoints/V4_hybrid_standard_noise_hat_best.pt",
+  "results": {
+    "baseline_linear": {
+      "mean": 15.4,
+      "std": 0.23069460331789324,
+      "min": 15.07,
+      "max": 15.73
+    },
+    "global_nl2": {
+      "mean": 15.350999999999999,
+      "std": 0.49550882938652063,
+      "min": 14.57,
+      "max": 15.95
+    },
+    "patch_embed": {
+      "mean": 15.663999999999998,
+      "std": 0.2657517638699693,
+      "min": 15.02,
+      "max": 16.08
+    },
+    "qkv": {
+      "mean": 15.454000000000002,
+      "std": 0.28587409816211057,
+      "min": 14.92,
+      "max": 15.84
+    },
+    "attn_out": {
+      "mean": 15.348000000000003,
+      "std": 0.2771569952211201,
+      "min": 14.97,
+      "max": 15.99
+    },
+    "mlp": {
+      "mean": 15.249,
+      "std": 0.4695625623918497,
+      "min": 14.38,
+      "max": 16.08
+    }
+  },
+  "sensitivity_ranking": [
+    {
+      "mlp": 0.1509999999999998
+    },
+    {
+      "attn_out": 0.051999999999997826
+    },
+    {
+      "global_nl2": 0.049000000000001265
+    },
+    {
+      "qkv": -0.054000000000002046
+    },
+    {
+      "patch_embed": -0.26399999999999757
+    }
+  ],
+  "interpretation": {
+    "key_finding": "Identifies which ViT modules are most sensitive to write nonlinearity",
+    "methodology": "Layer-specific NL injection while keeping others linear"
+  }
+}

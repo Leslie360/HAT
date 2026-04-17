@@ -1,0 +1,11 @@
+{
+  "combined_stress_accuracy": 89.61,
+  "settings": {
+    "sigma_c2c": 0.02,
+    "sigma_d2d": 0.03,
+    "adc_bits": 6,
+    "ir_drop": 0.01,
+    "sneak": 0.01,
+    "inference_time": 1000.0
+  }
+}

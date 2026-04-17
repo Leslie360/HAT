@@ -1,0 +1,28 @@
+{
+  "experiment": "Ensemble HAT Fixed Evaluation",
+  "date": "2026-04-14T23:51:03.299379",
+  "checkpoint": "checkpoints/_ensemble/V4_hybrid_standard_noise_hat_best.pt",
+  "note": "Using analog_layers_ensemble (matching training module)",
+  "standard_hat": {
+    "accuracy": 10.53,
+    "note": "No resampling, shows degradation"
+  },
+  "ensemble_hat": {
+    "accuracies": [
+      10.0,
+      10.0,
+      9.73,
+      10.29,
+      10.0,
+      9.86,
+      10.0,
+      9.92,
+      10.0,
+      10.0
+    ],
+    "mean": 9.98,
+    "std": 0.1337908816025963,
+    "min": 9.73,
+    "max": 10.29
+  }
+}

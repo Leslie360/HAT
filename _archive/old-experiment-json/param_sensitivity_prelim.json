@@ -1,0 +1,120 @@
+{
+  "experiment": "Parameter Sensitivity Analysis - Preliminary",
+  "method": "Evidence-based analysis from existing experimental results",
+  "baseline": {
+    "G_range": 10.0,
+    "sigma_c2c": 0.05,
+    "sigma_d2d": 0.10,
+    "tau_1": 0.14,
+    "tau_2": 0.61,
+    "A_0": 0.6,
+    "NL": 1.0,
+    "n_states": 16
+  },
+  "sensitivity_ranking": [
+    {
+      "parameter": "NL (nonlinearity)",
+      "impact": "VERY_HIGH",
+      "impact_score": 10,
+      "evidence": "NL=2.0 yields 27.72% accuracy (Task 35), fundamental boundary for gradient-scaling approximation",
+      "trend": "NL>2.0 is hard boundary; training becomes ineffective",
+      "measurement_priority": "P0 - CRITICAL"
+    },
+    {
+      "parameter": "sigma_d2d",
+      "impact": "HIGH",
+      "impact_score": 9,
+      "evidence": "Standard HAT collapses to 10% on fresh instances; Ensemble HAT recovers to 86.37% (Task 37)",
+      "trend": "D2D dominates cross-instance transfer failure",
+      "measurement_priority": "P0 - CRITICAL"
+    },
+    {
+      "parameter": "G_range",
+      "impact": "MEDIUM",
+      "impact_score": 6,
+      "evidence": "Zhang 2025 profile uses G_range=47.3 vs canonical 10; Zhang case study achieves 88.53%",
+      "trend": "Higher G_range helps, but diminishing returns beyond 20-50",
+      "measurement_priority": "P0 - IMPORTANT"
+    },
+    {
+      "parameter": "tau_1 (fast retention)",
+      "impact": "MEDIUM",
+      "impact_score": 5,
+      "evidence": "V7/V8 show ~79% plateau after 10s; early drop from ~91% to ~82% at 1s",
+      "trend": "Determines early accuracy drop; less critical for long-term",
+      "measurement_priority": "P1 - NICE TO HAVE"
+    },
+    {
+      "parameter": "tau_2 (slow retention)",
+      "impact": "MEDIUM",
+      "impact_score": 5,
+      "evidence": "Plateau maintained from 10s to 10000s at ~79%",
+      "trend": "Sets long-term floor; stable after initial decay",
+      "measurement_priority": "P1 - NICE TO HAVE"
+    },
+    {
+      "parameter": "A_0 (persistent fraction)",
+      "impact": "MEDIUM",
+      "impact_score": 5,
+      "evidence": "A_0=0.6 means 60% never decays; sets accuracy floor",
+      "trend": "Higher A_0 = better long-term retention",
+      "measurement_priority": "P1 - NICE TO HAVE"
+    },
+    {
+      "parameter": "gamma_phys",
+      "impact": "LOW_TO_MEDIUM",
+      "impact_score": 4,
+      "evidence": "V6 shows +5.8pp compensation gain for gamma=2.0; but only affects opto mode",
+      "trend": "Sublinear response requires compensation; linear OK",
+      "measurement_priority": "P1 - NICE TO HAVE"
+    },
+    {
+      "parameter": "sigma_c2c",
+      "impact": "LOW",
+      "impact_score": 2,
+      "evidence": "EXP-A shows C2C variations have 0.00pp impact when D2D dominates",
+      "trend": "Sub-resolution in scale-masking regime",
+      "measurement_priority": "P2 - CAN PROXY"
+    },
+    {
+      "parameter": "n_states",
+      "impact": "LOW",
+      "impact_score": 2,
+      "evidence": "Scale-masking absorbs quantization noise; 4-bit sufficient in canonical regime",
+      "trend": "ADC 6-bit is real bottleneck, not conductance states",
+      "measurement_priority": "P2 - CAN PROXY"
+    },
+    {
+      "parameter": "I_dark",
+      "impact": "LOW",
+      "impact_score": 2,
+      "evidence": "Affects SNR in high-dark regimes; negligible in normal operation",
+      "trend": "Important only for low-light scenarios",
+      "measurement_priority": "P2 - CAN PROXY"
+    }
+  ],
+  "recommendation": {
+    "P0_must_measure": {
+      "parameters": ["NL_LTP", "NL_LTD", "sigma_d2d", "G_range"],
+      "justification": "These drive fundamental system behaviors: trainability, transferability, and dynamic range",
+      "minimum_viable_dataset": "If only 4 parameters can be measured, these are the ones"
+    },
+    "P1_nice_to_have": {
+      "parameters": ["tau_1", "tau_2", "A_0", "gamma_phys"],
+      "justification": "Affects absolute accuracy but trends are predictable from literature",
+      "use_case": "For fine-tuning predictions and validation"
+    },
+    "P2_can_proxy": {
+      "parameters": ["sigma_c2c", "n_states", "I_dark", "responsivity_alpha"],
+      "justification": "Either sub-resolution in our regime or have workarounds",
+      "use_case": "Use literature values without significant accuracy loss"
+    }
+  },
+  "implications_for_paper": {
+    "simulation_only_defense": "With P0 parameters from literature, our predictions are anchored to physical reality for the most impactful parameters",
+    "measured_data_value": "Real NL and D2D data would validate the Ensemble HAT and hard boundary claims",
+    "acceptable_proxy": "C2C and n_states can remain proxied; these are not dominant error sources"
+  },
+  "timestamp": "2026-04-12",
+  "confidence": "MEDIUM - Based on existing experimental evidence, not new sweeps"
+}

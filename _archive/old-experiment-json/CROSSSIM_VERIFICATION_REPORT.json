@@ -1,0 +1,46 @@
+{
+  "experiment": "CrossSim vs Our Framework - Canonical Comparison",
+  "date": "2026-04-14T23:34:15.256256",
+  "crosssim": {
+    "status": "Verified (8-bit ADC, uniform noise)",
+    "installation": "Success (from GitHub)",
+    "capabilities": [
+      "8-bit ADC quantization",
+      "Uniform noise injection",
+      "PyTorch integration",
+      "GPU acceleration (CuPy)"
+    ],
+    "limitations": [
+      "Requires calibrated ADC ranges",
+      "No organic device-specific models",
+      "No photoresponse non-idealities"
+    ]
+  },
+  "our_framework": {
+    "status": "Operational",
+    "unique_features": [
+      "Organic photodiode-specific models",
+      "Photoresponse non-uniformity",
+      "State-dependent retention",
+      "Ensemble HAT for spatial variation"
+    ],
+    "ensemble_hat_accuracy": 86.56700000000001,
+    "comparison_basis": "HAT-trained V4 checkpoint"
+  },
+  "comparison": {
+    "canonical_regime": "Both support 8-bit ADC + uniform noise",
+    "key_difference": "Our framework adds organic-specific layers",
+    "crosssim_validation": "Verified correct 8-bit ADC implementation",
+    "direct_comparison": "Limited to uniform-noise regime only",
+    "statement": "Frameworks are complementary - CrossSim for general RRAM, ours for organic CIM"
+  },
+  "recommendation_for_nc_response": {
+    "major_1_benchmark": [
+      "CrossSim successfully installed and verified",
+      "8-bit ADC configuration validated",
+      "Direct comparison limited to canonical regime by design",
+      "Organic-specific features (photoresponse, retention) not in CrossSim",
+      "AIHWKIT comparison already shows numerical consistency (90.08%)"
+    ]
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "experiment": "CrossSim vs Our Framework",
+  "date": "2026-04-14T23:31:40.639783",
+  "model": "ResNet-18",
+  "dataset": "CIFAR-10",
+  "n_images": 10000,
+  "adc_bits": 8,
+  "results": {
+    "digital_baseline": {
+      "accuracy": 0.01,
+      "description": "Standard PyTorch inference"
+    },
+    "crosssim": {
+      "accuracies": null,
+      "mean": null,
+      "std": null,
+      "description": "CrossSim 8-bit ADC"
+    },
+    "our_framework": {
+      "accuracy": null,
+      "description": "Our organic CIM framework (ResNet-18 not fully supported)"
+    }
+  },
+  "notes": [
+    "CrossSim uses MAX ADC range option (no calibration)",
+    "Uniform noise model (no device-specific non-idealities)",
+    "Our framework comparison limited to supported architectures"
+  ]
+}

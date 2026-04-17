@@ -1,0 +1,179 @@
+\documentclass[12pt, a4paper]{ctexart}
+\usepackage{graphicx}
+% ========== 宏包引入 ==========
+\usepackage{amsmath, amssymb, amsthm} % 数学公式与符号
+\usepackage{graphicx} % 插入图片
+\usepackage{booktabs} % 三线表
+\usepackage{hyperref} % 超链接
+\usepackage{geometry} % 页面布局
+\usepackage{color} % 字体颜色
+\usepackage{bm} % 粗体数学符号
+
+% ========== 页面设置 ==========
+\geometry{left=2.5cm, right=2.5cm, top=3cm, bottom=3cm}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    urlcolor=cyan,
+}
+
+% ========== 标题信息 ==========
+\title{\LARGE \textbf{课题立项报告：面向大模型推理瓶颈的有机光电双模态存算一体架构设计与全栈仿真}}
+\author{汇报人：李松桥 \\ \small 跨学科联合培养计划 / 材料与人工智能交叉方向}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+% ========== 摘要 ==========
+\begin{abstract}
+\noindent \textbf{【立项摘要】} 本课题旨在将实验室的“有机光电突触材料”与当前工业界最前沿的“大模型底层推理架构”深度结合。针对黄仁勋等业界领袖指出的 AI 推理“访存墙”痛点，本课题避开难以流片制造的劣势，采用“前端自研+后端借力”的策略，搭建一套高保真的数模混合仿真系统。项目不仅从严格的数学角度证明了底层反伽马机制带来的极端环境鲁棒性，还创新性地提出了面向微型视觉 Transformer 的“异构算力切分”方案。本课题的落地不仅有望冲击交叉领域顶刊，还将为实验室沉淀一套极具延续性的“硬件感知软硬协同仿真工具链”。
+\end{abstract}
+
+\vspace{1em}
+
+% ==========================================
+\section{第一部分：时代背景、应用切入与前端光学的数学证明}
+
+\subsection{时代背景与核心痛点（为什么我们现在必须做这个？）}
+当前，人工智能领域正在经历从“模型训练”向“模型推理部署”的战略转移。正如黄仁勋在近期英伟达年会及 GTC 大会上所强调的，未来的核心利润和技术壁垒将建立在“极低延迟、极低功耗的推理加速芯片”之上。然而，传统的冯·诺依曼架构在应对以 Transformer 为基础的多模态大模型（MLLM）时，正面临严重的物理瓶颈：
+
+\begin{itemize}
+    \item \textbf{痛点一：Decode 阶段的“访存墙 (Memory Wall)”} \\
+    目前 GPU 算力优化主要让 Prefill 阶段吃到了红利。但在逐字生成 Token 的 Decode 阶段，Batch Size 通常极小，计算单元（ALU）大部分时间处于空转状态，苦苦等待庞大的模型权重从显存（HBM）搬运过来。这占据了系统 80\% 以上的能耗与延迟。
+    \item \textbf{痛点二：多模态视觉处理的“首字延迟 (First-Token Latency)”} \\
+    光信号需要经过“镜头 $\rightarrow$ CMOS 传感器 $\rightarrow$ ISP 处理 $\rightarrow$ ADC 量化 $\rightarrow$ 内存 $\rightarrow$ GPU 读取计算”。这条极其漫长的数字流水线，导致边缘视觉 AI 的反应速度极慢且功耗巨大。
+\end{itemize}
+
+\textbf{我们的历史性机遇（核心卖点）：} 我们实验室现有的有机光突触晶体管，天然具备“光响应”与“非易失性阻变”双重物理特征。这使我们能在前端实现“光感极速计算（跨越 CMOS 与 ADC 开销）”，在后端实现“模型权重刻入阵列（Stationary Weights，零权重搬运）”。
+
+\subsection{目标应用场景评估（我们要在哪里落地？）}
+在无法流片制造超大规模阵列的现状下，我们必须精准切入“边缘端、功耗敏感、需极速反应”的细分赛道，以放大仿真数据的工程说服力：
+
+\begin{itemize}
+    \item \textbf{最推荐场景 (Tier 1)：边缘微型无人机 / 可穿戴 AR 眼镜主视觉} \\
+    这类设备电池极小，且对视觉延迟的容忍度为零。我们的架构能提供对比传统 GPU 数十倍的能效碾压优势。并且，该场景不需要 7B 级别大模型，完美契合我们几十兆参数的 Tiny-ViT 级别仿真规模。
+    \item \textbf{次推荐场景 (Tier 2)：医疗仿生视网膜 / 视觉预处理假体} \\
+    利用有机材料天生的生物相容性，适合冲击大子刊，但难以展现底层软硬协同的 AI Infra 代码硬实力。
+    \item \textbf{暂不推荐场景 (Tier 3)：L4/L5 级别自动驾驶主视觉} \\
+    由于自动驾驶是生命攸关领域，有机器件固有的高斯波动极易被评审质疑“存在严重的安全隐患”，在答辩时难以自圆其说。
+\end{itemize}
+
+\subsection{前端自研：反伽马光学补偿与底噪压制}
+
+当环境光信号照射于有机光突触表面时，其突触后电流（PSC）并非与入射光强呈理想线性。基于实验室器件表征数据，物理光电流 $I_{photo}$ 的数学模型抽象为：
+\begin{equation}
+    I_{photo} = \alpha \cdot (P_{in})^{\gamma_{phys}} + I_{dark} + \mathcal{N}_{shot}(P_{in})
+\end{equation}
+其中，$P_{in} \in [0, 1]$ 为光强；$\alpha$ 为响应度常数；$\gamma_{phys}$ 为材料非线性响应因子；$I_{dark}$ 为暗电流；$\mathcal{N}_{shot}$ 为泊松散粒噪声。
+
+若直接将数字图像矩阵作为光强照射，非线性项 $(P_{in})^{\gamma_{phys}}$ 将导致特征映射严重失真。为此，我们在软件输入端引入了\textbf{反伽马物理补偿函数}。设输入的归一化像素值为 $X_{pixel}$，对其进行逆向指数变换：
+\begin{equation}
+    P_{in} = \left( X_{pixel} \right)^{\frac{1}{\gamma_{phys}}}
+\end{equation}
+代入式 (1) 中，可得补偿后的实际物理输出电流：
+\begin{align}
+    I_{photo}^{compensated} &= \alpha \cdot \left[ \left( X_{pixel} \right)^{\frac{1}{\gamma_{phys}}} \right]^{\gamma_{phys}} + I_{dark} + \mathcal{N}_{shot} \nonumber \\
+    &= \alpha \cdot X_{pixel} + I_{dark} + \mathcal{N}_{shot}
+\end{align}
+
+\textbf{核心价值结论：} 由式 (3) 可见，不仅在物理域完美恢复了线性特征提取，更重要的是：在暗光环境下（极小噪声 $\Delta \epsilon$），由于预处理指数 $1/\gamma_{phys} > 1$，微小的环境高频噪波将被指数级压缩。结合器件底部的天然阈值死区（Dead-Zone），系统获得了一种极强的“物理级正则化”，这是纯数字架构绝对无法具备的“降维鲁棒性”。
+
+\begin{figure}[htbp]         % h:当前位置, t:页顶, b:页底, p:独立一页
+    \centering               % 图片居中
+    \includegraphics[width=0.8\textwidth]{111.png} % 设置宽度为页面宽度的80%
+    \caption{仿真融合方案示意}  % 图片下方的文字说明
+    \label{fig:my_image}     % 用于正文引用的标签
+\end{figure}
+
+% ==========================================
+\section{第二部分：数模混合系统搭建与底层异构加速方案}
+为确保系统级评估的严谨性，我们将借力 IBM AIHWKIT 顶级开源库作为阵列仿真后端，并结合自研前端，完成以下核心架构设计。
+
+\subsection{物理并行加速的数学基础 (打破访存墙的理论证明)}
+在传统的冯·诺依曼架构中，向量-矩阵乘法（Vector-Matrix Multiplication, VMM）需要大量的时钟周期与显存读取带宽。但在本设计的交叉阵列中，这一计算过程被物理定律瞬间完成。
+
+假设我们将输入特征转化为读取电压向量 $\bm{V}_{in} = [V_1, V_2, \dots, V_N]^T$，并将网络权重映射为物理电导矩阵 $\bm{G} \in \mathbb{R}^{N \times M}$。依据欧姆定律与基尔霍夫电流定律（KCL），在第 $j$ 列位线上汇聚的物理总电流 $I_{out, j}$ 为各支路电流的代数和：
+\begin{equation}
+    I_{out, j} = \sum_{i=1}^{N} V_i \cdot G_{ij} \quad \Rightarrow \quad \bm{I}_{out} = \bm{V}_{in}^T \cdot \bm{G}
+\end{equation}
+
+\textbf{核心价值结论：} 此公式有力地向评审证明：传统 GPU 中时间复杂度为 $O(N \times M)$ 且极度耗费显存带宽的矩阵运算，在我们的架构中利用自然物理规律，在 $O(1)$ 时间内被瞬间完成，且权重 $\bm{G}$ 始终驻留于器件内，彻底打破了 Decode 阶段的“访存墙”。
+
+\subsection{直面硬件缺陷：ADC 量化接口墙 (伪量化模型)}
+模拟阵列计算出的电流信号 $\bm{I}_{out}$ 必须传递给 CMOS 数字电路进行后续的非线性激活。因此，ADC（模数转换器）是系统中不可避免的功耗与精度瓶颈。我们在仿真中严谨地引入了低精度伪量化（Fake Quantization）数学模型。
+
+设 ADC 的量化位宽为 $b$ bits，物理电流的动态范围为 $[I_{min}, I_{max}]$，量化步长 $\Delta$ 定义为 $\Delta = \frac{I_{max} - I_{min}}{2^b - 1}$。经过 ADC 后的量化输出 $I_{out}^{quantized}$ 表示为：
+\begin{equation}
+    I_{out}^{quantized} = \text{Clip}\left( \text{Round}\left( \frac{I_{out} - I_{min}}{\Delta} \right) \cdot \Delta + I_{min}, \ I_{min}, \ I_{max} \right)
+\end{equation}
+
+\textbf{核心价值结论：} 通过该数学模型，我们可在软件中强行探索极端量化（如 4-bit 甚至更低）下的系统存活率。这直接对标了当前大模型推理优化中最火热的低比特量化（Low-bit Quantization）前沿技术。
+
+\subsection{核心创新：面向 Tiny-ViT 的“异构算力切分” (Mixed-Signal Dispatching)}
+为了迎合多模态大模型的演进趋势，本架构选用 Tiny-ViT 作为核心负载。Transformer 的核心机制是自注意力（Self-Attention）：
+\begin{equation}
+    \text{Attention}(\bm{Q}, \bm{K}, \bm{V}) = \text{Softmax}\left( \frac{\bm{X}\bm{W}_Q \cdot (\bm{X}\bm{W}_K)^T}{\sqrt{d_k}} \right) (\bm{X}\bm{W}_V)
+\end{equation}
+物理交叉阵列极其擅长执行静态权重投影，但无法直接处理随输入动态变化的 $\bm{Q} \cdot \bm{K}^T$ 矩阵相乘。因此，我们提出以下“抓大放小”的异构部署方案：
+\begin{itemize}
+    \item \textbf{刻入物理阵列（占系统算力约 85\%）：} 生成 $\bm{Q, K, V}$ 的庞大静态权重矩阵 $\bm{W}_Q, \bm{W}_K, \bm{W}_V$ 以及前馈网络（FFN）中的全量权重，将全部固化刻入有机光电阵列，享受极致的零访存红利。
+    \item \textbf{交由数字协处理器（占系统算力约 15\%）：} 动态的 $\bm{Q} \cdot \bm{K}^T$ 交互计算及复杂的非线性 $\text{Softmax}$ 指数运算，将回传交由传统的 CMOS 数字电路（ALU）计算。
+\end{itemize}
+
+\textit{【底层研发赋能】：为进一步提升软件仿真速度并体现极客级的底层开发能力，本项目计划使用 C++/CUDA 手写 \texttt{Fused\_Opto\_Analog} 自定义算子，将反伽马预处理、物理加噪、量化截断与矩阵相乘，强行融合在一次 GPU 缓存周期内完成，在软件层面消除显存 I/O 开销。}
+
+% ==========================================
+\section{第三部分：多维基准评测、物理数据清单与跨学科远景}
+
+\subsection{二维基准验证矩阵设计 (Multi-Dimensional Benchmarking)}
+为了在缺乏超大规模流片硬件的条件下，在系统层面严格证明本架构的有效性与鲁棒性，本研究设计了模型与数据集的二维交叉验证矩阵：
+
+\begin{itemize}
+    \item \textbf{模型演进分支：} 
+    \begin{enumerate}
+        \item \textbf{ResNet：} 用于快速跑通“物理预处理 $\rightarrow$ 量化 $\rightarrow$ 加噪 $\rightarrow$ 模拟 MAC”的全链路物理闭环。
+        \item \textbf{ConvNeXt：} 纯卷积架构的性能天花板。其深度可分离卷积皆为静态权重操作，可 100\% 完美映射至模拟交叉阵列，测试纯物理加速潜力的极限。
+        \item \textbf{Tiny-ViT：} 实施前述的异构算力切分，全面对标下一代多模态大模型基础设施的底层部署需求。
+    \end{enumerate}
+    \item \textbf{极限环境集 (核心杀手锏)：} 
+    引入 CIFAR-10-C 脏数据集（包含雾霾、低光照、高斯噪声等严重物理干扰）。对比纯数字基线（FP32）。预期我们的物理架构在恶劣光照下依然能维持缓慢的精度平滑衰减，以此作为顶级论文及开题答辩的核心卖点图表。
+\end{itemize}
+
+\subsection{行动指南：向实验室获取的物理数据清单}
+为确保仿真严谨，绝非“空中楼阁”，接下来的首要任务是回实验室提取以下关键物理参数以注入 PyTorch 仿真器：
+\begin{enumerate}
+    \item \textbf{动态范围 ($G_{max}/G_{min}$) 与 Retention (保持态)：} 确定系统可等效的量化 Bit 位数，以及 Decode 阶段“权重驻留”的物理可行性极限。
+    \item \textbf{光电瞬态响应 (Rise/Decay Time)：} 决定系统前端光学“首字延迟（First-Token Latency）”的理论基准公式。
+    \item \textbf{时空变异性 ($\sigma_{C2C}$ 与 $\sigma_{D2D}$)：} 提取器件与阵列的标准差，用于生成高斯加噪矩阵，迫使网络进行硬件感知训练，换取极强的环境鲁棒性。
+\end{enumerate}
+
+\subsection{跨学科技术融合远景 (Future Perspectives)}
+本课题不仅是一篇论文，更是一个可向上兼容最新 AI 前沿理念的通用底座：
+
+\begin{itemize}
+    \item \textbf{体系结构升华：光电模拟 TPU} \\
+    我们提出的大模型 Decode 驻留机制，严密契合了当前最前沿的 \textbf{绝对权重驻留 (Weight-Stationary, WS) 数据流} 架构模式。在系统级延迟上对传统冯·诺依曼架构形成降维打击。
+    
+    \item \textbf{硬件感知强化学习自动搜索 (HW-Aware RL NAS)} \\
+    考虑到物理工艺的波动，手动设定各层模拟量化位宽难以达到全局最优。未来可引入智能体自动搜索各层最佳配置。设网络策略为 $A$，精度为 $Acc(A)$，物理能耗为 $E(A)$，可设定 RL 奖励函数为：
+    \begin{equation}
+        R(A) = Acc(A) - \lambda \cdot \log \left( \frac{E(A)}{E_{target}} \right)
+    \end{equation}
+    该设计展示了利用顶层 AI 算法（强化学习）反向逼出底层硬件极限能效比的全栈打通能力。
+    
+    \item \textbf{具身智能的硬件赋能：物理反射弧} \\
+    搭载本架构的具身智能体（无人机），其“视网膜”本身即是推理引擎。光信号于传感器表面瞬间完成危险研判，直接触发底层避障指令，实现了零总线延迟的“物理反射弧”。
+\end{itemize}
+
+\subsection{项目执行时间线 (Roadmap)}
+本项目的执行将严格分为四个冲刺阶段，确保在紧凑周期内产出高水平成果：
+\begin{itemize}
+    \item \textbf{Phase 1 (第 1-3 周)：} 物理参数提取，基于 PyTorch 搭建底层 Custom Layer（反伽马+量化+噪声）。
+    \item \textbf{Phase 2 (第 4-7 周)：} 导入 CIFAR-10-C，跑出纯数字 vs 物理架构的鲁棒性对比折线图。
+    \item \textbf{Phase 3 (第 8-11 周)：} 实施 Tiny-ViT 异构架构切分，开发 CUDA 融合底层算子。
+    \item \textbf{Phase 4 (第 12 周后)：} 汇总 Profiler 能效理论推算，完成高水平期刊与毕业论文的终稿撰写。
+\end{itemize}
+
+\end{document}

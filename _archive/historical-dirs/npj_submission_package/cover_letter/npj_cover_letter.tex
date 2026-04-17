@@ -1,0 +1,74 @@
+\documentclass[11pt,a4paper]{letter}
+\usepackage[margin=1in]{geometry}
+\usepackage[colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue]{hyperref}
+\usepackage{enumitem}
+\setlist{nosep}
+
+\signature{Songqiao Li}
+\address{OrgOptEdge Research\\Email: songqiao.li@orgoptedge.ai}
+
+\begin{document}
+
+\begin{letter}{Editorial Office\\npj Computational Materials\\Springer Nature}
+
+\opening{Dear Editors,}
+
+\textbf{Submission:} Profile-Driven Behavioral Simulation for Organic Optoelectronic Compute-in-Memory: A Materials-to-System Methodology
+
+\textbf{Article Type:} Article
+
+\textbf{Corresponding Author:} Songqiao Li (songqiao.li@orgoptedge.ai)
+
+\vspace{0.5em}
+\textbf{Editorial Summary}
+
+Organic optoelectronic devices offer compelling properties for edge computing---multilevel conductance tuning, low static power, and optical programmability---yet reported device metrics leave a critical gap: how do these characteristics translate to system-level deployment on modern vision workloads? 
+
+We present a profile-driven behavioral simulation methodology that bridges this gap, enabling materials researchers to evaluate device assumptions against task-level accuracy constraints before full hardware validation. The framework explicitly models organic-specific physics (photoresponse, retention drift, write non-linearity) and provides sensitivity analysis identifying which device characteristics dominate deployment bottlenecks.
+
+Key findings include: (1) ADC resolution (not conductance quantization) is the critical threshold, with a sharp 6-bit accuracy cliff; (2) device-to-device variation is the primary training challenge, addressed by an ensemble hardware-aware training strategy; (3) all conclusions are robust to parameter uncertainty within physical plausible ranges (see Supplementary Parameter Risk Matrix).
+
+All experiments use literature-derived proxy parameters; the profile-driven interface enables seamless future integration of measured device data.
+
+\vspace{0.5em}
+\textbf{Why npj Computational Materials?}
+
+This work is fundamentally a \textbf{methodology contribution} bridging materials characterization and system evaluation---a scope explicitly welcomed by npj Computational Materials. The framework advances the field by:
+
+\begin{itemize}
+    \item Providing computational materials scientists with simulation tools for pre-fabrication design-space exploration
+    \item Enabling systematic sensitivity analysis of device non-idealities on deployment metrics
+    \item Establishing a reusable interface connecting reported device parameters to executable evaluation
+\end{itemize}
+
+The contribution parallels established computational materials methodologies (DFT for band structure, MD for transport) but addresses the specific domain of organic optoelectronic computing devices. The framework's value lies in enabling new computational experiments, not in physical validation---which is scoped as natural future work enabled by the methodology.
+
+\vspace{0.5em}
+\textbf{Methodology Contributions}
+
+\begin{enumerate}
+    \item \textbf{Profile-driven device-to-system interface}: JSON parameter injection enabling seamless transition from literature values to measured characterization
+    \item \textbf{Device physics sensitivity framework}: Systematic sweep methodology for C2C, D2D, retention, and non-linearity effects
+    \item \textbf{Deployment-robust training methodology}: Ensemble hardware-aware training addressing hardware-instance overfitting
+    \item \textbf{Literature-profile validation}: Zhang 2025 case study demonstrating cross-paper comparison capability
+\end{enumerate}
+
+\vspace{0.5em}
+\textbf{Transparency Disclosures}
+
+\begin{itemize}
+    \item \textbf{Preprint:} None; submitted exclusively to npj Computational Materials
+    \item \textbf{Prior Publication:} None; developed for this submission
+    \item \textbf{Code Availability:} Reviewer-accessible archive at submission; public release at acceptance
+    \item \textbf{Source Data:} Source tables for all figures provided
+    \item \textbf{Competing Interests:} None declared
+    \item \textbf{Simulation Scope:} All results behavioral-simulation level; fabricated-array validation is future work explicitly enabled by the profile interface
+\end{itemize}
+
+\vspace{0.5em}
+The manuscript is accompanied by a Supplementary Information document including: (1) Parameter Risk Matrix quantifying conclusion robustness to proxy uncertainty; (2) Complete device physics model documentation; (3) Extended sensitivity analysis tables.
+
+\closing{Sincerely,}
+
+\end{letter}
+\end{document}

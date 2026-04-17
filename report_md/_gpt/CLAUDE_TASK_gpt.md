@@ -63,6 +63,17 @@
 
 完整指引: `CODEX_DISPATCH_20260417_cleanup_gpt.md` (Dispatch #7)
 
+| # | Task | Priority | Status | 说明 |
+|:--|:--|:--:|:--:|:--|
+| TX-24 | 归档 `compute_vit/` root 松散 `.md` 协调稿 | MED | ✅ | 15 份已移至 `report_md/_gpt/archive/coordination_20260417/`；root `.md` 由 19 降到 4 |
+| TX-25 | 归档 `paper/` 过时 `.md` 草稿 | MED | ⛔ | 仅无引用 `paper/仿真.tex` 已归档；其余草稿/brief 仍被 `paper/latex_gpt/` 或 `report_md/_gpt/` 活跃文档引用，见 `TIDY_MANIFEST_20260417.md` |
+| TX-26 | 整理 `logs/` 旧日志 | LOW | ✅ | 11 个 2026-04-03 vintage root logs 已移至 `logs/archive_pre_20260404/` |
+| TX-27 | 归档历史并行目录 | HIGH | ⛔ | `npj_submission_package/` 与 `paper_zh/` 已归档；`AGENT_SYNC/` 因活跃脚本 caller 保留，见 `TIDY_MANIFEST_20260417.md` |
+| TX-28 | 归档版本冗余 `.py` | MED | ⛔ | 9 个安全旧版/一次性脚本已归档；`run_nl_layer_sensitivity.py` 因非归档文档仍引用而保留，见 `TIDY_MANIFEST_20260417.md` |
+| TX-29 | Tidy manifest | HIGH | ✅ | `TIDY_MANIFEST_20260417.md` 已写；不 commit |
+
+完整指引: `CODEX_DISPATCH_20260417_tidy_gpt.md` (Dispatch #8)
+
 ### External Review Follow-Up
 
 - External AI-review feedback synthesized in `EXTERNAL_REVIEW_SYNTHESIS_20260417.md`
@@ -607,3 +618,14 @@ Status: COMPLETE
     - `logs/_gpt/train_tinyvit_v4_nl_interp15_20260417_022400_gpt.log`
     - `report_md/_gpt/json_gpt/v4_nl_interp15_results_gpt.json`
     - `report_md/_gpt/v4_nl_interp15_results_gpt.md`
+
+---
+
+## 2026-04-17 — TX-30 `_archive/` consolidation + PROJECT_INDEX.md
+
+| TX | Description | Status |
+|:--|:--|:--:|
+| TX-30a | Collapse 6 scattered archive dirs into `compute_vit/_archive/` (8 themed subdirs, 259 files) | ✅ |
+| TX-30b | Triage residual `report_md/_gpt/archive/` (md/, json/, loose txt) into `_archive/coordination/`, `_archive/old-experiment-json/`, `_archive/old-experiment-data/` | ✅ |
+| TX-30c | Write `compute_vit/PROJECT_INDEX.md` master registry + naming convention + invariants | ✅ |
+| TX-30d | Commit TX-30a..c | ⏳ pending user approval |

@@ -1,0 +1,9 @@
+{
+  "experiment": "CIFAR-100 Fast Training (V4 Backbone)",
+  "date": "2026-04-15T01:21:05.612840",
+  "backbone": "checkpoints/_ensemble/V4_hybrid_standard_noise_hat_best.pt",
+  "best_accuracy": 23.6,
+  "final_accuracy": 23.4,
+  "training_epochs": 30,
+  "strategy": "Frozen V4 backbone + trained classifier"
+}

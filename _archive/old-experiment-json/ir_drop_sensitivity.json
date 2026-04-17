@@ -1,0 +1,82 @@
+{
+  "0.01": {
+    "description": "1% (ReRAM lower bound)",
+    "mean": 10.0,
+    "std": 0.0,
+    "seeds": {
+      "42": 10.0,
+      "123": 10.0,
+      "456": 10.0
+    }
+  },
+  "0.02": {
+    "description": "2% (ReRAM typical)",
+    "mean": 10.0,
+    "std": 0.0,
+    "seeds": {
+      "42": 10.0,
+      "123": 10.0,
+      "456": 10.0
+    }
+  },
+  "0.03": {
+    "description": "3% (ReRAM upper bound)",
+    "mean": 10.0,
+    "std": 0.0,
+    "seeds": {
+      "42": 10.0,
+      "123": 10.0,
+      "456": 10.0
+    }
+  },
+  "0.05": {
+    "description": "5% (Organic conservative)",
+    "mean": 10.0,
+    "std": 0.0,
+    "seeds": {
+      "42": 10.0,
+      "123": 10.0,
+      "456": 10.0
+    }
+  },
+  "0.07": {
+    "description": "7% (Organic moderate)",
+    "mean": 10.0,
+    "std": 0.0,
+    "seeds": {
+      "42": 10.0,
+      "123": 10.0,
+      "456": 10.0
+    }
+  },
+  "0.1": {
+    "description": "10% (Organic typical)",
+    "mean": 10.0,
+    "std": 0.0,
+    "seeds": {
+      "42": 10.0,
+      "123": 10.0,
+      "456": 10.0
+    }
+  },
+  "0.15": {
+    "description": "15% (Organic high)",
+    "mean": 10.0,
+    "std": 0.0,
+    "seeds": {
+      "42": 10.0,
+      "123": 10.0,
+      "456": 10.0
+    }
+  },
+  "0.2": {
+    "description": "20% (Organic extreme)",
+    "mean": 10.0,
+    "std": 0.0,
+    "seeds": {
+      "42": 10.0,
+      "123": 10.0,
+      "456": 10.0
+    }
+  }
+}

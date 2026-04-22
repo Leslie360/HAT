@@ -1,0 +1,26 @@
+{
+  "source": "literature_derived_case_study: Zhang et al., Nature Communications 17, 197 (2026), doi:10.1038/s41467-025-66891-6",
+  "profiles": [
+    {
+      "device_type": "Organic OPECT Zhang2025 Literature-Fitted",
+      "profile_kind": "literature",
+      "source": "Zhang et al., Nature Communications 17, 197 (2026), doi:10.1038/s41467-025-66891-6",
+      "notes": "Runnable literature-derived case-study profile for the organic OPECT paper selected from Perplexity-assisted search and checked against the locally copied article PDF. Conductance is normalized to avoid mixing incompatible absolute operating points; runtime uses G_min=1.0 and G_max=47.3 from the reported optimal G_max/G_min ratio. n_states=34 is explicitly anchored to Abstract / Results / Fig.3h / Supplementary Fig.8 rather than to the 120-pulse programming upper bound. sigma_c2c=0.02 is a transparent proxy estimate motivated by the 8-cycle repeatability evidence in Supplementary Fig.15 and Fig.3g; sigma_d2d=0.03 is a transparent proxy estimate motivated by the reported V_th spread across 80 devices (~0.67%-1.46%) and a conservative uplift to conductance-domain variability. retention parameters remain null because Fig.2d currently supports qualitative state-dependent retention discussion but not a locked in-paper fit. The raw literature NL metric (-0.015 / 2.01) is not injected directly because it is not numerically identical to the simulator's surrogate NL parameterization.",
+      "G_min": 1.0,
+      "G_max": 47.3,
+      "n_states": 34,
+      "sigma_c2c": 0.02,
+      "sigma_d2d": 0.03,
+      "noise_mode": "uniform",
+      "tau_1": null,
+      "tau_2": null,
+      "A_0": null,
+      "gamma_phys": null,
+      "I_dark": null,
+      "responsivity_alpha": null,
+      "NL_LTP": null,
+      "NL_LTD": null,
+      "pulse_count_max": 120
+    }
+  ]
+}

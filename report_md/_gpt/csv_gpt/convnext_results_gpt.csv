@@ -1,0 +1,3 @@
+experiment,name,n_states,sigma_c2c,sigma_d2d,hat_training,best_test_acc,mc_mean_acc,mc_std_acc,total_time_s,epochs
+C2,C2_4bit_no_noise,16,0.0,0.0,False,90.69,90.69,0.0,3631.0,200
+C3,C3_4bit_noise_standard,16,0.05,0.1,False,70.48,69.58,0.55,3636.0,200

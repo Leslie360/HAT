@@ -1,0 +1,68 @@
+{
+  "generated_at": "2026-04-19T02:02:48.508203",
+  "checkpoint_path": "checkpoints/_ensemble/V4_hybrid_standard_noise_hat_best.pt",
+  "protocol": "1 fresh D2D instances x 1 MC evaluations per instance on the canonical Tiny-ViT V4 Ensemble HAT checkpoint",
+  "correlation_model": "separable_ar1_2d",
+  "results": {
+    "iid": {
+      "checkpoint_path": "checkpoints/_ensemble/V4_hybrid_standard_noise_hat_best.pt",
+      "train_best_acc": 91.13,
+      "train_best_epoch": 94,
+      "fresh_instances": 1,
+      "mc_runs_per_instance": 1,
+      "rho": 0.0,
+      "correlation_model": "separable_ar1_2d",
+      "cross_instance_mean": 87.45,
+      "cross_instance_std": 0.0,
+      "instance_means": [
+        87.45
+      ],
+      "instances": [
+        {
+          "instance_index": 0,
+          "seed": 42,
+          "rho": 0.0,
+          "resampled_modules": 42,
+          "correlated_modules": 0,
+          "eval_runs": 1,
+          "test_loss_mean": 0.7767005934357644,
+          "test_acc_mean": 87.45,
+          "test_acc_std": 0.0,
+          "test_acc_raw": [
+            87.45
+          ]
+        }
+      ]
+    },
+    "rho_0_3": {
+      "checkpoint_path": "checkpoints/_ensemble/V4_hybrid_standard_noise_hat_best.pt",
+      "train_best_acc": 91.13,
+      "train_best_epoch": 94,
+      "fresh_instances": 1,
+      "mc_runs_per_instance": 1,
+      "rho": 0.3,
+      "correlation_model": "separable_ar1_2d",
+      "cross_instance_mean": 86.78,
+      "cross_instance_std": 0.0,
+      "instance_means": [
+        86.78
+      ],
+      "instances": [
+        {
+          "instance_index": 0,
+          "seed": 42,
+          "rho": 0.3,
+          "resampled_modules": 42,
+          "correlated_modules": 42,
+          "eval_runs": 1,
+          "test_loss_mean": 0.8064163751602172,
+          "test_acc_mean": 86.78,
+          "test_acc_std": 0.0,
+          "test_acc_raw": [
+            86.78
+          ]
+        }
+      ]
+    }
+  }
+}

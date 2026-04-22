@@ -1,0 +1,32 @@
+{
+  "results": [
+    {
+      "model": "tinyvit",
+      "experiment": "V2",
+      "experiment_name": "V2_hybrid_no_noise",
+      "dataset": "cifar10",
+      "checkpoint_path": "/home/qiaosir/projects/compute_vit/checkpoints/V2_hybrid_no_noise_best.pt",
+      "checkpoint_epoch": 94,
+      "checkpoint_best_acc": 97.38,
+      "sweep_type": "noise",
+      "amp_enabled": true,
+      "sigma_c2c": 0.05,
+      "sigma_d2d": 0.1,
+      "adc_bits": null,
+      "adc_label": "native",
+      "eval_runs": 10,
+      "test_loss_mean": 0.14884702686071397,
+      "test_acc_mean": 97.39,
+      "test_acc_min": 97.39,
+      "test_acc_max": 97.39,
+      "test_acc_std": 0.0
+    }
+  ],
+  "metadata": {
+    "generated_at": "2026-04-05T13:35:08",
+    "last_model": "tinyvit",
+    "last_experiment": "V2",
+    "last_sweep_type": "noise",
+    "eval_runs": 10
+  }
+}

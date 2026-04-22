@@ -1,0 +1,163 @@
+{
+  "results": [
+    {
+      "experiment": "C1",
+      "name": "C1_FP32_baseline",
+      "n_states": 16,
+      "sigma_c2c": 0.0,
+      "sigma_d2d": 0.0,
+      "hat_training": false,
+      "best_test_acc": 90.74,
+      "mc_mean_acc": 90.74,
+      "mc_std_acc": 0.0,
+      "total_time_s": 1429.0,
+      "epochs": 200
+    },
+    {
+      "experiment": "C2",
+      "name": "C2_4bit_no_noise",
+      "n_states": 16,
+      "sigma_c2c": 0.0,
+      "sigma_d2d": 0.0,
+      "hat_training": false,
+      "best_test_acc": 90.69,
+      "mc_mean_acc": 90.69,
+      "mc_std_acc": 0.0,
+      "total_time_s": 3631.0,
+      "epochs": 200
+    },
+    {
+      "experiment": "C3",
+      "name": "C3_4bit_noise_standard",
+      "n_states": 16,
+      "sigma_c2c": 0.05,
+      "sigma_d2d": 0.1,
+      "hat_training": false,
+      "best_test_acc": 70.48,
+      "mc_mean_acc": 69.58,
+      "mc_std_acc": 0.55,
+      "total_time_s": 3636.0,
+      "epochs": 200
+    },
+    {
+      "experiment": "C4",
+      "name": "C4_4bit_noise_HAT",
+      "n_states": 16,
+      "sigma_c2c": 0.05,
+      "sigma_d2d": 0.1,
+      "hat_training": true,
+      "best_test_acc": 89.91,
+      "mc_mean_acc": 89.71,
+      "mc_std_acc": 0.17,
+      "total_time_s": 3700.0,
+      "epochs": 200
+    },
+    {
+      "experiment": "C5",
+      "name": "C5_4bit_pessimistic_HAT",
+      "n_states": 16,
+      "sigma_c2c": 0.1,
+      "sigma_d2d": 0.2,
+      "hat_training": true,
+      "best_test_acc": 88.13,
+      "mc_mean_acc": 87.68,
+      "mc_std_acc": 0.14,
+      "total_time_s": 612.0,
+      "epochs": 200
+    },
+    {
+      "experiment": "C6",
+      "name": "C6_6bit_noise_HAT",
+      "n_states": 64,
+      "sigma_c2c": 0.05,
+      "sigma_d2d": 0.1,
+      "hat_training": true,
+      "best_test_acc": 89.62,
+      "mc_mean_acc": 89.48,
+      "mc_std_acc": 0.14,
+      "total_time_s": 3706.0,
+      "epochs": 200
+    },
+    {
+      "experiment": "C7",
+      "name": "C7_4bit_HAT_ADC4",
+      "n_states": 16,
+      "sigma_c2c": 0.05,
+      "sigma_d2d": 0.1,
+      "hat_training": true,
+      "best_test_acc": 89.19,
+      "mc_mean_acc": 89.03,
+      "mc_std_acc": 0.14,
+      "total_time_s": 3699.0,
+      "epochs": 200
+    },
+    {
+      "experiment": "C8",
+      "name": "C8_4bit_HAT_ADC6",
+      "n_states": 16,
+      "sigma_c2c": 0.05,
+      "sigma_d2d": 0.1,
+      "hat_training": true,
+      "best_test_acc": 89.13,
+      "mc_mean_acc": 88.88,
+      "mc_std_acc": 0.14,
+      "total_time_s": 3697.0,
+      "epochs": 200
+    }
+  ],
+  "histories": {
+    "C1": {},
+    "C2": {},
+    "C3": {},
+    "C4": {},
+    "C5": {},
+    "C6": {},
+    "C7": {},
+    "C8": {}
+  },
+  "retention": [
+    {
+      "time_s": 0,
+      "mean_acc": 89.662,
+      "std_acc": 0.14955266630856143,
+      "mc_runs": 20
+    },
+    {
+      "time_s": 1,
+      "mean_acc": 86.07,
+      "std_acc": 0.16504544828622283,
+      "mc_runs": 20
+    },
+    {
+      "time_s": 10,
+      "mean_acc": 84.295,
+      "std_acc": 0.17519988584471172,
+      "mc_runs": 20
+    },
+    {
+      "time_s": 100,
+      "mean_acc": 84.22549999999998,
+      "std_acc": 0.18693514918281168,
+      "mc_runs": 20
+    },
+    {
+      "time_s": 1000,
+      "mean_acc": 84.33200000000001,
+      "std_acc": 0.24650760637351374,
+      "mc_runs": 20
+    },
+    {
+      "time_s": 10000,
+      "mean_acc": 84.28050000000002,
+      "std_acc": 0.1919238130092262,
+      "mc_runs": 20
+    }
+  ],
+  "retention_metadata": {
+    "checkpoint_path": "checkpoints/C4_4bit_noise_HAT_best.pt",
+    "source_experiment": "C4_4bit_noise_HAT",
+    "epoch": 197,
+    "best_acc": 89.91,
+    "trained_epochs": 200
+  }
+}

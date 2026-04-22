@@ -1,0 +1,183 @@
+{
+  "checkpoint_path": "/home/qiaosir/projects/compute_vit/checkpoints/_gpt/cx_k3_dgeff/k3_dgeff_0p05/V4_hybrid_standard_noise_hat_k3_dgeff_0p05_best.pt",
+  "train_best_acc": 91.52,
+  "train_best_epoch": 72,
+  "fresh_instances": 10,
+  "mc_runs_per_instance": 5,
+  "cross_instance_mean": 36.2118,
+  "cross_instance_std": 9.613163218559572,
+  "instance_means": [
+    41.846,
+    17.114,
+    40.86,
+    32.226,
+    46.884,
+    37.492,
+    29.740000000000002,
+    30.126,
+    50.446,
+    35.384
+  ],
+  "instances": [
+    {
+      "instance_index": 0,
+      "seed": 42,
+      "resampled_modules": 42,
+      "eval_runs": 5,
+      "test_loss_mean": 4.887378983688355,
+      "test_acc_mean": 41.846,
+      "test_acc_std": 0.9316812759737086,
+      "test_acc_raw": [
+        40.71,
+        42.37,
+        42.2,
+        41.04,
+        42.91
+      ]
+    },
+    {
+      "instance_index": 1,
+      "seed": 142,
+      "resampled_modules": 42,
+      "eval_runs": 5,
+      "test_loss_mean": 8.432509270477295,
+      "test_acc_mean": 17.114,
+      "test_acc_std": 0.9378859205681669,
+      "test_acc_raw": [
+        18.74,
+        16.55,
+        16.99,
+        16.87,
+        16.42
+      ]
+    },
+    {
+      "instance_index": 2,
+      "seed": 242,
+      "resampled_modules": 42,
+      "eval_runs": 5,
+      "test_loss_mean": 5.045975359191894,
+      "test_acc_mean": 40.86,
+      "test_acc_std": 1.5317800103147974,
+      "test_acc_raw": [
+        39.91,
+        39.74,
+        39.76,
+        43.15,
+        41.74
+      ]
+    },
+    {
+      "instance_index": 3,
+      "seed": 342,
+      "resampled_modules": 42,
+      "eval_runs": 5,
+      "test_loss_mean": 5.5447342414093015,
+      "test_acc_mean": 32.226,
+      "test_acc_std": 0.9594686029255975,
+      "test_acc_raw": [
+        31.32,
+        32.24,
+        31.61,
+        32.16,
+        33.8
+      ]
+    },
+    {
+      "instance_index": 4,
+      "seed": 442,
+      "resampled_modules": 42,
+      "eval_runs": 5,
+      "test_loss_mean": 4.585777197189331,
+      "test_acc_mean": 46.884,
+      "test_acc_std": 1.354964944195975,
+      "test_acc_raw": [
+        49.06,
+        47.31,
+        45.68,
+        46.2,
+        46.17
+      ]
+    },
+    {
+      "instance_index": 5,
+      "seed": 542,
+      "resampled_modules": 42,
+      "eval_runs": 5,
+      "test_loss_mean": 4.9720521620941165,
+      "test_acc_mean": 37.492,
+      "test_acc_std": 0.40052465592020764,
+      "test_acc_raw": [
+        38.17,
+        37.37,
+        37.11,
+        37.35,
+        37.46
+      ]
+    },
+    {
+      "instance_index": 6,
+      "seed": 642,
+      "resampled_modules": 42,
+      "eval_runs": 5,
+      "test_loss_mean": 6.0924740702056885,
+      "test_acc_mean": 29.740000000000002,
+      "test_acc_std": 1.1067971810589325,
+      "test_acc_raw": [
+        31.39,
+        29.55,
+        28.28,
+        29.81,
+        29.67
+      ]
+    },
+    {
+      "instance_index": 7,
+      "seed": 742,
+      "resampled_modules": 42,
+      "eval_runs": 5,
+      "test_loss_mean": 5.998141550979614,
+      "test_acc_mean": 30.126,
+      "test_acc_std": 1.5413078861797853,
+      "test_acc_raw": [
+        28.53,
+        29.16,
+        31.28,
+        29.47,
+        32.19
+      ]
+    },
+    {
+      "instance_index": 8,
+      "seed": 842,
+      "resampled_modules": 42,
+      "eval_runs": 5,
+      "test_loss_mean": 3.937385248184204,
+      "test_acc_mean": 50.446,
+      "test_acc_std": 0.9697577016966652,
+      "test_acc_raw": [
+        51.16,
+        51.01,
+        51.24,
+        49.69,
+        49.13
+      ]
+    },
+    {
+      "instance_index": 9,
+      "seed": 942,
+      "resampled_modules": 42,
+      "eval_runs": 5,
+      "test_loss_mean": 5.3529280900573735,
+      "test_acc_mean": 35.384,
+      "test_acc_std": 0.9190103372650377,
+      "test_acc_raw": [
+        35.43,
+        33.88,
+        35.61,
+        36.39,
+        35.61
+      ]
+    }
+  ]
+}

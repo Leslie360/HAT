@@ -1,0 +1,99 @@
+{
+  "metadata": {
+    "experiment": "V4",
+    "dataset": "cifar10",
+    "device": "cuda",
+    "seeds": [
+      42,
+      123,
+      456
+    ],
+    "notes": "ADC offset/gain/INL injected at analog-layer outputs via forward hooks using per-layer calibrated output ranges."
+  },
+  "results": [
+    {
+      "name": "Ideal",
+      "adc_bits": 8,
+      "offset_lsb": 0.0,
+      "gain_error": 0.0,
+      "inl_lsb": 0.0,
+      "accuracies": [
+        79.453125,
+        80.625,
+        77.65625
+      ],
+      "mean": 79.24479166666667,
+      "std": 1.495299710412041
+    },
+    {
+      "name": "Offset +/-0.5 LSB",
+      "adc_bits": 8,
+      "offset_lsb": 0.5,
+      "gain_error": 0.0,
+      "inl_lsb": 0.0,
+      "accuracies": [
+        79.375,
+        80.3125,
+        77.578125
+      ],
+      "mean": 79.08854166666667,
+      "std": 1.3895126637452186
+    },
+    {
+      "name": "Gain +/-5%",
+      "adc_bits": 8,
+      "offset_lsb": 0.0,
+      "gain_error": 0.05,
+      "inl_lsb": 0.0,
+      "accuracies": [
+        80.625,
+        81.484375,
+        78.359375
+      ],
+      "mean": 80.15625,
+      "std": 1.614373306232174
+    },
+    {
+      "name": "INL 0.5 LSB",
+      "adc_bits": 8,
+      "offset_lsb": 0.0,
+      "gain_error": 0.0,
+      "inl_lsb": 0.5,
+      "accuracies": [
+        77.8125,
+        78.671875,
+        76.09375
+      ],
+      "mean": 77.52604166666667,
+      "std": 1.3127169959508918
+    },
+    {
+      "name": "Combined realistic",
+      "adc_bits": 8,
+      "offset_lsb": 0.5,
+      "gain_error": 0.05,
+      "inl_lsb": 0.5,
+      "accuracies": [
+        80.3125,
+        81.171875,
+        78.359375
+      ],
+      "mean": 79.94791666666667,
+      "std": 1.4412598022939282
+    },
+    {
+      "name": "Combined pessimistic",
+      "adc_bits": 8,
+      "offset_lsb": 1.0,
+      "gain_error": 0.1,
+      "inl_lsb": 1.0,
+      "accuracies": [
+        76.953125,
+        77.109375,
+        73.75
+      ],
+      "mean": 75.9375,
+      "std": 1.896040796798687
+    }
+  ]
+}

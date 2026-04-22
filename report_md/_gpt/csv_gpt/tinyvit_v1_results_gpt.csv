@@ -1,0 +1,2 @@
+mode,experiment,experiment_name,dataset,num_classes,use_hybrid,noise_enabled,sigma_c2c,sigma_d2d,hat_training,use_physical_frontend,retention_enabled,inference_time,epochs,batch_size,lr,weight_decay,best_test_acc,best_epoch,final_train_loss,final_train_acc,final_test_loss,final_test_acc,checkpoint_path
+train,V1,V1_fp32_digital_baseline,cifar10,10,False,False,0.0,0.0,False,False,False,0.0,100,64,0.0005,0.05,97.48,99,1.343510769045679e-05,100.0,0.1509142112198868,97.48,checkpoints/V1_fp32_digital_baseline_best.pt

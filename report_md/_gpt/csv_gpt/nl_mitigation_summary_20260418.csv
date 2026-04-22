@@ -1,0 +1,5 @@
+label,kind,path,exists,best_test_acc,best_epoch,mean_eval_acc,std_eval_acc,experiment_name
+Severe NL baseline,baseline_eval,/home/qiaosir/projects/compute_vit/report_md/_gpt/json_gpt/v4_nl2_hat_eval_results_gpt.json,True,27.716,,27.716,0.8223705571902085,V4_hybrid_standard_noise_hat
+MLP-only linear compensation,train_result,/home/qiaosir/projects/compute_vit/report_md/_gpt/json_gpt/v4_nl2_mlp_linear_comp_train_results_gpt.json,True,87.79,73,,,V4_hybrid_standard_noise_hat_nl2_mlp_linear_comp
+QKV-only linear compensation,train_result,/home/qiaosir/projects/compute_vit/report_md/_gpt/json_gpt/v4_nl2_qkv_linear_comp_train_results_gpt.json,True,18.72,2,,,V4_hybrid_standard_noise_hat_nl2_qkv_linear_comp
+All-analog linear compensation,train_result,/home/qiaosir/projects/compute_vit/report_md/_gpt/json_gpt/v4_nl2_all_linear_comp_train_results_gpt.json,True,87.49,59,,,V4_hybrid_standard_noise_hat_nl2_all_linear_comp

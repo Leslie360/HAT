@@ -1,0 +1,5 @@
+experiment,experiment_name,dataset,time_s,test_loss_mean,test_acc_mean,test_acc_std,test_acc_min,test_acc_max,mc_runs,checkpoint_path,checkpoint_epoch,checkpoint_best_acc
+V4,V4_hybrid_standard_noise_hat,cifar10,0,0.44105168683441975,91.76666666666667,0.2775487945088805,91.47,92.02,3,/home/qiaosir/projects/compute_vit/checkpoints/V4_hybrid_standard_noise_hat_best.pt,99,91.94
+V4,V4_hybrid_standard_noise_hat,cifar10,1,0.9600629641135534,82.29333333333334,1.0171201174558153,81.5,83.44,3,/home/qiaosir/projects/compute_vit/checkpoints/V4_hybrid_standard_noise_hat_best.pt,99,91.94
+V4,V4_hybrid_standard_noise_hat,cifar10,10,1.11323548951149,79.71333333333334,0.3407834111768609,79.32,79.92,3,/home/qiaosir/projects/compute_vit/checkpoints/V4_hybrid_standard_noise_hat_best.pt,99,91.94
+V4,V4_hybrid_standard_noise_hat,cifar10,100,1.174759400010109,78.76,0.4731807265728446,78.38,79.29,3,/home/qiaosir/projects/compute_vit/checkpoints/V4_hybrid_standard_noise_hat_best.pt,99,91.94

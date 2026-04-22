@@ -1,0 +1,42 @@
+{
+  "experiment": "ensemble_hat_frequency_ablation",
+  "timestamp": "2026-04-15 18:52:49",
+  "device": "cuda",
+  "results": [
+    {
+      "freq_mode": "fixed",
+      "N": 1,
+      "description": "Standard HAT (fixed D2D)",
+      "accuracy": 87.18,
+      "time_seconds": 7251.892670631409
+    },
+    {
+      "freq_mode": "batch",
+      "N": 1,
+      "description": "Per-batch resampling (extreme augmentation)",
+      "accuracy": 86.16,
+      "time_seconds": 7794.8268830776215
+    },
+    {
+      "freq_mode": "epoch",
+      "N": 1,
+      "description": "Ensemble HAT (per-epoch)",
+      "accuracy": 88.41,
+      "time_seconds": 7177.456705331802
+    },
+    {
+      "freq_mode": "N_epochs",
+      "N": 5,
+      "description": "Per-5-epochs resampling",
+      "accuracy": 87.31,
+      "time_seconds": 4443.071510076523
+    },
+    {
+      "freq_mode": "N_epochs",
+      "N": 20,
+      "description": "Per-20-epochs resampling",
+      "accuracy": 87.76,
+      "time_seconds": 7128.6956441402435
+    }
+  ]
+}

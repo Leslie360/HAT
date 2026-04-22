@@ -1,0 +1,78 @@
+{
+  "timestamp": "2026-04-15 09:28:31",
+  "device": "cuda",
+  "comparisons": [
+    {
+      "config": "canonical",
+      "ours": {
+        "framework": "ours",
+        "config": "canonical",
+        "accuracy": 91.65,
+        "time_seconds": 6.8088648319244385,
+        "device": "cuda",
+        "status": "success"
+      },
+      "aihwkit": {
+        "framework": "aihwkit",
+        "config": "resnet18_cifar10_4bit",
+        "accuracy": 90.08,
+        "accuracy_std": 0.21,
+        "time_seconds": 11358,
+        "device": "cpu",
+        "status": "reference",
+        "note": "From p13_aihwkit_shared_regime_result.json"
+      }
+    },
+    {
+      "config": "photoresponse",
+      "ours": {
+        "framework": "ours",
+        "config": "photoresponse",
+        "accuracy": 9.42,
+        "time_seconds": 5.612040042877197,
+        "device": "cuda",
+        "status": "success"
+      },
+      "aihwkit": {
+        "framework": "aihwkit",
+        "config": "photoresponse",
+        "status": "not_supported",
+        "note": "AIHWKIT does not support photoresponse modeling"
+      }
+    },
+    {
+      "config": "retention",
+      "ours": {
+        "framework": "ours",
+        "config": "retention",
+        "accuracy": 10.11,
+        "time_seconds": 5.71948504447937,
+        "device": "cuda",
+        "status": "success"
+      },
+      "aihwkit": {
+        "framework": "aihwkit",
+        "config": "retention",
+        "status": "not_supported",
+        "note": "AIHWKIT does not support double-exponential retention"
+      }
+    },
+    {
+      "config": "nl_2.0",
+      "ours": {
+        "framework": "ours",
+        "config": "nl_2.0",
+        "accuracy": 9.42,
+        "time_seconds": 8.794233322143555,
+        "device": "cuda",
+        "status": "success"
+      },
+      "aihwkit": {
+        "framework": "aihwkit",
+        "config": "nl_2.0",
+        "status": "not_supported",
+        "note": "AIHWKIT does not support NL write asymmetry"
+      }
+    }
+  ]
+}

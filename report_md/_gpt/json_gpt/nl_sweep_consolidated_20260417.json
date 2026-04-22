@@ -1,0 +1,92 @@
+[
+  {
+    "source": "legacy_gm_e4",
+    "regime": "historical",
+    "nl": 1.2,
+    "best_acc": 59.46,
+    "best_epoch": 0,
+    "final_acc": 10.11,
+    "status": "collapse",
+    "notes": "epoch-0 best from legacy landscape scan"
+  },
+  {
+    "source": "legacy_gm_e4",
+    "regime": "historical",
+    "nl": 1.5,
+    "best_acc": 58.01,
+    "best_epoch": 0,
+    "final_acc": 9.52,
+    "status": "collapse",
+    "notes": "epoch-0 best from legacy landscape scan"
+  },
+  {
+    "source": "legacy_gm_e4",
+    "regime": "historical",
+    "nl": 1.8,
+    "best_acc": 56.84,
+    "best_epoch": 0,
+    "final_acc": 9.94,
+    "status": "collapse",
+    "notes": "epoch-0 best from legacy landscape scan"
+  },
+  {
+    "source": "task35_v4_nl2_hat",
+    "regime": "canonical",
+    "nl": 2.0,
+    "best_acc": 27.37,
+    "best_epoch": 15,
+    "final_acc": 13.83,
+    "status": "collapse",
+    "notes": "canonical V4 NL=2.0 training run"
+  },
+  {
+    "source": "task35_v4_nl2_hat_eval",
+    "regime": "canonical_eval",
+    "nl": 2.0,
+    "best_acc": 27.716,
+    "best_epoch": null,
+    "final_acc": 27.716,
+    "status": "eval_summary",
+    "notes": "10-run evaluation mean \u00b1 std = 27.72 \u00b1 0.82"
+  },
+  {
+    "source": "legacy_gm_e4",
+    "regime": "historical",
+    "nl": 2.2,
+    "best_acc": 56.43,
+    "best_epoch": 0,
+    "final_acc": 9.22,
+    "status": "collapse",
+    "notes": "epoch-0 best from legacy landscape scan"
+  },
+  {
+    "source": "legacy_gm_e4",
+    "regime": "historical",
+    "nl": 2.5,
+    "best_acc": 53.56,
+    "best_epoch": 0,
+    "final_acc": 10.22,
+    "status": "collapse",
+    "notes": "epoch-0 best from legacy landscape scan"
+  },
+  {
+    "source": "task23_v4_nl3",
+    "regime": "canonical",
+    "nl": 3.0,
+    "best_acc": 27.54,
+    "best_epoch": 12,
+    "final_acc": 13.91,
+    "status": "collapse",
+    "notes": "canonical V4 NL=3.0 training run"
+  },
+  {
+    "source": "task24_v4_nl1p5_rerun",
+    "regime": "canonical_rerun",
+    "nl": 1.5,
+    "best_acc": 19.01,
+    "best_epoch": 1,
+    "final_acc": 9.76,
+    "status": "collapse",
+    "notes": "host-WSL rerun; rebuttal-side evidence of recipe instability"
+  }
+]

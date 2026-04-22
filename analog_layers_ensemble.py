@@ -1,4 +1,9 @@
 #!/usr/bin/env python3
+# ⚠️  DEPRECATED — DO NOT USE FOR NEW EXPERIMENTS  ⚠️
+# This file is an OUTDATED snapshot of analog_layers.py. It lacks second-order
+# STE support (use_second_order_ste, delta_g_eff, second_order_alpha). Any
+# experiment requiring CX-J1d / CX-K3 / CX-K4 must import from analog_layers.py.
+# Kept only for historical reference; will be removed in a future cleanup.
 """
 Phase A1.2: Physical-Aware Analog Layers for Crossbar Array Simulation
 
@@ -18,6 +23,7 @@ Reference:
   - Retention: §2.1 G(t) = G₀ × [A₁·exp(-t/τ₁) + A₂·exp(-t/τ₂) + A₀]
 """
 
+import copy
 import math
 from dataclasses import dataclass
 from typing import Callable, Dict, List, Optional
@@ -116,13 +122,13 @@ class StraightThroughQuantize(torch.autograd.Function):
         #   NL=0.0 is also treated as "no nonlinearity requested" for idealized profiles.
         if not (math.isclose(nl_ltp, 1.0, rel_tol=0.0, abs_tol=1e-8) or math.isclose(nl_ltp, 0.0, rel_tol=0.0, abs_tol=1e-8)):
             ltp_ratio = ((x_max - x_clamped) / conductance_span).clamp_min(eps)
-            ltp_scale = torch.pow(ltp_ratio, nl_ltp - 1.0)
+            ltp_scale = nl_ltp * torch.pow(ltp_ratio, nl_ltp - 1.0)
         else:
             ltp_scale = torch.ones_like(grad_output)
 
         if not (math.isclose(nl_ltd, 1.0, rel_tol=0.0, abs_tol=1e-8) or math.isclose(nl_ltd, 0.0, rel_tol=0.0, abs_tol=1e-8)):
             ltd_ratio = ((x_clamped - x_min) / conductance_span).clamp_min(eps)
-            ltd_scale = torch.pow(ltd_ratio, nl_ltd - 1.0)
+            ltd_scale = nl_ltd * torch.pow(ltd_ratio, nl_ltd - 1.0)
         else:
             ltd_scale = torch.ones_like(grad_output)
 
@@ -241,7 +247,7 @@ class AnalogLinear(nn.Module):
         super().__init__()
         self.in_features = in_features
         self.out_features = out_features
-        self.config = config or AnalogLinearConfig()
+        self.config = copy.copy(config) if config is not None else AnalogLinearConfig()
 
         # Learnable weight (same as nn.Linear)
         self.weight = nn.Parameter(torch.empty(out_features, in_features))
@@ -444,7 +450,7 @@ class AnalogConv2d(nn.Module):
         self.padding = padding if isinstance(padding, tuple) else (padding, padding)
         self.dilation = dilation if isinstance(dilation, tuple) else (dilation, dilation)
         self.groups = groups
-        self.config = config or AnalogLinearConfig()
+        self.config = copy.copy(config) if config is not None else AnalogLinearConfig()
 
         # Learnable weight (same as nn.Conv2d)
         self.weight = nn.Parameter(
@@ -1094,7 +1100,7 @@ def convert_to_hybrid(model: nn.Module,
     Returns:
         Modified model (in-place) with AnalogLinear / AnalogConv2d layers
     """
-    config = config or AnalogLinearConfig()
+    config = copy.copy(config) if config is not None else AnalogLinearConfig()
     replaced_linear = 0
     replaced_conv = 0
 
@@ -1183,7 +1189,7 @@ def convert_resnet_to_analog(model: nn.Module,
     Returns:
         Modified model with AnalogConv2d/AnalogLinear layers
     """
-    config = config or AnalogLinearConfig()
+    config = copy.copy(config) if config is not None else AnalogLinearConfig()
     replaced_conv = 0
     replaced_linear = 0
 

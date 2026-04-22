@@ -257,7 +257,7 @@ class StraightThroughQuantize(torch.autograd.Function):
                 ltp_corr = torch.zeros_like(grad_output)
 
             if not (math.isclose(nl_ltd, 1.0, rel_tol=0.0, abs_tol=1e-8) or math.isclose(nl_ltd, 0.0, rel_tol=0.0, abs_tol=1e-8)):
-                ltd_corr = 0.5 * nl_ltd * (nl_ltd - 1.0) * torch.pow(ltd_ratio.clamp_min(eps), nl_ltd - 2.0) * delta_g
+                ltd_corr = -0.5 * nl_ltd * (nl_ltd - 1.0) * torch.pow(ltd_ratio.clamp_min(eps), nl_ltd - 2.0) * delta_g
             else:
                 ltd_corr = torch.zeros_like(grad_output)
 

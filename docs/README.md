@@ -14,6 +14,10 @@ survive beyond temporary coordination and drafting artifacts.
 
 ## How To Use These Docs
 
+- Start with the repository root `README.md` for the public smoke test and
+  first-run commands.
+- Use `../RELEASE_CHECKLIST.md` when preparing a public repository snapshot,
+  submission code archive, or reviewer package.
 - Start with `EXPERIMENT_REGISTRY.md` if you need to decode experiment IDs such
   as `V4`, `C4`, `Task 34`, or `Task 37`.
 - Read `PHYSICS_STACK.md` before interpreting results as physically predictive;

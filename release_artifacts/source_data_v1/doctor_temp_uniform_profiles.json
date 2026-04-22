@@ -1,0 +1,91 @@
+{
+  "source": "temp",
+  "profiles": [
+    {
+      "device_type": "Doctor Uniform-16",
+      "dynamic_range": 20.68,
+      "n_states": 16,
+      "sigma_c2c": 0.0006,
+      "sigma_d2d": 0.0,
+      "source": "temp",
+      "noise_mode": "uniform",
+      "G_min": 4.1e-09,
+      "tau_1": 10.8,
+      "tau_2": 1000000.0,
+      "A_0": 0.965,
+      "gamma_phys": null,
+      "I_dark": null,
+      "responsivity_alpha": null,
+      "NL_LTP": null,
+      "NL_LTD": null,
+      "pulse_count_max": null,
+      "inl_table": null,
+      "profile_kind": "measured",
+      "notes": "",
+      "G_max": 8.4788e-08,
+      "noise": {
+        "sigma_c2c": 0.0006,
+        "sigma_d2d": 0.0,
+        "mode": "uniform"
+      },
+      "photoresponse": {
+        "responsivity_alpha": null,
+        "gamma_phys": null,
+        "I_dark": null
+      },
+      "plasticity": {
+        "NL_LTP": null,
+        "NL_LTD": null,
+        "pulse_count_max": null
+      },
+      "retention": {
+        "A_0": 0.965,
+        "tau_1": 10.8,
+        "tau_2": 1000000.0
+      }
+    },
+    {
+      "device_type": "Doctor Uniform-64",
+      "dynamic_range": 45.4,
+      "n_states": 64,
+      "sigma_c2c": 0.0006,
+      "sigma_d2d": 0.0,
+      "source": "temp",
+      "noise_mode": "uniform",
+      "G_min": 1.9e-09,
+      "tau_1": 10.8,
+      "tau_2": 1000000.0,
+      "A_0": 0.965,
+      "gamma_phys": null,
+      "I_dark": null,
+      "responsivity_alpha": null,
+      "NL_LTP": null,
+      "NL_LTD": null,
+      "pulse_count_max": null,
+      "inl_table": null,
+      "profile_kind": "measured",
+      "notes": "",
+      "G_max": 8.626e-08,
+      "noise": {
+        "sigma_c2c": 0.0006,
+        "sigma_d2d": 0.0,
+        "mode": "uniform"
+      },
+      "photoresponse": {
+        "responsivity_alpha": null,
+        "gamma_phys": null,
+        "I_dark": null
+      },
+      "plasticity": {
+        "NL_LTP": null,
+        "NL_LTD": null,
+        "pulse_count_max": null
+      },
+      "retention": {
+        "A_0": 0.965,
+        "tau_1": 10.8,
+        "tau_2": 1000000.0
+      }
+    }
+  ]
+}

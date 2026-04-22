@@ -2,8 +2,8 @@
 
 set -u
 
-ROOT="/home/qiaosir/projects/compute_vit"
-PYTHON="/home/qiaosir/miniconda3/envs/LLM/bin/python"
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+PYTHON="${PYTHON:-python}"
 MULTI_LOG_DIR="$ROOT/logs/_gpt/multi_seed"
 MULTI_CKPT_DIR="$ROOT/checkpoints/_gpt/multi_seed"
 DRIVER_LOG="$ROOT/logs/_gpt/fw1_p2_overnight_queue_20260409.log"

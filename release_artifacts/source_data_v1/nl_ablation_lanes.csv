@@ -1,0 +1,7 @@
+lane,best_acc_percent,best_epoch,final_acc_percent,status,interpretation
+Baseline (NL=1.0),87.95,n/a,87.95,complete,canonical uniform-noise HAT
+Unmitigated (NL=2.0),27.72,n/a,27.72,complete,severe nonlinearity baseline
+MLP-only linear,87.79,73,86.22,complete,dominant recoverable failure site
+QKV-only linear,18.72,2,10.15,complete,structural collapse
+attn_proj-only linear,18.86,0,~10.25,stopped@ep54,mirrors QKV-only pattern
+All-linear,87.49,59,84.81,complete,upper-bound control

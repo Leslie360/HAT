@@ -1,0 +1,22 @@
+{
+    "device_type": "Demo_AutoFitted",
+    "dynamic_range": 46.18878453949883,
+    "n_states": 34,
+    "sigma_c2c": 0.01962138479271834,
+    "sigma_d2d": 0.03009916297326855,
+    "source": "Auto-fitted Demo",
+    "noise_mode": "uniform",
+    "G_min": 1.02299786528442,
+    "tau_1": 0.1370319324512442,
+    "tau_2": 0.633754396848499,
+    "A_0": 0.5980853401395865,
+    "gamma_phys": null,
+    "I_dark": null,
+    "responsivity_alpha": null,
+    "NL_LTP": 1.50179868418594,
+    "NL_LTD": -1.50179868418594,
+    "pulse_count_max": 33,
+    "inl_table": null,
+    "profile_kind": "measured",
+    "notes": "Auto-fitted on 2026-04-08 17:46:14.522568"
+}

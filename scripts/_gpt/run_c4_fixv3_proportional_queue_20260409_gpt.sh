@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-ROOT="/home/qiaosir/projects/compute_vit"
-PY="/home/qiaosir/miniconda3/envs/LLM/bin/python"
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+PY="${PYTHON:-python}"
 LOG_DIR="$ROOT/logs/_gpt/multi_seed"
 SAVE_ROOT="$ROOT/checkpoints/_gpt/multi_seed_v3"
 DRIVER_LOG="$ROOT/logs/_gpt/c4_fixv3_proportional_queue_20260409.log"

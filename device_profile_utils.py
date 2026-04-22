@@ -1,5 +1,13 @@
 #!/usr/bin/env python3
-"""Utilities for literature and measured device profile ingestion."""
+"""Device-profile loader for literature and measured organic-device data.
+
+This module maps JSON profile payloads to validated ``DeviceProfile`` objects
+that configure the analog-layer noise, retention, and non-linearity
+parameters used in Fig. 4 cross-dataset accuracy experiments.
+To reproduce those results, load a profile with
+``load_device_profiles_json()`` and apply it to a model via
+``inference_analysis_utils.apply_device_profile()``.
+"""
 
 from __future__ import annotations
 
@@ -205,6 +213,7 @@ def _profile_from_payload(payload: dict, default_source: str) -> DeviceProfile:
 
 
 def load_device_profiles_json(path: str) -> List[DeviceProfile]:
+    """Load one or more device profiles from a JSON file."""
     src_path = Path(path)
     with src_path.open("r", encoding="utf-8") as fh:
         payload = json.load(fh)
@@ -226,6 +235,7 @@ def load_device_profiles_json(path: str) -> List[DeviceProfile]:
 
 
 def select_device_profile(profiles: Sequence[DeviceProfile], profile_name: Optional[str]) -> DeviceProfile:
+    """Select a single profile by name, or return the sole entry."""
     if profile_name is None:
         if len(profiles) != 1:
             raise ValueError(
@@ -243,6 +253,7 @@ def select_device_profile(profiles: Sequence[DeviceProfile], profile_name: Optio
 
 
 def profile_to_payload(profile: DeviceProfile) -> dict:
+    """Serialize a ``DeviceProfile`` to a canonical JSON-compatible dict."""
     payload = asdict(profile)
     payload["G_max"] = profile.G_max
     payload["noise"] = {
@@ -269,6 +280,7 @@ def profile_to_payload(profile: DeviceProfile) -> dict:
 
 
 def dump_device_profiles_json(path: str, profiles: Sequence[DeviceProfile], source: str) -> str:
+    """Write a list of profiles to a JSON file and return the path."""
     payload = {
         "source": source,
         "profiles": [profile_to_payload(profile) for profile in profiles],

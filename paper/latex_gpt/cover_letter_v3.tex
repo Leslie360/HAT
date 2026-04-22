@@ -1,0 +1,52 @@
+% !TeX program = tectonic
+\documentclass[11pt,a4paper]{letter}
+\usepackage[margin=1in]{geometry}
+\usepackage{enumitem}
+\setlist{nosep}
+\setlength{\parskip}{0pt}
+
+\signature{[Corresponding author name]}
+
+\begin{document}
+
+\begin{letter}{Editorial Office\\Nature Communications\\Springer Nature}
+
+\opening{Dear Editors,}
+\vspace{-1em}
+
+\noindent\textbf{Submission:} Profile-Driven Hardware Simulation for Organic Optoelectronic Edge Vision\\
+\textbf{Article Type:} Article
+
+\textbf{Editorial Summary}
+
+We present an open-source simulation framework for organic optoelectronic compute-in-memory inference with modern vision transformers. Our central contribution, Ensemble HAT, resamples device-to-device mismatch masks every epoch. On Tiny-ViT-5M, it raises fresh-instance accuracy from chance level (10.00\%) to 86.37\% (mean ± 1.54\%), enabling robust deployment without per-device calibration.
+
+We rigorously falsify three intuitive strategies for breaking the severe nonlinearity ceiling---joint linearization training, all-linear ablations, and MLP-only controls---all converging to an approximately 30\% fresh-instance limit. Rather than weakening the study, this negative result exposes a structural generalization barrier in the attention pathway that first-order behavioral surrogates cannot circumvent.
+
+\textbf{Novelty Claims}
+\begin{itemize}
+    \item We introduce the first open-source framework for organic optoelectronic CIM with vision transformers, providing PyTorch-native device-profile substitution and hybrid analog/digital deployment.
+    \item We identify hardware-instance overfitting in organic CIM inference and propose Ensemble HAT, a training-time mismatch-mask resampling fix that restores generalization.
+    \item We falsify three severe-nonlinearity mitigation strategies, establishing an approximately 30\% structural ceiling that defines the boundary of first-order behavioral simulation.
+\end{itemize}
+
+\textbf{Audience}
+
+Nature Communications readers will find a reusable methodology for evaluating organic device assumptions on vision tasks and a rigorous negative-result anchor that delineates the limits of first-order behavioral simulation.
+
+\textbf{Related Submissions}
+
+This work is not under consideration elsewhere.
+
+\textbf{Suggested Reviewers}
+
+[To be provided]
+
+\textbf{Contact Information}
+
+Li Songqiao / 2622507532@qq.com
+
+\closing{Sincerely,}
+
+\end{letter}
+\end{document}

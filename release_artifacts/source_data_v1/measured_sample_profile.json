@@ -1,0 +1,24 @@
+{
+  "source": "simulated_data_case_study",
+  "profiles": [
+    {
+      "device_type": "Measured Sample Profile (Suboptimal)",
+      "profile_kind": "measured",
+      "source": "simulated_data_case_study",
+      "notes": "Simulated profile for a suboptimal or newly synthesized organic material with narrow G range and high noise.",
+      "G_min": 1e-7,
+      "G_max": 5e-7,
+      "n_states": 8,
+      "noise": {
+        "sigma_c2c": 0.08,
+        "sigma_d2d": 0.15,
+        "mode": "uniform"
+      },
+      "retention": {
+        "A_0": 0.6,
+        "tau_1": 0.14,
+        "tau_2": 0.61
+      }
+    }
+  ]
+}

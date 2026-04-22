@@ -1,0 +1,22 @@
+{
+  "checkpoint": "/home/qiaosir/projects/compute_vit/checkpoints/R1_FP32_baseline_best.pt",
+  "checkpoint_epoch": 179,
+  "checkpoint_best_acc": 95.46,
+  "subset_size": 256,
+  "train_samples": 0,
+  "test_samples": 256,
+  "batch_size": 64,
+  "eval_runs": 5,
+  "quant_bits": 4,
+  "adc_bits": 8,
+  "sigma_c2c": 0.05,
+  "sigma_d2d": 0.1,
+  "digital_acc": 96.875,
+  "analog_mean_acc": 91.796875,
+  "analog_std_acc": 1.0186253758129138,
+  "delta_acc": -5.078125,
+  "finetune_epochs": 0,
+  "finetune_loss": null,
+  "finetune_acc": null,
+  "wall_clock_s": 151.07786536216736
+}

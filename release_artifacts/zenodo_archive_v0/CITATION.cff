@@ -1,0 +1,10 @@
+cff-version: 1.2.0
+message: "If you use this archive, please cite the manuscript and acknowledge the source-data bundle."
+title: "Profile-Driven Hardware Simulation for Organic Optoelectronic Edge Vision"
+type: software
+authors:
+  - family-names: Li
+    given-names: Songqiao
+version: 0.1.0
+date-released: 2026-04-19
+license: Apache-2.0

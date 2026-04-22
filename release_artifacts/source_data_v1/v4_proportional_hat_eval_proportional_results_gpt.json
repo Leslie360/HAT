@@ -1,0 +1,30 @@
+[
+  {
+    "mode": "eval",
+    "experiment": "V4",
+    "experiment_name": "V4_hybrid_standard_noise_hat",
+    "dataset": "cifar10",
+    "num_classes": 10,
+    "use_hybrid": true,
+    "noise_enabled": true,
+    "sigma_c2c": 0.05,
+    "sigma_d2d": 0.1,
+    "hat_training": true,
+    "use_physical_frontend": false,
+    "retention_enabled": false,
+    "inference_time": 0.0,
+    "epochs": 100,
+    "batch_size": 64,
+    "lr": 0.0005,
+    "weight_decay": 0.05,
+    "eval_runs": 10,
+    "test_loss_mean": 0.1599047009253502,
+    "test_acc_mean": 97.366,
+    "test_acc_min": 97.28,
+    "test_acc_max": 97.47,
+    "test_acc_std": 0.05059644256269336,
+    "checkpoint_path": "/home/qiaosir/projects/compute_vit/checkpoints/_gpt/task34_v4_proportional_hat/V4_hybrid_standard_noise_hat_best.pt",
+    "checkpoint_epoch": 95,
+    "checkpoint_best_acc": 97.48
+  }
+]

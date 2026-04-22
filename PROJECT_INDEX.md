@@ -10,7 +10,7 @@ These rules apply to anything created from now on. We are deliberately **not** r
 
 | Rule | Do | Don't |
 |:--|:--|:--|
-| Language | English only in filenames | 中文、拼音 in filenames (`参考文献库.md`, `数据_博士/`) |
+| Language | English only in filenames | 中文、拼音 in new filenames |
 | Case (code) | `lower_snake_case.py` | `RunCrossSim.py`, `Run-crosssim.py` |
 | Case (docs) | `UPPER_SNAKE.md` for fixed docs; `kebab-case.md` for freeform notes | `MixedCase.md` |
 | Dates | Only in truly time-anchored files (`manifest_20260417.md`). Never in source code | `train_v2_20260413_gpt.py` |
@@ -42,7 +42,7 @@ compute_vit/
 ├── paper/                  manuscript source (LaTeX canonical under paper/latex_gpt/)
 ├── report_md/              long-form reports + live coordination (_gpt/ subtree)
 ├── scripts/                bash/python helpers (not entry-point experiments)
-└── 数据_博士/               doctor's measured-device raw data (DO NOT rename, has code callers)
+└── private raw-data tree    omitted from the public repo; pass explicit paths when fitting measured profiles
 ```
 
 **Status legend used in tables below:**
@@ -81,7 +81,7 @@ compute_vit/
 | Path | Purpose |
 |:--|:--|
 | `eval_imagenet_analog.py` | ImageNet-1k analog evaluation |
-| `eval_measured_profile.py` | Evaluate checkpoints against doctor's measured profile |
+| `eval_measured_profile.py` | Evaluate checkpoints against a user-supplied measured profile |
 | `eval_literature_profile.py` | Evaluate against literature (Zhang 2025) profile |
 | `eval_fresh_instances.py` | Instance-variation sweep for Fig. 10 |
 | `eval_resnet18_checkpoints.py` | Bulk eval over `checkpoints/R*` |
@@ -262,8 +262,7 @@ To list all: `ls report_md/_gpt/*.md`.
 | `device_profiles/example_measured_device_profile_gpt.json` | Template profile | live |
 | `device_profiles/literature_profiles_gpt.json` | Literature (Zhang 2025) | live |
 | `device_profiles/synthetic_profiles_gpt.json` | Synthetic profile set | live |
-| `数据_博士/README_gpt.md` | Doctor's dataset README (Chinese) | live |
-| `数据_博士/第20页/`, `第三页/`, `第四页/` | Doctor's measured raw pages | live (do not rename) |
+| private measured raw-data tree | Not versioned in the public repo | excluded from release |
 
 ---
 
@@ -308,7 +307,7 @@ All reversible via `mv`. Nothing here is on the submission path.
 | `docs/PHYSICS_STACK.md` | Physics assumptions | live |
 | `docs/README.md`, `docs/REPO_HYGIENE_AND_GIT_POLICY.md` | Policy docs | live |
 | `logs/` | `.log` dumps. Pre-2026-04-04 moved to `_archive/logs-pre-april04/`. Active logs remain | live (gitignored) |
-| `/home/qiaosir/projects/tmp/` | Cross-repo scratch outside `compute_vit/`. Everything there is disposable | scratch (gitignored by location) |
+| sibling `tmp/` workspace | Cross-repo scratch outside `compute_vit/`. Everything there is disposable | scratch |
 | `internal/` | Local scratch, gitignored | scratch |
 | `AGENT_SYNC/` (dir) | 7 files, 2026-04-15 artifact. Superseded by `report_md/_gpt/AGENT_SYNC_gpt.md` but kept in place — has a script caller noted in TIDY_MANIFEST | frozen (do not rename) |
 
@@ -331,7 +330,7 @@ All reversible via `mv`. Nothing here is on the submission path.
 - `paper/latex_gpt/refs_gpt.bib` is the only bibliography. Do not create a second `.bib`.
 - `paper/CANONICAL_RESULT_LOCK_gpt.md` holds the one source of truth for all numbers in the paper. Never edit a number in `.tex` without updating the lock file first.
 - `_archive/` content is append-only. Never delete from it without user sign-off.
-- `checkpoints/`, `data/`, `数据_博士/` contents: never moved or renamed by agents.
+- `checkpoints/` and `data/` contents: never moved or renamed by agents during active experiments.
 
 ---
 

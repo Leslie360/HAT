@@ -1,0 +1,346 @@
+% Thesis Chapter 7 — Deployment Envelope
+% Systems-oriented synthesis: converting simulation data into actionable
+% deployment knowledge for organic optoelectronic CIM.
+% Locked numbers are exact; all extrapolations are explicitly flagged.
+
+\chapter{Deployment Envelope}
+\label{chap:deployment-envelope}
+
+\section{Introduction: from simulation data to shipping criteria}
+
+The preceding chapters have established a physical picture of what happens when a modern Vision Transformer is mapped to an organic optoelectronic compute-in-memory (CIM) array.  We have defined hardware-aware training (HAT) cadences (Chapter~\ref{chap:hat-taxonomy}), catalogued failure modes (Chapter~\ref{chap:failure-mode-atlas}), and quantified recovery under distributional training objectives.  The numbers are internally consistent: Ensemble HAT preserves $86.37\pm1.54\,\%$ fresh-instance accuracy under canonical uniform noise; a lower-noise OPECT proxy reaches $88.53\pm0.08\,\%$; severe write nonlinearity collapses the same architecture to $27.72\pm0.82\,\%$ unless the MLP path is linearized, in which case fresh-instance transfer still hits a $32.12\pm7.72\,\%$ ceiling.  These are simulation results, and they are bounded by first-order behavioral approximations.
+
+This chapter asks the pragmatic question that every simulation study must eventually face: \emph{so what?}  Under which combinations of physical parameters does the Ensemble HAT protocol actually preserve a usable accuracy ranking when the model is dropped onto an unseen hardware instance?  Where does that ranking collapse?  And if one were advising an analog-CIM program manager---someone deciding whether to tape out a ViT accelerator on an organic RRAM process---what actionable guidance could be distilled from the data?
+
+The chapter is organized as a decision-support document rather than as a conventional results narrative.  Section~\ref{sec:ranking-preservation} constructs a \emph{ranking-preservation map}: a qualitative decision matrix that classifies combinations of D2D variability, nonlinearity severity, ADC precision, retention age, and spatial correlation according to whether the canonical accuracy ordering (Ensemble HAT $>$ fixed-mask HAT $>$ naive deployment) survives on fresh hardware instances.  Section~\ref{sec:collapse-zone} identifies the complementary \emph{collapse zone}: parameter combinations that destroy the ranking or drive accuracy toward the chance level.  Section~\ref{sec:decision-diagram} translates these two maps into a prose decision diagram organized by device-maturity tier (research-grade $\rightarrow$ pilot $\rightarrow$ production).  Section~\ref{sec:cnn-vs-vit-tiers} addresses the architecture question: at low maturity, would a simpler convolutional neural network (CNN) outperform the ViT under the same HAT protocol?  Section~\ref{sec:program-manager} distills industrial-relevance bullets for program managers.  Section~\ref{sec:envelope-limitations} closes with the explicit boundaries of the envelope---what is \emph{not} in the model and therefore not in the recommendation.
+
+Throughout, the treatment is deliberately more applied and systems-oriented than the preceding chapters.  Equations are used sparingly; tables and decision matrices carry the argument.  Where interpolation or extrapolation is required to bridge gaps in the experimental grid, the reasoning is stated explicitly and the uncertainty is quantified or bounded.
+
+
+% =============================================================================
+\section{Ranking-preservation map}
+\label{sec:ranking-preservation}
+
+\subsection{What ``ranking preservation'' means}
+
+The central deployment question for this thesis is not ``what is the best possible accuracy?'' but ``does the training protocol that works in simulation still work when the physical instance changes?''  In the language of Chapter~\ref{chap:hat-taxonomy}, the ranking of interest is
+\begin{equation}
+    \text{Ensemble HAT} \;\succ\; \text{fixed-mask HAT} \;\succ\; \text{naive (no-HAT) deployment},
+    \label{eq:ranking}
+\end{equation}
+where the comparison is evaluated under the fresh-instance protocol: $10$ independent hardware realizations $\times$ $5$ Monte Carlo forward passes per realization.  A parameter combination \emph{preserves the ranking} if Ensemble HAT maintains a decisive accuracy advantage over fixed-mask HAT, which in turn outperforms naive deployment, on unseen arrays.  The ranking is \emph{preserved with degradation} if the ordering holds but the margin between Ensemble HAT and the digital baseline shrinks.  It is \emph{collapsed} if fixed-mask HAT equals or exceeds Ensemble HAT on fresh instances, or if any protocol drops to near-chance accuracy.
+
+This definition is stricter than source-domain comparison.  Under evaluation on the training-time array, fixed-mask HAT can reach $87.95\pm0.27\,\%$ (the canonical V4 result), which is competitive with Ensemble HAT's held-out exploratory scan ($88.41\,\%$ in the 50-epoch ablation of Chapter~\ref{chap:hat-taxonomy}).  But source-domain accuracy is diagnostically irrelevant for deployment because the deployed array is not the training array.  The ranking of Eq.~\ref{eq:ranking} is therefore always understood as a fresh-instance statement unless noted otherwise.
+
+\subsection{Parameter axes and the available data grid}
+
+The simulator exposes five physical axes that jointly determine deployment accuracy:
+\begin{enumerate}
+    \item \textbf{D2D variability amplitude} ($\sigma_{\mathrm{D2D}}$): canonical $10\,\%$, OPECT proxy $3\,\%$, sweep grid $\{1,3,5,8,10,15,20\}\%$.
+    \item \textbf{D2D spatial structure}: i.i.d.~Gaussian versus separable AR(1) correlation with $\rho \in \{0.3, 0.5\}$.
+    \item \textbf{ADC resolution}: sweep grid $\{2,3,4,5,6,7,8,10,12\}$ bits.
+    \item \textbf{Write nonlinearity severity} ($NL$): ideal $1.0$, severe $2.0$.
+    \item \textbf{Retention age} ($t$): $0$~s (freshly programmed) to $10{,}000$~s under double-exponential drift.
+\end{enumerate}
+
+Not every combination in this $7 \times 3 \times 9 \times 2 \times 5$ grid has been evaluated.  The canonical Ensemble HAT checkpoint was trained under $(\sigma_{\mathrm{D2D}}=10\,\%,\; \text{i.i.d.},\; 4\text{-bit programming},\; NL=1.0,\; t=0)$ and then transferred across subsets of the remaining axes.  The ranking-preservation map is therefore a \emph{qualitative mosaic} in which some tiles are anchored by direct measurement and others are filled by interpolation or bounded extrapolation.
+
+\subsection{Green zone: high-confidence ranking preservation}
+
+Table~\ref{tab:green-zone} lists the parameter combinations for which direct fresh-instance data exist and the ranking of Eq.~\ref{eq:ranking} is preserved with high confidence.
+
+\begin{table}[t]
+    \centering
+    \caption{Green zone: parameter combinations with direct fresh-instance evidence that Ensemble HAT $>$ fixed-mask $>$ naive.  All accuracies are CIFAR-10 top-1 under the $10 \times 5$ fresh-instance protocol unless otherwise noted.}
+    \label{tab:green-zone}
+    \small
+    \begin{tabular}{@{}llccc@{}}
+        \toprule
+        \textbf{Condition} & \textbf{Key parameters} & \textbf{Ensemble HAT} & \textbf{Fixed-mask} & \textbf{Naive} \\
+        \midrule
+        Canonical uniform noise & $\sigma_{\mathrm{D2D}}=10\,\%$, i.i.d., $NL=1.0$ & $86.37\pm1.54$ & $10.00\pm0.00$ & $\ll 10$ \\
+        Low-noise literature proxy & $\sigma_{\mathrm{D2D}}=3\,\%$, $\sigma_{\mathrm{C2C}}=2\,\%$ (OPECT) & $88.53\pm0.08$ & $\approx 10$ (cross-profile) & $\ll 10$ \\
+        Moderate spatial correlation & $\rho=0.3$, $NL=1.0$ & $84.57\pm2.39$ & $10.00$ (extrap.) & $\ll 10$ \\
+        Strong spatial correlation & $\rho=0.5$, $NL=1.0$ & $82.12\pm3.95$ & $10.00$ (extrap.) & $\ll 10$ \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+The OPECT case is particularly instructive.  The standard-HAT (fixed-mask) checkpoint collapses to chance level ($10.00\,\%$) when transferred to the OPECT profile without retraining, whereas the Ensemble HAT checkpoint reaches $88.53\pm0.08\,\%$.  This confirms that the ranking is not an artifact of the canonical $10\,\%$ D2D assumption; it persists under a lower-variance literature-calibrated profile.  The OPECT result also establishes an \emph{accuracy ceiling} for the present Tiny-ViT architecture under near-ideal analog conditions: roughly $88.5\,\%$, which is still $\sim$9.5~pp below the digital FP32 baseline ($98.06\,\%$) but $\sim$14~pp above the standard-HAT collapse.
+
+Spatially correlated D2D produces \emph{bounded degradation} rather than collapse.  At $\rho=0.3$, the Ensemble HAT mean drops by only $1.76$~pp relative to the i.i.d.~baseline ($86.33\,\%$ versus $84.57\,\%$); at $\rho=0.5$, the drop is $4.20$~pp.  Rank ordering is preserved across all tested levels, and even the worst fresh instance at $\rho=0.5$ reaches $73.7\,\%$, far from chance.  The fixed-mask column in Table~\ref{tab:green-zone} for correlated D2D is marked as extrapolated because the correlated-D2D experiment evaluated only the Ensemble HAT checkpoint, but there is no physical mechanism by which spatial correlation would \emph{restore} fixed-mask transfer.  The $10.00\,\%$ collapse is therefore a conservative lower bound.
+
+\subsection{Yellow zone: ranking preserved with caveats}
+
+The yellow zone contains combinations where the ranking likely holds but the margin between Ensemble HAT and deployment viability narrows, or where direct fresh-instance data are missing for one of the three protocols in Eq.~\ref{eq:ranking}.
+
+\textbf{Retention drift with dynamic scale recalibration.}  The V8 retention trajectory shows a rapid early drop from $91.63\,\%$ ($t=0$) to $82.66\,\%$ ($t=1$~s), followed by a broad plateau at $79.13$--$79.51\,\%$ from $10$~s to $10{,}000$~s.  These numbers are source-domain accuracies on the training-time instance with recalibration enabled.  No explicit fresh-instance retention sweep has been run, so the direct ranking evidence is absent.  However, the retention mechanism is a \emph{global} conductance scaling that is absorbed by the layer-wise scale-recovery factor $s_{\ell}$ (Eq.~\ref{eq:scale-recovery-ch3}).  Because the D2D buffers co-decay with the programmed weights, the \emph{relative} spatial mismatch pattern that Ensemble HAT learned to tolerate remains structurally intact.  Extrapolating from this physical reasoning, one expects the ranking to persist but with an absolute accuracy floor near $79\,\%$ rather than $86\,\%$.  The uncertainty on this extrapolation is $\pm 3$--$5$~pp, derived from the width of the plateau and the absence of joint retention--fresh-instance statistics.
+
+\textbf{Proportional-noise regime with matched training.}  Proportional-noise HAT recovers Tiny-ViT to $97.37\pm0.05\,\%$ when training and evaluation are both conducted under the proportional law (Chapter~\ref{chap:hat-taxonomy}, Table~\ref{tab:noise-regime-matrix}).  This is a source-domain result, not a fresh-instance result.  The cross-regime matrix shows that a uniform-noise checkpoint collapses to $10.00\,\%$ under proportional evaluation, and vice versa, indicating that regime-matched training is a \emph{necessary} condition for recovery.  Assuming that the same epoch-level D2D resampling protocol generalizes to proportional-noise instances (there is no structural reason it should not), the ranking is expected to hold with a source-domain mean near $97\,\%$ and a fresh-instance mean plausibly in the low-$90\,\%$ range.  The uncertainty is large ($\pm 5$--$8$~pp) because the fresh-instance protocol has not been executed under proportional noise.
+
+\textbf{Inverse-gamma front-end compensation.}  At $\gamma_{\mathrm{phys}}=2.0$, inverse-gamma compensation restores $+5.8$~pp relative to the raw photoresponse ($89.85\,\%$ versus $84.04\,\%$ in the deterministic ResNet-18 evaluation).  The ViT pathway is structurally more exposed to front-end distortion because global attention lacks the spatial averaging of CNNs.  For Tiny-ViT, the compensation benefit is therefore expected to meet or exceed the $+5.8$~pp ResNet benchmark, but the exact ViT fresh-instance number has not been measured.  The ranking is preserved because both HAT and non-HAT baselines benefit from linearization; the relative gap may even widen if the non-HAT baseline is more sensitive to the uncompensated distortion.
+
+\subsection{Orange zone: uncertain or marginally preserved}
+
+\textbf{MLP-only linearization under severe NL.}  The MLP-only rescue checkpoint achieves $87.79\,\%$ source-domain accuracy under $NL=2.0$, which is competitive with the canonical V4 baseline.  However, its fresh-instance accuracy is $32.12\pm7.72\,\%$, and the all-linear upper bound (best $87.49\,\%$, final $84.81\,\%$) reaches only $32.60\pm9.18\,\%$ on fresh instances.  These numbers do not preserve the ranking in any useful sense: although $32\,\%$ is strictly greater than the $10\,\%$ fixed-mask collapse, it is below the threshold of commercial viability for most vision tasks.  The orange-zone classification reflects the fact that the ranking is technically preserved ($32 > 10$) but \emph{operationally collapsed} because neither protocol is deployable.
+
+\textbf{ADC at the 5-to-6-bit boundary.}  The iso-accuracy sweep reveals a sharp cliff: below 5-bit ADC, accuracy collapses to near-chance across all D2D levels; the 5-to-6-bit transition yields a $\sim$7~pp jump.  At exactly 6 bits, Ensemble HAT recovers to $>84\,\%$ for $\sigma_{\mathrm{D2D}} \le 10\,\%$, but at 5 bits the mean is in the $30$--$50\,\%$ range depending on D2D.  The ranking is therefore \emph{marginally} preserved at 6 bits (Ensemble HAT still $>$ fixed-mask) but already lost at 5 bits, where all protocols cluster near chance.  Interpolating between these grid points suggests a critical threshold near $5.5$~bits, with an uncertainty of $\pm 0.5$~bits driven by the coarse ADC grid.
+
+\subsection{Summary of the map}
+
+Table~\ref{tab:ranking-summary} condenses the four zones into a single qualitative matrix.  The color coding is: \textbf{G}reen (direct evidence), \textbf{Y}ellow (plausible extrapolation), \textbf{O}range (marginal or technically preserved but not viable), \textbf{R}ed (collapsed).
+
+\begin{table}[t]
+    \centering
+    \caption{Qualitative ranking-preservation matrix.  Colors: \textbf{G}=green (direct fresh-instance evidence), \textbf{Y}=yellow (reasonable extrapolation), \textbf{O}=orange (marginal viability), \textbf{R}=red (collapse).  The matrix is conditional on Tiny-ViT, CIFAR-10, and the canonical 100-epoch Ensemble HAT recipe.}
+    \label{tab:ranking-summary}
+    \small
+    \setlength{\tabcolsep}{4pt}
+    \begin{tabular}{@{}lcccccc@{}}
+        \toprule
+        & \multicolumn{3}{c}{\textbf{$NL=1.0$, ideal write}} & & \multicolumn{2}{c}{\textbf{$NL=2.0$, severe write}} \\
+        \cmidrule(lr){2-4} \cmidrule(lr){6-7}
+        \textbf{Condition} & ADC$\ge$6 & ADC$=$5 & ADC$<$5 & & Fresh inst. & Source only \\
+        \midrule
+        Low D2D ($\le 3\,\%$) & \textbf{G} & \textbf{Y} & \textbf{R} & & \textbf{O} (extrap.) & \textbf{O} \\
+        Canonical D2D ($10\,\%$) & \textbf{G} & \textbf{O} & \textbf{R} & & \textbf{R} (extrap.) & \textbf{O} \\
+        High D2D ($15$--$20\,\%$) & \textbf{Y} & \textbf{O} & \textbf{R} & & \textbf{R} (extrap.) & \textbf{R} (extrap.) \\
+        $\rho=0.3$ correlated & \textbf{G} & \textbf{Y} & \textbf{R} & & \textbf{R} (extrap.) & \textbf{O} (extrap.) \\
+        $\rho=0.5$ correlated & \textbf{G} & \textbf{Y} & \textbf{R} & & \textbf{R} (extrap.) & \textbf{O} (extrap.) \\
+        Retention $t>10$~s + recal. & \textbf{Y} & \textbf{Y} & \textbf{R} & & \textbf{Y} (extrap.) & \textbf{Y} \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+The most important takeaway from the matrix is its \emph{asymmetry}.  The ranking is robust to moderate increases in D2D amplitude and to the introduction of spatial correlation, but it is fragile to reductions in ADC precision and to severe write nonlinearity.  A program manager should therefore prioritize peripheral readout precision and programming linearity over incremental improvements in device-to-device uniformity, at least within the ranges tested here.
+
+
+% =============================================================================
+\section{Collapse zone}
+\label{sec:collapse-zone}
+
+The complement of the ranking-preservation map is the \emph{collapse zone}: the set of parameter combinations that destroy the accuracy ordering of Eq.~\ref{eq:ranking} or drive all protocols to near-chance performance.  Identifying the collapse zone is as important as identifying the safe zone, because it tells a program manager which physical specifications are \emph{non-negotiable} and which are merely performance-negotiable.
+
+\subsection{The ADC cliff: a hard boundary}
+
+The most unambiguous collapse boundary in the data is the ADC precision cliff.  The joint D2D--ADC sweep (manuscript iso-accuracy section) shows that below 5-bit ADC, accuracy is near-chance ($\sim$10\,\%) regardless of D2D level.  The 5-to-6-bit transition produces a consistent $\sim$7~pp jump across all seven tested $\sigma_{\mathrm{D2D}}$ values.  Above 6 bits, degradation becomes D2D-dominated.  This is a \emph{hard} boundary in the sense that no training protocol tested to date---fixed-mask, Ensemble, or proportional-noise HAT---can recover from sub-5-bit readout.
+
+The physical reason is scale masking.  Under the canonical recovered-weight law (Eq.~\ref{eq:scale-recovery-ch3}), the effective weight grid step is
+\begin{equation}
+    \Delta_{\hat{W}} = s_{\ell}\,\frac{G_{\max}-G_{\min}}{n_{\mathrm{states}}-1}.
+\end{equation}
+When the ADC discretizes the column current into fewer than $\approx 32$ codes ($5$ bits), the quantization noise swamps the signal even before D2D or cycle-to-cycle (C2C) variability is applied.  The crossbar's analog compute advantage---massive parallelism in the current domain---is negated by a readout that cannot resolve the result.  From a deployment perspective, this means that $6$-bit ADC resolution is a \emph{minimum viable peripheral} for the present hybrid architecture; anything lower is non-starter regardless of how sophisticated the training becomes.
+
+\subsection{Hardware-instance overfitting: the fixed-mask collapse}
+
+The second unambiguous collapse is the fresh-instance failure of fixed-mask HAT.  Under canonical uniform noise, the standard V4 checkpoint reaches $87.95\pm0.27\,\%$ on its training-time array but collapses to $10.00\pm0.00\,\%$ on every one of $10$ fresh instances.  This is not a noisy dispersion around chance; it is a deterministic single-class predictor that emerges from the optimizer's coupling to a specific spatial mismatch pattern (Chapter~\ref{chap:hat-instance-overfitting}).
+
+The collapse is \emph{absolute} in the sense that it does not improve if the D2D amplitude is reduced: the OPECT case study shows that standard HAT checkpoints also collapse to $10.00\,\%$ on the low-noise OPECT profile.  It is also absolute with respect to correlation: there is no reason to expect that spatial correlation would restore fixed-mask transfer, because the mechanism---memorization of a specific $M_{0}$---is independent of the correlation structure of $p(M)$.  Fixed-mask HAT is therefore \emph{not a deployment candidate} for any organic RRAM process that requires fresh-instance robustness, regardless of how well-controlled the fabrication is.
+
+\subsection{Severe nonlinearity: the $32\,\%$ fresh-instance ceiling}
+
+The third collapse boundary is severe write nonlinearity ($NL=2.0$).  On the source-domain training-time array, the unmitigated $NL=2.0$ baseline reaches $27.72\pm0.82\,\%$, while MLP-only linearization recovers to $87.79\,\%$ and all-linear control reaches $87.49\,\%$.  These source-domain numbers suggest that the MLP path is the dominant recoverable bottleneck.
+
+On fresh instances, however, the picture inverts.  The MLP-only checkpoint achieves only $32.12\pm7.72\,\%$ on fresh instances, and the all-linear bound (best $87.49\,\%$, final $84.81\,\%$) reaches only $32.60\pm9.18\,\%$.  The large cross-instance standard deviations ($7.72$~pp and $9.18$~pp) indicate that some fresh arrays are tolerable while others are catastrophic---a bimodal-like spread that is qualitatively different from the tight $1.54$~pp spread of canonical Ensemble HAT.  The ranking $32\,\% > 10\,\%$ is technically preserved, but operationally the severe-NL regime is a collapse zone because $32\,\%$ accuracy is below the threshold of utility for most classification deployments.
+
+Extrapolating from the $NL=2.0$ data, one can bound the severity at which the MLP-only rescue becomes viable.  If $NL=1.0$ yields $86.37\,\%$ fresh-instance accuracy and $NL=2.0$ yields $32\,\%$, the relationship is strongly nonlinear.  A linear interpolation would predict a $59\,\%$ crossing at $NL=1.5$, but there is no evidence for linearity; the gradient-scaling surrogate becomes increasingly ill-conditioned as $NL$ grows, and the dual-attention collapse (Section~\ref{sec:failure-dual-attention-nl}) suggests a bifurcation rather than a gradual ramp.  The conservative bound is that \emph{any $NL \ge 2.0$ is in the collapse zone for fresh-instance ViT deployment}, and the threshold may be as low as $NL \approx 1.5$--$1.7$.
+
+\subsection{Joint stress: the extrapolated danger zone}
+
+No experiment in the present dataset evaluates the \emph{joint} application of severe NL, correlated D2D, and retention drift.  The interaction frontier is therefore mapped by extrapolation.  Table~\ref{tab:danger-zone} assembles the individual collapse boundaries into a qualitative danger-zone specification.
+
+\begin{table}[t]
+    \centering
+    \caption{Collapse zone: qualitative danger-zone specification.  Entries marked ``extrap.'' are not directly measured but are inferred from the monotonic trends of the individual sweeps.}
+    \label{tab:danger-zone}
+    \small
+    \begin{tabular}{@{}lll@{}}
+        \toprule
+        \textbf{Trigger combination} & \textbf{Expected outcome} & \textbf{Confidence} \\
+        \midrule
+        ADC $< 5$ bits, any D2D/NL & Near-chance ($\sim$10\,\%) & High (direct) \\
+        Fixed-mask HAT, any fresh instance & $10.00\,\%$ collapse & High (direct) \\
+        $NL \ge 2.0$, fresh instance & $\le 32\,\%$ ceiling & High (direct) \\
+        $NL \ge 2.0$ + $\rho \ge 0.5$ + retention $>1$~week & Likely $< 25\,\%$ & Medium (extrap.) \\
+        $NL \ge 2.5$, any fresh instance & Likely $< 20\,\%$ & Medium (extrap.) \\
+        ADC $=5$ bits + high D2D ($>15\,\%$) & $30$--$50\,\%$ (non-viable) & Medium (interpol.) \\
+        No dynamic recalibration + retention $>10$~s & Accuracy drifts unbounded & Medium (extrap.) \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+The combination $NL > 2.5$ + $\rho > 0.5$ + retention $> 1$~week is highlighted as the archetypal ``danger zone.''  None of these three conditions alone collapses Ensemble HAT to chance: $NL=2.0$ leaves $32\,\%$, $\rho=0.5$ leaves $82\,\%$, and retention with recalibration leaves $79\,\%$.  But their joint effect is expected to be super-additive.  Severe NL already destabilizes the MLP gradient path; correlated D2D widens the variance budget from $1.54$~pp to $3.95$~pp; and retention drift without recalibration removes the scale-masking protection that absorbs global conductance shifts.  The conservative extrapolation is that the joint accuracy would fall below $25\,\%$, with a plausible lower bound near $15\,\%$.  This extrapolation is flagged as medium confidence because the interaction terms have not been measured.
+
+
+% =============================================================================
+\section{Decision diagram: should this architecture ship?}
+\label{sec:decision-diagram}
+
+The ranking-preservation map and the collapse zone can be combined into a prose decision diagram.  The branching criterion is \emph{device maturity tier}, a qualitative label that maps onto the physical parameter ranges tested in the simulator.
+
+\subsection{Research-grade arrays}
+
+\textbf{Definition.}  Research-grade arrays are characterized by: $\sigma_{\mathrm{D2D}} \ge 10\,\%$ (often $15$--$20\,\%$), write nonlinearity $NL \ge 1.5$, ADC resolution $\le 5$ bits or uncalibrated, and retention time constants in the hundreds of milliseconds without on-chip recalibration circuitry.
+
+\textbf{Verdict: do not ship a ViT.}  At this maturity level, the collapse-zone boundary is crossed for at least one non-negotiable parameter.  Sub-5-bit ADC produces near-chance accuracy regardless of training protocol.  Severe NL drives fresh-instance accuracy below $32\,\%$ even with MLP linearization.  The retention plateau near $79\,\%$ is only reachable if dynamic scale recalibration is available, which typically requires reference-cell readout circuitry that research-grade prototypes lack.
+
+\textbf{Alternative actions.}  (i) Use the array as a \emph{training-diagnostic platform} rather than as a deployment target: train Ensemble HAT checkpoints, evaluate them on the research-grade array, and use the gap between source-domain and fresh-instance accuracy to guide process development.  (ii) If a simpler task or smaller model is required, consider a shallow CNN (Section~\ref{sec:cnn-vs-vit-tiers}), although fresh-instance CNN data under Ensemble HAT are not available in the present dataset.  (iii) Invest in peripheral readout: improving the ADC from 5 to 6 bits is the single highest-leverage intervention at this tier, because it moves the system from the red zone to the yellow zone of Table~\ref{tab:ranking-summary}.
+
+\subsection{Pilot-line arrays}
+
+\textbf{Definition.}  Pilot-line arrays are characterized by: $\sigma_{\mathrm{D2D}} \in \{3\,\%, 5\,\%, 8\,\%\}$, $NL \in \{1.0, 1.2\}$ (ideal to mildly nonlinear), $6$--$8$-bit calibrated ADC, and basic on-chip reference cells that permit intermittent scale recalibration.
+
+\textbf{Verdict: ship with Ensemble HAT + compensation.}  At this tier, the canonical ranking is preserved with margins that are commercially relevant.  The OPECT proxy ($3\,\%$ D2D, $2\,\%$ C2C) reaches $88.53\pm0.08\,\%$, which is only $\sim$9.5~pp below the digital baseline.  The canonical $10\,\%$ D2D regime reaches $86.37\pm1.54\,\%$, which is viable for many edge-classification tasks.  The 6-bit ADC cliff has been cleared, and the retention plateau near $79\,\%$ is accessible provided recalibration is performed at intervals shorter than $\sim$1~s if the application demands $>82\,\%$ accuracy.
+
+\textbf{Deployment checklist.}  (1) Train with per-epoch D2D resampling (Ensemble HAT), not fixed-mask HAT.  (2) Characterize the physical photoresponse exponent $\gamma_{\mathrm{phys}}$ and deploy inverse-gamma compensation if $\gamma_{\mathrm{phys}} > 1$; the expected gain is $+5.8$~pp at $\gamma_{\mathrm{phys}}=2.0$.  (3) Include dynamic scale recalibration in the inference stack; budget peripheral energy for reference-cell readout.  (4) Validate fresh-instance robustness on at least $10$ physical arrays before committing to mass programming.  (5) If spatial correlation is suspected from wafer maps, treat the $\rho=0.3$ result ($84.57\,\%$) as a conservative accuracy floor and the $\rho=0.5$ result ($82.12\,\%$) as a stress-test bound.
+
+\subsection{Production-grade arrays}
+
+\textbf{Definition.}  Production-grade arrays are characterized by: $\sigma_{\mathrm{D2D}} \le 3\,\%$, $NL \approx 1.0$ (near-ideal write or iterative write-verify), $\ge 8$-bit ADC, and stable retention with on-chip recalibration.
+
+\textbf{Verdict: ship, with HAT as insurance rather than rescue.}  At this tier, the analog noise floor is low enough that even fixed-mask HAT might achieve acceptable source-domain accuracy.  However, the OPECT case study demonstrates that fixed-mask checkpoints still collapse when transferred across profiles, suggesting that the hardware-instance overfitting risk does not vanish automatically at low noise.  Ensemble HAT should therefore remain the default training protocol, but its role shifts from ``rescue'' to ``insurance.''  The expected fresh-instance accuracy is in the high-$80\,\%$ to low-$90\,\%$ range, with a tight variance ($\pm 1$~pp or better) that simplifies yield planning.
+
+\textbf{Yield and cost implications.}  At $88.53\pm0.08\,\%$, the cross-instance standard deviation is smaller than typical test-set sampling noise for CIFAR-10.  This means that yield can be planned on the \emph{mean} accuracy rather than on a worst-case tail.  If the application threshold is $85\,\%$, virtually every instance passes; if the threshold is $87\,\%$, the yield is still $>99\,\%$ under a Gaussian tail assumption.  The energy estimate ($\approx 11\times$ dense-projection reduction versus FP32, manuscript energy-results section) becomes credible at this tier because the placeholder constants in the energy model are most accurate when the peripheral overhead is dominated by calibrated digital circuits rather than by speculative analog compensation.
+
+\subsection{A compact flowchart}
+
+For quick reference, the decision logic can be summarized as a branching tree:
+\begin{enumerate}
+    \item \textbf{ADC $\ge 6$ bits?}
+    \begin{itemize}
+        \item No $\rightarrow$ \textsc{Do not ship.} Invest in peripheral readout.
+        \item Yes $\rightarrow$ continue.
+    \end{itemize}
+    \item \textbf{Write nonlinearity $NL < 1.5$?}
+    \begin{itemize}
+        \item No $\rightarrow$ \textsc{Do not ship ViT.} Consider simpler model or process repair.
+        \item Yes $\rightarrow$ continue.
+    \end{itemize}
+    \item \textbf{Device maturity tier?}
+    \begin{itemize}
+        \item Research-grade (high D2D, no recalibration) $\rightarrow$ \textsc{Diagnostic use only.}
+        \item Pilot (moderate D2D, recalibration available) $\rightarrow$ \textsc{Ship with Ensemble HAT + compensation.}
+        \item Production (low D2D, ideal write, 8+ bits) $\rightarrow$ \textsc{Ship with Ensemble HAT as insurance.}
+    \end{itemize}
+\end{enumerate}
+
+
+% =============================================================================
+\section{CNN versus ViT at different maturity tiers}
+\label{sec:cnn-vs-vit-tiers}
+
+The deployment envelope developed above is anchored to Tiny-ViT-5M, a compact Vision Transformer fine-tuned from ImageNet.  A natural question arises: at low device maturity, where noise and nonlinearity are most severe, would a simpler convolutional architecture outperform the transformer under the same HAT protocol?  This section addresses the question with the evidence available and flags the gaps.
+
+\subsection{What the data show}
+
+The manuscript reports three architecture--accuracy points under matched digital training: ResNet-18 ($95.46\,\%$), ConvNeXt-Tiny ($90.74\,\%$), and Tiny-ViT-5M ($98.06\,\%$) on CIFAR-10.  Under the canonical analog noise model with standard HAT, the ranking is preserved: Tiny-ViT V4 reaches $87.95\pm0.27\,\%$, while ConvNeXt C4 reaches a comparable level (manuscript quantization-noise section).  However, \emph{no fresh-instance Ensemble HAT sweep has been performed for ConvNeXt or ResNet}.  The CNN numbers in the manuscript are either source-domain or single-run estimates, and the $10 \times 5$ fresh-instance protocol that underpins the $86.37\pm1.54\,\%$ Ensemble HAT claim has not been applied to a CNN testbed.
+
+The manuscript Discussion section notes that ``the Transformer architecture is more fragile under the present physical stress tests,'' citing the proportional-noise collapse and the front-end distortion sensitivity as evidence.  In a CNN, local convolution and pooling average perturbations spatially, and ReLU saturation limits the propagation of intensity-dependent scaling errors.  In a ViT, patch embeddings are fed directly into global self-attention: a sublinear photoresponse alters the token embedding, and the softmax exponentiates similarity changes, redistributing attention weights across the entire sequence without spatial averaging.  This structural difference predicts that the ViT should degrade more sharply than a CNN under front-end distortion and under spatially correlated D2D.
+
+\subsection{Theoretical reasoning for low-maturity tiers}
+
+At the research-grade tier---high D2D, high NL, sub-5-bit ADC---neither architecture is deployable for high-accuracy vision.  The ADC cliff is architecture-agnostic: near-chance accuracy is near-chance regardless of whether the model uses convolutions or self-attention.  The question becomes interesting only at the boundary of viability, where one architecture might remain usable while the other collapses.
+
+Consider the pilot tier with moderate D2D ($5$--$10\,\%$) and a 6-bit ADC.  Here, the CNN's spatial averaging provides a built-in regularization against structured mismatch.  A $3 \times 3$ convolution with stride 2 averages nine spatial locations before the nonlinearity, effectively low-pass filtering the D2D field.  The ViT patch embedding is also a convolution (the patch-embedding layer is analog-mapped in the present framework), but the subsequent attention layers operate on token vectors that have \emph{already been corrupted} by the full spatial mismatch pattern.  There is no spatial averaging in the attention mechanism; a perturbed query-key dot product propagates globally through the softmax.  One therefore expects the CNN to tolerate higher D2D or stronger spatial correlation at a given accuracy level, all else being equal.
+
+Similarly, under severe write nonlinearity ($NL=2.0$), the CNN's MLP blocks are structurally similar to the ViT's MLP blocks, but the CNN has fewer attention-side analog layers to protect.  The dual-attention collapse documented in Chapter~\ref{chap:failure-mode-atlas} is a \emph{transformer-specific} failure mode; a pure CNN has no QKV or output-projection analog paths to linearize.  If the severe-NL bottleneck is truly concentrated in the MLP path, a CNN might reach the MLP-only source-domain rescue ($\approx 88\,\%$) without the accompanying attention-side structural collapse, and its fresh-instance ceiling might therefore exceed the ViT's $32\,\%$ bound.
+
+\subsection{Framing the open question}
+
+These arguments are theoretical, not empirical.  The absence of a fresh-instance CNN comparison is the most important data gap in the deployment envelope.  A direct experiment would train ConvNeXt (or ResNet-18) with Ensemble HAT under the canonical uniform-noise profile, then evaluate on $10$ fresh instances.  If the CNN fresh-instance mean exceeds $86.37\,\%$, the ViT is not the optimal architecture for organic CIM at this maturity level.  If the CNN mean is comparable or lower, the ViT's superior digital baseline justifies its higher fragility.
+
+Until such data exist, the conservative recommendation is:
+\begin{itemize}
+    \item At \textbf{production maturity} (low noise, ideal write), prefer the ViT for its higher digital ceiling and its proven Ensemble HAT transfer ($88.53\,\%$).
+    \item At \textbf{pilot maturity} (moderate noise, 6-bit ADC), the ViT is deployable with Ensemble HAT, but a CNN may offer a wider process-margin window if D2D or correlation is worse than expected.
+    \item At \textbf{research maturity} (severe NL, sub-5-bit ADC), architecture choice is moot; the process is not ready for either.
+\end{itemize}
+
+This framing aligns with the broader CIM literature.  Recent heterogeneous analog accelerators for Vision Transformers, including HARDSEA \citep{lin2024hardsea}, adopt the same hybrid analog--digital partition used in this thesis, but they target more mature CMOS-under-ReRAM processes where device nonlinearity is lower.  For organic arrays, the maturity gap suggests that CNN-first deployment may be a pragmatic stepping stone toward eventual ViT deployment.
+
+
+% =============================================================================
+\section{Implications for analog-CIM program managers}
+\label{sec:program-manager}
+
+The deployment envelope is not merely an academic classification; it is a tool for resource allocation.  This section translates the findings into industrial-relevance bullets for program managers deciding how to invest non-recurring engineering (NRE) dollars across device fabrication, peripheral design, and training infrastructure.
+
+\subsection{Yield tolerance and the D2D budget}
+
+The iso-accuracy sweep shows that, once the ADC is $\ge 6$ bits, D2D variability accounts for $92.2\,\%$ of residual accuracy variance in the operational envelope.  This means that yield is D2D-limited, not C2C-limited.  Cycle-to-cycle noise is largely masked by the digital recovery path; a $5\,\%$ C2C term adds negligible effective error because many perturbations fall below the half-LSB of the recovered weight grid.  Program managers should therefore prioritize \emph{spatial uniformity} (wafer-scale process control, optical write uniformity, thermal management during programming) over \emph{temporal stability} (C2C repeatability) within the tested ranges.
+
+The correlated-D2D data provide a quantitative yield model.  At $\rho=0$ (i.i.d.), the cross-instance standard deviation is $1.54$~pp; at $\rho=0.3$, it grows to $2.39$~pp; at $\rho=0.5$, it reaches $3.95$~pp.  If the application requires $>80\,\%$ accuracy, the i.i.d.~and $\rho=0.3$ regimes are safe (mean $>$ $84\,\%$, worst instance $>$ $73\,\%$), but the $\rho=0.5$ regime introduces a tail risk: one instance in ten could drop below $75\,\%$.  A program manager should measure the spatial covariance kernel of the pilot line and reject wafers with $\rho > 0.4$ unless architectural mitigations (correlated-HAT training or spatial calibration grids) are implemented.
+
+\subsection{NRE savings from Ensemble HAT}
+
+Standard HAT requires per-device calibration: a model trained on one array must be retrained or at least recalibrated for each new instance.  Ensemble HAT eliminates this requirement by baking the instance distribution into the training objective.  The NRE saving is the avoided cost of $N$ retraining runs for $N$ deployed arrays.  At 100 epochs per run and $\sim$2~hours per epoch on a single GPU (the Tiny-ViT training budget), per-device retraining would cost $\sim$200 GPU-hours per array.  For a pilot line with 100 test arrays, Ensemble HAT saves $\sim$20{,}000 GPU-hours, or roughly $\$5$--$10$k in cloud compute at 2025 rates.  At production scale, the saving is larger still.
+
+There is a training-time overhead for Ensemble HAT: one D2D map resampling per epoch adds negligible wall-clock time (the map generation is CPU-bound and pipelined), but the effective regularization strength changes, so the learning-rate schedule may need retuning.  In the present experiments, the same cosine annealing schedule was used for fixed-mask and Ensemble HAT without hyperparameter search, suggesting that the schedule transfer is robust.  The NRE saving therefore dominates the modest training overhead.
+
+\subsection{Retraining frequency and the retention refresh interval}
+
+The retention plateau at $79.13$--$79.51\,\%$ is stable across three orders of magnitude in time ($10$~s to $10{,}000$~s), but it is $12.5$~pp below the $t=0$ baseline.  For applications that require $>82\,\%$ accuracy, the refresh interval must be shorter than $\sim$1~s; for applications that accept $79\,\%$, the interval can extend to hours.  This creates a \emph{task-dependent refresh specification}:
+\begin{itemize}
+    \item High-accuracy edge inference (e.g., medical imaging, industrial inspection): refresh every $<1$~s, or avoid analog storage altogether for the critical layers.
+    \item Moderate-accuracy always-on sensing (e.g., gesture detection, occupancy sensing): refresh every $10$--$100$~s; the $79\,\%$ plateau is sufficient.
+    \item Ultra-low-power intermittent inference: accept $79\,\%$ and recalibrate only at wake-up, using the dynamic scale recalibration path.
+\end{itemize}
+
+Program managers should negotiate the refresh interval with the application team \emph{before} finalizing the array size, because the peripheral energy for reference-cell readout scales with the number of analog layers being recalibrated.  The manuscript's $11.45\times$ energy-reduction estimate does not include this peripheral overhead; a realistic system model would subtract $5$--$15\,\%$ from the savings depending on refresh frequency.
+
+\subsection{Risk mitigation: the ``compound stress'' sanity check}
+
+The manuscript Discussion section reports a single-run compound stress test combining $2\,\%$ C2C, $3\,\%$ D2D, 6-bit ADC, $1\,\%$ IR drop, $1\,\%$ sneak path, and $1{,}000$~s retention, yielding $89.61\,\%$ accuracy for Tiny-ViT.  This is not a locked number and should not be treated as a guarantee, but it provides a \emph{sanity check}: when all moderate non-idealities are present simultaneously, the system does not collapse catastrophically.  Program managers can use this as a ``smoke test'' for their own integration plans: if the compound stress prediction for a target profile is below $80\,\%$, the design is too aggressive and should be de-featured before tape-out.
+
+
+% =============================================================================
+\section{Limitations of the envelope}
+\label{sec:envelope-limitations}
+
+Every deployment recommendation in this chapter is conditional on the first-order behavioral approximations described in Chapter~\ref{chap:framework}.  The envelope is a \emph{decision aid}, not a predictive emulator.  This section lists the phenomena that are \emph{not} in the model and therefore not in the recommendation, together with their expected impact on the safe-zone boundaries.
+
+\subsection{Spatial IR drop}
+
+The framework includes a $1\,\%$ scalar placeholder for IR drop (manuscript limitations section), but it does not model the \emph{spatial} voltage decay along wordlines and bitlines.  Real IR drop is geometry-dependent: long wordlines in large arrays experience larger voltage droop at the far end, producing a systematic \emph{position-dependent} weight distortion that is correlated with the array layout.  This distortion is structurally different from the stochastic D2D mismatch modeled here, because it is deterministic for a given input pattern and array geometry.  A program manager designing a $512 \times 512$ array should not rely on the $10\,\%$ D2D safe zone without verifying that the IR drop at the array corner does not introduce an effective $\sigma_{\mathrm{eff}} > 15\,\%$.  CrossSim \citep{crosssim2026} provides SPICE-calibrated parasitic models that can bracket this effect for a specific metal stack.
+
+\subsection{Sneak-path currents}
+
+Sneak paths in passive crossbar arrays introduce effective conductance crosstalk that depends on the programmed weight pattern and the selector device characteristics.  The framework includes a $1\,\%$ scalar placeholder, but real sneak-path distortion can be pattern-dependent and non-Gaussian.  In the worst case, a high-conductance cell can create a low-resistance path that shunts current away from the intended bitline, producing a \emph{multiplicative} error rather than the additive error modeled by D2D and C2C.  Multiplicative errors break the scale-recovery assumption of Eq.~\ref{eq:scale-recovery-ch3} and could shift the 6-bit ADC cliff upward.  Until selector devices or one-transistor-one-resistor (1T1R) cells are characterized, the sneak-path safe zone is unknown.
+
+\subsection{Array geometry and parasitic resistance}
+
+The present simulator treats each analog layer as an independent crossbar tile with no inter-tile coupling.  Real chips have routing resistance between tiles, capacitive loading on bitlines, and floor-plan-dependent thermal gradients.  These effects are absent from the profile interface.  The OPECT case study assumes that the $3\,\%$ D2D and $2\,\%$ C2C proxies are sufficient to capture all static variability; if the array geometry introduces additional position-dependent spread, the $88.53\,\%$ prediction is optimistic.
+
+\subsection{Full temperature sweep}
+
+Temperature affects every physical parameter in the model: conductance window, mismatch variance, retention time constants, and photoresponse exponent.  The present framework assumes room-temperature operation ($\approx 300$~K) and does not include Arrhenius-style temperature acceleration.  Organic semiconductors are particularly temperature-sensitive because carrier mobility and trap-state occupancy vary strongly with thermal energy.  A deployment envelope that is valid at $25^{\circ}$C may not be valid at $60^{\circ}$C, and the $79\,\%$ retention plateau could shift downward significantly if the slow decay mode accelerates.  A full temperature sweep is the highest-priority extension for outdoor or industrial deployments.
+
+\subsection{The interaction frontier}
+
+All failure modes in Chapter~\ref{chap:failure-mode-atlas} were evaluated in isolation.  The real deployment environment presents D2D mismatch, C2C noise, retention drift, front-end distortion, and finite ADC resolution \emph{simultaneously}.  The compound stress test ($89.61\,\%$) is a single data point in this joint space; it does not map the interaction surface.  In particular:
+\begin{itemize}
+    \item Does retention drift for $1{,}000$~s \emph{increase} the susceptibility of the D2D field to hardware-instance overfitting, or does the co-decay of mismatch buffers preserve the Ensemble HAT guarantee?
+    \item Does the $32\,\%$ MLP-only fresh-instance ceiling rise or fall when correlated D2D is added to the severe-NL regime?
+    \item Does the 6-bit ADC cliff shift when the input has already been distorted by a sublinear photoresponse ($\gamma_{\mathrm{phys}} > 1$)?
+\end{itemize}
+These questions are not answerable within the current experimental budget, but they define the boundary beyond which the deployment envelope should not be extrapolated without additional data.
+
+\subsection{First-order surrogate ceiling}
+
+Finally, the $NL=2.0$ boundary is a property of the gradient-scaling surrogate, not necessarily of the physical device.  If real organic write dynamics follow a pulse-faithful ionic-migration model that differs from the present $(G_{\max}-G)^{NL-1}$ approximation, the dual-attention collapse may occur at a different severity, or not at all.  The deployment envelope should therefore be recalibrated whenever measured write-characterization data become available.  The profile-driven interface (Chapter~\ref{chap:framework}) is designed for exactly this recalibration: replacing the surrogate with a lookup-table or physics-based model requires only a profile update, not a code rewrite.
+
+
+% =============================================================================
+\section{Summary}
+
+This chapter has converted the simulation data of the preceding chapters into an actionable deployment envelope for organic optoelectronic CIM.  The central construct is the \emph{ranking-preservation map} (Section~\ref{sec:ranking-preservation}), which classifies parameter combinations according to whether the canonical accuracy ordering---Ensemble HAT $>$ fixed-mask HAT $>$ naive deployment---survives on unseen hardware instances.  Direct fresh-instance evidence exists for the canonical uniform-noise regime ($86.37\pm1.54\,\%$), the low-noise OPECT proxy ($88.53\pm0.08\,\%$), and spatially correlated D2D up to $\rho=0.5$ ($82.12\pm3.95\,\%$).  Extrapolation with explicit uncertainty bounds extends the map to retention drift ($\approx 79\,\%$ plateau), proportional-noise regimes (plausible low-$90\,\%$ fresh-instance mean), and the ADC 5-to-6-bit boundary.
+
+The \emph{collapse zone} (Section~\ref{sec:collapse-zone}) identifies non-negotiable boundaries: ADC $< 5$ bits produces near-chance accuracy regardless of training; fixed-mask HAT collapses to $10.00\,\%$ on every fresh instance; severe write nonlinearity ($NL=2.0$) creates a $32\,\%$ fresh-instance ceiling even with MLP linearization.  The joint danger zone $NL > 2.5$ + $\rho > 0.5$ + retention $> 1$~week is extrapolated to fall below $25\,\%$, with medium confidence.
+
+The \emph{decision diagram} (Section~\ref{sec:decision-diagram}) branches on device maturity tier.  Research-grade arrays should be restricted to diagnostic use; pilot-line arrays can ship with Ensemble HAT plus front-end compensation; production-grade arrays can treat Ensemble HAT as insurance rather than rescue.  The CNN-versus-ViT comparison (Section~\ref{sec:cnn-vs-vit-tiers}) remains an open question for fresh-instance CNN data, but theoretical reasoning suggests that CNNs may tolerate higher D2D and NL at the pilot-tier boundary.
+
+For \emph{program managers} (Section~\ref{sec:program-manager}), the key takeaways are: prioritize spatial uniformity over C2C repeatability; use Ensemble HAT to save per-device retraining NRE; negotiate the retention refresh interval with the application team before finalizing peripheral energy budgets; and treat the compound stress test as a smoke-test benchmark.
+
+The \emph{limitations} (Section~\ref{sec:envelope-limitations}) are substantial and explicitly enumerated: spatial IR drop, sneak-path currents, array geometry, full temperature sweep, and the unexplored interaction frontier.  The envelope is valid only within the first-order behavioral approximations of the present framework, and it should be recalibrated when measured device data become available.  Within those bounds, however, it provides a principled basis for deciding whether a given organic RRAM process is ready to host a modern vision backbone---and what training protocol it will need if it is.
+
+The envelope is where the thesis ends and the next project begins.

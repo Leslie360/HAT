@@ -11,7 +11,9 @@ import sys
 import os
 import json
 
-sys.path.insert(0, '/home/qiaosir/projects/compute_vit')
+from repo_bootstrap import ensure_repo_root
+
+ensure_repo_root()
 
 import torchvision
 import torchvision.transforms as transforms

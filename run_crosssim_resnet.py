@@ -5,8 +5,10 @@ import os
 import json
 import time
 
-sys.path.insert(0, '/home/qiaosir/projects/cross-sim')
-sys.path.insert(0, '/home/qiaosir/projects/cross-sim/applications/dnn')
+from repo_bootstrap import configure_crosssim_paths, ensure_repo_root
+
+REPO_ROOT = ensure_repo_root()
+configure_crosssim_paths()
 
 from simulator.algorithms.dnn.torch.convert import from_torch, convertible_modules
 from dnn_inference_params import dnn_inference_params
@@ -98,7 +100,9 @@ def run_crosssim_resnet():
         }
     }
     
-    with open("report_md/_gpt/crosssim_resnet_results.json", "w") as f:
+    output_path = REPO_ROOT / "report_md" / "_gpt" / "crosssim_resnet_results.json"
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    with output_path.open("w", encoding="utf-8") as f:
         json.dump(results, f, indent=2)
 
 if __name__ == "__main__":

@@ -1,0 +1,161 @@
+{
+  "generated_at": "2026-04-05T14:27:03",
+  "device": "cuda",
+  "eval_runs": 10,
+  "time_s": 1,
+  "conditions": [
+    {
+      "label": "current",
+      "recalibrate_scale": false,
+      "scale_d2d": false,
+      "summary": {
+        "eval_runs": 10,
+        "test_loss_mean": 6.5580353002929686,
+        "test_acc_mean": 10.498000000000001,
+        "test_acc_min": 10.07,
+        "test_acc_max": 10.82,
+        "test_acc_std": 0.22787911025122268
+      },
+      "layer_diagnostics": [
+        {
+          "layer": "patch_embed.conv1.conv",
+          "kind": "AnalogConv2d",
+          "decay_factor": 0.6389795548711577,
+          "retained_diff_max": 5.7508158683776855,
+          "original_scale": 0.07813267566688532,
+          "recalibrated_scale": 0.12227727276528054,
+          "effective_scale": 0.07813267409801483,
+          "d2d_std_conductance": 0.8827237486839294,
+          "retention_recalibrate_scale": false,
+          "retention_scales_d2d": false
+        },
+        {
+          "layer": "stages.1.blocks.0.attn.qkv",
+          "kind": "AnalogLinear",
+          "decay_factor": 0.6389795548711577,
+          "retained_diff_max": 5.7508158683776855,
+          "original_scale": 0.0998278855168267,
+          "recalibrated_scale": 0.1562301749266182,
+          "effective_scale": 0.09982788562774658,
+          "d2d_std_conductance": 0.9046207666397095,
+          "retention_recalibrate_scale": false,
+          "retention_scales_d2d": false
+        },
+        {
+          "layer": "stages.3.blocks.1.mlp.fc2",
+          "kind": "AnalogLinear",
+          "decay_factor": 0.6389795548711577,
+          "retained_diff_max": 5.7508158683776855,
+          "original_scale": 0.17385551645247063,
+          "recalibrated_scale": 0.2720830718461804,
+          "effective_scale": 0.1738555133342743,
+          "d2d_std_conductance": 0.8987356424331665,
+          "retention_recalibrate_scale": false,
+          "retention_scales_d2d": false
+        }
+      ]
+    },
+    {
+      "label": "recalibrate_scale",
+      "recalibrate_scale": true,
+      "scale_d2d": false,
+      "summary": {
+        "eval_runs": 10,
+        "test_loss_mean": 3.040419846134186,
+        "test_acc_mean": 54.539,
+        "test_acc_min": 53.37,
+        "test_acc_max": 55.28,
+        "test_acc_std": 0.5410781418201591
+      },
+      "layer_diagnostics": [
+        {
+          "layer": "patch_embed.conv1.conv",
+          "kind": "AnalogConv2d",
+          "decay_factor": 0.6389795548711577,
+          "retained_diff_max": 5.7508158683776855,
+          "original_scale": 0.07813267566688532,
+          "recalibrated_scale": 0.12227727276528054,
+          "effective_scale": 0.12227727472782135,
+          "d2d_std_conductance": 0.8827237486839294,
+          "retention_recalibrate_scale": true,
+          "retention_scales_d2d": false
+        },
+        {
+          "layer": "stages.1.blocks.0.attn.qkv",
+          "kind": "AnalogLinear",
+          "decay_factor": 0.6389795548711577,
+          "retained_diff_max": 5.7508158683776855,
+          "original_scale": 0.0998278855168267,
+          "recalibrated_scale": 0.1562301749266182,
+          "effective_scale": 0.15623018145561218,
+          "d2d_std_conductance": 0.9046207666397095,
+          "retention_recalibrate_scale": true,
+          "retention_scales_d2d": false
+        },
+        {
+          "layer": "stages.3.blocks.1.mlp.fc2",
+          "kind": "AnalogLinear",
+          "decay_factor": 0.6389795548711577,
+          "retained_diff_max": 5.7508158683776855,
+          "original_scale": 0.17385551645247063,
+          "recalibrated_scale": 0.2720830718461804,
+          "effective_scale": 0.2720830738544464,
+          "d2d_std_conductance": 0.8987356424331665,
+          "retention_recalibrate_scale": true,
+          "retention_scales_d2d": false
+        }
+      ]
+    },
+    {
+      "label": "recalibrate_scale_and_decay_d2d",
+      "recalibrate_scale": true,
+      "scale_d2d": true,
+      "summary": {
+        "eval_runs": 10,
+        "test_loss_mean": 0.948311912946701,
+        "test_acc_mean": 82.607,
+        "test_acc_min": 81.66,
+        "test_acc_max": 83.28,
+        "test_acc_std": 0.5964161485256945
+      },
+      "layer_diagnostics": [
+        {
+          "layer": "patch_embed.conv1.conv",
+          "kind": "AnalogConv2d",
+          "decay_factor": 0.6389795548711577,
+          "retained_diff_max": 5.7508158683776855,
+          "original_scale": 0.07813267566688532,
+          "recalibrated_scale": 0.12227727276528054,
+          "effective_scale": 0.12227727472782135,
+          "d2d_std_conductance": 0.5640423893928528,
+          "retention_recalibrate_scale": true,
+          "retention_scales_d2d": true
+        },
+        {
+          "layer": "stages.1.blocks.0.attn.qkv",
+          "kind": "AnalogLinear",
+          "decay_factor": 0.6389795548711577,
+          "retained_diff_max": 5.7508158683776855,
+          "original_scale": 0.0998278855168267,
+          "recalibrated_scale": 0.1562301749266182,
+          "effective_scale": 0.15623018145561218,
+          "d2d_std_conductance": 0.5780341625213623,
+          "retention_recalibrate_scale": true,
+          "retention_scales_d2d": true
+        },
+        {
+          "layer": "stages.3.blocks.1.mlp.fc2",
+          "kind": "AnalogLinear",
+          "decay_factor": 0.6389795548711577,
+          "retained_diff_max": 5.7508158683776855,
+          "original_scale": 0.17385551645247063,
+          "recalibrated_scale": 0.2720830718461804,
+          "effective_scale": 0.2720830738544464,
+          "d2d_std_conductance": 0.5742737054824829,
+          "retention_recalibrate_scale": true,
+          "retention_scales_d2d": true
+        }
+      ]
+    }
+  ]
+}

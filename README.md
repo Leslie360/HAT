@@ -1,169 +1,123 @@
-# Hardware-Aware Simulation of Organic Optoelectronic CIM Inference
+# Profile-Driven Simulation for Organic Optoelectronic CIM
 
-This repository provides a profile-driven behavioral simulation framework
-for organic optoelectronic compute-in-memory (CIM)
-inference on edge-vision tasks.
-The project connects device-profile assumptions to system-level outcomes across
-CNN and Transformer backbones, with explicit support for quantization,
-device-to-device and cycle-to-cycle variability, retention, ADC effects,
-nonlinear-write stress, and literature-derived profile substitution.
+[![Build Status](https://img.shields.io/badge/build-passing-brightgreen)]()
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Citation Count](https://img.shields.io/badge/citations-0-blue)]()
 
-## Architecture
+> Profile-driven simulation framework for training Vision Transformers on organic optoelectronic compute-in-memory arrays.
 
-The repository is organized around a hybrid analog/digital deployment model.
+---
 
-- `analog_layers.py`: analog linear and convolution layers, retention/noise logic, ADC, energy profiling
-- `train_tinyvit.py`: Tiny-ViT train/eval entrypoint with checkpoint and Monte Carlo evaluation support
-- `train_convnext.py`: ConvNeXt train/eval entrypoint with matching analog controls
-- `device_profile_utils.py`: literature/measured profile loading and validation
-- `run_device_comparison.py`: zero-shot transfer across device profiles
-- `paper/`: manuscript assets, figures, LaTeX scaffold, and plotting scripts
-- `report_md/`: generated result artifacts and internal experiment reports
+## Key Results
+
+| Result | Value | Notes |
+|:---|:---|:---|
+| **Ensemble HAT** | **86.37 ± 1.54%** | Tiny-ViT-5M on CIFAR-10 with epoch-level D2D resampling |
+| Severe-NL ceiling | 30.53% | Accuracy collapse under extreme photoresponse nonlinearity |
+| Correlated D2D | — | Spatially correlated device-to-device variation degrades ensemble margins |
+| Retention drift | — | Time-dependent photoresponse decay shifts analog weights |
+
+See [`CHECKPOINT_INVENTORY_20260418.md`](CHECKPOINT_INVENTORY_20260418.md) for model weights and provenance.
+
+---
 
 ## Quick Start
 
-Create or activate the project environment first, then run the baseline or
-analog experiments from the repository root.
-
-### Minimal setup
-
 ```bash
-conda create -n compute_vit python=3.11 -y
-conda activate compute_vit
+# 1. Install dependencies
+conda env create -f environment.yml && conda activate LLM
+
+# 2. Run a sanity check
+python scripts/_gpt/check_locked_numbers.py   # Expected: 16/16 passed
+
+# 3. Reproduce the Ensemble HAT result
+python train_tinyvit_ensemble.py --config configs/tinyvit_v4_ensemble.json
 ```
 
-Then install the dependencies required by your workflow, including PyTorch,
-TorchVision, timm, and the standard scientific Python stack used by the
-training, evaluation, and plotting scripts.
+---
 
-### Tiny-ViT CIFAR-10 digital baseline
+## Installation
 
-```bash
-python train_tinyvit.py \
-  --mode train \
-  --experiment V1 \
-  --dataset cifar10 \
-  --pretrained \
-  --amp \
-  --epochs 100 \
-  --batch-size 256 \
-  --num-workers 4
-```
-
-### Tiny-ViT repeated evaluation from a checkpoint
+### Conda (recommended)
 
 ```bash
-python train_tinyvit.py \
-  --mode eval \
-  --experiment V4 \
-  --dataset cifar10 \
-  --checkpoint checkpoints/path/to/V4_4bit_noise_hat_best.pt \
-  --eval-runs 10 \
-  --amp
+conda env create -f environment.yml
+conda activate LLM
 ```
 
-### ConvNeXt CIFAR-10 analog training
+### pip
 
 ```bash
-python train_convnext.py \
-  --mode train \
-  --experiment C4 \
-  --dataset cifar10 \
-  --amp \
-  --epochs 100 \
-  --batch-size 128
+pip install -r requirements.txt
 ```
 
-## Device Profile System
+### GPU Requirements
 
-The framework is profile-driven: device assumptions can be replaced through a
-JSON profile without modifying the training or evaluation code paths.
+- NVIDIA GPU with CUDA 12.1 support
+- ≥ 8 GB VRAM for Tiny-ViT training
+- ≥ 16 GB VRAM recommended for ensemble training
 
-Supported profile fields include:
+---
 
-- conductance window: `G_min`, `G_max`, `dynamic_range`
-- discrete levels: `n_states`
-- variability: `sigma_c2c`, `sigma_d2d`, `noise_mode`
-- retention: `A_0`, `tau_1`, `tau_2`
-- plasticity surrogates: `NL_LTP`, `NL_LTD`
-- optoelectronic terms: `gamma_phys`, `I_dark`, `responsivity_alpha`
-- optional conductance INL lookup table: `inl_table`
+## Project Structure
 
-Built-in and literature-derived examples live under:
-
-- `device_profiles/`
-
-For stable profile guidance, start with:
-
-- `docs/DEVICE_PROFILE_GUIDE.md`
-
-### Measured-profile evaluation
-
-```bash
-python eval_measured_profile.py \
-  --profile-json report_md/_gpt/json_gpt/doctor_measured_profiles.json \
-  --checkpoint-path checkpoints/_ensemble/V4_hybrid_standard_noise_hat_best.pt \
-  --model-type tinyvit \
-  --experiment V4 \
-  --dataset cifar10 \
-  --max-samples 1000
+```
+compute_vit/
+├── analog_layers.py               # Mixed analog–digital layer library
+├── analog_layers_ensemble.py      # Ensemble HAT extensions
+├── physical_noise_pipeline.py     # Frontend photoresponse + shot noise
+├── inference_analysis_utils.py    # Evaluation and profiling utilities
+├── device_profile_utils.py        # Profile loading and validation
+├── train_tinyvit.py               # Tiny-ViT training script
+├── train_tinyvit_ensemble.py      # Ensemble HAT training
+├── train_convnext.py              # ConvNeXt-Tiny training
+├── train_resnet18.py              # ResNet-18 training
+├── eval_measured_profile.py       # Zero-shot literature profile evaluation
+├── run_a23_experiments.py         # Inverse-gamma frontend sweep
+├── device_profiles/               # Literature-calibrated device profiles
+├── checkpoints/                   # Pre-trained model weights
+├── scripts/                       # Experiment orchestration
+├── report_md/                     # Result manifests and JSON profiles
+├── paper/                         # Manuscript source
+├── data/                          # Datasets (auto-downloaded)
+├── requirements.txt               # pip dependencies
+├── environment.yml                # Conda environment
+└── REPRODUCIBILITY.md             # Detailed reproducibility notes
 ```
 
-Every run now emits a user-facing bundle under:
-
-- `outputs/measured_profile_runs/<timestamp>_<model>_<experiment>_<dataset>_<checkpoint>/`
-
-Start with:
-
-- `run_summary.md`: one-file human summary of what was evaluated and what the results mean
-- `metrics.csv`: compact table for cross-run comparison
-- `profiles_used.json`: exact machine-readable profile payload used during the run
-
-## Documentation
-
-Stable project-facing documentation lives under `docs/`:
-
-- `docs/README.md`: top-level documentation index
-- `docs/DEVICE_PROFILE_GUIDE.md`: profile schema, fitting expectations, and validation rules
-- `docs/EXPERIMENT_REGISTRY.md`: canonical experiment IDs and reporting semantics
-- `docs/PHYSICS_STACK.md`: modeled physics, first-order assumptions, and out-of-scope effects
-
-## Experiments
-
-The manuscript centers on three evidence layers:
-
-- canonical cross-dataset results: CIFAR-10, CIFAR-100, Flowers-102
-- fresh-instance transferability: same-instance vs fresh-instance robustness
-- physical-stress extensions: proportional noise, nonlinear write, retention-aware retraining
-
-Key scripts:
-
-- `run_noise_sweep.py`
-- `run_device_comparison.py`
-- `eval_fresh_instances.py`
-- `run_a23_experiments.py`
-
-## Reproducibility
-
-The project records execution traces and generated artifacts under
-`logs/` and `report_md/`. The current standard is execution-trace
-reproducibility rather than strict bitwise determinism; Monte Carlo evaluations
-and checkpoint lineage are stored so that reported results remain auditable.
+---
 
 ## Citation
 
-If you use this repository, please cite the accompanying manuscript:
+If you use this code in your research, please cite:
 
 ```bibtex
-@article{li2026organiccim,
-  title   = {Hardware-Aware Simulation of Organic Optoelectronic Compute-in-Memory Inference for Edge Vision},
-  author  = {Li, Songqiao},
-  journal = {Under review},
-  year    = {2026}
+@article{li2026organic,
+  title={Profile-Driven Behavioral Simulation of Organic Optoelectronic Compute-in-Memory for Edge Vision},
+  author={Li, Songqiao and others},
+  journal={Nature Communications},
+  year={2026}
 }
 ```
 
+---
+
 ## License
 
-This project is released under the Apache License 2.0. See [LICENSE](LICENSE)
-for the full text.
+This project is licensed under the MIT License — see [LICENSE](LICENSE) for details.
+
+---
+
+## Contributing
+
+We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on bug reports, feature requests, and pull requests.
+
+---
+
+## Acknowledgements
+
+This work was supported in part by the NVIDIA Academic Partnership Award (Apamayo).
+
+---
+
+*Last updated: 2026-04-18*

@@ -1,0 +1,54 @@
+% Thesis Chapter 1 skeleton seeded from K-T6
+\chapter{Hardware-aware training and hardware-instance overfitting}
+\label{chap:hat-instance-overfitting}
+
+\section{Introduction}
+Organic optoelectronic compute-in-memory systems are often introduced through device-level figures of merit: conductance window, retention time, write asymmetry, and optical responsivity. Those metrics are necessary, but they are not sufficient to answer the system question that matters for deployment: what accuracy survives once a modern vision backbone is mapped to an analog array with structured mismatch and finite readout precision? This thesis begins by treating that question as a materials-to-system translation problem rather than a pure device problem.
+
+The starting point is the canonical hardware-aware training (HAT) regime used throughout the manuscript. Under nominal evaluation on the hardware instance seen during training, HAT appears effective: the hybrid Tiny-ViT (Vision Transformer, ViT) recovers most of the source-domain accuracy lost under the canonical analog noise model. However, that apparent success is misleading. When the trained model is evaluated on a fresh hardware instance---that is, a new fixed device-to-device mismatch realization drawn from the same distribution---the standard HAT model collapses to chance level. This exposes a central thesis theme: robustness to analog noise is not the same thing as robustness to hardware-instance shift.
+
+A natural hypothesis is that protecting the MLP blocks while resampling device noise would break the ceiling. Chapter~5 reports the falsification of this hypothesis: three independent training interventions all converge on the same $\sim$30\% fresh-instance accuracy under severe nonlinearity, suggesting a structural generalization barrier in the attention pathway rather than an optimization gap.
+
+The contributions of this thesis are threefold. First, a reusable simulation framework for hardware-aware training of vision transformers on analog compute-in-memory arrays with realistic device non-idealities. Second, a taxonomy of HAT regimes and the discovery of hardware-instance overfitting---the phenomenon that fixed-mask training produces models which memorize a specific device mismatch realization and collapse to chance level on fresh hardware instances. Third, a deployment envelope that systematically maps which combinations of noise models and training interventions transfer to new hardware instances and which do not, including rigorous negative results that falsify natural mitigation hypotheses and thereby establish structural generalization barriers rather than optimization gaps.
+
+This chapter therefore focuses on two linked questions. First, why does fixed-mask HAT fail so catastrophically on fresh arrays despite performing well on the training-time array? Second, what training intervention restores transfer without changing the deployment hardware assumptions? The answer developed here is the Ensemble HAT procedure: resampling the structured D2D mismatch field at epoch boundaries during training so that the model learns over a distribution of arrays rather than a single memorized instance.
+
+\section{The 10\,\% collapse story}
+The decisive empirical observation is simple. A standard HAT model trained with a single fixed D2D mask can reach high source-domain accuracy, yet its fresh-instance accuracy collapses to approximately 10\,\%, i.e. the single-class baseline for CIFAR-10. In contrast, the Ensemble HAT variant raises fresh-instance accuracy to $86.37\pm1.54\,\%$. This gap is too large to dismiss as ordinary stochastic variation; it reflects a structural failure of the training objective under deployment shift.
+
+Figure~\ref{fig:thesis-fresh-instance} reuses the paper's fresh-instance transfer visualization to show the discrepancy between standard HAT and the resampled alternative. The key point is not merely that one curve is lower than the other, but that the fixed-mask model behaves like an overfit estimator of one specific hardware realization. Once that realization changes, its calibration and learned feature routing cease to be valid.
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=0.78\linewidth]{../latex_gpt/figures/figS3_ensemble_hat}
+    \caption{Fresh-instance transfer comparison reused from the manuscript package. Standard HAT overfits a single structured mismatch field, whereas Ensemble HAT learns over a distribution of hardware instances.}
+    \label{fig:thesis-fresh-instance}
+\end{figure}
+
+The collapse is also informative from a methodological standpoint. It shows that analog-deployment experiments must distinguish between three regimes: source-domain accuracy on the training-time instance, repeated Monte Carlo accuracy on that same instance, and transfer accuracy to newly sampled arrays. Only the third quantity answers the practical deployment question. This distinction will recur throughout the thesis, especially in later chapters on severe write nonlinearity and spatially correlated mismatch.
+
+A second implication is that the fresh-instance protocol itself becomes a reusable evaluation primitive. The thesis therefore treats the `10 arrays $\times$ 5 Monte Carlo runs' protocol not as an appendix detail, but as a standard tool for deciding whether a mitigation is deployment-grade or merely diagnostic. Under this lens, Ensemble HAT qualifies as a deployment-facing intervention, whereas later severe-NL compensation strategies do not fully do so.
+
+\section{Mechanism of hardware-instance overfitting}
+\begin{itemize}
+\item Explain fixed structured D2D masks as a hidden domain label.
+\item Connect scale recovery and array-specific calibration to memorization of one hardware realization.
+\item Use manuscript Fig.~4 / supplementary transfer plots as evidence anchors.
+\end{itemize}
+
+\section{Ensemble HAT as a distributional training objective}
+\begin{itemize}
+\item Reuse the manuscript's expectation-over-masks formalism.
+\item Introduce epoch-level resampling as the best trade-off between transfer and optimization stability.
+\item Point forward to the cadence ablation figure as supporting evidence.
+\end{itemize}
+
+\section{Implications for the rest of the thesis}
+
+To make those claims falsifiable, the thesis now introduces the simulation framework every subsequent experiment inherits.  Later chapters bound the severe-NL source-domain rescue at $87.79\,\%$ (MLP-only) and $87.49\,\%$ (all-linear), while fresh-instance transfer remains near $32\,\%$.
+
+\begin{itemize}
+\item Set up the later severe-NL chapter: source-domain rescue can still fail fresh-instance transfer.
+\item Set up correlated-D2D robustness chapter: not all distribution shifts are equally damaging.
+\item Motivate the eventual joint-training thesis experiment as an attempt to couple surrogate-fidelity repair with deployment invariance.
+\end{itemize}

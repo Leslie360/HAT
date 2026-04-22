@@ -1,11 +1,18 @@
 #!/usr/bin/env python3
-"""Shared inference-only analysis helpers for post-training sweeps."""
+"""Inference harness for post-training Monte-Carlo evaluation and device-profile sweeps.
+
+This module provides the glue between trained checkpoints and analog non-ideality
+models: loading a ``ModelBundle``, applying a ``DeviceProfile``, running repeated
+evaluations (``run_mc_eval``), and calibrating ADC ranges.  It is the primary
+entry point for reproducing the Fig. 4 accuracy-versus-condition bars.
+"""
 
 from __future__ import annotations
 
 import csv
 import inspect
 import json
+import math
 import os
 from dataclasses import dataclass
 from statistics import mean, stdev
@@ -65,6 +72,7 @@ ANALOG_MODULE_TYPES = (AnalogLinear, AnalogConv2d)
 
 @dataclass
 class ModelBundle:
+    """Container for a loaded checkpoint, config, dataloader and frontend."""
     model_type: str
     experiment: str
     experiment_name: str
@@ -82,6 +90,7 @@ class ModelBundle:
 
 
 def ensure_parent_dir(path: Optional[str]):
+    """Create the parent directory of *path* if it does not exist."""
     if not path:
         return
     parent = os.path.dirname(path)
@@ -90,12 +99,14 @@ def ensure_parent_dir(path: Optional[str]):
 
 
 def iter_analog_modules(model: nn.Module):
+    """Yield (name, module) tuples for every analog layer in *model*."""
     for name, module in model.named_modules():
         if isinstance(module, ANALOG_MODULE_TYPES):
             yield name, module
 
 
 def snapshot_analog_state(model: nn.Module) -> Dict[str, dict]:
+    """Capture a reversible snapshot of all analog-layer configurations."""
     state = {}
     for name, module in iter_analog_modules(model):
         inl = getattr(module.config, "inl_table", None)
@@ -119,6 +130,7 @@ def snapshot_analog_state(model: nn.Module) -> Dict[str, dict]:
 
 
 def restore_analog_state(model: nn.Module, state: Dict[str, dict]):
+    """Restore analog-layer configurations from a snapshot dict."""
     for name, module in iter_analog_modules(model):
         if name not in state:
             continue
@@ -150,6 +162,7 @@ def restore_analog_state(model: nn.Module, state: Dict[str, dict]):
 def set_uniform_noise(model: nn.Module, sigma_c2c: float, sigma_d2d: float,
                       noise_enabled: bool, resample_d2d: bool = False,
                       noise_mode: Optional[str] = None):
+    """Apply uniform C2C/D2D noise settings to every analog layer in *model*."""
     for _, module in iter_analog_modules(model):
         module.config.noise_enabled = noise_enabled
         module.config.sigma_c2c = sigma_c2c
@@ -163,6 +176,7 @@ def set_uniform_noise(model: nn.Module, sigma_c2c: float, sigma_d2d: float,
 def set_uniform_retention(model: nn.Module, inference_time: float,
                           recalibrate_scale: bool = False,
                           scale_d2d: bool = False):
+    """Configure retention decay parameters for all analog layers."""
     for _, module in iter_analog_modules(model):
         module.config.retention_enabled = inference_time > 0
         module.config.inference_time = inference_time
@@ -172,6 +186,7 @@ def set_uniform_retention(model: nn.Module, inference_time: float,
 
 def apply_device_profile(model: nn.Module, profile: DeviceProfile,
                          resample_d2d: bool = True) -> int:
+    """Push a literature or measured device profile into every analog layer."""
     active = 0
     for _, module in iter_analog_modules(model):
         module.config.G_min = float(profile.G_min)
@@ -207,6 +222,7 @@ def apply_device_profile(model: nn.Module, profile: DeviceProfile,
 
 def collect_analog_noise_diagnostics(model: nn.Module,
                                      layer_names: Optional[Sequence[str]] = None) -> List[dict]:
+    """Return per-layer noise statistics for analog modules."""
     requested = set(layer_names) if layer_names else None
     rows: List[dict] = []
 
@@ -243,8 +259,16 @@ def collect_analog_noise_diagnostics(model: nn.Module,
             effective_weight = conductance_weight * scale
             effective_noise = total_noise * scale
             effective_weight_std = safe_std(effective_weight)
-            total_noise_std_conductance = safe_std(total_noise)
-            total_noise_std_weight = safe_std(effective_noise)
+            d2d_noise_std_conductance = safe_std(d2d_noise)
+            c2c_noise_std_conductance = safe_std(c2c_noise)
+            total_noise_std_conductance = math.sqrt(
+                d2d_noise_std_conductance ** 2 + c2c_noise_std_conductance ** 2
+            )
+            d2d_noise_std_weight = safe_std(d2d_noise * scale)
+            c2c_noise_std_weight = safe_std(c2c_noise * scale)
+            total_noise_std_weight = math.sqrt(
+                d2d_noise_std_weight ** 2 + c2c_noise_std_weight ** 2
+            )
 
             rows.append({
                 "layer": name,
@@ -261,11 +285,11 @@ def collect_analog_noise_diagnostics(model: nn.Module,
                 "weight_std": weight_std,
                 "conductance_weight_std": conductance_std,
                 "effective_weight_std": effective_weight_std,
-                "d2d_noise_std_conductance": safe_std(d2d_noise),
-                "c2c_noise_std_conductance": safe_std(c2c_noise),
+                "d2d_noise_std_conductance": d2d_noise_std_conductance,
+                "c2c_noise_std_conductance": c2c_noise_std_conductance,
                 "total_noise_std_conductance": total_noise_std_conductance,
-                "d2d_noise_std_weight": safe_std(d2d_noise * scale),
-                "c2c_noise_std_weight": safe_std(c2c_noise * scale),
+                "d2d_noise_std_weight": d2d_noise_std_weight,
+                "c2c_noise_std_weight": c2c_noise_std_weight,
                 "total_noise_std_weight": total_noise_std_weight,
                 "scale_recovery_factor": scale,
                 "noise_to_conductance_weight_ratio": (
@@ -283,6 +307,7 @@ def collect_analog_noise_diagnostics(model: nn.Module,
 
 
 def summarize_eval_runs(losses: List[float], accuracies: List[float]) -> dict:
+    """Compute mean, min, max and standard deviation over repeated eval runs."""
     if not losses or not accuracies:
         raise ValueError("losses and accuracies must be non-empty")
     summary = {
@@ -402,6 +427,7 @@ def load_model_bundle(model_type: str, experiment: str, device: str,
                       dataset: str = "cifar10", data_root: str = "./data",
                       num_workers: int = 4, batch_size: Optional[int] = None,
                       amp_enabled: bool = False) -> ModelBundle:
+    """Load a trained checkpoint and wrap it with dataloaders and config for evaluation."""
     if model_type == "tinyvit":
         return _resolve_tinyvit_bundle(
             experiment=experiment,
@@ -430,6 +456,7 @@ def load_model_bundle(model_type: str, experiment: str, device: str,
 
 
 def evaluate_once(bundle: ModelBundle) -> Tuple[float, float]:
+    """Run a single eval pass on the model contained in *bundle*."""
     if bundle.model_type == "tinyvit":
         params = inspect.signature(evaluate_tinyvit).parameters
         if "frontend" in params:
@@ -462,6 +489,7 @@ def evaluate_once(bundle: ModelBundle) -> Tuple[float, float]:
 
 def run_mc_eval(bundle: ModelBundle, eval_runs: int, logger=None, label: Optional[str] = None,
                 collect_sparsity: bool = False):
+    """Monte-Carlo eval: repeat *eval_runs* times and return summary statistics."""
     losses: List[float] = []
     accuracies: List[float] = []
     if collect_sparsity:
@@ -500,6 +528,7 @@ def run_mc_eval(bundle: ModelBundle, eval_runs: int, logger=None, label: Optiona
 
 
 def calibrate_adc_ranges(bundle: ModelBundle, max_batches: int = 1) -> Dict[str, dict]:
+    """Record per-layer analog output min/max over a few batches for ADC range setup."""
     ranges: Dict[str, dict] = {}
     hooks = []
     snapshot = snapshot_analog_state(bundle.model)
@@ -548,6 +577,7 @@ class ADCQuantHookManager:
 
     def __init__(self, model: nn.Module, output_ranges: Dict[str, dict],
                  adc_bits: Optional[int], dnl_sigma: float = 0.5):
+        """Install ADC quantizer hooks on analog layer outputs."""
         self.model = model
         self.output_ranges = output_ranges
         self.adc_bits = adc_bits
@@ -591,6 +621,7 @@ class ADCQuantHookManager:
 
 
 def load_existing_results(json_path: str) -> List[dict]:
+    """Load a previous result JSON or return an empty list."""
     if not json_path or not os.path.exists(json_path):
         return []
     with open(json_path, "r", encoding="utf-8") as fh:
@@ -604,6 +635,7 @@ def load_existing_results(json_path: str) -> List[dict]:
 
 def merge_rows(existing_rows: Iterable[dict], new_rows: Iterable[dict],
                key_fields: Tuple[str, ...]) -> List[dict]:
+    """Upsert *new_rows* into *existing_rows* keyed by *key_fields*."""
     merged: Dict[Tuple[object, ...], dict] = {}
     order: List[Tuple[object, ...]] = []
     for row in list(existing_rows) + list(new_rows):
@@ -616,6 +648,7 @@ def merge_rows(existing_rows: Iterable[dict], new_rows: Iterable[dict],
 
 def export_rows(rows: List[dict], json_path: str, csv_path: str,
                 metadata: Optional[dict] = None):
+    """Write result rows to JSON and CSV."""
     ensure_parent_dir(json_path)
     ensure_parent_dir(csv_path)
 
@@ -636,6 +669,7 @@ def export_rows(rows: List[dict], json_path: str, csv_path: str,
 
 def build_sparsity_rows(bundle: ModelBundle, sparsity_report: dict,
                         context: Optional[dict] = None) -> List[dict]:
+    """Flatten a sparsity report into per-layer rows for export."""
     context = context or {}
     rows = []
     for layer_row in sparsity_report.get("layers", []):
@@ -665,4 +699,5 @@ def build_sparsity_rows(bundle: ModelBundle, sparsity_report: dict,
 
 
 def adc_bits_label(adc_bits: Optional[int]) -> str:
+    """Return a human-readable label for the given ADC bit width."""
     return "ideal" if adc_bits is None else f"{adc_bits}-bit"

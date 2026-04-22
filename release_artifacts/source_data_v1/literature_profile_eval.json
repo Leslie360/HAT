@@ -1,0 +1,18 @@
+{
+  "V4_Standard": {
+    "eval_runs": 10,
+    "test_loss_mean": 6.8825936799621585,
+    "test_acc_mean": 10.0,
+    "test_acc_min": 10.0,
+    "test_acc_max": 10.0,
+    "test_acc_std": 0.0
+  },
+  "V4_Ensemble": {
+    "eval_runs": 10,
+    "test_loss_mean": 0.7296180880524963,
+    "test_acc_mean": 88.53,
+    "test_acc_min": 88.44,
+    "test_acc_max": 88.69,
+    "test_acc_std": 0.08273115763993842
+  }
+}

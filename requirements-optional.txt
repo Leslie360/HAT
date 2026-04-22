@@ -1,0 +1,4 @@
+# Optional integrations used by a subset of scripts.
+# Install these only if you plan to run the corresponding comparisons.
+
+aihwkit>=0.9

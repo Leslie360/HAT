@@ -1,0 +1,29 @@
+{
+  "experiment": "P14-A",
+  "task": "Flowers-102 V2 ablation (zero noise control)",
+  "config": {
+    "model": "Tiny-ViT-5M",
+    "dataset": "Flowers-102",
+    "experiment_id": "V2",
+    "hybrid": true,
+    "noise_enabled": false,
+    "hat_training": false,
+    "pretrained": true,
+    "epochs": 100,
+    "seed": 42,
+    "checkpoint_epoch": 37
+  },
+  "results": {
+    "best_accuracy": 91.30,
+    "eval_runs": 10,
+    "test_acc_mean": 91.30,
+    "test_acc_std": 0.00
+  },
+  "comparison": {
+    "V1_digital_fp32": "98.06% (reported)",
+    "V2_hybrid_zero_noise": "91.30% ± 0.00% (this run)",
+    "V3_hybrid_standard_noise": "~low accuracy (reported)",
+    "V4_hybrid_standard_hat": "22.48% (reported)"
+  },
+  "interpretation": "Zero-noise hybrid deployment achieves 91.30%, indicating the Flowers-102 failure is due to noise-data interaction, not hybrid architecture or data starvation alone."
+}

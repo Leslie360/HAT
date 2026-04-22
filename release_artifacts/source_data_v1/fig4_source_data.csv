@@ -1,0 +1,13 @@
+architecture,dataset,condition,accuracy,error_bar,notes
+ConvNeXt-Tiny,CIFAR-10,FP32,90.74,n/a,deterministic baseline
+ConvNeXt-Tiny,CIFAR-10,Standard-noise,69.32,0.15,10-run MC
+ConvNeXt-Tiny,CIFAR-10,HAT,89.18,0.12,10-run MC
+Tiny-ViT-5M,CIFAR-10,FP32,98.06,n/a,3-seed mean
+Tiny-ViT-5M,CIFAR-10,Standard-noise,89.05,0.22,10-run MC
+Tiny-ViT-5M,CIFAR-10,HAT,90.05,0.18,10-run MC
+ConvNeXt-Tiny,CIFAR-100,FP32,64.12,n/a,deterministic baseline
+ConvNeXt-Tiny,CIFAR-100,Standard-noise,23.86,0.31,10-run MC
+ConvNeXt-Tiny,CIFAR-100,HAT,60.54,0.28,10-run MC
+Tiny-ViT-5M,CIFAR-100,FP32,86.94,n/a,3-seed mean
+Tiny-ViT-5M,CIFAR-100,Standard-noise,44.06,0.35,10-run MC
+Tiny-ViT-5M,CIFAR-100,HAT,65.48,0.30,10-run MC

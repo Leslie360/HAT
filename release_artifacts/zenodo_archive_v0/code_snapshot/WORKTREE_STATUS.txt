@@ -1,0 +1,288 @@
+ M PROJECT_INDEX.md
+ M README.md
+ M RELEASE_CHECKLIST.md
+ M docs/README.md
+ M eval_measured_profile.py
+ M experiment_nonideality_sweep.py
+ M inference_analysis_utils.py
+ M logs/_gpt/tinyvit_hybrid_dryrun_gpt.log
+ D paper/01_introduction.md
+ D paper/02_related_work.md
+ D paper/03_methodology.md
+ D paper/04_experimental_setup.md
+ D paper/05_results.md
+ D paper/06_discussion.md
+ D paper/07_conclusion.md
+ D paper/08_appendix.md
+ D paper/FIG1_FIG2_BRIEF_gpt.md
+ D paper/FIGURE_CAPTION_DRAFTS_gpt.md
+ D paper/PAPER_OUTLINE.md
+ M paper/figures/fig4_accuracy_comparison.png
+ M paper/latex_gpt/CITATION_MAP_gpt.md
+ M paper/latex_gpt/README_gpt.md
+ M paper/latex_gpt/SUBMISSION_PACKET_gpt.md
+ M paper/latex_gpt/cover_letter.tex
+ M paper/latex_gpt/figures/fig4_accuracy_comparison.png
+ M paper/latex_gpt/figures/figS1_asymmetry_concept.png
+ M paper/latex_gpt/figures/figS2_nonideality.png
+ M paper/latex_gpt/main.pdf
+ M paper/latex_gpt/main.tex
+ M paper/latex_gpt/refs_gpt.bib
+ M paper/latex_gpt/sections/00_abstract.tex
+ M paper/latex_gpt/sections/01_introduction.tex
+ M paper/latex_gpt/sections/02_related_work.tex
+ M paper/latex_gpt/sections/03_methodology.tex
+ M paper/latex_gpt/sections/05_results.tex
+ M paper/latex_gpt/sections/06_discussion.tex
+ M paper/latex_gpt/sections/07_conclusion.tex
+ M paper/latex_gpt/sections/08_appendix.tex
+ M paper/latex_gpt/supplementary.tex
+ M paper/latex_gpt/supplementary_main.tex
+ M paper/plot_paper_figures.py
+ D "paper/\345\217\202\350\200\203\346\226\207\347\214\256\345\272\223.md"
+ D report_md/Organic_Optoelectronic_Task_Simulation.pdf
+ D report_md/Organic_Optoelectronic_Task_Simulation_(2).pptx
+ M report_md/_gpt/AGENT_SYNC_gpt.md
+ M report_md/_gpt/CLAUDE_TASK_gpt.md
+ M report_md/_gpt/REVIEWER_RESPONSE_DRAFT_gpt.md
+ D report_md/_gpt/iso_accuracy_contour_data.pre_codex_20260416_005459.json
+ D report_md/_gpt/iso_accuracy_contour_errors.json
+ D report_md/_gpt/json_gpt/_probe_convnext_cifar100_c1_resume.json
+ D report_md/_gpt/json_gpt/_tmp_retention_probe_gpt.json
+ D report_md/_gpt/json_gpt/convnext_results_gpt.json
+ D report_md/_gpt/json_gpt/smoke_v4_ensemble.json
+ D report_md/json/convnext_results.json
+ D report_md/json/physical_noise_sweep.json
+ M run_cifar100_fast.py
+ M run_convnext_adc_sweep.py
+ M run_crosssim_comparison_v2.py
+ M run_crosssim_convnext.py
+ M run_crosssim_final.py
+ M run_crosssim_quicktest.py
+ M run_crosssim_resnet.py
+ M run_crosssim_tinyvit.py
+ M run_energy_sensitivity.py
+ M run_ensemble_hat_ablation_FIXED.py
+ M run_ensemble_hat_fixed.py
+ M run_error_analysis.py
+ M run_flowers102_training.py
+ M run_statistical_validation.py
+ M run_svhn_training.py
+ M run_visualization_suite.py
+ D scripts/__pycache__/monitor_kimi_ablation_outputs.cpython-312.pyc
+ D scripts/_gpt/__pycache__/profile_auto_fitter_gpt.cpython-311.pyc
+ M scripts/_gpt/check_p13_status_gpt.sh
+ M scripts/_gpt/finalize_p13_aihwkit_full_result_gpt.py
+ M scripts/_gpt/multi_seed_train_gpt.py
+ M scripts/_gpt/profile_auto_fitter_gpt.py
+ M scripts/_gpt/run_c4_fix256_queue_20260409_gpt.sh
+ M scripts/_gpt/run_c4_fix_queue_20260409_gpt.sh
+ M scripts/_gpt/run_c4_fix_queue_gpt.sh
+ M scripts/_gpt/run_c4_fixv3_proportional_queue_20260409_gpt.sh
+ M scripts/_gpt/run_flowers102_noise_ablation_gpt.sh
+ M scripts/_gpt/run_fw1_p2_overnight_queue_gpt.sh
+ M scripts/_gpt/run_multi_seed_suite_gpt.sh
+ M scripts/_gpt/run_post_p13_ablation_queue_gpt.sh
+ M scripts/_gpt/run_tinyvit_cifar10_data_ablation_gpt.sh
+ M scripts/_gpt/watch_p13_r2_and_post_queue_gpt.sh
+ M test_additional_datasets.py
+ M train_convnext.py
+ M train_tinyvit.py
+?? AGENT_SYNC_gpt.md
+?? CHECKPOINT_INVENTORY_20260418.md
+?? REPRODUCIBILITY.md
+?? _archive/paper-drafts/01_introduction.md
+?? _archive/paper-drafts/02_related_work.md
+?? _archive/paper-drafts/03_methodology.md
+?? _archive/paper-drafts/04_experimental_setup.md
+?? _archive/paper-drafts/05_results.md
+?? _archive/paper-drafts/06_discussion.md
+?? _archive/paper-drafts/07_conclusion.md
+?? _archive/paper-drafts/08_appendix.md
+?? _archive/paper-drafts/FIG1_FIG2_BRIEF_gpt.md
+?? _archive/paper-drafts/FIGURE_CAPTION_DRAFTS_gpt.md
+?? _archive/paper-drafts/PAPER_OUTLINE.md
+?? "_archive/paper-drafts/\345\217\202\350\200\203\346\226\207\347\214\256\345\272\223.md"
+?? _archive/stale_json_20260419/
+?? diag_fresh_instance.py
+?? download_data.sh
+?? environment.yml
+?? paper/latex_gpt/figures/figS1_asymmetry_concept.png.bak
+?? paper/latex_gpt/figures/figS2_nonideality.png.bak
+?? paper/latex_gpt/sections/00_abstract.tex.bak_20260418
+?? paper/latex_gpt/sections/01_introduction.tex.bak_20260418
+?? paper/latex_gpt/sections/03_methodology.tex.bak_20260418
+?? paper/latex_gpt/sections/05_results.tex.bak_20260418
+?? paper/latex_gpt/sections/06_discussion.tex.bak_20260418
+?? release_artifacts/
+?? repo_bootstrap.py
+?? report_md/_gpt/AUTO_FINALIZE_DRYRUN_20260418.md
+?? report_md/_gpt/AUTO_FINALIZE_DRYRUN_DIFF_20260418.patch
+?? report_md/_gpt/BIBLIOGRAPHY_KEY_MAPPING_20260417.md
+?? report_md/_gpt/BROADCAST_ALIGNMENT_20260418_1715.md
+?? report_md/_gpt/BROADCAST_ASSIGNMENT_20260418.md
+?? report_md/_gpt/BROADCAST_ASSIGNMENT_20260418B.md
+?? report_md/_gpt/BROADCAST_ASSIGNMENT_20260418C.md
+?? report_md/_gpt/BROADCAST_ASSIGNMENT_20260418D.md
+?? report_md/_gpt/BROADCAST_ASSIGNMENT_20260418E.md
+?? report_md/_gpt/BROADCAST_ASSIGNMENT_20260418F.md
+?? report_md/_gpt/BROADCAST_ASSIGNMENT_20260418G.md
+?? report_md/_gpt/BROADCAST_ASSIGNMENT_20260418H.md
+?? report_md/_gpt/BROADCAST_ASSIGNMENT_20260418I.md
+?? report_md/_gpt/BROADCAST_ASSIGNMENT_20260418J.md
+?? report_md/_gpt/BROADCAST_ASSIGNMENT_20260418K.md
+?? report_md/_gpt/BROADCAST_ASSIGNMENT_20260418L.md
+?? report_md/_gpt/BROADCAST_ENERGY_PRECISION_20260418.md
+?? report_md/_gpt/BROADCAST_INVERSE_GAMMA_DEEPDIVE_20260418.md
+?? report_md/_gpt/CHECKPOINT_INVENTORY_20260418.md
+?? report_md/_gpt/CITATION_INTEGRITY_20260419.md
+?? report_md/_gpt/CLAUDE_A_DECISION_FINAL_20260418.md
+?? report_md/_gpt/CLAUDE_A_DECISION_PRELIM_20260418.md
+?? report_md/_gpt/CLAUDE_PPT_REDESIGN_PROMPT_20260417.md
+?? report_md/_gpt/CLAUDE_REPLY_TO_KIMI_20260419.md
+?? report_md/_gpt/CLAUDE_RESPONSE_G_M_OPEN_QUESTION_20260419.md
+?? report_md/_gpt/CLAUDE_S_T_U_AUDIT_20260419.md
+?? report_md/_gpt/CODEX_DISPATCH_20260417_kimi_gpt.md
+?? report_md/_gpt/CODEX_DISPATCH_20260418_gpt.md
+?? report_md/_gpt/CODEX_S1_CORRELATED_D2D_20260420.md
+?? report_md/_gpt/COORDINATION_STATUS_20260419.md
+?? report_md/_gpt/COVER_LETTER_V2_RATIONALE.md
+?? report_md/_gpt/CX_W_DUAL_ATTN_COLLAPSE_PATCH_20260419.md
+?? report_md/_gpt/EXECUTIVE_DASHBOARD_20260419.md
+?? report_md/_gpt/EXPERIMENT_DASHBOARD_20260418.md
+?? report_md/_gpt/EXTERNAL_REVIEWER_PROMPT.md
+?? report_md/_gpt/EXTERNAL_REVIEW_COMPILATION_20260419.md
+?? report_md/_gpt/FIGURE_AUDIT_20260419.md
+?? report_md/_gpt/FINAL_CONTENT_REVIEW_20260419.md
+?? report_md/_gpt/FINAL_PROOFREAD_20260419.md
+?? report_md/_gpt/FINAL_PROOFREAD_REPORT_20260419.md
+?? report_md/_gpt/GEMINI_ATTENTION_COLLAPSE_MECHANISM_20260419.md
+?? report_md/_gpt/GEMINI_CONTEXT_REREAD_20260418.md
+?? report_md/_gpt/GEMINI_CONTEXT_REREAD_20260418_v2.md
+?? report_md/_gpt/GEMINI_CORRELATED_D2D_MECHANISM.md
+?? report_md/_gpt/GEMINI_DATA_RELEASE_REVIEW_20260419.md
+?? report_md/_gpt/GEMINI_DESK_REJECT_DEFENSE_20260419.md
+?? report_md/_gpt/GEMINI_DISPATCH_20260418_expand_gpt.md
+?? report_md/_gpt/GEMINI_DISPATCH_20260418_gpt.md
+?? report_md/_gpt/GEMINI_E1B_EXECUTION_REFINEMENT_20260418.md
+?? report_md/_gpt/GEMINI_E1B_LANDING_PLAN_20260418.md
+?? report_md/_gpt/GEMINI_E1_E2_DESIGN_20260418.md
+?? report_md/_gpt/GEMINI_E5_LAYER_GAMMA_DESIGN_20260418.md
+?? report_md/_gpt/GEMINI_E6_THESIS_CHAPTER_OUTLINE_20260418.md
+?? report_md/_gpt/GEMINI_FIG4_REDESIGN_BRIEF_20260418.md
+?? report_md/_gpt/GEMINI_FIG_CORR_D2D_FINAL_SPEC_20260420.md
+?? report_md/_gpt/GEMINI_FIG_COR_D2D_SPEC.md
+?? report_md/_gpt/GEMINI_IMAGENET_PILOT_SCOPE_20260420.md
+?? report_md/_gpt/GEMINI_JOINT_TRAINING_SPEC_20260420.md
+?? report_md/_gpt/GEMINI_MLP_FRESH_INSTANCE_GAP_20260419.md
+?? report_md/_gpt/GEMINI_NL_MITIGATION_THESIS_CHAPTER_20260418.md
+?? report_md/_gpt/GEMINI_P1_P2_IRDROP_SNEAK_THESIS_OUTLINE_20260418.md
+?? report_md/_gpt/GEMINI_P1_P2_P5_INTEGRATION_20260418.md
+?? report_md/_gpt/GEMINI_P5_THERMAL_THESIS_OUTLINE_20260418.md
+?? report_md/_gpt/GEMINI_PRESS_BLURB_20260420.md
+?? report_md/_gpt/GEMINI_REVIEWER_PRE_REBUTTAL_20260418.md
+?? report_md/_gpt/GEMINI_SINGLE_CLASS_COLLAPSE_MECHANISM.md
+?? report_md/_gpt/GEMINI_THESIS_INTEGRATION_BRIEF.md
+?? report_md/_gpt/GEMINI_THESIS_OUTLINE_DRAFT_20260418.md
+?? report_md/_gpt/JSON_CONSISTENCY_20260419.md
+?? report_md/_gpt/JSON_INVESTIGATION_20260419.md
+?? report_md/_gpt/KIMI_88PCT_LABEL_20260419.md
+?? report_md/_gpt/KIMI_B1_VERIFICATION_20260419.md
+?? report_md/_gpt/KIMI_BIB_LAST_PASS_20260419.md
+?? report_md/_gpt/KIMI_BIB_REPLACEMENTS_20260417.md
+?? report_md/_gpt/KIMI_BIB_TAIL_FIXES_20260418.md
+?? report_md/_gpt/KIMI_CITATION_AUDIT_20260419.md
+?? report_md/_gpt/KIMI_COMPARISON_REALITY_CHECK_20260417.md
+?? report_md/_gpt/KIMI_CONSISTENCY_SWEEP_20260419.md
+?? report_md/_gpt/KIMI_CONSISTENCY_SWEEP_V2_20260419.md
+?? report_md/_gpt/KIMI_CROSSSIM_STATS_CORRECTION_20260419.md
+?? report_md/_gpt/KIMI_CXCA_HARVEST_20260420.md
+?? report_md/_gpt/KIMI_DISCUSSION_VULNERABILITY_DISPATCH_20260418.md
+?? report_md/_gpt/KIMI_DISPATCH_20260417_bib_finish_gpt.md
+?? report_md/_gpt/KIMI_DISPATCH_20260417_followup_gpt.md
+?? report_md/_gpt/KIMI_DISPATCH_20260417_nl_gpt.md
+?? report_md/_gpt/KIMI_DISPATCH_20260418_gpt.md
+?? report_md/_gpt/KIMI_DISPATCH_20260418_nl_fresh_transfer_gpt.md
+?? report_md/_gpt/KIMI_DISPATCH_20260418_related_work_finish_gpt.md
+?? report_md/_gpt/KIMI_DROPIN_PROSE_20260417.md
+?? report_md/_gpt/KIMI_EDITOR_ABSTRACT_VARIANT_20260419.md
+?? report_md/_gpt/KIMI_ENSEMBLE_HAT_POSITIONING_20260417.md
+?? report_md/_gpt/KIMI_FIGURE_CAPTION_AUDIT_20260417.md
+?? report_md/_gpt/KIMI_FRONTEND_AUDIT_20260418.md
+?? report_md/_gpt/KIMI_HYPERPARAMS_DRAFT_20260419.md
+?? report_md/_gpt/KIMI_PERPLEXITY_PROMPT_20260417.md
+?? report_md/_gpt/KIMI_REBUTTAL_COVERAGE_AUDIT_20260419.md
+?? report_md/_gpt/KIMI_REBUTTAL_PROSE_20260419.md
+?? report_md/_gpt/KIMI_REFERENCE_RECOVERY_20260417.md
+?? report_md/_gpt/KIMI_REFERENCE_STYLE_AUDIT_20260417.md
+?? report_md/_gpt/KIMI_RELATED_WORK_DROPINS_20260418.md
+?? report_md/_gpt/KIMI_RELATED_WORK_MAP_20260418.md
+?? report_md/_gpt/KIMI_REVIEWER_OBJECTION_PREP_20260418.md
+?? report_md/_gpt/KIMI_ROUND_J_RESIDUAL_AUDIT.md
+?? report_md/_gpt/KIMI_ROUND_J_RESIDUAL_AUDIT_20260419.md
+?? report_md/_gpt/KIMI_THESIS_SEVERE_NL_CHAPTER_20260419.md
+?? report_md/_gpt/KIMI_TRIAGE_EXTERNAL_REVIEW_20260419.md
+?? report_md/_gpt/NL_COMPLETION_AUDIT_20260417.md
+?? report_md/_gpt/NL_FRESH_INSTANCE_CONTROLS_ALL_ONLY_20260418.md
+?? report_md/_gpt/NL_LANE_RESULTS_20260418.md
+?? report_md/_gpt/NL_MITIGATION_SUMMARY_20260418.md
+?? report_md/_gpt/NL_MITIGATION_TRACKER_20260418.md
+?? report_md/_gpt/NL_SWEEP_CONSOLIDATED_20260417.md
+?? report_md/_gpt/NL_TRAINING_DYNAMICS_20260419.md
+?? report_md/_gpt/OPEN_SOURCE_READINESS_20260417.md
+?? report_md/_gpt/PAPER_REVIEW_CLAUDE_20260418.md
+?? report_md/_gpt/PERPLEXITY_BIB_FOLLOWUP_20260417.md
+?? report_md/_gpt/PERPLEXITY_REFERENCE_PROMPT_20260417.md
+?? report_md/_gpt/PRE_SUBMISSION_CHECKLIST.md
+?? report_md/_gpt/PRE_SUBMISSION_GATE_20260419.md
+?? report_md/_gpt/PROVENANCE_AUDIT_20260418.md
+?? report_md/_gpt/R1_R4_LANDING_AUDIT_20260418.md
+?? report_md/_gpt/REBUTTAL_READY_TABLE_20260419.md
+?? report_md/_gpt/REPRODUCIBILITY_PACKAGE_PLAN_20260418.md
+?? report_md/_gpt/RESPONSE_LETTER_FINAL_20260419.md
+?? report_md/_gpt/SOURCE_DATA_MANIFEST_20260418.md
+?? report_md/_gpt/SUBMISSION_CHECKLIST_20260419.md
+?? report_md/_gpt/SUBMISSION_READINESS_CHECKLIST_20260419.md
+?? report_md/_gpt/SUPP_TABLE_NL_ABLATION_SCAFFOLD.md
+?? report_md/_gpt/T1_ISP_DISTINCTION_DRAFT_gpt.md
+?? report_md/_gpt/T2_OPTIMAL_GAMMA_COMP_DRAFT_gpt.md
+?? report_md/_gpt/T3_ATTENTION_SENSITIVITY_DRAFT_gpt.md
+?? report_md/_gpt/THESIS_VS_PAPER_SCOPE_20260418.md
+?? report_md/_gpt/_SMOKE_CORRELATED_D2D.md
+?? report_md/_gpt/data_releases/
+?? report_md/_gpt/fresh_instance_cadence_control.md
+?? report_md/_gpt/fresh_instance_cadence_control_smoke.md
+?? report_md/_gpt/fresh_instance_eval_v4_standard_noamp.md
+?? report_md/_gpt/nl_mitigation_summary_20260418.png
+?? report_md/_gpt/nl_sweep_consolidated_20260417.png
+?? report_md/_gpt/tinyvit_hybrid_dryrun_report_gpt.md
+?? report_md/_gpt/v4_nl2_all_linear_comp_train_results_gpt.md
+?? report_md/_gpt/v4_nl2_mlp_linear_comp_train_results_gpt.md
+?? report_md/_gpt/v4_nl2_qkv_linear_comp_train_results_gpt.md
+?? report_md/bibliography_structured.csv
+?? report_md/json/learnable_gamma_20260418_110011_g2.0_s42.json
+?? "report_md/\346\274\224\347\244\272\346\226\207\347\250\2771.pptx"
+?? requirements-optional.txt
+?? requirements.txt
+?? run_fresh_instance_cadence_control.py
+?? scripts/_gpt/auto_finalize_nl_ablation.py
+?? scripts/_gpt/check_locked_numbers.py
+?? scripts/_gpt/eval_nl_fresh_instance_controls.py
+?? scripts/_gpt/eval_spatially_correlated_d2d.py
+?? scripts/_gpt/eval_standard_fresh_instance_noamp.py
+?? scripts/_gpt/monitor_and_launch_e3.sh
+?? scripts/_gpt/monitor_attn_proj_auto_finalize.sh
+?? scripts/_gpt/run_all_linear_fresh_after_attn_proj.sh
+?? scripts/_gpt/run_host_wsl_gpu.sh
+?? scripts/_gpt/run_learnable_gamma_compensation_gpt.py
+?? scripts/_gpt/run_nl_followup_queue.sh
+?? scripts/_gpt/run_nl_followup_queue_hostwsl.sh
+?? scripts/_gpt/run_nl_followup_queue_local.sh
+?? scripts/_gpt/run_task_v4_nl2_all_linear_comp.sh
+?? scripts/_gpt/run_task_v4_nl2_mlp_linear_comp.sh
+?? scripts/_gpt/run_task_v4_nl2_qkv_linear_comp.sh
+?? scripts/_gpt/run_tinyvit_groupwise_nl_comp.py
+?? scripts/_gpt/summarize_nl_mitigation.py
+?? scripts/public_release_export.sh
+?? scripts/run_public_smoke_test.sh
+?? "\346\225\260\346\215\256_\345\215\232\345\243\253/"

@@ -23,10 +23,12 @@ import numpy as np
 import torch
 import torch.nn as nn
 
+from repo_bootstrap import configure_crosssim_paths, ensure_repo_root
+
 sys.stdout.reconfigure(line_buffering=True)
 
-sys.path.insert(0, "/home/qiaosir/projects/cross-sim")
-sys.path.insert(0, "/home/qiaosir/projects/cross-sim/applications/dnn")
+REPO_ROOT = ensure_repo_root()
+configure_crosssim_paths()
 
 from calibration import calibrate_adc_limits  # noqa: E402
 from simulator.algorithms.dnn.torch.convert import analog_modules, convertible_modules, from_torch  # noqa: E402

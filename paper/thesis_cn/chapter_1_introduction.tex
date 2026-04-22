@@ -1,0 +1,176 @@
+% 第1章 引言
+\chapter{引言：硬件感知训练与硬件实例过拟合}
+\label{chap:hat-instance-overfitting}
+
+\section{研究背景}
+
+\subsection{有机光电子存内计算}
+
+存内计算（Compute-in-Memory, CIM）架构通过在存储阵列内部直接执行稠密矩阵--向量乘法，消除了制约传统数字系统的数据搬运瓶颈~\citep{horowitz2014computing,peng2020dnnneurosim,lanza2025memristor}。
+在静态随机存取存储器（SRAM）与新兴阻变存储器之外，有机光电子器件（organic optoelectronic devices）凭借其多级电导可调性、低压操作特性以及本征光敏性，为直接光学信号处理提供了新的物理载体~\citep{xu2025emerging,guo2024organic,photonics2025organicreview}。
+近期实验进展涵盖了模拟电导态~\citep{guo2024organic,jung2024organicfilaments}、长保留尾迹~\citep{zeng2023organicmemristor}，以及集成式光电子突触阵列~\citep{gebregiorgis2023organiccim,zhang2025opect,liu2024wearable}。
+
+然而，将这些器件级进展转化为系统级视觉性能，仍面临关键的方法论鸿沟。
+有机光电子文献仍以器件中心表征为主导~\citep{harikesh2024oeneurons}：网络级研究多局限于小型基准或简单感知机，而变异性、模数转换器（Analog-to-Digital Converter, ADC）分辨率、保留诱导漂移，以及跨制造实例的可迁移性等问题，在系统分析中或完全缺失，或仅被定性讨论~\citep{zeng2023organicmemristor,jung2024organicfilaments}。
+最具相关性的前期工作是 Lin~\emph{et al.}~的蒙特卡罗研究，其为简单的有机阻变感知机采样了器件参数~\citep{lin2016physical}，但尚未形成将现代视觉主干网络映射至有机阵列的完整框架。
+
+\subsection{硬件感知训练}
+
+硬件感知训练（Hardware-Aware Training, HAT, 硬件感知训练）通过在优化前向路径中注入器件扰动，来缓解模拟非理想性的影响~\citep{joshi2020accurate}。
+尽管其在精神上与量化感知训练（Quantization-Aware Training, QAT, 量化感知训练）~\citep{choi2019pact}以及 sim-to-real 迁移中的域随机化（domain randomization, 域随机化）~\citep{tobin2017domain}相关，CIM 场景下的 HAT 面临额外困难：
+器件间失配（device-to-device mismatch, D2D 失配）具有空间结构性，且在单个硬件实例上固定不变，不同于独立的热噪声或采样噪声。
+标准 HAT 通常在整个训练过程中保持一张随机 D2D 掩膜固定不变。
+如后文所示，这一选择会使模型拟合特定硬件实例而非部署分布，在迁移至新实例时导致灾难性精度崩溃。
+
+\subsection{视觉Transformer的混合部署}
+
+在 CIM 语境下，稠密线性算子天然适合映射至交叉阵列（crossbar），而深度可分离卷积及高度不规则的算子往往利用率低下~\citep{wu2023bwq,wang2024epim,ge2024allspark}。
+近期面向视觉Transformer（Vision Transformer, ViT, 视觉Transformer）的异构 CIM 加速器证实了这一定势：
+线性投影（query-key-value, Q/K/V, 输出层、前馈层）被映射至模拟阵列，而注意力分数、softmax 归一化及其他动态交互则因精度要求和 irregular 访问模式而保留在数字域~\citep{kim2025hemlet,lin2024hardsea}。
+本研究采用的混合逻辑（hybrid mapping, 混合映射）与此一致：
+Q/K/V 投影、输出投影、前馈层及 patch 嵌入卷积作为模拟候选，深度可分离卷积、归一化、动态注意力乘积、softmax、LayerNorm、激活函数及分类头则保留数字。
+
+\section{问题陈述：从器件到系统的翻译鸿沟}
+
+有机光电子存内计算系统通常通过器件级品质因数（figures of merit）加以介绍：电导窗口、保留时间、写入非对称性以及光响应度。
+这些指标是必要的，但不足以回答对部署真正重要的系统问题：
+当现代视觉主干网络被映射至具有结构性失配和有限读出精度的模拟阵列时，究竟有多少精度能够存活？
+本研究将这一问题视为材料到系统的翻译问题，而非纯粹的器件问题。
+
+研究的出发点是在全文中使用的 canonical HAT 训练范式。
+在训练时所见的硬件实例上进行 nominal 评估时，HAT 看似有效：
+混合 Tiny-ViT（Tiny Vision Transformer）在 canonical 模拟噪声模型下恢复了大部分源域（source-domain, 训练域）精度。
+然而，这种表面上的成功具有误导性。
+当训练好的模型在全新硬件实例（fresh hardware instance, 即从相同分布中采样的新固定 D2D 失配实现）上评估时，标准 HAT 模型崩溃至接近随机水平。
+这揭示了本研究的核心主题：对模拟噪声的鲁棒性（robustness to analog noise）与对硬件实例偏移的鲁棒性（robustness to hardware-instance shift）并非同一回事。
+
+一个自然的假设是：保护多层感知机（Multi-Layer Perceptron, MLP）模块，同时对器件噪声进行重采样，或许能够打破这一天花板。
+第~5~章报告了该假设的证伪结果：
+三项独立训练干预在严重非线性（nonlinearity, NL）条件下均收敛于约~$32.6\%$~的全新实例精度（参见~\texttt{nl\_fresh\_instance\_controls\_all\_only\_20260418.json}），
+这表明瓶颈存在于注意力通路（attention pathway）中的结构性泛化障碍，而非优化缺口。
+
+\section{研究贡献}
+
+本研究贡献可归纳为以下三方面：
+
+\begin{enumerate}
+    \item \textbf{可复用的仿真框架}：
+    建立了面向有机光电子存内计算阵列的 HAT 训练仿真框架，支持具有真实器件非理想性的视觉Transformer，并通过可替换的器件配置文件（device profile, 器件配置文件）接口将文献报道的器件特性映射至任务级视觉精度。
+    
+    \item \textbf{HAT 范式分类与硬件实例过拟合的发现}：
+    提出了 HAT 训练范式的系统分类学，并发现\emph{硬件实例过拟合}（hardware-instance overfitting, 硬件实例过拟合）现象——
+    即固定掩膜训练产生的模型会记忆特定的器件失配实现，并在全新硬件实例上崩溃至随机水平。
+    在 CIFAR-10 上，固定掩膜标准 HAT 的 fresh-instance 精度为~$10.00\%$（参见~\texttt{fresh\_instance\_eval.json}），
+    而 Ensemble HAT 将其提升至~$86.37\pm1.54\%$。
+    
+    \item \textbf{部署包络与结构性泛化边界的建立}：
+    系统映射了哪些噪声模型与训练干预组合能够迁移至新硬件实例、哪些不能，
+    包括严格的负结果（negative results）以证伪自然的缓解假设，从而确立结构性泛化障碍而非优化缺口。
+    例如，在严重写入非线性（$NL=2.0$）条件下，源域救援精度可达~$87.79\%$（MLP-only 线性补偿）和~$87.49\%$（全线性补偿），
+    但 fresh-instance 迁移仍停留在~$32.60\pm9.18\%$（参见~\texttt{nl\_mitigation\_summary\_20260418.json}、\texttt{nl\_fresh\_instance\_controls\_all\_only\_20260418.json}）。
+\end{enumerate}
+
+\section{``10\,\% 崩溃''现象}
+
+\subsection{核心实验观察}
+
+决定本研究走向的实验观察十分简洁：
+采用单张固定 D2D 掩膜训练的标准 HAT 模型，在训练时实例上可达较高的源域精度（Tiny-ViT V4 在 CIFAR-10 上最佳测试精度为~$91.94\%$，参见~\texttt{noise\_sweep\_results\_gpt.json}），
+然而其全新实例精度崩溃至约~$10.00\%$——即 CIFAR-10 的单类基线水平。
+相比之下，Ensemble HAT 变体将 fresh-instance 精度提升至~$86.37\pm1.54\%$（$n=10$ 个全新实例，每实例 5 次蒙特卡罗运行，参见~\texttt{fresh\_instance\_eval.json}）。
+这一差距过于悬殊，无法以普通随机波动解释；它反映了训练目标在部署偏移下的结构性失效。
+
+图~\ref{fig:thesis-fresh-instance}~复用了论文中的 fresh-instance 迁移可视化，展示了标准 HAT 与重采样替代方案之间的差异。
+关键不在于一条曲线低于另一条，而在于固定掩膜模型表现得如同针对某一特定硬件实现过拟合的估计器。
+一旦该实现改变，其校准（calibration）和已学习的特征路由便不再有效。
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=0.78\linewidth]{../latex_gpt/figures/figS3_ensemble_hat}
+    \caption{Fresh-instance 迁移对比（复用自论文补充材料）。标准 HAT 对单张结构性失配场过拟合，而 Ensemble HAT 在硬件实例分布上学习。}
+    \label{fig:thesis-fresh-instance}
+\end{figure}
+
+\subsection{方法论意义}
+
+这一崩溃现象从方法论角度亦具有启示意义。
+它表明模拟部署实验必须区分三种评估体制：
+\begin{enumerate}
+    \item \textbf{源域精度}（source-domain accuracy）：在训练时实例上的精度；
+    \item \textbf{重复蒙特卡罗精度}（repeated Monte Carlo accuracy）：在同一实例上多次前向运行的平均精度；
+    \item \textbf{迁移精度}（transfer accuracy）：在新采样阵列上的精度。
+\end{enumerate}
+只有第三种量才能回答实际的部署问题。
+这一区分将贯穿全文，尤其体现在后续关于严重写入非线性和空间相关失配的章节中。
+
+第二个推论是，fresh-instance 评估协议本身成为一种可复用的评估原语（evaluation primitive）。
+本研究因此将``$10$~个实例~$\times$~$5$~次蒙特卡罗运行''的协议并非视为附录细节，而是作为判断某种缓解策略是否达到部署级标准的标准工具。
+在此视角下，Ensemble HAT 属于面向部署的干预措施，而后续的严重非线性补偿策略则未能完全达到这一标准。
+
+\section{硬件实例过拟合的机制}
+
+固定结构化 D2D 掩膜可被视为一种隐藏的域标签（hidden domain label）。
+在固定掩膜 HAT 中，优化器面对的是一个与特定失配场 $M_0$ 耦合的前向路径。
+模型在学习过程中隐式地利用了该失配场的空间签名：
+通过尺度恢复（scale recovery）和阵列特定校准，模型将权重分布与 $M_0$ 的局部偏差进行协同调整，从而在 $M_0$ 上获得高精度。
+然而，这种协同调整本质上是记忆（memorization）而非泛化（generalization）：
+当部署阵列呈现来自 $p(M)$ 的不同固定实现 $M'$ 时，为 $M_0$ 学习的校准和特征路由不再成立，精度随之崩溃。
+
+具体而言，尺度恢复因子 $s_\ell = w_{\max}/(G_{\max}-G_{\min})$ 在固定掩膜下与 $M_0$ 共同演化，
+使得模型可以部分抵消 $M_0$ 引入的系统偏差。
+一旦 $M'$ 改变了偏差的空间模式，这种共同演化建立的平衡即被破坏。
+论文中的补充迁移图（Supplementary Figure~S4）为这一机制提供了证据锚点：
+固定掩膜模型在训练实例上的源域精度可达~$91.94\%$，但在~$10$~张全新阵列上均崩溃至~$10.00\%$，
+表明其鲁棒性完全局限于训练时实例本身。
+
+\section{Ensemble HAT：分布级训练目标}
+
+\subsection{期望形式化}
+
+Ensemble HAT 的核心思想是将训练目标从单实例风险最小化转变为对失配分布的期望最小化。
+在固定掩膜 HAT 中，目标为
+\begin{equation}
+    \theta_{\mathrm{fix}}^{\star}=\arg\min_{\theta}\frac{1}{N}\sum_{n=1}^{N}\ell\!\left(f(x_{n};\theta,M_{0}),y_{n}\right),
+\label{eq:hat-fixed-ch1}
+\end{equation}
+其中 $M_0$ 为训练前采样并保持不变的单张 D2D 实现。
+
+Ensemble HAT 则在每个训练轮次（epoch）边界重采样结构化 D2D 失配场，目标变为
+\begin{equation}
+    \theta_{\mathrm{ens}}^{\star}=\arg\min_{\theta}\;\mathbb{E}_{M\sim p(M)}\!\left[\frac{1}{N}\sum_{n=1}^{N}\ell\!\left(f(x_{n};\theta,M),y_{n}\right)\right].
+\label{eq:hat-ensemble-ch1}
+\end{equation}
+由于每轮次开始时抽取一张新图，模型在训练过程中接触序列 $\{M^{(1)},M^{(2)},\dots,M^{(E)}\}$ 中的多个结构化空间实例。
+该期望通过 $E$ 次独立采样进行蒙特卡罗估计，$E$ 为训练轮次数。
+关键的是，同一轮次内的小批量梯度在相同 $M^{(e)}$ 下相关，因此优化器拥有足够的平稳步数来适应该实例的特征提取，再于轮次切换时接触新实例。
+
+\subsection{优化稳定性与迁移保证的权衡}
+
+轮次级重采样（epoch-level resampling）在优化稳定性与分布覆盖之间取得了最佳权衡。
+探索性的 50~轮次 held-out 扫描（参见~\texttt{ensemble\_frequency\_ablation.json}）显示：
+\begin{itemize}
+    \item 轮次级重采样（Ensemble HAT）：$\mathbf{88.41\%}$
+    \item 固定掩膜训练：$\mathbf{87.18\%}$
+    \item 每批次重采样（per-batch）：$\mathbf{86.16\%}$
+\end{itemize}
+尽管这些数值来自缩短训练日程与 held-out 验证划分，不能直接等同于完整的 ten-instance fresh-instance 估计，
+但其相对顺序具有决定性意义：即使在弱化训练预算下，轮次级重采样仍优于固定掩膜和每批次替代方案。
+
+每批次重采样虽然暴露模型于更多 D2D 多样性，却反而表现更差，
+这说明优化器需要足够长的时间在单一结构化实例下学习兼容的特征，
+然后再通过足够多样的实例来泛化至整个分布。
+固定掩膜训练拥有 unlimited 的单实例时间，因此源域精度高，但缺乏分布广度。
+轮次级重采样恰好处于 sweet spot：每个轮次提供足够的稳定性使优化器下降，而轮次序列提供足够的分布广度以防止实例特定过拟合。
+
+\section{对后续章节的启示}
+
+为使上述论断可证伪，本章后续将引入贯穿全文的仿真框架。
+后续章节将界定严重非线性（severe nonlinearity）源域救援的上界：
+MLP-only 线性补偿可达~$87.79\%$，全线性补偿可达~$87.49\%$（参见~\texttt{nl\_mitigation\_summary\_20260418.json}），
+而 fresh-instance 迁移仍停留在~$32.60\pm9.18\%$（参见~\texttt{nl\_fresh\_instance\_controls\_all\_only\_20260418.json}）。
+
+第~3~章将系统阐述 HAT 范式的分类学，形式化定义固定掩膜、轮次级和每批次三种 canonical 协议，
+并将重采样频率解释为隐式的迁移保证。
+第~4~章将进一步探讨不同失效模式（failure modes）——从 ADC 精度悬崖到光响应前端畸变——如何与硬件实例过拟合相互作用。
+第~6~章将在物理真实感扩展（相关 D2D、保留漂移）下验证块平稳保证（block-stationary guarantee）的稳健性。
+最终，第~7~章将尝试联合训练实验，以耦合替代模型保真度修复与部署不变性。

@@ -13,7 +13,7 @@ import json
 from pathlib import Path
 
 
-ROOT = Path("/home/qiaosir/projects/compute_vit")
+ROOT = Path(__file__).resolve().parents[2]
 SRC_JSON = ROOT / "report_md" / "_gpt" / "json_gpt" / "p13_aihwkit_shared_regime_result.json"
 DEST_JSON = ROOT / "report_md" / "_gpt" / "json_gpt" / "p13_aihwkit_full_result.json"
 DEST_MD = ROOT / "report_md" / "_gpt" / "P13_aihwkit_full_result.md"

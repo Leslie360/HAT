@@ -1,14 +1,11 @@
 #!/usr/bin/env python3
 """
-Phase A3.1: Tiny-ViT hybrid deployment, dry-run, and training/evaluation scaffold.
+Ensemble HAT training loop, D2D resampler, and dry-run scaffold for Tiny-ViT.
 
-Default mode is a non-mutating dry-run that:
-  - prints analog/digital layer allocation
-  - prints estimated crossbar array counts
-  - prints per-layer energy profiling inputs
-  - prints the planned V1-V7 experiment matrix
-
-Training / eval modes are provided for follow-on A3 work but are not run by default.
+This module extends the base training pipeline with per-epoch D2D mismatch
+resampling (``resample_all_d2d_noise``) to simulate Hardware-Aware Training
+across fresh device instances.  It also provides energy estimation helpers
+and the full experiment runner used to produce the Fig. 4 accuracy bars.
 """
 
 import argparse
@@ -212,18 +209,21 @@ class TinyViTPhysicalFrontEnd(nn.Module):
 
 
 def get_num_classes(dataset: str, num_classes: Optional[int] = None) -> int:
+    """Resolve the number of output classes for a dataset."""
     if num_classes is not None:
         return num_classes
     return DATASET_STATS[dataset]["num_classes"]
 
 
 def create_tinyvit_model(num_classes: int, pretrained: bool = False):
+    """Create a raw Tiny-ViT model via timm."""
     return timm.create_model(MODEL_NAME, pretrained=pretrained, num_classes=num_classes)
 
 
 def resolve_experiment_ids(default_experiment: str,
                            requested_experiments: Optional[Sequence[str]],
                            configs: Dict[str, TinyViTExperimentConfig]) -> List[str]:
+    """Parse a comma-separated experiment list and validate against known configs."""
     raw_ids = list(requested_experiments) if requested_experiments else [default_experiment]
     tokens: List[str] = []
 
@@ -250,6 +250,7 @@ def resolve_experiment_ids(default_experiment: str,
 
 def build_model(exp_cfg: TinyViTExperimentConfig, num_classes: int, device: str,
                 pretrained: bool = False) -> nn.Module:
+    """Instantiate a Tiny-ViT and optionally convert it to hybrid analog/digital."""
     model = create_tinyvit_model(num_classes=num_classes, pretrained=pretrained)
 
     if exp_cfg.use_hybrid:
@@ -275,6 +276,7 @@ def build_model(exp_cfg: TinyViTExperimentConfig, num_classes: int, device: str,
 
 
 def set_noise_for_eval(model: nn.Module, exp_cfg: TinyViTExperimentConfig):
+    """Push evaluation noise parameters from *exp_cfg* into analog layers."""
     for module in model.modules():
         if isinstance(module, (AnalogLinear, AnalogConv2d)):
             module.config.noise_enabled = exp_cfg.noise_enabled
@@ -286,6 +288,7 @@ def set_noise_for_eval(model: nn.Module, exp_cfg: TinyViTExperimentConfig):
 
 
 def set_noise_for_train(model: nn.Module, exp_cfg: TinyViTExperimentConfig):
+    """Push training noise parameters from *exp_cfg* into analog layers."""
     for module in model.modules():
         if isinstance(module, (AnalogLinear, AnalogConv2d)):
             if exp_cfg.hat_training:
@@ -310,6 +313,7 @@ def set_noise_for_train(model: nn.Module, exp_cfg: TinyViTExperimentConfig):
 def set_retention(model: nn.Module, inference_time: float,
                   recalibrate_scale: bool = False,
                   scale_d2d: bool = False):
+    """Configure retention decay on all analog layers in *model*."""
     for module in model.modules():
         if isinstance(module, (AnalogLinear, AnalogConv2d)):
             module.config.retention_enabled = inference_time > 0
@@ -320,6 +324,7 @@ def set_retention(model: nn.Module, inference_time: float,
 
 def build_dataset_pair(dataset: str, data_root: str, transform_train, transform_test,
                        download: bool = True, dataset_cls=None):
+    """Load train and test torchvision datasets with the requested transforms."""
     stats = DATASET_STATS[dataset]
     dataset_cls = dataset_cls or stats["dataset_cls"]
     split_style = stats.get("split_style", "train_flag")
@@ -344,9 +349,21 @@ def build_dataset_pair(dataset: str, data_root: str, transform_train, transform_
     return trainset, testset
 
 
+def resolve_pin_memory(pin_memory_mode: Optional[str]) -> bool:
+    """Resolve DataLoader pin-memory behavior from a tri-state runtime setting."""
+    if pin_memory_mode in (None, "auto"):
+        return torch.cuda.is_available()
+    if pin_memory_mode == "on":
+        return True
+    if pin_memory_mode == "off":
+        return False
+    raise ValueError(f"Unsupported pin_memory_mode: {pin_memory_mode}")
+
+
 def get_dataloaders(dataset: str = "cifar10", batch_size: int = 64,
                     num_workers: int = 4, data_root: str = "./data",
-                    image_size: int = 224):
+                    image_size: int = 224, pin_memory_mode: Optional[str] = "auto"):
+    """Build train and test DataLoaders for the requested dataset."""
     stats = DATASET_STATS[dataset]
     mean, std = stats["mean"], stats["std"]
     dataset_cls = stats["dataset_cls"]
@@ -374,7 +391,7 @@ def get_dataloaders(dataset: str = "cifar10", batch_size: int = 64,
     loader_kwargs = {
         "batch_size": batch_size,
         "num_workers": num_workers,
-        "pin_memory": torch.cuda.is_available(),
+        "pin_memory": resolve_pin_memory(pin_memory_mode),
     }
     if num_workers > 0:
         loader_kwargs["persistent_workers"] = True
@@ -390,6 +407,7 @@ def get_dataloaders(dataset: str = "cifar10", batch_size: int = 64,
 def train_one_epoch(model: nn.Module, trainloader, optimizer, criterion, device: str,
                     exp_cfg: TinyViTExperimentConfig, frontend: Optional[nn.Module] = None,
                     amp_enabled: bool = False, scaler=None):
+    """Run one training epoch and return (loss, accuracy)."""
     model.train()
     set_noise_for_train(model, exp_cfg)
     running_loss = 0.0
@@ -427,6 +445,7 @@ def train_one_epoch(model: nn.Module, trainloader, optimizer, criterion, device:
 def evaluate(model: nn.Module, testloader, criterion, device: str,
              exp_cfg: TinyViTExperimentConfig, frontend: Optional[nn.Module] = None,
              amp_enabled: bool = False):
+    """Run inference on the test set and return (loss, accuracy)."""
     model.eval()
     set_noise_for_eval(model, exp_cfg)
     running_loss = 0.0
@@ -451,16 +470,19 @@ def evaluate(model: nn.Module, testloader, criterion, device: str,
 
 
 def init_training_history() -> dict:
+    """Return a fresh history dict for tracking train/test metrics."""
     return {"train_loss": [], "train_acc": [], "test_loss": [], "test_acc": [], "lr": []}
 
 
 def get_training_checkpoint_paths(exp_cfg: TinyViTExperimentConfig, save_dir: str) -> Tuple[str, str]:
+    """Return (best_path, last_path) for a given experiment config."""
     best_checkpoint_path = os.path.join(save_dir, f"{exp_cfg.name}_best.pt")
     last_checkpoint_path = os.path.join(save_dir, f"{exp_cfg.name}_last.pt")
     return best_checkpoint_path, last_checkpoint_path
 
 
 def normalize_training_history(history: Optional[dict]) -> dict:
+    """Coerce a history object to the canonical list-based format."""
     normalized = init_training_history()
     if not isinstance(history, dict):
         return normalized
@@ -476,6 +498,7 @@ def build_training_checkpoint_payload(model: nn.Module, optimizer, scheduler, sc
                                       num_classes: int,
                                       epoch: int, best_acc: float, best_epoch: int,
                                       history: dict, amp_enabled: bool) -> dict:
+    """Assemble a checkpoint dict containing model, optimizer, and metadata."""
     payload = {
         "epoch": epoch,
         "best_epoch": best_epoch,
@@ -495,6 +518,7 @@ def build_training_checkpoint_payload(model: nn.Module, optimizer, scheduler, sc
 
 
 def checkpoint_is_compatible(ckpt: dict, dataset: str, num_classes: int) -> tuple[bool, str]:
+    """Check whether a checkpoint matches the target dataset and class count."""
     ckpt_dataset = ckpt.get("dataset")
     if ckpt_dataset is not None and ckpt_dataset != dataset:
         return False, f"dataset mismatch (checkpoint={ckpt_dataset}, target={dataset})"
@@ -514,7 +538,9 @@ def maybe_resume_experiment(model: nn.Module, optimizer, scheduler, scaler,
                             exp_cfg: TinyViTExperimentConfig, save_dir: str,
                             device: str, dataset: str, num_classes: int,
                             resume_existing: bool = False,
+                            warm_start_from: Optional[str] = None,
                             logger: Optional[RunLogger] = None):
+    """Resume from the latest checkpoint if it is compatible, otherwise start fresh."""
     best_checkpoint_path, last_checkpoint_path = get_training_checkpoint_paths(exp_cfg, save_dir)
     start_epoch = 0
     best_acc = 0.0
@@ -522,7 +548,14 @@ def maybe_resume_experiment(model: nn.Module, optimizer, scheduler, scaler,
     history = init_training_history()
     resume_checkpoint_path = None
 
-    if resume_existing:
+    if warm_start_from is not None:
+        resume_checkpoint_path = warm_start_from
+        if not os.path.exists(resume_checkpoint_path):
+            if logger is not None:
+                logger.log(f"Warm-start path not found: {resume_checkpoint_path}; starting fresh.")
+            resume_checkpoint_path = None
+
+    if resume_checkpoint_path is None and resume_existing:
         if os.path.exists(last_checkpoint_path):
             resume_checkpoint_path = last_checkpoint_path
         elif os.path.exists(best_checkpoint_path):
@@ -544,6 +577,12 @@ def maybe_resume_experiment(model: nn.Module, optimizer, scheduler, scaler,
         if logger is not None:
             logger.log(f"Skipping resume from {resume_checkpoint_path}: incompatible state_dict ({exc})")
         return start_epoch, best_acc, best_epoch, best_checkpoint_path, last_checkpoint_path, history, None
+
+    if warm_start_from is not None:
+        if logger is not None:
+            logger.log(f"Warm-start mode: weights only from {resume_checkpoint_path}; epoch/best/optimizer/scheduler state reset.")
+        return start_epoch, best_acc, best_epoch, best_checkpoint_path, last_checkpoint_path, history, resume_checkpoint_path
+
     best_acc = float(ckpt.get("best_acc", 0.0))
     best_epoch = int(ckpt.get("best_epoch", ckpt.get("epoch", -1)))
     start_epoch = int(ckpt.get("epoch", -1)) + 1
@@ -565,12 +604,14 @@ def maybe_resume_experiment(model: nn.Module, optimizer, scheduler, scaler,
 
 
 def history_last(history: dict, key: str, default: float = float("nan")) -> float:
+    """Return the last value for a key in a history dict."""
     values = history.get(key, [])
     return values[-1] if values else default
 
 
 def build_retention_metadata(exp_id: str, exp_cfg: TinyViTExperimentConfig,
                              checkpoint_path: str, ckpt: dict, eval_runs: int) -> dict:
+    """Create a metadata dict describing a retention sweep run."""
     return {
         "checkpoint_path": checkpoint_path,
         "source_experiment": exp_cfg.name,
@@ -597,8 +638,19 @@ def run_experiment(exp_id: str, exp_cfg: TinyViTExperimentConfig, dataset: str,
                    device: str, num_classes: int, data_root: str,
                    save_dir: str, pretrained: bool = False, num_workers: int = 4,
                    logger: Optional[RunLogger] = None, log_interval: int = 20,
-                   resume_existing: bool = False, amp_enabled: bool = False):
+                   resume_existing: bool = False, warm_start_from: Optional[str] = None,
+                   amp_enabled: bool = False, compile_model: bool = False,
+                   pin_memory_mode: Optional[str] = "auto"):
+    """Train a single experiment from scratch or resume, logging progress."""
     model = build_model(exp_cfg, num_classes=num_classes, device=device, pretrained=pretrained)
+    if compile_model and hasattr(torch, "compile"):
+        try:
+            model = torch.compile(model, mode="reduce-overhead")
+            if logger is not None:
+                logger.log("  torch.compile enabled (reduce-overhead)")
+        except Exception as e:
+            if logger is not None:
+                logger.log(f"  torch.compile failed: {e}, falling back to uncompiled")
     frontend = None
     if exp_cfg.use_physical_frontend:
         frontend = TinyViTPhysicalFrontEnd(
@@ -613,6 +665,7 @@ def run_experiment(exp_id: str, exp_cfg: TinyViTExperimentConfig, dataset: str,
         batch_size=exp_cfg.batch_size,
         data_root=data_root,
         num_workers=num_workers,
+        pin_memory_mode=pin_memory_mode,
     )
     optimizer = optim.AdamW(model.parameters(), lr=exp_cfg.lr, weight_decay=exp_cfg.weight_decay)
     scheduler = optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=exp_cfg.epochs)
@@ -622,7 +675,7 @@ def run_experiment(exp_id: str, exp_cfg: TinyViTExperimentConfig, dataset: str,
     start_epoch, best_acc, best_epoch, checkpoint_path, last_checkpoint_path, history, resume_checkpoint_path = maybe_resume_experiment(
         model, optimizer, scheduler, scaler, exp_cfg, save_dir, device,
         dataset=dataset, num_classes=num_classes,
-        resume_existing=resume_existing, logger=logger
+        resume_existing=resume_existing, warm_start_from=warm_start_from, logger=logger
     )
 
     if logger is not None:
@@ -721,6 +774,7 @@ def run_experiment(exp_id: str, exp_cfg: TinyViTExperimentConfig, dataset: str,
 
 
 def summarize_eval_runs(losses: List[float], accuracies: List[float]) -> dict:
+    """Compute mean, min, max and standard deviation over repeated eval runs."""
     if not losses or not accuracies:
         raise ValueError("losses and accuracies must be non-empty")
 
@@ -740,6 +794,7 @@ def summarize_eval_runs(losses: List[float], accuracies: List[float]) -> dict:
 def resolve_checkpoint_path(exp_cfg: TinyViTExperimentConfig,
                             explicit_checkpoint: Optional[str],
                             checkpoint_dir: str) -> str:
+    """Return the explicit checkpoint path or the default best checkpoint."""
     if explicit_checkpoint:
         return explicit_checkpoint
     return os.path.join(checkpoint_dir, f"{exp_cfg.name}_best.pt")
@@ -748,7 +803,9 @@ def resolve_checkpoint_path(exp_cfg: TinyViTExperimentConfig,
 def run_eval(exp_id: str, exp_cfg: TinyViTExperimentConfig, dataset: str,
              device: str, num_classes: int, data_root: str, checkpoint_path: str,
              pretrained: bool = False, num_workers: int = 4, eval_runs: int = 1,
-             logger: Optional[RunLogger] = None, amp_enabled: bool = False):
+             logger: Optional[RunLogger] = None, amp_enabled: bool = False,
+             pin_memory_mode: Optional[str] = "auto"):
+    """Evaluate a trained checkpoint with optional Monte-Carlo repetitions."""
     model = build_model(exp_cfg, num_classes=num_classes, device=device, pretrained=pretrained)
     ckpt = torch.load(checkpoint_path, map_location=device, weights_only=False)
     model.load_state_dict(ckpt["model_state_dict"])
@@ -767,6 +824,7 @@ def run_eval(exp_id: str, exp_cfg: TinyViTExperimentConfig, dataset: str,
         batch_size=exp_cfg.batch_size,
         data_root=data_root,
         num_workers=num_workers,
+        pin_memory_mode=pin_memory_mode,
     )
     criterion = nn.CrossEntropyLoss()
     losses: List[float] = []
@@ -814,7 +872,9 @@ def run_retention_sweep(exp_id: str, exp_cfg: TinyViTExperimentConfig, dataset: 
                         device: str, num_classes: int, data_root: str, checkpoint_path: str,
                         pretrained: bool = False, num_workers: int = 4, eval_runs: int = 10,
                         retention_times: Optional[Sequence[int]] = None,
-                        logger: Optional[RunLogger] = None, amp_enabled: bool = False):
+                        logger: Optional[RunLogger] = None, amp_enabled: bool = False,
+                        pin_memory_mode: Optional[str] = "auto"):
+    """Sweep inference-time retention decay and report accuracy vs. time."""
     model = build_model(exp_cfg, num_classes=num_classes, device=device, pretrained=pretrained)
     ckpt = torch.load(checkpoint_path, map_location=device, weights_only=False)
     model.load_state_dict(ckpt["model_state_dict"])
@@ -833,6 +893,7 @@ def run_retention_sweep(exp_id: str, exp_cfg: TinyViTExperimentConfig, dataset: 
         batch_size=exp_cfg.batch_size,
         data_root=data_root,
         num_workers=num_workers,
+        pin_memory_mode=pin_memory_mode,
     )
     criterion = nn.CrossEntropyLoss()
     times = list(retention_times) if retention_times is not None else [0, 1, 10, 100, 1000, 10000]
@@ -960,6 +1021,7 @@ def collect_module_shapes(model: nn.Module, example_input: torch.Tensor) -> Dict
 
 
 def build_energy_plan(model: nn.Module, shapes: Dict[str, dict]) -> Tuple[List[dict], EnergyProfiler, dict]:
+    """Estimate per-layer energy and crossbar array counts."""
     profiler = EnergyProfiler()
     records: List[dict] = []
 
@@ -1125,6 +1187,7 @@ def build_energy_plan(model: nn.Module, shapes: Dict[str, dict]) -> Tuple[List[d
 
 
 def format_experiment_matrix(configs: Dict[str, TinyViTExperimentConfig]) -> List[str]:
+    """Render the V1-V7 experiment matrix as Markdown table rows."""
     lines = []
     lines.append("| Exp | Hybrid | Noise | C2C | D2D | HAT | Physical FE | Retention |")
     lines.append("|:---:|:------:|:-----:|:---:|:---:|:---:|:-----------:|:---------:|")
@@ -1142,6 +1205,7 @@ def format_experiment_matrix(configs: Dict[str, TinyViTExperimentConfig]) -> Lis
 
 def build_result_row_base(mode: str, exp_id: str, exp_cfg: TinyViTExperimentConfig,
                           dataset: str, num_classes: int) -> dict:
+    """Create a base result row dict populated with experiment metadata."""
     return {
         "mode": mode,
         "experiment": exp_id,
@@ -1165,6 +1229,7 @@ def build_result_row_base(mode: str, exp_id: str, exp_cfg: TinyViTExperimentConf
 
 def build_results_markdown(result_rows: List[dict], retention_rows: Optional[List[dict]] = None,
                            retention_metadata: Optional[dict] = None) -> str:
+    """Render experiment results as a Markdown table string."""
     lines = ["# Tiny-ViT Results (GPT)", ""]
 
     if result_rows:
@@ -1223,6 +1288,7 @@ def export_result_rows(result_rows: List[dict], json_path: Optional[str],
                        csv_path: Optional[str], md_path: Optional[str],
                        retention_rows: Optional[List[dict]] = None,
                        retention_metadata: Optional[dict] = None):
+    """Write result rows to JSON, CSV, and Markdown files."""
     if not result_rows and not retention_rows:
         return
 
@@ -1264,6 +1330,7 @@ def export_result_rows(result_rows: List[dict], json_path: Optional[str],
 def export_dry_run_report(report_path: str, exp_id: str, exp_cfg: TinyViTExperimentConfig,
                           records: List[dict], profiler: EnergyProfiler, totals: dict,
                           configs: Dict[str, TinyViTExperimentConfig], dataset: str):
+    """Write a dry-run report with energy and array counts."""
     ensure_parent_dir(report_path)
     summary = profiler.summary()
     fp32 = totals["fp32_comparison"]
@@ -1331,6 +1398,7 @@ def export_dry_run_report(report_path: str, exp_id: str, exp_cfg: TinyViTExperim
 def run_dry_run(exp_id: str, exp_cfg: TinyViTExperimentConfig, dataset: str,
                 device: str, num_classes: int, pretrained: bool,
                 report_path: str, logger: RunLogger):
+    """Execute a non-mutating dry run and log energy estimates."""
     model = build_model(exp_cfg, num_classes=num_classes, device=device, pretrained=pretrained)
     example_input = torch.randn(1, 3, 224, 224, device=device)
     shapes = collect_module_shapes(model, example_input)
@@ -1362,6 +1430,7 @@ def run_dry_run(exp_id: str, exp_cfg: TinyViTExperimentConfig, dataset: str,
 
 
 def main():
+    """CLI entry point for dry-run, train, eval, and retention-sweep modes."""
     parser = argparse.ArgumentParser(description="A3.1 Tiny-ViT hybrid scaffold")
     parser.add_argument("--mode", choices=["dry-run", "train", "eval"], default="dry-run")
     parser.add_argument("--experiment", type=str, default="V4", help="V1-V7 experiment id")
@@ -1394,14 +1463,24 @@ def main():
                         help="Override analog noise mode for all selected experiments")
     parser.add_argument("--amp", action="store_true",
                         help="Enable AMP mixed precision on CUDA. Omit to preserve previous full-precision behavior.")
+    parser.add_argument("--pin-memory", choices=["auto", "on", "off"], default="auto",
+                        help="DataLoader pin-memory mode. Use 'off' when CUDA pinning causes OOM in high-throughput runs.")
     parser.add_argument("--resume-existing", action="store_true",
                         help="Resume training from *_last.pt if present, otherwise fall back to *_best.pt")
+    parser.add_argument("--warm-start-from", type=str, default=None,
+                        help="Load only model weights from the given checkpoint path; reset epoch/optimizer/scheduler/history")
+    parser.add_argument("--compile", action="store_true",
+                        help="Enable torch.compile(model) for ~15-30% training speedup (PyTorch 2.x+)")
     parser.add_argument("--report-path", type=str, default=DEFAULT_REPORT_PATH)
     parser.add_argument("--log-path", type=str, default=DEFAULT_LOG_PATH)
     parser.add_argument("--results-json-path", type=str, default=DEFAULT_RESULTS_JSON_PATH)
     parser.add_argument("--results-csv-path", type=str, default=DEFAULT_RESULTS_CSV_PATH)
     parser.add_argument("--results-md-path", type=str, default=DEFAULT_RESULTS_MD_PATH)
     args = parser.parse_args()
+
+    # Default-enable TF32 on Ampere/Ada GPUs for ~2× matmul speedup with negligible accuracy loss
+    if torch.cuda.is_available() and torch.cuda.get_device_capability()[0] >= 8:
+        torch.set_float32_matmul_precision('high')
 
     device = args.device or ("cuda" if torch.cuda.is_available() else "cpu")
     num_classes = get_num_classes(args.dataset, args.num_classes)
@@ -1458,7 +1537,10 @@ def main():
                     logger=logger,
                     log_interval=args.log_interval,
                     resume_existing=args.resume_existing,
+                    warm_start_from=args.warm_start_from,
                     amp_enabled=args.amp,
+                    compile_model=args.compile,
+                    pin_memory_mode=args.pin_memory,
                 )
                 row = build_result_row_base("train", exp_id, exp_cfg, args.dataset, num_classes)
                 row.update({
@@ -1509,6 +1591,7 @@ def main():
                     retention_times=args.retention_times,
                     logger=logger,
                     amp_enabled=args.amp,
+                    pin_memory_mode=args.pin_memory,
                 )
                 retention_rows.extend(rows)
                 if retention_metadata is None:
@@ -1542,6 +1625,7 @@ def main():
                 eval_runs=args.eval_runs,
                 logger=logger,
                 amp_enabled=args.amp,
+                pin_memory_mode=args.pin_memory,
             )
             row = build_result_row_base("eval", exp_id, exp_cfg, args.dataset, num_classes)
             row.update(summary)

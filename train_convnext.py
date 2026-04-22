@@ -87,6 +87,43 @@ def build_model(exp_cfg: ExperimentConfig, num_classes: int, image_size: int, de
         model = convert_resnet_to_analog(model, config=analog_cfg, skip_first_conv=False, verbose=False)
     return model.to(device)
 
+
+def resolve_experiment_amp(requested_amp: bool, device: str,
+                           exp_cfg: ExperimentConfig) -> Tuple[bool, Optional[str]]:
+    active_amp = amp_enabled_for_device(requested_amp, device)
+    if active_amp and exp_cfg.use_analog:
+        return False, "AMP auto-disabled for analog ConvNeXt experiments."
+    return active_amp, None
+
+
+def set_noise_for_eval(model: nn.Module, exp_cfg: ExperimentConfig):
+    for module in model.modules():
+        if isinstance(module, (AnalogLinear, AnalogConv2d)):
+            module.config.noise_enabled = exp_cfg.noise_enabled
+            module.config.sigma_c2c = exp_cfg.sigma_c2c
+            module.config.sigma_d2d = exp_cfg.sigma_d2d
+            module.config.noise_mode = exp_cfg.noise_mode
+            module.config.NL_LTP = exp_cfg.nl_ltp
+            module.config.NL_LTD = exp_cfg.nl_ltd
+
+
+def set_noise_for_train(model: nn.Module, exp_cfg: ExperimentConfig):
+    for module in model.modules():
+        if isinstance(module, (AnalogLinear, AnalogConv2d)):
+            if exp_cfg.hat_training:
+                module.config.noise_enabled = exp_cfg.noise_enabled
+                module.config.sigma_c2c = exp_cfg.sigma_c2c
+            elif exp_cfg.noise_enabled:
+                module.config.noise_enabled = True
+                module.config.sigma_c2c = 0.0
+            else:
+                module.config.noise_enabled = False
+                module.config.sigma_c2c = 0.0
+            module.config.sigma_d2d = exp_cfg.sigma_d2d
+            module.config.noise_mode = exp_cfg.noise_mode
+            module.config.NL_LTP = exp_cfg.nl_ltp
+            module.config.NL_LTD = exp_cfg.nl_ltd
+
 def get_dataloaders(dataset='cifar10', batch_size=128, num_workers=4, data_root='./data'):
     stats = DATASET_STATS[dataset]
     img_sz = stats["image_size"]
@@ -102,6 +139,7 @@ def get_dataloaders(dataset='cifar10', batch_size=128, num_workers=4, data_root=
 
 def train_one_epoch(model, loader, optimizer, criterion, device, exp_cfg, amp_enabled=False, scaler=None):
     model.train()
+    set_noise_for_train(model, exp_cfg)
     r_loss, correct, total = 0.0, 0, 0
     for inputs, targets in loader:
         inputs, targets = inputs.to(device), targets.to(device)
@@ -117,6 +155,7 @@ def train_one_epoch(model, loader, optimizer, criterion, device, exp_cfg, amp_en
 @torch.no_grad()
 def evaluate(model, loader, criterion, device, exp_cfg, amp_enabled=False):
     model.eval()
+    set_noise_for_eval(model, exp_cfg)
     r_loss, correct, total = 0.0, 0, 0
     for inputs, targets in loader:
         inputs, targets = inputs.to(device), targets.to(device)
@@ -139,6 +178,94 @@ def normalize_training_history(history: Optional[dict]) -> dict:
         value = history.get(key, [])
         normalized[key] = list(value) if isinstance(value, list) else []
     return normalized
+
+
+def parse_training_log(log_path: str, configs: Dict[str, ExperimentConfig]):
+    header_re = re.compile(r"Experiment\s+(C\d+):\s+(.+)")
+    epoch_re = re.compile(
+        r"Epoch\s+\d+/\d+:\s+train_loss=([0-9.]+),\s+train_acc=([0-9.]+)%,\s+"
+        r"test_acc=([0-9.]+)%.*lr=([0-9.]+)"
+    )
+    finished_re = re.compile(r"Finished in .*? Best test accuracy:\s*([0-9.]+)%")
+    mc_re = re.compile(r"Monte Carlo:\s*([0-9.]+)%\s*[±+/-]+\s*([0-9.]+)%")
+
+    current_id: Optional[str] = None
+    results: List[dict] = []
+    histories: Dict[str, dict] = {}
+    best_acc: Optional[float] = None
+    mc_mean: Optional[float] = None
+    mc_std: Optional[float] = None
+    history: Optional[dict] = None
+
+    def flush_current():
+        nonlocal current_id, best_acc, mc_mean, mc_std, history
+        if current_id is None or best_acc is None:
+            current_id = None
+            best_acc = None
+            mc_mean = None
+            mc_std = None
+            history = None
+            return
+        cfg = configs[current_id]
+        histories[current_id] = normalize_training_history(history)
+        results.append({
+            "experiment": current_id,
+            "experiment_name": cfg.name,
+            "best_test_acc": best_acc,
+            "mc_mean_acc": best_acc if mc_mean is None else mc_mean,
+            "mc_std_acc": 0.0 if mc_std is None else mc_std,
+        })
+        current_id = None
+        best_acc = None
+        mc_mean = None
+        mc_std = None
+        history = None
+
+    with open(log_path, "r", encoding="utf-8") as fh:
+        for raw_line in fh:
+            line = raw_line.strip()
+            match = header_re.search(line)
+            if match:
+                flush_current()
+                current_id = match.group(1)
+                history = init_training_history()
+                continue
+            if current_id is None:
+                continue
+            match = epoch_re.search(line)
+            if match:
+                assert history is not None
+                history["train_loss"].append(float(match.group(1)))
+                history["train_acc"].append(float(match.group(2)))
+                history["test_acc"].append(float(match.group(3)))
+                history["lr"].append(float(match.group(4)))
+                continue
+            match = finished_re.search(line)
+            if match:
+                best_acc = float(match.group(1))
+                continue
+            match = mc_re.search(line)
+            if match:
+                mc_mean = float(match.group(1))
+                mc_std = float(match.group(2))
+
+    flush_current()
+    return results, histories
+
+
+def parse_training_logs(log_paths: List[str], configs: Dict[str, ExperimentConfig]):
+    merged_results: Dict[str, dict] = {}
+    merged_histories: Dict[str, dict] = {}
+    order: List[str] = []
+    for log_path in log_paths:
+        results, histories = parse_training_log(log_path, configs)
+        for row in results:
+            exp_id = row["experiment"]
+            if exp_id not in merged_results:
+                order.append(exp_id)
+            merged_results[exp_id] = row
+        merged_histories.update(histories)
+    return [merged_results[exp_id] for exp_id in order], merged_histories
 
 
 def get_training_checkpoint_paths(exp_cfg: ExperimentConfig, save_dir: str) -> Tuple[str, str]:
@@ -266,6 +393,7 @@ def main():
         cfg = configs[exp_id]
         if args.noise_mode is not None:
             cfg.noise_mode = args.noise_mode
+        active_amp, amp_note = resolve_experiment_amp(args.amp, device, cfg)
         model = build_model(cfg, DATASET_STATS[args.dataset]["num_classes"], DATASET_STATS[args.dataset]["image_size"], device)
         trainloader, testloader = get_dataloaders(
             args.dataset, args.batch_size, num_workers=args.num_workers, data_root=args.data_root
@@ -279,13 +407,15 @@ def main():
             model.load_state_dict(state_dict)
             print(
                 f"Starting eval for {exp_id} on {args.dataset} "
-                f"(Seed: {args.seed}, BS: {args.batch_size}, AMP: {args.amp}, "
+                f"(Seed: {args.seed}, BS: {args.batch_size}, AMP: {active_amp}, "
                 f"noise_mode: {cfg.noise_mode}, checkpoint={checkpoint_path})"
             )
+            if amp_note:
+                print(amp_note)
             accuracies: List[float] = []
             losses: List[float] = []
             for run_idx in range(args.eval_runs):
-                t_loss, t_acc = evaluate(model, testloader, criterion, device, cfg, args.amp)
+                t_loss, t_acc = evaluate(model, testloader, criterion, device, cfg, active_amp)
                 losses.append(t_loss)
                 accuracies.append(t_acc)
                 print(f"Eval run {run_idx + 1}/{args.eval_runs}: test_loss={t_loss:.4f}, test_acc={t_acc:.2f}%")
@@ -300,7 +430,7 @@ def main():
 
         optimizer = optim.AdamW(model.parameters(), lr=cfg.lr, weight_decay=cfg.weight_decay)
         scheduler = optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=args.epochs)
-        scaler = create_grad_scaler(device, args.amp)
+        scaler = create_grad_scaler(device, active_amp)
         start_epoch, best_acc, best_epoch, checkpoint_path, last_checkpoint_path, history, resume_checkpoint_path = (
             maybe_resume_experiment(
                 model, optimizer, scheduler, cfg, args.save_dir, device,
@@ -310,9 +440,11 @@ def main():
         )
         print(
             f"Starting {exp_id} on {args.dataset} "
-            f"(Seed: {args.seed}, BS: {args.batch_size}, AMP: {args.amp}, "
+            f"(Seed: {args.seed}, BS: {args.batch_size}, AMP: {active_amp}, "
             f"noise_mode: {cfg.noise_mode})"
         )
+        if amp_note:
+            print(amp_note)
         if resume_checkpoint_path is not None:
             print(
                 f"Resuming from {resume_checkpoint_path}: start_epoch={start_epoch}, "
@@ -321,8 +453,8 @@ def main():
         os.makedirs(args.save_dir, exist_ok=True)
         for epoch in range(start_epoch, args.epochs):
             current_lr = optimizer.param_groups[0]["lr"]
-            loss, acc = train_one_epoch(model, trainloader, optimizer, criterion, device, cfg, args.amp, scaler)
-            t_loss, t_acc = evaluate(model, testloader, criterion, device, cfg, args.amp)
+            loss, acc = train_one_epoch(model, trainloader, optimizer, criterion, device, cfg, active_amp, scaler)
+            t_loss, t_acc = evaluate(model, testloader, criterion, device, cfg, active_amp)
             history["train_loss"].append(loss)
             history["train_acc"].append(acc)
             history["test_loss"].append(t_loss)
@@ -336,7 +468,7 @@ def main():
 
             checkpoint_payload = build_training_checkpoint_payload(
                 model, optimizer, scheduler, cfg, args.dataset, DATASET_STATS[args.dataset]["num_classes"],
-                epoch, best_acc, best_epoch, history, args.amp, args.seed
+                epoch, best_acc, best_epoch, history, active_amp, args.seed
             )
             torch.save(checkpoint_payload, last_checkpoint_path)
             if improved:

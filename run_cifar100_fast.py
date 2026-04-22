@@ -11,7 +11,9 @@ import numpy as np
 import sys
 import dataclasses
 
-sys.path.insert(0, '/home/qiaosir/projects/compute_vit')
+from repo_bootstrap import ensure_repo_root
+
+ensure_repo_root()
 sys.stdout.reconfigure(line_buffering=True)
 
 import torchvision

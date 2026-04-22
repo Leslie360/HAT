@@ -628,7 +628,7 @@ Status: COMPLETE
 | TX-30a | Collapse 6 scattered archive dirs into `compute_vit/_archive/` (8 themed subdirs, 259 files) | ✅ |
 | TX-30b | Triage residual `report_md/_gpt/archive/` (md/, json/, loose txt) into `_archive/coordination/`, `_archive/old-experiment-json/`, `_archive/old-experiment-data/` | ✅ |
 | TX-30c | Write `compute_vit/PROJECT_INDEX.md` master registry + naming convention + invariants | ✅ |
-| TX-30d | Commit TX-30a..c | ⏳ pending user approval |
+| TX-30d | Commit TX-30a..c as `a7fa088` | ✅ |
 
 ---
 
@@ -641,3 +641,966 @@ Brief: `CODEX_DISPATCH_20260417_index_gpt.md`
 | TX-31 | Audit `PROJECT_INDEX.md` §3-§12 against reality; output `PROJECT_INDEX_AUDIT_20260417.md` with ✅/⚠️/⛔ per section and recommended diffs (no apply) | ✅ |
 | TX-32 | Move remaining `paper/` draft-superseded `.md` (01-07, outline, prompt files, Chinese bib) to `_archive/paper-drafts/` after grep cross-ref check; KEEP 08_appendix.md (regen target), CANONICAL_RESULT_LOCK, FIGURE_CAPTION_LOCK, FIGURE_PLAN | ⛔ |
 | TX-33 | Classify 252 untracked + 68 unstaged into TRACK / IGNORE / ARCHIVE; write `GIT_HYGIENE_LEDGER_20260417.md` report only (no `git add`, no commit, no `.gitignore` edits) | ✅ |
+
+---
+
+## 2026-04-18 — Parallel dispatch: Codex #10 / Kimi / Gemini re-onboard
+
+Briefs: `CODEX_DISPATCH_20260418_gpt.md`, `KIMI_DISPATCH_20260418_gpt.md`, `GEMINI_DISPATCH_20260418_gpt.md`
+
+| ID | Agent | Description | Status |
+|:--|:--|:--|:--:|
+| CX-A | Codex | Finish NL mitigation queue (MLP→QKV→all-linear→cadence); refresh `NL_MITIGATION_SUMMARY_20260418.md`. Now parallelized: MLP best=87.79% by epoch 74; QKV-only, all-linear, and cadence evaluation all active. | ⏳ |
+| CX-B | Codex | Resolve fig10 caption ↔ panel mismatch; recompile `main.pdf` | ✅ |
+| CX-C | Codex | Execute **TX-32 only** (paper/ draft-superseded `.md` → `_archive/paper-drafts/` with grep whitelist). TX-31/33 already ✅ by prior Codex pass. GPU-idle only. | ⏳ |
+| K-A | Kimi | Complete `KIMI_DISPATCH_20260418_related_work_finish_gpt.md` — delivered as `KIMI_RELATED_WORK_MAP_20260418.md` + `KIMI_RELATED_WORK_DROPINS_20260418.md` | ✅ |
+| K-B | Kimi | Cover letter v2 — **ON HOLD** until CLAUDE-A NL decision gate lands | 🛑 |
+| K-C | Kimi | Reviewer-robustness audit of Table S5 + T1/T2/T3 — delivered as `KIMI_FRONTEND_AUDIT_20260418.md` | ✅ |
+| K-D | Kimi | Bonus: bib tail fixes — delivered as `KIMI_BIB_TAIL_FIXES_20260418.md` (unprompted, accept) | ✅ |
+| G-0 | Gemini | Re-onboard confirmation block | ✅ |
+| G-A | Gemini | E1 (cross-arch γ scan) + E2 (cross-dataset γ robustness) protocol spec — delivered as `GEMINI_E1_E2_DESIGN_20260418.md` | ✅ |
+| G-B | Gemini | **Expand G-A** per dual-purpose mandate — add E1b (cross-arch HAT+γ joint retrain, not inference-only), E2b (+TinyImageNet, +SVHN), E5 (Tiny-ViT layer-wise γ sensitivity), E6 (γ × NL joint sweep — does inverse-gamma also rescue NL=2.0?). Design-only, thesis-chapter evidence matrix | ✅ |
+| CLAUDE-A | Claude | After CX-A drains, write `NL_NARRATIVE_DECISION_20260418.md` — 3 options (main §5 5th bullet / supp new section / rebuttal-only). Gates K-B. | ⏳ |
+| CLAUDE-B | Claude | `THESIS_VS_PAPER_SCOPE_20260418.md` — three-tier partition (NC-main 14pp / NC-supp 21pp / thesis-only). Initial draft landed by parallel agent at root path; relocated to `report_md/_gpt/`, fixed section numbering (00–08, not 1–6), refreshed E-experiment design pointer (`GEMINI_E1_E2_DESIGN_20260418.md` covers E1–E6), added action items 5–8 (CLAUDE-C, repro-package, archive, index update). | ✅ |
+| CLAUDE-C | Claude | `PROVENANCE_AUDIT_20260418.md` — Locked Number → manuscript claim → producing script → log/JSON → blast radius. 12 sections covering H1–H8 headline numbers, T1–T18 cross-dataset table, S1–S6 3-seed numbers, P1–P4 physical extensions, retention curve, cadence, AIHWKIT/CrossSim, ADC layer-wise, NL gradient distortion, in-flight L1 (live MLP-linear NL run), G1–G5 untraced-gap list, hardening recommendations. | ✅ |
+| CLAUDE-D | Claude | `REPRODUCIBILITY_PACKAGE_PLAN_20260418.md` — strategy stub addressing C1 (outer repo 0 tracked → declare `compute_vit/` as publishable boundary, no outer-repo init), C3 (25 GB checkpoints → tier A/B/C, Zenodo Tier-A only), C4 (`数据_博士/` 1.9 MB WSL-private → fitted JSONs only, raw on request). 5-step sequence; starts after CX-A drains. | ✅ |
+
+---
+
+## 2026-04-18 Round B — Parallel non-GPU backlog while CX-A drains
+
+Brief: `BROADCAST_ASSIGNMENT_20260418B.md`
+
+| ID | Agent | Description | Status |
+|:--|:--|:--|:--:|
+| CX-D | Codex | Fill `PROVENANCE_AUDIT §11` G1–G5 (A2.3 89.85/84.04, OPECT 88.53, p<10⁻¹⁵, GM-E5 89.61, energy). In-place edit. | ⏳ |
+| CX-E | Codex | `CHECKPOINT_INVENTORY_20260418.md` — all `.pt` with size/sha256/mtime + tier hint A/B/C. ~20 min I/O. | ✅ |
+| CX-B' | Codex | Verify CX-B (fig10 caption) actually landed in compiled `main.pdf`; reopen if mismatch persists. | ✅ |
+| K-E | Kimi | `KIMI_DISCUSSION_VULNERABILITY_SCAN_20260418.md` — bullet list of §6 claims that break/weaken if CX-A succeeds. No .tex edits. | ⏳ |
+| G-C | Gemini | `GEMINI_E6_THESIS_CHAPTER_OUTLINE_20260418.md` — chapter-scale outline for γ × NL joint sweep. Design only. | ⏳ |
+| CLAUDE-E | Claude | Triage CX-E inventory into final Tier A/B/C for Zenodo. ~30 min after CX-E delivers. | ⏳ |
+| CLAUDE-F | Claude | `PAPER_REVIEW_CLAUDE_20260418.md` — full manuscript audit on user's 5 axes: (1) abbreviations expanded on first use [11 real gaps, ADC + OPECT being top reviewer risk], (2) data rigor [13 items: 88.53% OPECT no error bar, p<10⁻¹⁵ no test type, +5.8pp no stats], (3) calculation clarity [11 one-liners: Ensemble HAT estimator, Sobol method, gradient-scaling definition], (4) physical mappings deferred to future work [14 items: IR drop spatial, sneak paths, thermal, RC, endurance], (5) file/project management [10 items: TX-32 backlog, ledger header drift, no `check_locked_numbers.py`]. R1–R8 follow-ups deferred until CLAUDE-A NL decision lands; R5 (TX-32) already routed to CX-C. **No `.tex` edits in this pass — review only.** | ✅ |
+
+---
+
+## 2026-04-18 Round C — Parallel doc/analysis backlog (no GPU lanes)
+
+Brief: `BROADCAST_ASSIGNMENT_20260418C.md`
+
+### Live state at dispatch (16:00)
+- MLP-only NL=2.0: live, best ~87.79%@74
+- **QKV-only NL=2.0: FINISHED — COLLAPSED, best=18.72%@2, final=10.15%** (publishable mechanistic datapoint)
+- All-linear NL=2.0: live, epoch 69/100 best=87.49%
+- Cadence eval + learnable_gamma: live
+- GPU ~85%, ~10/16.3 GB — **no new GPU work this round**
+
+### Round C tasks
+
+| ID | Agent | Description | Status |
+|:--|:--|:--|:--:|
+| CX-F | Codex | `NL_LANE_RESULTS_20260418.md` — side-by-side of MLP / QKV / all-linear / cadence lanes (status, best, final, epoch, ckpt path, log path, one-line interp). Read-only. | ✅ |
+| CX-G | Codex | Execute TX-32 (still ⛔): archive `paper/` legacy `.md` drafts → `_archive/paper-drafts/` with grep cross-ref. Produce `TX32_ARCHIVE_LEDGER_20260418.md`. GPU-idle only. | ⏳ |
+| CX-H | Codex | Continue PROVENANCE_AUDIT §11 fill (G1–G5: A2.3 cells, OPECT 88.53, p<10⁻¹⁵ test name+df, GM-E5 89.61, energy chain). In-place edit. (Was CX-D in Round B.) | ✅ |
+| CX-I | Codex | Pre-submission `scripts/_gpt/check_locked_numbers.py` skeleton — read CANONICAL_RESULT_LOCK → diff against grep'd `.tex` numbers. No CI hook. | ⏳ |
+| K-F | Kimi | `KIMI_QKV_COLLAPSE_INTERPRETATION_20260418.md` — ~600-word mechanistic interpretation of why QKV-only collapses (18.72%) while MLP/all-linear converge (~87%). No `.tex` edits. | ⏳ |
+| K-G | Kimi | Continue K-E discussion vulnerability scan (`KIMI_DISCUSSION_VULNERABILITY_SCAN_20260418.md`) — bullet list of §6 claims that weaken if all-linear succeeds. | ⏳ |
+| K-H | Kimi | Cross-check `KIMI_RELATED_WORK_DROPINS_20260418.md` against PAPER_REVIEW §1 abbrev table; flag any new abbreviations introduced. Optional output `KIMI_RELATED_WORK_ABBREV_DELTA_20260418.md`. | ⏳ |
+| G-D | Gemini | `GEMINI_CONTEXT_REREAD_20260418.md` — 200-word self-summary after re-reading PROJECT_INDEX, THESIS_VS_PAPER_SCOPE, CANONICAL_RESULT_LOCK, PAPER_REVIEW §4. **Mandatory first task — Gemini is treated as stateless.** | ✅ |
+| G-E | Gemini | `GEMINI_E6_THESIS_CHAPTER_OUTLINE_20260418.md` — γ × NL chapter outline. **Skip if file already exists.** | ✅ |
+| G-F | Gemini | `GEMINI_P1_P2_IRDROP_SNEAK_THESIS_OUTLINE_20260418.md` — chapter outline for spatial IR-drop & sneak-path models (paper review §4 P1, P2). Design only. | ✅ |
+| G-G | Gemini | `GEMINI_P5_THERMAL_THESIS_OUTLINE_20260418.md` — chapter outline for T-dependence (γ, I_dark, σ_D2D vs T). Design only. | ✅ |
+| G-H | Gemini | `GEMINI_E1B_EXECUTION_REFINEMENT_20260418.md` — execution-readiness refinement for E1b: CLI invocation, hyperparam table, seed policy, wall-clock, pre-flight checks. Runbook handoff for Codex. | ✅ |
+| CLAUDE-G | Claude | Read & integrate G-D self-summary; verify Gemini context is current. | ⏸️ gated on G-D |
+| CLAUDE-H | Claude | After CX-F + K-F land, decide whether QKV collapse becomes its own §5 paragraph or stays in supp. | ⏸️ |
+
+**Anti-conflict:** CX-F reads logs only; CX-G touches `paper/*.md` + `_archive/`; CX-H/I touch new files; Gemini writes `report_md/_gpt/` only; Kimi writes `report_md/_gpt/` only. Zero overlap with CX-A live GPU lanes.
+
+---
+
+## 2026-04-18 Round D — Post-autonomous-landing dispatch
+
+Brief: `BROADCAST_ASSIGNMENT_20260418D.md`
+
+### State at dispatch (22:00)
+- All NL=2.0 lanes EXCEPT attn_proj-only finished. MLP=87.79%, QKV=18.72% (collapsed), all-linear=87.49%. attn_proj running from 21:20.
+- Codex autonomously landed R1–R4 .tex patches + cover letter v2 + supp scaffold + TX-32 archive + reviewer response phase 3.
+- Main grew 14→15pp; supp 21pp; cover 2pp.
+- **Gap:** Codex's claimed `CLAUDE_A_DECISION_PRELIM_20260418.md` is **NOT on disk**. CX-J fills it.
+
+### Round D tasks
+
+| ID | Agent | Description | Status |
+|:--|:--|:--|:--:|
+| CX-J | Codex | Write the missing `CLAUDE_A_DECISION_PRELIM_20260418.md` memo (Option B = supp ablation, evidence rows, what flips it back to main, preliminary caveat). | ✅ |
+| CX-K | Codex | `R1_R4_LANDING_AUDIT_20260418.md` — verify all 30+ R1–R4 patches actually surface in compiled `main.pdf`/`supplementary_main.pdf`. Audit only, no edits. | ✅ |
+| CX-L | Codex | D11 footnote on Zhang proxy table identical-rows in `08_appendix.tex`. Recompile supp. | ⏳ MED |
+| CX-M | Codex | `D13_FIG4_DECISION_BRIEF_20260418.md` — split-panel vs MC-complete analysis for Fig 4 mixed error bars. No edits. | ⏳ MED |
+| CX-N | Codex | C8 energy equation in `08_appendix.tex`. Recompile supp. | ⏳ LOW |
+| CX-O | Codex | Build `scripts/_gpt/check_locked_numbers.py` (was CX-I, bumped). | ⏳ MED |
+| CX-P | Codex | Wait for attn_proj-only GPU drain; append row to `NL_LANE_RESULTS_20260418.md` + `SUPP_TABLE_NL_ABLATION_SCAFFOLD.md`. | ⏳ passive |
+| K-I | Kimi | `KIMI_QKV_COLLAPSE_INTERPRETATION_20260418.md` (was K-F) — verify or produce. | ⏳ HIGH |
+| K-J | Kimi | Discussion vulnerability scan v2 — given all-linear FINISHED 87.49%, update §6 vulnerability list. | ⏳ HIGH |
+| K-K | Kimi | `KIMI_COVER_LETTER_V2_FINAL_20260418.md` — UNBLOCKED (CLAUDE-A landed). NL framed as supp ablation, OPECT 88.53±0.08%, QKV honesty disclosure. | ⏳ HIGH |
+| K-L | Kimi | `KIMI_RESPONSE_PHASE3_AUDIT_20260418.md` — audit Codex's added Group-wise NL Mitigation + E3 sections in `REVIEWER_RESPONSE_DRAFT_gpt.md`. | ⏳ MED |
+| G-I | Gemini | `GEMINI_E1B_LANDING_PLAN_20260418.md` — pre-launch smoke tests, failure-mode catalog, mid-run cadence, output schema, hand-off checklist. | ⏳ |
+| G-J | Gemini | `GEMINI_P1_P2_P5_INTEGRATION_20260418.md` — single chapter vs 3 chapters; shared scaffolding; cross-experiment dependencies. | ⏳ |
+| G-K | Gemini | `GEMINI_THESIS_OUTLINE_DRAFT_20260418.md` — 8-chapter top-level thesis outline. | ⏳ |
+| G-L | Gemini | `GEMINI_FIG4_REDESIGN_BRIEF_20260418.md` — split-panel vs hollow-marker design options for Fig 4. | ⏳ |
+| CLAUDE-I | Claude | Read CX-J memo when delivered. | ⏸️ |
+| CLAUDE-J | Claude | Read CX-K audit; plan corrective patches if mismatch. | ⏸️ |
+| CLAUDE-K | Claude | Reconcile K-J + K-K with §6 / cover letter. | ⏸️ |
+| CLAUDE-L | Claude | When attn_proj-only finishes, run final CLAUDE-A decision. | ⏸️ gated on GPU |
+
+**Anti-conflict:** CX-J/K read-only; CX-L/N edit `08_appendix.tex` (sequential); CX-M/O write new files; Kimi writes `report_md/_gpt/` only; Gemini writes `report_md/_gpt/` only. Zero overlap with attn_proj GPU lane.
+
+
+---
+
+## 2026-04-18 Round E — Post-landing compaction & re-broadcast
+
+Brief: `BROADCAST_ASSIGNMENT_20260418E.md`
+
+### Round D deliverable audit
+
+| ID | Agent | Description | Round-D Status | Round-E Verdict |
+|:--|:--|:--|:--:|:--|
+| CX-J | Codex | `CLAUDE_A_DECISION_PRELIM_20260418.md` | ✅ | **SUPERSEDED** — `CLAUDE_A_DECISION_FINAL_20260418.md` exists (Option B LOCKED). |
+| CX-K | Codex | `R1_R4_LANDING_AUDIT_20260418.md` | ✅ | Exists on disk. |
+| CX-L | Codex | D11 footnote on Zhang identical rows | ⏳ | ✅ **DONE** — landed in `08_appendix.tex` line 107. |
+| CX-M | Codex | D13 Fig 4 decision brief | ⏳ | ✅ **DONE** — integrated into `REVIEWER_RESPONSE_DRAFT_gpt.md` directly. |
+| CX-N | Codex | C8 energy equation | ⏳ | ✅ **DONE** — landed in `supplementary.tex` §Energy Profiler Implementation (lines 436–465). |
+| CX-O | Codex | `check_locked_numbers.py` | ⏳ | ✅ **DONE** — built, debugged, **16/16 PASS**. |
+| CX-P | Codex | Wait for attn_proj-only | ⏳ | 🔄 **STILL RUNNING** — ETA ~20 h. |
+| K-I | Kimi | QKV collapse interpretation | ⏳ | ❌ **NOT FOUND** — re-broadcast as E3 / T1. |
+| K-J | Kimi | Discussion vulnerability scan v2 | ⏳ | ❌ **NOT FOUND** — re-broadcast as E3. |
+| K-K | Kimi | Cover letter v2 final | ⏳ | ❌ **NOT FOUND** — re-broadcast as E1 (light-touch audit). |
+| K-L | Kimi | Response phase-3 audit | ⏳ | ❌ **NOT FOUND** — re-broadcast as E2 (light-touch audit). |
+| G-I | Gemini | E1b landing plan | ⏳ | Carry over to Round E. |
+| G-J | Gemini | P1+P2+P5 integration | ⏳ | Carry over to Round E. |
+| G-K | Gemini | Thesis outline draft | ⏳ | Carry over to Round E. |
+| G-L | Gemini | Fig 4 redesign brief | ⏳ | Carry over to Round E. |
+
+### Verified state at Round E dispatch (23:15)
+
+- **GPU:** attn_proj-only RUNNING; all other lanes DONE.
+- **Manuscript:** Main 15pp, Supp 21pp, Cover 2pp — all compile cleanly.
+- **PRE_SUBMISSION_CHECKLIST:** R1 ✅, R2 (D1–D12) ✅, R3 (C1–C11) ✅, R4 ✅. D13 pending.
+- **Guard script:** 16/16 PASS.
+
+### Round E tasks
+
+| ID | Agent | Description | Status |
+|:--|:--|:--|:--:|
+| **B1** | Codex | attn_proj-only completion (passive — wait for GPU drain). | 🔄 |
+| **B2** | Codex | Table SX.N row (e) fill + supp cross-ref after B1. | ⏸️ gated on B1 |
+| **E1** | Kimi | Light-touch cover letter audit — confirm Option B framing + Table SX.N cite. Output `KIMI_COVER_LETTER_AUDIT_20260418.md`. | ⏳ |
+| **E2** | Kimi | Light-touch response draft audit — confirm honest QKV disclosure, no all-linear overstatement. Output `KIMI_RESPONSE_AUDIT_20260418.md`. | ⏳ |
+| **E3** | Kimi | Discussion vulnerability scan v2 — list §6 sentences still implying "MLP-only" exclusivity. Output `KIMI_DISCUSSION_VULNERABILITY_SCAN_20260418.md`. | ⏳ |
+| **E4** | Codex | Fig 4 source-data prep (CSV + README) for submission requirement. No edits. | ⏳ LOW |
+| **E5** | Claude | `REPRODUCIBILITY_PACKAGE_PLAN` scrub — flag stale paths. | ⏳ LOW |
+| T1 | Kimi | QKV collapse interpretation (absorbed into E3 if overlapping). | ⏳ |
+| T2 | Gemini | E1b landing plan (carry-over from G-I). | ⏳ |
+| T3 | Gemini | P1+P2+P5 integration (carry-over from G-J). | ⏳ |
+| T4 | Gemini | Thesis outline draft (carry-over from G-K). | ⏳ |
+| T5 | Gemini | Fig 4 redesign brief (carry-over from G-L). | ⏳ |
+
+### Claude Round-E followups
+
+| ID | Task | Gate |
+|:--|:--|:--|
+| CLAUDE-E1 | Read E1 + E2 audits; reconcile with manuscript if mismatch. | after E1 + E2 |
+| CLAUDE-E2 | Read E3 vulnerability scan; plan §6 softening patches if needed. | after E3 |
+| CLAUDE-E3 | When B1 finishes, run final auto-finalize + recompile. | after B1 |
+| CLAUDE-E4 | Final proofread pass after B2. | after B2 |
+
+**End of Round E task plan.**
+
+---
+
+## 2026-04-18 Round F — New work while attn_proj GPU drains
+
+Brief: `BROADCAST_ASSIGNMENT_20260418F.md`
+
+### Round D/E status reconciliation
+- Gemini G-I / G-J / G-K / G-L all **delivered ✅** (files on disk; ledger updated this round).
+- Kimi E1 / E2 / E3 still ❌ — re-pushed in Round F with HIGH priority.
+- Codex E4 still ⏳ — promoted to CX-Q this round.
+
+### Round F tasks
+
+| ID | Agent | Description | Status |
+|:--|:--|:--|:--:|
+| CX-Q | Codex | Fig 4 source-data CSV + README under `report_md/_gpt/data_releases/` (executes E4). | ✅ |
+| CX-R | Codex | Source-data ZIP scaffold under `release_artifacts/source_data_v0.zip` + manifest. | ✅ |
+| CX-S | Codex | `release_artifacts/CODE_SNAPSHOT_LEDGER_20260418.md` — every script/config the manuscript references with `.tex` line cite. | ✅ |
+| CX-T | Codex | **Auto-finalize hook health-check** — dry-run on synthetic completion event; `AUTO_FINALIZE_DRYRUN_20260418.md`. | ✅ HIGH |
+| CX-U | Codex | Passive: B1 monitor + auto-finalize fire + AGENT_SYNC announce. | 🔄 passive |
+| E1 (re-push) | Kimi | `KIMI_COVER_LETTER_AUDIT_20260418.md` — Option B framing + OPECT 88.53±0.08% + Table SX.N cite check. | ⏳ HIGH |
+| E2 (re-push) | Kimi | `KIMI_RESPONSE_AUDIT_20260418.md` — phase-3 sections (NL ablation + E3 inverse-gamma) honesty check. | ⏳ HIGH |
+| E3 (re-push) | Kimi | `KIMI_DISCUSSION_VULNERABILITY_SCAN_20260418.md` — §6 sentences implying MLP-only exclusivity. | ⏳ HIGH |
+| K-M | Kimi | `KIMI_REVIEWER_OBJECTION_PREP_20260418.md` — top 5 reviewer objections + counter-evidence + residual exposure. | ⏳ MED |
+| G-M | Gemini | `GEMINI_CONTEXT_REREAD_20260418_v2.md` — mandatory 200-word self-summary post Option-B lock. | ✅ |
+| G-N | Gemini | `GEMINI_NL_MITIGATION_THESIS_CHAPTER_20260418.md` — full thesis chapter for NL mitigation. | ✅ |
+| G-O | Gemini | `GEMINI_REVIEWER_PRE_REBUTTAL_20260418.md` — 9 anticipated objections (framework / device / evaluation), 3 each. | ✅ |
+| G-P | Gemini | `GEMINI_E5_LAYER_GAMMA_DESIGN_20260418.md` — runnable design for layer-wise γ sensitivity (Codex Option A). | ✅ |
+| G-Q | Gemini | `GEMINI_E1B_LANDING_PLAN_REVIEW_20260418.md` — self-critique (optional, only if bandwidth). | ⏳ optional |
+| CLAUDE-N | Claude | Execute E5 (REPRODUCIBILITY_PACKAGE_PLAN scrub). | ⏳ |
+| CLAUDE-O | Claude | Sign-off CX-T auto-finalize dry-run. | ⏸️ gated on CX-T |
+| CLAUDE-P | Claude | Apply micro-patches from Kimi E1/E2/E3 if needed. | ⏸️ gated on Kimi |
+| CLAUDE-Q | Claude | Reconcile K-M + G-O into unified rebuttal-ready table. | ⏸️ gated on K-M + G-O |
+| CLAUDE-R | Claude | After B1 + CX-T, integrate row (e) into all downstream tables. | ⏸️ gated on B1 + CX-T |
+
+### Round D/E catch-up ✅
+
+| ID | Agent | Description | Status |
+|:--|:--|:--|:--:|
+| G-I | Gemini | E1b landing plan | ✅ delivered |
+| G-J | Gemini | P1+P2+P5 integration | ✅ delivered |
+| G-K | Gemini | Thesis outline draft | ✅ delivered |
+| G-L | Gemini | Fig 4 redesign brief | ✅ delivered |
+
+**Anti-conflict:** CX work all CPU-only; Kimi/Gemini distinct file namespaces; zero overlap with attn_proj GPU.
+
+---
+
+## 2026-04-19 00:30 Round G — Post-Round-F audit + dual-attention-collapse datapoint
+
+Brief: `BROADCAST_ASSIGNMENT_20260418G.md`
+
+### Round F audit (closing)
+
+| ID | Agent | Audit | Status |
+|:--|:--|:--|:--:|
+| CX-Q/R/S | Codex | Fig4 CSV + ZIP + code ledger all on disk | ✅ |
+| CX-T | Codex | **Caught real bug** in `auto_finalize_nl_ablation.py` (fake hook) and fixed it | ✅ excellent |
+| CX-U | Codex | Watcher armed | ✅ |
+| G-M/N/O/P | Gemini | All 4 delivered; G-M raised valid open question (MLP fresh-instance 32%) | ✅ |
+| E1/E2/E3 | Kimi | 0/3 delivered third round — absorbing into Claude | ❌→ |
+| K-M | Kimi | File exists but is Claude's own pre-draft awaiting Kimi refinement | ⚠️ |
+| CLAUDE-N | Claude | REPRODUCIBILITY_PACKAGE_PLAN scrubbed | ✅ |
+
+### New critical datapoint
+
+**attn_proj-only NL=2.0 is collapsing live** — ep 39/100, best=18.86%@ep 0, test_acc ~11%. Same pattern as QKV-only. **Two-point confirmation that attention-side linearization fails under NL=2.0. MLP-only is the unique recoverable path.** Option B decision doubly supported.
+
+### Round G tasks
+
+| ID | Agent | Description | Status |
+|:--|:--|:--|:--:|
+| CX-V | Codex | B1 passive monitor + auto-finalize fire + AGENT_SYNC announce | ⏳ gated on B1 |
+| CX-W | Codex | `CX_W_DUAL_ATTN_COLLAPSE_PATCH_20260419.md` — propose one-sentence §6 tightening given two-attention failures. Draft only. | ✅ |
+| CX-X | Codex | Source-data `v0.zip` → `v1.zip`: add NL CSVs + cross-dataset + attn-map inputs. | ⏳ MED |
+| CX-Y | Codex | `compute_vit/README.md` top-level reproduction guide. | ✅ |
+| CX-Z | Codex | `compute_vit/LICENSE` Apache 2.0 verify/add. | ✅ |
+| K-N | Kimi | `KIMI_BIB_SANITY_20260419.md` — 5 most-cited refs DOI/year/journal check. **Last chance — if no delivery, Kimi dropped from active roster.** | ⏳ MED |
+| G-R | Gemini | `GEMINI_MLP_FRESH_INSTANCE_GAP_20260419.md` — analyze MLP 32% fresh-instance gap; honest disclosure strategy. | ✅ |
+| G-S | Gemini | `GEMINI_ATTENTION_COLLAPSE_MECHANISM_20260419.md` — why attention fails (softmax amplification vs optimization path); 3 diagnostic experiments. | ✅ |
+| G-T | Gemini | `GEMINI_DATA_RELEASE_REVIEW_20260419.md` — reviewer-perspective review of v0 ZIP + code ledger. | ✅ |
+| G-U | Gemini | `GEMINI_FIG5_REDESIGN_BRIEF_20260419.md` — optional. | ⏳ optional |
+| CLAUDE-S | Claude | Absorb E1: audit `cover_letter.tex` inline to AGENT_SYNC. | ✅ |
+| CLAUDE-T | Claude | Absorb E2: audit REVIEWER_RESPONSE_DRAFT phase-3 inline. | ✅ |
+| CLAUDE-U | Claude | Absorb E3: `DISCUSSION_VULNERABILITY_SCAN_CLAUDE_20260419.md`. | ✅ |
+| CLAUDE-V | Claude | Integrate K-M pre-draft + G-O 9-objection table → `REBUTTAL_READY_TABLE_20260419.md`. | ✅ |
+| CLAUDE-W | Claude | Respond to G-M open question (MLP-linear vs attention-robustness thesis direction). | ✅ |
+| CLAUDE-X | Claude | B1 close-out after attn_proj finishes. | ⏳ gated on B1 + CX-V |
+
+### Round F catch-up ✅
+
+| ID | Description | Status |
+|:--|:--|:--:|
+| CX-Q | Fig 4 source-data CSV + README | ✅ |
+| CX-R | Source-data v0 ZIP + manifest | ✅ |
+| CX-S | Code snapshot ledger | ✅ |
+| CX-T | Auto-finalize dry-run + bug fix | ✅ |
+| G-M | Context re-read v2 | ✅ |
+| G-N | NL mitigation thesis chapter | ✅ |
+| G-O | Reviewer pre-rebuttal 9 objections | ✅ |
+| G-P | E5 layer-γ design | ✅ |
+| CLAUDE-N | REPRODUCIBILITY_PACKAGE_PLAN scrub | ✅ |
+
+**Anti-conflict:** CX-V passive GPU; CX-W draft-only (Claude decides landing); CX-X/Y/Z distinct files; Gemini design-only; CLAUDE-S/T/U independent audits. Zero conflict with attn_proj GPU.
+
+---
+
+## Round H — 2026-04-18 23:55 (GPU freed; mitigation-closure + thesis-opening)
+
+### Codex
+- [ ] CX-AA ⏳ B1 close-out: finalize Table SX.N row (e) with attn_proj stopped-at-ep54 data (CRITICAL)
+- [ ] CX-AB ⏳ H-GPU-1: all-linear fresh-instance evaluation (gated on CX-AA)
+- [ ] CX-AC ⏳ H-GPU-2: MLP-Linear + Ensemble HAT joint training (thesis-only, gated on CX-AB, 18-24h)
+- [ ] CX-AD ⏳ source_data_v1.zip expansion (parallel CPU, per G-T review)
+- [ ] CX-AE ⏳ Proofread + consistency sweep + re-run check_locked_numbers.py
+- [ ] CX-AF ⏳ Passive GPU monitor during CX-AC
+
+### Gemini (stateless; pick any 2)
+- [ ] G-V ⏳ Thesis chapter scaffold "Severe-NL as a diagnostic lens"
+- [ ] G-W ⏳ Reviewer rebuttal prose expansion (11 objections → actual response text)
+- [ ] G-X ⏳ Thesis figure brainstorm: collapse taxonomy
+- [ ] G-Y ⏳ Rebuttal-coverage audit (§6 text vs. planned responses)
+
+### Claude (self)
+- [x] CLAUDE-Y ✅ Drop Kimi formally from active roster (3rd round non-delivery)
+- [ ] CLAUDE-Z ⏳ Post-CX-AB review of NL_LANE_RESULTS fresh-instance rows
+- [ ] CLAUDE-AA ⏳ Post-CX-AC interpretation memo (thesis narrative shift or escalation)
+- [ ] CLAUDE-AB ⏳ Bibliography last-pass (absorbed from dropped K-N)
+
+### Kimi
+- DROPPED FROM ACTIVE ROSTER — 3 consecutive rounds of non-delivery (E1/E2/E3 + K-N).
+
+---
+
+## Round H REVISED — 2026-04-19 (Codex + Gemini no quota; Kimi-only)
+
+### CX-AA/AB/AC/AD/AE/AF — DEFERRED
+- Codex out of quota. All GPU experiments (CX-AB all-linear fresh-instance, CX-AC MLP-Linear + Ensemble HAT joint training) parked until quota returns.
+- CX-AA auto-finalize reroutes to K-O1 hand-edit.
+
+### G-V/W/X/Y — DEFERRED
+- Gemini out of quota. Tasks re-routed to Kimi K-O5 (thesis chapter), K-O2 (rebuttal prose), K-O7 (coverage audit).
+
+### Kimi (sole active executor; dropped-status rescinded)
+- [ ] K-O1 ⏳ Table SX.N row (e) diff (CRITICAL, replaces CX-AA)
+- [ ] K-O2 ⏳ Reviewer rebuttal prose expansion (HIGH, replaces G-W)
+- [ ] K-O3 ⏳ Bibliography last-pass (HIGH, absorbs CLAUDE-AB + old K-N)
+- [ ] K-O4 ⏳ Consistency sweep (HIGH, replaces CX-AE)
+- [ ] K-O5 ⏳ Severe-NL thesis chapter scaffold (MED, replaces G-V)
+- [ ] K-O6 ⏳ Source-data v1 manifest draft (MED, replaces CX-AD text-only)
+- [ ] K-O7 ⏳ Rebuttal-coverage audit (LOW, replaces G-Y)
+
+### Claude (self)
+- [x] CLAUDE-Y ✅ Re-instate Kimi; archive Codex+Gemini quota-frozen status
+- [ ] CLAUDE-AC ⏳ Review K-O1 diff and apply
+- [ ] CLAUDE-AD ⏳ Review K-O2 rebuttal prose; polish
+- [ ] CLAUDE-AE ⏳ Review K-O4 consistency sweep; apply fixes
+- [ ] CLAUDE-AF ⏳ Recompile + re-run check_locked_numbers.py after each tex landing
+
+---
+
+## Round I — 2026-04-19 21:15 (Kimi audit → Codex application)
+
+### Round H closure (Kimi)
+- [x] K-O2 ✅ rebuttal prose (`KIMI_REBUTTAL_PROSE_20260419.md`)
+- [x] K-O3 ✅ bib last-pass
+- [x] K-O4 ✅ consistency sweep
+- [x] K-O5 ✅ severe-NL thesis chapter
+- [x] K-O6 ✅ source_data_v1.zip assembled
+- [x] K-O7 ✅ rebuttal coverage audit
+- [x] C-3 ✅ CrossSim correction draft (`KIMI_CROSSSIM_STATS_CORRECTION_20260419.md`)
+- [x] Hyperparameters ✅ draft (`KIMI_HYPERPARAMS_DRAFT_20260419.md`)
+- [x] FINAL_CONTENT_REVIEW ✅ delivered
+- Kimi exhausted; frozen for Round I.
+
+### Codex (sole executor; quota restored)
+
+CRITICAL (submission blockers):
+- [x] CX-BA ✅ Table SX.N row (e) landed from the locally verified attn\_proj stop-state (`best=18.86%@ep0`, `final≈10.25%`, stopped at ep54 after sustained collapse); updated `supplementary.tex`, `SUPP_TABLE_NL_ABLATION_SCAFFOLD.md`, and `CLAUDE_A_DECISION_FINAL_20260418.md`
+- [ ] CX-BB 🔄 C-1 re-run standard-HAT fresh-instance `--no-amp` × 10 seeds (host-WSL GPU active; Python PID 1688579 confirmed)
+- [x] CX-BC ✅ CrossSim correction landed in `06_discussion.tex`, `supplementary.tex`, and `REVIEWER_RESPONSE_DRAFT_gpt.md`; subset protocol and actual replication counts disclosed
+- [x] CX-BD ✅ Training hyperparameters paragraph landed in `03_methodology.tex`
+- [x] CX-BE ✅ R1/R5/R8 rebuttal-side fixes landed in `REVIEWER_RESPONSE_DRAFT_gpt.md` and `REBUTTAL_READY_TABLE_20260419.md`
+
+HIGH (metadata):
+- [x] CX-BF ✅ Keywords inserted after abstract in `main.tex`
+- [ ] CX-BG ⏳ Add Corresponding author (needs user email)
+- [ ] CX-BH ⏳ Add Acknowledgements (needs user funding text)
+- [x] CX-BI ✅ Forward-pointer for `eq:scale-recovery` landed in `05_results.tex`
+- [x] CX-BJ ✅ 88.41% cadence result relabeled as exploratory 50-epoch training ablation
+
+MED:
+- [ ] CX-BK ⏳ Rebuild submission bundle
+- [ ] CX-BL ⏳ Nature Portfolio Reporting Summary
+- [ ] CX-BM ⏳ Suggested reviewers list (needs user input)
+
+DEFERRED (thesis):
+- [ ] CX-AC ⏳ Joint MLP-Linear + Ensemble HAT training (post-CX-BB GPU)
+- [ ] CX-AB 🔄 All-linear fresh-instance eval (host-WSL GPU active; Python PID 1761894 confirmed)
+
+### Claude (self)
+- [ ] CLAUDE-AG ⏳ Ask user 4 open questions (corresponding author, funding, reviewers, GPU-stop approval)
+- [ ] CLAUDE-AH ⏳ Review C-1 re-run result (post-CX-BB)
+- [ ] CLAUDE-AI ⏳ Spot-check submission bundle (post-CX-BK)
+- [ ] CLAUDE-AJ ⏳ Final submission-readiness verdict
+
+### Kimi + Gemini
+- FROZEN — quota exhausted. No tasks this round.
+
+---
+
+## Round I REVISED — 2026-04-19 21:40 (Kimi-heavy + Codex-GPU split)
+
+### Rebalance trigger
+- User: "kimi回来了，codex额度比较[少]，kimi额度多一点，合理分配任务"
+- Kimi back online with more quota; Codex quota tighter.
+
+### Kimi (primary executor)
+
+CRITICAL — tex application:
+- [ ] K-P1 ⏳ Apply CrossSim correction (C-3) to §6.6 + add Supp Note SX.Y
+- [ ] K-P2 ⏳ Apply hyperparameters paragraph to §3 Methodology
+- [ ] K-P3 ⏳ Apply R1/R5/R8 rebuttal patches per K-O7
+- [ ] K-P4 ⏳ Table SX.N row (e) hand-edit (attn_proj ep59 snapshot)
+
+HIGH — NC metadata:
+- [ ] K-P5 ⏳ Add Keywords (5–8)
+- [ ] K-P6 ⏳ Add Acknowledgements section
+- [ ] K-P7 ⏳ Add Corresponding author placeholder
+- [ ] K-P8 ⏳ Forward-pointer for eq:scale-recovery
+- [ ] K-P9 ⏳ Label 88.41% as training ablation
+
+MED — packaging prep:
+- [ ] K-P10 ⏳ Draft NC Reporting Summary
+- [ ] K-P11 ⏳ Draft Suggested Reviewers list (3–5)
+- [ ] K-P12 ⏳ Consistency sweep v2 (post-edits)
+- [ ] K-P13 ⏳ Reviewer-reply final package assembly
+
+LOW:
+- [ ] K-P14 ⏳ Final manuscript read-through
+
+### Codex (GPU + scripts only; tight quota)
+- [ ] CX-BB ⏳ C-1 re-run standard-HAT fresh-instance `--no-amp` × 10 seeds (stop attn_proj-only first)
+- [ ] CX-BK ⏳ Recompile + rebuild submission bundle (after K-P1–P9 land)
+- [ ] CX-BN ⏳ Re-run check_locked_numbers.py
+- [ ] CX-AC ⏳ Deferred: joint MLP-Linear + Ensemble HAT training (thesis)
+- [ ] CX-AB ⏳ Deferred: all-linear fresh-instance eval
+
+### Codex tasks now DESCOPED (absorbed by Kimi to save Codex quota)
+- ~~CX-BA~~ → K-P4
+- ~~CX-BC~~ → K-P1
+- ~~CX-BD~~ → K-P2
+- ~~CX-BE~~ → K-P3
+- ~~CX-BF/BG/BH/BI/BJ~~ → K-P5/P6/P7/P8/P9
+- ~~CX-BL/BM~~ → K-P10/P11
+
+### Claude (self)
+- [ ] CLAUDE-AG ⏳ Ask user 4 open questions
+- [ ] CLAUDE-AK ⏳ Audit K-P1–P9 applied edits before Codex recompile
+- [ ] CLAUDE-AH ⏳ Review CX-BB C-1 result
+- [ ] CLAUDE-AI ⏳ Spot-check CX-BK bundle
+- [ ] CLAUDE-AJ ⏳ Final submission-readiness verdict
+
+### Gemini
+- FROZEN (no quota).
+
+---
+
+## Round I update — 2026-04-19 (user takes metadata)
+
+### Reassigned to USER (self-written, academic institution)
+- [ ] K-P6 → USER: Acknowledgements text
+- [ ] K-P7 → USER: Corresponding author + email
+- [ ] K-P11 → USER: Suggested Reviewers list (3–5)
+
+### Kimi remaining queue (slimmed)
+- [ ] K-P10 ⏳ NC Reporting Summary draft (no user-specific fields needed; skeleton only)
+- [ ] K-P12 ⏳ Consistency sweep v2 (post CX-BB landing)
+- [ ] K-P13 ⏳ Reviewer-reply final package assembly
+- [ ] K-P14 ⏳ Final manuscript read-through
+
+### Codex queue (unchanged)
+- [ ] CX-BB 🔄 C-1 re-run IN PROGRESS (PID 1688579)
+- [ ] CX-BK ⏳ Rebuild submission bundle (post CX-BB)
+- [ ] CX-BN ⏳ Re-run check_locked_numbers.py (post edits)
+
+---
+
+## Status snapshot — 2026-04-19 22:10
+
+### GPU running
+- CX-BB C-1 re-run PID 1688579 (~4h CPU) — awaiting fresh_instance_eval_v4_standard_noamp.json
+- CX-AB all-linear fresh-instance PID 1761894 (~30min CPU)
+
+### Review coverage: all R1/R2/R3/R4 + Kimi C-2/C-3 + K-O7 ✅; only C-1 in flight + D13 soft-risk
+### Compile: main 17pp, supp 21pp, cover 2pp, 16/16 locked ✅
+
+### USER-owned (blocking submission)
+- [ ] Acknowledgements text
+- [ ] Corresponding author + email
+- [ ] Suggested reviewers (3–5)
+
+### New artifact
+- `report_md/_gpt/EXTERNAL_REVIEWER_PROMPT.md` — ready-to-hand-off prompt for external senior review
+
+---
+
+## Round J — 2026-04-19 22:35 (external-review triage)
+
+### External-review blockers reality check
+- B-1 SX.Y missing → ❌ FALSE (already at `supplementary.tex:715`)
+- B-2 two-level MC undisclosed → ✅ TRUE — K-Q1
+- B-3 MLP fresh-instance 32% invisible → ✅ TRUE — K-Q2
+- S-1 correlated D2D absent → ✅ TRUE — CX-CA
+
+### Kimi (text, quota plentiful)
+CRITICAL (real blockers):
+- [ ] K-Q1 ⏳ Disclose two-level MC hierarchy in §3 near Eq.4
+- [ ] K-Q2 ⏳ MLP fresh-instance ~32% note in Table S16
+- [ ] K-Q3 ⏳ B-1 verification audit (already solved; just confirm)
+
+SHOULD-FIX (text):
+- [ ] K-Q4 ⏳ S-2: "simulation framework" hedge in abstract + Limitations
+- [ ] K-Q5 ⏳ S-4: soften CrossSim 14.43 pp wording
+- [ ] K-Q6 ⏳ S-5: ImageNet failure-mode prediction in §4.5
+- [ ] K-Q7 ⏳ S-6: forward pointers for Eq. 3, Eq. 8
+- [ ] K-Q8 ⏳ N-1: 10.00% collapsed-predictor wording
+- [ ] K-Q9 ⏳ N-2: per-batch HAT (86.16%) to main text
+- [ ] K-Q10 ⏳ N-3: write-verify overhead in Limitations
+- [ ] K-Q11 ⏳ N-4: restore "placeholder" qualifier in §7 energy
+
+POST-CX-BB DEPENDENT:
+- [ ] K-Q12 ⏳ Fold C-1 re-run result
+- [ ] K-Q13 ⏳ Consistency sweep v2
+- [ ] K-Q14 ⏳ Final readthrough
+
+### Codex (GPU + matplotlib; tight quota)
+- [ ] CX-CA ⏳ HIGH: spatial-correlation D2D ablation (AR(1) ρ=0.3) — GATE: after CX-BB
+- [ ] CX-CB ⏳ MED: Figure 1 hatch/dashed visual disambiguation
+- [ ] CX-CC ⏳ MED: submission bundle rebuild (after text edits)
+- [ ] CX-CD ⏳ LOW: check_locked_numbers.py re-run
+
+### Codex NOT doing tex edits (preserve quota for CX-CA)
+
+### Claude (self)
+- [ ] CLAUDE-AL ⏳ Audit K-Q1–Q11 pre-recompile
+- [ ] CLAUDE-AM ⏳ Interpret CX-BB C-1 JSON
+- [ ] CLAUDE-AN ⏳ Interpret CX-CA correlated-D2D result
+- [ ] CLAUDE-AO ⏳ Response-letter post-Round-J reread
+- [ ] CLAUDE-AP ⏳ Bundle spot-check post-CX-CC
+
+### User
+- Acknowledgements text, corresponding-author + email, suggested reviewers (still blocking final submission)
+
+---
+
+## Round K — 2026-04-19 02:15 (post-Round-J, quota Kimi > Gemini > Codex)
+
+Broadcast: `BROADCAST_ASSIGNMENT_20260418K.md`
+
+### Kimi (heaviest)
+- [ ] K-R1 ⏳ Fold CX-BB no-AMP confirmation (10.00% REAL) into 05_results.tex + Supp Note SX.Y
+- [ ] K-R2 ⏳ Fold CX-AB all-linear=32.60±9.18% into Supp Table SX.N caption
+- [ ] K-R3 ⏳ CX-CA smoke hedged note in Limitations / supp (preliminary)
+- [ ] K-R4 ⏳ Audit Round-J residuals K-Q4/Q5/Q6/Q7/Q9 → KIMI_ROUND_J_RESIDUAL_AUDIT.md
+- [ ] K-R5 ⏳ Consistency sweep v2 → KIMI_CONSISTENCY_SWEEP_V2_20260419.md
+- [ ] K-R6 ⏳ RESPONSE_LETTER_FINAL finalize w/ new evidence
+- [ ] K-R7 ⏳ Replace K-R3 hedge with full CX-CA result (gated on CX-DA)
+- [ ] K-R8 ⏳ Final readthrough end-to-end
+
+### Gemini (medium; stateless design briefs)
+- [x] G-Z1 ✅ Mechanism paragraph: why AR(1) ρ=0.3 preserves ranking → GEMINI_CORRELATED_D2D_MECHANISM.md
+- [x] G-Z2 ✅ Single-class collapse mechanistic story → GEMINI_SINGLE_CLASS_COLLAPSE_MECHANISM.md
+- [x] G-Z3 ✅ Thesis chapter integration brief → GEMINI_THESIS_INTEGRATION_BRIEF.md
+- [x] G-Z4 ✅ D2D-correlation sensitivity figure design → GEMINI_FIG_CORR_D2D_SPEC.md
+
+### Codex (tight; GPU harvest + bundle only)
+- [ ] CX-DA ⏳ Harvest CX-CA full JSON → CODEX_S1_CORRELATED_D2D_20260420.md
+- [ ] CX-DB ⏳ Bundle rebuild (carry-over from CX-CC) — gated on K-R7
+- [ ] CX-DC ⏳ check_locked_numbers.py rerun — gated on CX-DB
+- [⛔] CX-AC deferred (thesis-only)
+
+### Claude self
+- [ ] CLAUDE-AQ ⏳ Audit K-R1–R6 landings
+- [ ] CLAUDE-AR ⏳ Cross-check K-R7 fold against CX-DA table
+- [ ] CLAUDE-AS ⏳ Bundle spot-check post-CX-DB
+- [ ] CLAUDE-AT ⏳ Final response-letter read post-K-R6
+- [ ] CLAUDE-AU ⏳ Submission go/no-go on user metadata
+
+## Codex update — 2026-04-19 02:49
+- CX-DA ✅ correlated-D2D harvest complete:
+  - iid `86.33±1.61%`
+  - `rho=0.3` `84.57±2.39%`
+  - `rho=0.5` `82.12±3.95%`
+  - report: `CODEX_S1_CORRELATED_D2D_20260420.md`
+- CX-DB ✅ submission bundle rebuilt from live sources at `outputs/submission_bundle_20260419/`
+- CX-DC ✅ `check_locked_numbers.py` post-harvest rerun passed `16/16`
+- Scientific state: correlated-D2D now closed; manuscript retains risk-ranking claim with bounded degradation under spatial correlation.
+
+---
+
+## Round L — 2026-04-19 03:30 (post-Round-K closure; red team + archive + thesis fork)
+
+Broadcast: `BROADCAST_ASSIGNMENT_20260418L.md`
+
+### Kimi (heavy; 8 tasks across 3 tracks)
+- [x] K-S1 ✅ Hostile-reviewer end-to-end pass → KIMI_RED_TEAM_AUDIT_20260419.md
+- [x] K-S2 ✅ Figure caption audit → KIMI_FIGURE_CAPTION_AUDIT_20260419.md
+- [x] K-S3 ✅ Notation / glossary sweep → KIMI_NOTATION_AUDIT_20260419.md
+- [x] K-S4 ✅ Citation completeness audit → KIMI_CITATION_AUDIT_20260419.md
+- [x] K-S5 ✅ Cover letter final polish (landed in cover_letter.tex/pdf)
+- [x] K-S6 ✅ Editor's-eye 100-word abstract variant → KIMI_EDITOR_ABSTRACT_VARIANT_20260419.md
+- [x] K-S7 ✅ Thesis chapter outline → KIMI_THESIS_CHAPTER_OUTLINE_20260420.md
+- [x] K-S8 ✅ Source-data README readability pass
+
+### Gemini (medium; 5 stateless design briefs)
+- [x] G-AA1 ✅ Desk-reject defense → GEMINI_DESK_REJECT_DEFENSE_20260419.md
+- [x] G-AA2 ✅ ImageNet pilot scoping → GEMINI_IMAGENET_PILOT_SCOPE_20260420.md
+- [x] G-AA3 ✅ Joint MLP-Linear + Ensemble HAT spec → GEMINI_JOINT_TRAINING_SPEC_20260420.md
+- [x] G-AA4 ✅ Fig CORR_D2D refined spec → GEMINI_FIG_CORR_D2D_FINAL_SPEC_20260420.md
+- [x] G-AA5 ✅ 100-word press blurb → GEMINI_PRESS_BLURB_20260420.md
+
+### Codex (tight; 4 = 3 active + 1 gated)
+- [x] CX-EA ✅ Generate Fig CORR_D2D + integrate (figS_corr_d2d landed in supplementary)
+- [x] CX-EB ✅ Zenodo-ready archive → release_artifacts/zenodo_archive_v0/
+- [x] CX-EC ✅ Pre-flight bundle integrity check → CODEX_PREFLIGHT_20260420.md
+- [ ] CX-ED ⛔ Final bundle rebuild (gated on USER METADATA)
+
+### Claude self
+- [ ] CLAUDE-AV ⏳ Triage K-S1 CRITICAL items
+- [x] CLAUDE-AW ✅ Decide Fig CORR_D2D main vs supp placement (supplementary)
+- [x] CLAUDE-AX ✅ Compose USER_METADATA_REQUEST form
+- [ ] CLAUDE-AY ⏳ Final go/no-go after CX-ED
+- [ ] CLAUDE-AZ ⏳ Pre-emptive rebuttal-prep notes → CLAUDE_REBUTTAL_PREP_20260420.md
+
+---
+
+## Round M — 2026-04-19 10:50 (rebuttal arsenal + NC-housekeeping + thesis fork ignition)
+
+Broadcast: `BROADCAST_ASSIGNMENT_20260418M.md`
+
+### Kimi (heaviest; 8 across 3 tracks)
+- [x] K-T1 ✅ SF-1 page-count normalization (22→23 supp)
+- [x] K-T2 ✅ SF-2 Zenodo archive mention
+- [x] K-T3 ✅ CRediT statement draft → KIMI_CREDIT_STATEMENT_DRAFT_20260420.md
+- [x] K-T4 ✅ Data + Code Availability statements → KIMI_DATA_CODE_AVAIL_DRAFT_20260420.md
+- [x] K-T5 ✅ Top-10 anticipated reviewer objections → KIMI_REBUTTAL_ARSENAL_V1_20260420.md
+- [x] K-T6 ✅ Thesis Chapter 1 actual LaTeX skeleton → paper/thesis/chapter_1_*.tex
+- [x] K-T7 ✅ NC submission checklist → KIMI_NC_SUBMISSION_CHECKLIST_20260420.md
+- [x] K-T8 ✅ Reviewer-suggester types brief → KIMI_REVIEWER_SUGGESTER_BRIEF_20260420.md
+
+### Gemini (medium; 5 stateless)
+- [x] G-BB1 ✅ Heavy-tailed D2D stress-test spec → GEMINI_HEAVY_TAILED_SPEC_20260420.md
+- [x] G-BB2 ✅ IR-drop preliminary modeling spec → GEMINI_IR_DROP_SPEC_20260420.md
+- [x] G-BB3 ✅ Per-batch vs per-epoch HAT viz design → GEMINI_PER_BATCH_VIZ_SPEC_20260420.md
+- [x] G-BB4 ✅ Ethics + reproducibility statement → GEMINI_ETHICS_REPRO_DRAFT_20260420.md
+- [x] G-BB5 ✅ GPU-window strategy brief → GEMINI_GPU_STRATEGY_BRIEF_20260420.md
+
+### Codex (medium; GPU now available)
+- [x] CX-FA ✅ Joint training pilot smoke (3 epochs) → CODEX_JOINT_TRAINING_SMOKE_20260420.md (cold-start wiring smoke completed; not a scientific result)
+- [x] CX-FB ✅ Land K-T1+K-T2 edits + recompile (if Kimi only drafts)
+- [x] CX-FC ✅ Heavy-tailed evaluator STUB script (no execution)
+- [ ] CX-FD ⛔ Final bundle rebuild (gated on USER METADATA)
+- [x] CX-FE ✅ Pre-flight v2 → CODEX_PREFLIGHT_V2_20260420.md
+
+### Claude self
+- [ ] CLAUDE-BA ⏳ Classify K-T5 arsenal coverage; flag any uncovered objection requiring Round-N experiment
+- [ ] CLAUDE-BB ⏳ GPU-window decision (joint training vs ImageNet pilot) after G-BB5
+- [ ] CLAUDE-BC ⏳ Consolidated user-decision form → CLAUDE_USER_DECISION_REQUEST_20260420.md
+- [ ] CLAUDE-BD ⏳ Final spot-check post-CX-FD
+- [ ] CLAUDE-BE ⏳ Round-N go/no-go on full joint training after CX-FA smoke
+- [ ] CLAUDE-BF ⏳ Audit K-T7 NC checklist
+
+---
+
+## Round N — 2026-04-19 11:25 (long-horizon; Kimi/Gemini saturation)
+
+Broadcast: `BROADCAST_ASSIGNMENT_20260418N.md` (declares Round N in full + shape of Rounds O and P)
+
+### Kimi (saturated; 11 tasks across 4 tracks)
+- [ ] K-U1 ⏳ Thesis Ch.2 Framework → paper/thesis/chapter_2_framework.tex
+- [ ] K-U2 ⏳ Thesis Ch.3 HAT Taxonomy → paper/thesis/chapter_3_hat_taxonomy.tex
+- [ ] K-U3 ⏳ Thesis Ch.4 Failure Mode Atlas → paper/thesis/chapter_4_failure_modes.tex
+- [ ] K-U4 ⏳ Rebuttal v2 stats-rigor → KIMI_REBUTTAL_ARSENAL_V2_STATS_20260420.md
+- [ ] K-U5 ⏳ Rebuttal v2 method-choice → KIMI_REBUTTAL_ARSENAL_V2_METHODS_20260420.md
+- [ ] K-U6 ⏳ Rebuttal v2 generalization → KIMI_REBUTTAL_ARSENAL_V2_GEN_20260420.md
+- [ ] K-U7 ⏳ Literature landscape review → KIMI_LIT_LANDSCAPE_20260420.md
+- [ ] K-U8 ⏳ Citation polish pass (edits to refs_gpt.bib + tex inserts)
+- [ ] K-U9 ⏳ Docstring pass 5 core modules → KIMI_DOCSTRING_PASS_20260420.md
+- [ ] K-U10 ⏳ Repo README draft → KIMI_REPO_README_DRAFT_20260420.md
+- [ ] K-U11 ⏳ Rebuttal logistics playbook → KIMI_REBUTTAL_PLAYBOOK_20260420.md
+
+### Gemini (medium-heavy; 7 stateless)
+- [ ] G-CC1 ⏳ Temperature-drift stress-test spec → GEMINI_TEMP_DRIFT_SPEC_20260420.md
+- [ ] G-CC2 ⏳ Retention-extended spec → GEMINI_RETENTION_EXTENDED_SPEC_20260420.md
+- [ ] G-CC3 ⏳ ADC-precision floor theory → GEMINI_ADC_FLOOR_THEORY_20260420.md
+- [ ] G-CC4 ⏳ HAT-as-implicit-regularizer theory → GEMINI_HAT_AS_REGULARIZER_20260420.md
+- [ ] G-CC5 ⏳ Ensemble-frequency effective-width theory → GEMINI_ENSEMBLE_FREQ_THEORY_20260420.md
+- [ ] G-CC6 ⏳ Thesis narrative arc all chapters → GEMINI_THESIS_NARRATIVE_ARC_20260420.md
+- [ ] G-CC7 ⏳ Paper #2 scoping → GEMINI_PAPER_2_SCOPING_20260420.md
+
+### Codex (minimal; 2 total)
+- [x] CX-GA ✅ Warm-start resume bug-fix + 1-epoch validation → CODEX_WARM_START_FIX_20260420.md
+- [ ] CX-GB ⛔ Final bundle rebuild (gated on USER FORM)
+
+### Claude self
+- [ ] CLAUDE-BG ⏳ Audit thesis chapter drafts as they land
+- [ ] CLAUDE-BH ⏳ Merge rebuttal v1+v2 → CLAUDE_REBUTTAL_MASTER_20260420.md
+- [ ] CLAUDE-BI ⏳ Select must-add citations from K-U7
+- [ ] CLAUDE-BJ ⏳ Ratify thesis outline post-G-CC6 + K-U1–U3
+- [ ] CLAUDE-BK ⏳ Pick leading paper-2 candidate from G-CC7
+- [ ] CLAUDE-BL ⏳ Audit CX-GA patch + authorize Round-O GPU
+- [ ] CLAUDE-BM ⏳ Submission-ready spot-check post-CX-GB
+
+---
+
+## Round O — 2026-04-19 11:45 (MULTI-DAY; thesis completion + artifacts + defense prep)
+
+Broadcast: `BROADCAST_ASSIGNMENT_20260418O.md` — 3-phase program, ~3 days of autonomous Kimi/Gemini work
+
+### Kimi (deep saturation; 18 tasks across 3 phases)
+
+**Phase α (Day 1) — thesis completion core + Gemini backfill**
+- [ ] K-V1 ⏳ Thesis Ch.5 Mitigation case studies → paper/thesis/chapter_5_mitigation.tex
+- [ ] K-V2 ⏳ Thesis Ch.6 Physical-realism extensions → chapter_6_physical_realism.tex
+- [ ] K-V3 ⏳ Thesis Ch.7 Deployment envelope → chapter_7_deployment.tex
+- [ ] K-V4 ⏳ Thesis Ch.8 Outlook + conclusion → chapter_8_outlook.tex
+- [ ] K-V5 ⏳ HAT-as-regularizer theory note (backfill G-CC4) → KIMI_HAT_AS_REGULARIZER_NOTE_20260420.md
+- [ ] K-V6 ⏳ Ensemble-freq effective-width theory (backfill G-CC5) → KIMI_ENSEMBLE_FREQ_THEORY_NOTE_20260420.md
+- [ ] K-V7 ⏳ Thesis narrative arc (backfill G-CC6) → KIMI_THESIS_NARRATIVE_ARC_20260420.md
+- [ ] K-V8 ⏳ Rebuttal MASTER consolidation → KIMI_REBUTTAL_MASTER_20260420.md
+
+**Phase β (Day 2) — community artifacts + paper-2 deep scope**
+- [ ] K-V9 ⏳ Tutorial notebook skeleton → notebooks/tutorial_compute_vit.ipynb
+- [ ] K-V10 ⏳ Blog post draft (~1500w) → KIMI_BLOG_DRAFT_20260420.md
+- [ ] K-V11 ⏳ 15-min talk script → KIMI_TALK_SCRIPT_15MIN_20260420.md
+- [ ] K-V12 ⏳ 5-min talk script → KIMI_TALK_SCRIPT_5MIN_20260420.md
+- [ ] K-V13 ⏳ Paper-2 deep scope (3 routes; backfill G-CC7) → KIMI_PAPER_2_DEEP_SCOPE_20260420.md
+- [ ] K-V14 ⏳ Public FAQ (15 Q&A) → KIMI_PUBLIC_FAQ_20260420.md
+
+**Phase γ (Day 3) — defense materials + final QA**
+- [ ] K-V15 ⏳ PhD defense slide outline (45–60 slides) → KIMI_DEFENSE_SLIDES_OUTLINE_20260420.md
+- [ ] K-V16 ⏳ PhD defense Q&A prep (25 Q) → KIMI_DEFENSE_QA_PREP_20260420.md
+- [ ] K-V17 ⏳ Cross-thesis consistency pass → KIMI_THESIS_CONSISTENCY_20260420.md
+- [ ] K-V18 ⏳ NC submission final audit → KIMI_NC_FINAL_AUDIT_20260420.md
+
+### Gemini (medium-heavy; 12 stateless across 3 phases)
+
+**Phase α — deep experimental specs (v2 since Round-N didn't land)**
+- [ ] G-DD1 ⏳ Temperature-drift v2 → GEMINI_TEMP_DRIFT_SPEC_V2_20260420.md
+- [ ] G-DD2 ⏳ Retention-extended v2 → GEMINI_RETENTION_EXTENDED_SPEC_V2_20260420.md
+- [ ] G-DD3 ⏳ ADC-precision floor theory v2 → GEMINI_ADC_FLOOR_THEORY_V2_20260420.md
+- [ ] G-DD4 ⏳ Heavy-tailed D2D v2 → GEMINI_HEAVY_TAILED_SPEC_V2_20260420.md
+- [ ] G-DD5 ⏳ IR-drop preliminary v2 → GEMINI_IR_DROP_SPEC_V2_20260420.md
+
+**Phase β — strategy & positioning**
+- [ ] G-DD6 ⏳ Strategic positioning memo → GEMINI_POSITIONING_MEMO_20260420.md
+- [ ] G-DD7 ⏳ Next-grant proposal outline → GEMINI_GRANT_PROPOSAL_OUTLINE_20260420.md
+- [ ] G-DD8 ⏳ Conference-venue fit analysis → GEMINI_CONFERENCE_FIT_20260420.md
+- [ ] G-DD9 ⏳ Industrial partnership brief → GEMINI_INDUSTRIAL_BRIEF_20260420.md
+
+**Phase γ — thesis polish + defense support**
+- [ ] G-DD10 ⏳ Thesis abstract variant → GEMINI_THESIS_ABSTRACT_20260420.md
+- [ ] G-DD11 ⏳ Thesis big-picture figure spec → GEMINI_THESIS_BIG_PICTURE_FIG_SPEC_20260420.md
+- [ ] G-DD12 ⏳ Defense wildcard Q&A → GEMINI_DEFENSE_WILDCARD_QA_20260420.md
+
+### Codex (minimal; 1 gated + 2 optional)
+- [ ] CX-HA ⛔ Final bundle rebuild (gated on USER FORM)
+- [ ] CX-HB ⛔ Joint training warm-start full run (optional, user-gated)
+- [ ] CX-HC ⛔ ImageNet-100 pilot (optional, user-gated)
+
+### Claude self
+- [ ] CLAUDE-BN ⏳ Phase-α audit K-V1–V4 thesis chapters
+- [ ] CLAUDE-BO ⏳ Verify K-V8 rebuttal master dedup/cross-link
+- [ ] CLAUDE-BP ⏳ Phase-β audit K-V9–V12 artifacts
+- [ ] CLAUDE-BQ ⏳ Paper-2 candidate pick from K-V13 → 1-page rationale
+- [ ] CLAUDE-BR ⏳ Phase-γ audit K-V15–V16 defense materials
+- [ ] CLAUDE-BS ⏳ Thesis v0 lock after K-V17 + K-V18
+- [ ] CLAUDE-BT ⏳ Submission-ready broadcast post-CX-HA
+- [ ] CLAUDE-BU ⏳ CX-HB fold-decision if ≥80% achieved
+- [ ] CLAUDE-BV ⏳ Round P planning draft
+
+---
+
+## GPU DISPATCH — 2026-04-20 (BROADCAST_GPU_DISPATCH_20260420.md)
+
+### Codex GPU queue — priority-ranked (8 experiments, ~192–287 GPU-h total)
+
+**Tier 1 — thesis punchline + rebuttal-critical (≈50 GPU-h)**
+- [x] CX-J1 ⛔ Joint warm-start full run (MLP-linear + Ensemble HAT); target ≥80% fresh-instance; 30–40 GPU-h
+- [x] CX-J2 ⛔ Heavy-tailed D2D full sweep (log-normal σ_log ∈ {0.1,0.2,0.3} + Pareto α ∈ {2.5,3.0,4.0}); 8–12 GPU-h
+
+**Tier 2 — rebuttal-defensive (≈18–25 GPU-h)**
+- [x] CX-J3 ⛔ Temperature drift (Arrhenius T ∈ {-20,0,25,50,85}°C, Ea ∈ {0.5,0.8}eV); 10–14 GPU-h
+- [x] CX-J4 ⛔ IR-drop 16×16 + 32×32 geometry; 8–12 GPU-h
+
+**Tier 3 — thesis extension (≈35–55 GPU-h)**
+- [x] CX-J5 ⛔ Per-batch HAT cadence sweep (every {1,4,16,64,256,1024,full} steps); 20–30 GPU-h
+- [x] CX-J6 ⛔ Retention-extended (1h / 1d / 1w / 1mo accelerated aging); 15–25 GPU-h
+
+**Tier 4 — forward-paper scope (≈103–155 GPU-h)**
+- [x] CX-J7 ⛔ ADC floor scan ({4,5,6,7,8,10,12} bits); 3–5 GPU-h
+- [x] CX-J8 ⛔ ImageNet-100 pilot (largest single run); 100–150 GPU-h
+
+### Kimi parallel fold-ins (depend on respective CX-J* landings)
+- [x] K-W1 ⏳ Fold CX-J1 result into thesis Ch.5 + rebuttal OBJ-thesis-punchline
+- [x] K-W2 ⏳ Fold CX-J2 into rebuttal OBJ-E (heavy-tailed generalization)
+- [x] K-W3 ⏳ Fold CX-J3 into paper §5.9 + rebuttal temperature objection
+- [x] K-W4 ⏳ Fold CX-J4 into paper §5.9 + supplement IR-drop subsection
+- [x] K-W5 ⏳ Fold CX-J5 into thesis Ch.5 HAT-cadence ablation
+- [x] K-W6 ⏳ Fold CX-J6 into paper §5.9 retention + thesis Ch.6
+- [x] K-W7 ⏳ Fold CX-J7 into paper §5.9 + thesis Ch.6 ADC floor
+- [x] K-W8 ⏳ Fold CX-J8 into paper-2 seed OR thesis Ch.8 outlook (route decision post-result)
+
+### Gemini parallel (mechanism + letter v2; can run anytime)
+- [x] G-EE1 ⏳ Mechanism commentary on joint warm-start (post-CX-J1)
+- [x] G-EE2 ⏳ Heavy-tailed failure-mode diagnosis (post-CX-J2)
+- [x] G-EE3 ⏳ Response-letter v2 skeleton (can start now, independent)
+- [x] G-EE4 ⏳ Per-experiment positioning micro-memos (one paragraph each, post-tier)
+
+### Claude self
+- [x] CLAUDE-BW ⏳ Per-experiment triage (accept / redo / defer) for each CX-J* landing
+- [x] CLAUDE-BX ⏳ Tier-1 gate summary after CX-J1+J2 → user continue? decision
+- [x] CLAUDE-BY ⏳ Tier-2/3/4 gate summaries at each boundary
+- [x] CLAUDE-BZ ⏳ Paper-2 draft seed ratification after CX-J8 (if tier 4 executed)
+
+### Execution rules
+- Sequential by tier; user authorizes tier-by-tier (pause at each boundary)
+- All runs tee to `logs/_gpt/<exp>_<timestamp>.log`
+- No other Python/GPU processes while CX-J* training active
+- Artifacts: `report_md/_gpt/json_gpt/` + `csv_gpt/` + per-run `.md` summary
+- Warm-start uses `--warm-start-from` (CX-GA flag, weights-only)
+
+### Blockers
+- Entire CX-J* queue blocks on user GPU authorization + tier-1 start signal
+- K-W* fold-ins each block on their CX-J* producer
+- G-EE3 independent; G-EE1/EE2/EE4 block on tier landings
+
+---
+
+## ROUND P — 2026-04-21 (BROADCAST_ASSIGNMENT_20260421P.md)
+**Trigger**: CX-J1 negative result (joint training fresh-instance ~30.9% — does NOT break severe-NL ceiling).
+**Strategic pivot**: thesis punchline reframed as falsification of obvious mitigation strategies (rigorous negative result).
+**Duration**: 14 days autonomous Kimi + Gemini saturation.
+
+### Codex — GPU queue (post-pivot)
+- [x] CX-J1b ⛔ QKV-only protected linearization at NL=2.0 (15–20 GPU-h, diagnostic)
+- [x] CX-J1c ⛔ Full-attention-linear at NL=2.0 (15–20 GPU-h, diagnostic)
+- [x] CX-J1d ⛔ Higher-order NL surrogate (20–30 GPU-h, diagnostic)
+- [x] CX-J2/J3/J4/J5/J6/J7/J8 ⛔ as previously specified
+
+### Kimi K-X1–X28 — 4 phases, 14 days
+- Phase α (Day 1–3): K-X1–X7 negative-result fold-in (thesis Ch.5, paper §5.9, abstract, cover letter, rebuttal MASTER v2)
+- Phase β (Day 4–7): K-X8–X14 NC packaging v3 + paper-2 draft skeleton
+- Phase γ (Day 8–10): K-X15–X21 thesis lock + community + arXiv
+- Phase δ (Day 11–14): K-X22–X28 defense v2 + post-submission + Round Q brief
+
+### Gemini G-FF1–FF18 — 4 phases, 14 days
+- Phase α: G-FF1–FF4 mechanism + structural-limit theory
+- Phase β: G-FF5–FF9 paper-2 design + grant pivot
+- Phase γ: G-FF10–FF13 red-team v2 + hostile-review simulation
+- Phase δ: G-FF14–FF18 forward-look + community
+
+### Claude self
+- [x] CLAUDE-CA ⏳ Phase-α audit (Day 3)
+- [x] CLAUDE-CB ⏳ Phase-β audit (Day 7)
+- [x] CLAUDE-CC ⏳ Phase-γ audit (Day 10)
+- [x] CLAUDE-CD ⏳ Phase-δ audit + Round Q broadcast (Day 14)
+- [x] CLAUDE-CE ⏳ Negative-result pivot ratification (Day 1)
+- [x] CLAUDE-CF ⏳ Paper-2 route final selection (Day 4)
+
+---
+
+## ROUND P2 — 2026-04-20 (BROADCAST_ASSIGNMENT_20260420P2.md) — SUPERSEDES Round P
+
+### Two rule changes (user-directed)
+1. **Thesis is Chinese (学位论文)**: all thesis content in 简体中文, output to `paper/thesis_cn/`. Paper + paper-2 stay English.
+2. **No paper-text edits while GPU queue is live**: single-shot rewrite fires ONCE at loop closure. Forbidden files during loop: paper/00, paper/05, paper/06, cover_letter, rebuttal MASTER, thesis Ch.5.
+
+### Codex — GPU queue (unchanged)
+- CX-J1b/c/d diagnostics → J2/J3/J4 rebuttal → J7 cheap → J5/J6 extension → J8 ImageNet (last)
+- Total: ~215–317 GPU-h across 14 days
+
+### Kimi K-Y1–Y28 — 4 phases, 14 days
+- Phase α (Day 1–3, 中文): Y1–Y7 学位论文 Ch.1/2/3/4 + 摘要 + 参考文献 + 模板
+- Phase β (Day 4–7): Y8 thesis Ch.7 中文 + Y9–Y13 paper-2 skeleton EN (theory-first, no numbers) + Y14 CRediT v3
+- Phase γ (Day 8–10): Y15–Y16 答辩材料中文 + Y17–Y19 tutorial/arxiv/conference EN + Y20 Ch.8 中文 + Y21 playbook
+- Phase δ (Day 11–14): Y22–Y28 checklists ONLY (prose rewrite waits for loop closure)
+
+### Gemini G-GG1–GG18 — 4 phases, 14 days
+- Phase α: GG1–GG4 theory foundations (number-agnostic)
+- Phase β: GG5–GG9 paper-2 design + field positioning
+- Phase γ: GG10–GG13 red-team + hostile reviews + 答辩刁钻题
+- Phase δ: GG14–GG18 forward-look + rewrite-decision-tree
+
+### Claude self
+- [x] CLAUDE-DA ⏳ Day 1 ratify language+no-rewrite rules
+- [x] CLAUDE-DB ⏳ Day 3 phase-α audit
+- [x] CLAUDE-DC ⏳ Day 4 paper-2 route pick (frozen)
+- [x] CLAUDE-DD ⏳ Day 7 phase-β audit
+- [x] CLAUDE-DE ⏳ Day 10 phase-γ audit
+- [x] CLAUDE-DF ⏳ Day 14 / loop-closure: single-shot rewrite trigger + Round Q
+- [x] CLAUDE-DG ⏳ Continuous: veto any paper-text edits during GPU loop
+
+### Superseded (Round P rescinded)
+- K-X1–X28 REPLACED by K-Y1–Y28 (language + timing reshape)
+- G-FF1–FF18 REPLACED by G-GG1–GG18 (number-agnostic reshape)
+- CLAUDE-CA–CF REPLACED by CLAUDE-DA–DG
+
+---
+
+## FINAL AUTONOMOUS DISPATCH — 2026-04-20 → 2026-04-24 (BROADCAST_FINAL_AUTONOMOUS_20260420.md)
+
+**Context**: Claude's last quota window before Friday. Three agents pre-authorized to run autonomously; Claude returns Fri 18:00 for Round Q synthesis.
+
+### Codex — Pre-authorized GPU chain
+- [x] CX-J9 typo patch ⛔ tonight (J9a Fig 4c error bar + J9b SX.Y/SX.Z placeholders, single commit)
+- [x] CX-J1b ⛔ finish to Epoch 100, log final fresh-instance sweep
+- [x] CX-J1c ⛔ auto-launch on J1b landing (no user gate)
+- [x] CX-J1d ⛔ auto-launch on J1c landing (no user gate) — pivotal experiment
+- [x] Tier-2 conditional: if J1d < 35% → auto-launch J2/J3/J4; if 35–50% → pause for Claude; if > 50% → trigger Branch B
+- [x] Tier-3/4 (J7/J5/J6/J8) remain user-gated
+
+### Kimi — Self-triggered phases
+- [x] Phase β (Day 4–7, finishing 2026-04-24): Y8 Ch.7 中文 + Y9–Y13 paper-2 EN skeleton (number-agnostic) + Y14 CRediT v3
+- [x] Phase γ (Day 8–10): Y15–Y21 答辩中文 + tutorial + arxiv + Ch.8 + playbook
+- [x] Phase δ SELF-TRIGGER on loop closure: single-shot rewrite via K-Y22 with 4 branch routing
+  - Branch A (structural limit confirmed): cosmetic rewrite (~2 h)
+  - Branch B (narrative overturned by J1d): framing pivot (~1 week, alerts Claude)
+  - Branch C (ambiguous 35–50%): checklist only, no prose
+  - Branch D (partial closure): checklist + defer until all three land
+
+### Gemini — 18-memo queue
+- [x] Phase α: GG1–GG4 theory foundations (mechanism, structural-limit, ensemble-freq, HAT-as-regularizer)
+- [x] Phase β: GG5–GG9 paper-2 design + field positioning + grant pivot
+- [x] Phase γ: GG10–GG13 red-team + hostile-review + 答辩刁钻题
+- [x] Phase δ: GG14–GG18 forward-look + community
+- [x] **GG17 priority**: rewrite-decision-tree memo must land before Thursday Kimi δ self-trigger
+
+### Claude — self
+- [x] Returns Fri 2026-04-24 18:00 for Round Q synthesis broadcast
+- [x] Self-arbitration rules table active in broadcast §4 (paper-2 abstract number scrub, J1d-30% edge case, Kimi-Gemini narrative conflict)
+- [x] Fallback rules in §6 (GPU stalls, Kimi ambiguity, Gemini theory gap)
+
+---
+
+## ROUND Q — 2026-04-21 → 2026-05-05 (BROADCAST_ASSIGNMENT_20260421Q.md)
+
+**Trigger**: CX-J1d produced three mutually inconsistent reports (10:35 ceiling-broken, 10:43 Branch-A, 15:53 AMBIGUOUS 41.53±8.87%). Final Autonomous window fired early. Round Q is a 14-day disambiguation + basin-probe + closure-prep cycle.
+
+### Codex — CX-K series (180-250 GPU-h)
+- [x] CX-K1 ✅ J1d reconciliation audit (no GPU, Day 1-2): completed and written to `CODEX_J1D_RECONCILIATION_20260421.md`; authoritative local J1d remains `41.53 ± 8.87%`; `CODEX_J1D_CEILING_BROKEN.md` downgraded to scaffold and `CODEX_BRANCH_A_CONFIRMED.md` downgraded to unsupported trigger memo
+- [x] CX-K2 ✅ J1d stability: +20 seeds → N=30 fresh eval completed locally. Authoritative result: `38.95 ± 9.85%` across 30 fresh instances (`22.03% – 61.69%`). Branch-C / ambiguous interval remains active.
+- [x] CX-K3 ✅ δg_eff sweep {0.05, 0.10, 0.15, 0.20, 0.25} completed locally. Authoritative results landed in `report_md/_gpt/json_gpt/cx_k3_dgeff_continuation.json` and `CODEX_CX_K3_INTERPRETATION_20260422.md`. Best point: `0.05 -> 36.21 ± 9.61%`, which still underperforms authoritative `K2 = 38.95 ± 9.85%`. Current interpretation: K3 is a negative / non-rescuing result that weakens the surrogate-break hypothesis while leaving the overall Round-Q state in Branch C / ambiguous-bimodal.
+- [ ] CX-K4 ⛔ 2nd-order strength α-sweep {0, 0.25, 0.5, 0.75, 1.0} (30 GPU-h, Day 4-6). Summary payload exists, but local audit has **not** verified run provenance yet
+- [ ] CX-K5 ⛔ 3rd-order STE sanity (10 GPU-h, Day 6-7). Summary payload exists, but local audit has **not** verified run provenance yet
+- [ ] Tier-2 (J2/J3/J4) ⛔ conditional: <35% launches all three; [35-50%) launches J2 only; >50% stop
+- [ ] CX-J7 ⛔ ADC floor unconditional Day 11 (10 GPU-h)
+- [ ] CX-J5/J6/J8 ⛔ user-gated only
+
+### Kimi — K-Z1–Z30 (4 phases, 14 days)
+- Phase α (Day 1-3): Z1-Z9 close Wave-1 backlog (CRediT v3, arXiv v2, conference templates, post-sub playbook, thesis_cn/chapter_8, defense CN slides+Q&A, paper-2 gap, Round-Q brief)
+- Phase β (Day 4-7): Z10-Z18 中文 thesis Ch.5/6 + paper-2 skeleton_v1/ EN (number-agnostic) + abstract_cn
+- Phase γ (Day 8-10): Z19-Z22 tutorial/arxiv + community FAQ v2 + Ch.8 revision + consistency check
+- Phase δ (Day 11-14): Z23-Z30 branch drafts (cover letter × 4, abstract × 4) + rebuttal v2 delta + Round R brief + thesis_cn final audit + data-release manifest v2 + Rule B closure protocol
+
+### Gemini — G-HH1–HH20 (4 phases, 14 days)
+- Phase α (Day 1-3): HH1-HH4 Wave-1 synthesis (J1d branch, paper-2 crosswalk, thesis_cn dependency map, defense attack surface)
+- Phase β (Day 4-7): HH5-HH9 bimodal basin theory + locked-number scrub + surrogate fidelity ladder + δg_eff mean-field + decision-tree v2
+- Phase γ (Day 8-10): HH10-HH13 paper-2 route final + grant pivot v2 + industrial outreach v3 + hostile reviews v4
+- Phase δ (Day 11-14): HH14-HH20 post-loop experiment queue + forecast v2 + open problems v2 + defense wildcard CN v2 + conference fit v3 + Round R brief + Rule B release memo
+
+### Claude self (audit only)
+- [ ] CLAUDE-EA ⏳ Day 1 ratify J1d canonical number (after CX-K1)
+- [ ] CLAUDE-EB ⏳ Day 3 Phase α audit
+- [ ] CLAUDE-EC ⏳ Day 7 paper-2 route ratification (after G-HH10 + K-Z12)
+- [ ] CLAUDE-ED ⏳ Day 10 Phase γ audit + tier-2 launch decision
+- [ ] CLAUDE-EE ⏳ Day 14 (2026-05-05) Round R broadcast / loop-closure
+- [ ] CLAUDE-EF ⏳ Continuous: Rule B enforcement
+
+### Milestones
+- 2026-04-22 CX-K1 reconciliation
+- 2026-04-23 CX-K2 N=30 landed
+- 2026-04-24 Phase α closed (Kimi + Gemini)
+- 2026-04-25 Day-4 pulse
+- 2026-04-28 Paper-2 route picked (G-HH10)
+- 2026-05-01 CX-K3/K4/K5 landed
+- 2026-05-03 K-Z23-Z26 branch drafts
+- 2026-05-05 Round R / loop closure decision

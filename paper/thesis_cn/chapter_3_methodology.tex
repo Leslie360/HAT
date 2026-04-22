@@ -1,0 +1,575 @@
+% 第3章 方法论
+\chapter{方法论：配置文件驱动的硬件感知训练框架}
+\label{chap:methodology}
+
+\section{引言：HAT 作为设计空间}
+
+硬件感知训练（Hardware-Aware Training, HAT, 硬件感知训练）并非单一算法，而是一族共享同一结构特征的训练目标：
+将部署前向路径扰动的替代模型注入优化循环，然后通过直通估计器（Straight-Through Estimator, STE, 直通估计器）反向传播，
+使数字权重更新能够感知其需承受的模拟失真。
+在这一共享骨架之内，诸多设计选择仍然开放：
+失配场应以何种频率重采样？噪声定律应是均匀、与电导状态成比例，还是两者混合？
+训练协议与部署时可提供的形式化保证之间有何关系？
+
+本章将上述选择视为设计空间的坐标轴，而非次要的实现细节。
+与论文中的简短消融不同，此处每个变体均获得形式化定义和独立的迁移保证诠释。
+本章首先介绍支撑所有实验的仿真框架（\S\ref{sec:framework-overview}），
+随后形式化定义三种 canonical HAT 重采样协议（\S\ref{sec:cadence-definitions}），
+报告频率扫描消融（\S\ref{sec:frequency-sweep}），
+映射噪声轮廓靶向景观（\S\ref{sec:noise-profile-targeting}），
+并开发核心洞见：重采样频率不仅优化方差，还隐式定义了学习分类器保证泛化的分布族（\S\ref{sec:cadence-transfer-guarantee}）。
+最后阐述评估协议（\S\ref{sec:eval-protocols}）。
+
+\section{配置文件驱动的仿真框架}
+\label{sec:framework-overview}
+
+\subsection{设计原则：从测量实验室到算法训练循环的桥梁}
+
+本框架的设计原则是\emph{配置文件驱动}（profile-driven, 配置文件驱动）：
+每一个物理相关假设均通过单一结构化配置对象进入系统，
+使得文献推导先验与内部实测标定成为同一训练或评估脚本的可互换输入。
+早期器件表征很少以单一``器件分数''的形式出现；
+相反，它分布于多种测量模态——多级编程、重复同态读取、跨器件统计、保留拟合、光响应表征。
+本框架将这些测量视为结构化标定输入，而非非正式的叙述性背景。
+
+\subsection{器件配置文件作为结构化配置对象}
+
+配置文件实例规定了电导窗口 $[G_{\min}, G_{\max}]$、离散电导态数 $n_{\text{states}}$、
+变异性系数 $(\sigma_{\text{C2C}}, \sigma_{\text{D2D}})$、
+保留时间常数 $(\tau_1, \tau_2, A_0)$、光响应非线性 $\gamma_{\text{phys}}$，
+以及写入非对称指数 $(\mathrm{NL}_{\mathrm{LTP}}, \mathrm{NL}_{\mathrm{LTD}})$。
+表~\ref{tab:measurement-mapping}~展示了实验室表征流程与模拟器字段之间的直接映射。
+
+\begin{table}[htbp]
+\centering
+\caption{测量到模拟器的参数映射。文献推导配置文件与内部实测配置文件填充相同字段，因此驱动同一训练脚本。}
+\label{tab:measurement-mapping}
+\begin{tabular}{lll}
+\toprule
+\textbf{测量项} & \textbf{典型表征方法} & \textbf{模拟器参数} \\
+\midrule
+电导窗口 & 多级编程 I--V 扫描 & \texttt{G\_min}, \texttt{G\_max} \\
+可分辨态数 & 编程分辨率 / 直方图可分离性 & \texttt{n\_states} \\
+周期到周期变异性 & 固定目标态下的重复读取/编程 & \texttt{sigma\_c2c} \\
+器件到器件失配 & 跨器件或跨阵列统计 & \texttt{sigma\_d2d} \\
+保留动力学 & 时间衰减曲线拟合 & \texttt{A\_0}, \texttt{tau\_1}, \texttt{tau\_2} \\
+光响应非线性 & $I_{\text{photo}}$ 对光强 & \texttt{gamma\_phys} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+配置文件对象在构造时传递给每个模拟层。由于层代码中不含硬编码物理，
+从文献先验切换至实测器件重新标定仅需替换配置文件实例；模型定义或训练脚本无需更改。
+这也意味着后续章节报告的实验原则上可在新器件数据可用时完全复现。
+
+\subsection{器件变异性：D2D 与 C2C}
+
+框架对两种器件变异性源进行建模。
+器件到器件失配（D2D mismatch, D2D 失配）被视为初始化时采样一次的静态扰动：
+\begin{equation}
+\boldsymbol{\epsilon}_{\text{D2D}} \sim \mathcal{N}\left(0, \sigma_{\text{D2D}}^{2} \Delta G^{2}\right), \qquad \Delta G = G_{\max} - G_{\min}.
+\label{eq:d2d-model}
+\end{equation}
+该扰动作为持久缓冲区存储，并应用于后续每次前向传播。
+周期到周期变异（Cycle-to-Cycle, C2C, 周期到周期变异）则建模为零均值高斯扰动，每次前向传播重新采样：
+\begin{equation}
+\boldsymbol{\epsilon}_{\text{C2C}}^{(t)} \sim \mathcal{N}\left(0, \sigma_{\text{C2C}}^{2} \Delta G^{2}\right).
+\label{eq:c2c-model}
+\end{equation}
+含噪有效权重为
+\begin{equation}
+\widehat{\mathbf{W}}^{(t)} = \left(\widetilde{\mathbf{G}}^{+} - \widetilde{\mathbf{G}}^{-}\right) + \boldsymbol{\epsilon}_{\text{D2D}} + \boldsymbol{\epsilon}_{\text{C2C}}^{(t)},
+\label{eq:noisy-weight}
+\end{equation}
+其中 C2C 项在实验要求干净或仅 D2D 评估时被禁用。
+
+除 canonical 均匀噪声模式外，框架还支持比例噪声模式（proportional-noise mode），
+其中噪声幅度与瞬时电导状态成比例（参见~\S\ref{sec:noise-profile-targeting}）。
+
+\subsection{非线性写入非对称性}
+
+非线性编程以一阶行为代理（first-order behavioral proxy）实现，而非脉冲精确的写入模拟器：
+根据当前电导位置调制 STE 反向路径。
+若权重更新将增加电导，则替代梯度按
+\begin{equation}
+\frac{\partial \mathcal{L}}{\partial G}\Big|_{\mathrm{LTP}} \propto \left(\frac{G_{\max}-G}{G_{\max}-G_{\min}}\right)^{\mathrm{NL}_{\mathrm{LTP}}-1}
+\label{eq:nl-ltp}
+\end{equation}
+缩放；若更新将减小电导，则按
+\begin{equation}
+\frac{\partial \mathcal{L}}{\partial G}\Big|_{\mathrm{LTD}} \propto \left(\frac{G-G_{\min}}{G_{\max}-G_{\min}}\right)^{|\mathrm{NL}_{\mathrm{LTD}}|-1}
+\label{eq:nl-ltd}
+\end{equation}
+缩放。
+当 $\mathrm{NL}_{\mathrm{LTP}} = 1$ 且 $\mathrm{NL}_{\mathrm{LTD}} = -1$ 时，模型退化为名义实验使用的恒等 STE。
+
+\subsection{保留漂移}
+
+编程后权重漂移采用双指数保留定律建模。
+对于编程电导 $G$ 和经过时间 $t$，衰减后的电导为
+\begin{equation}
+G(t) = G_{\min} + \left(G - G_{\min}\right) \left[A_1 \exp\left(-t/\tau_1\right) + A_2 \exp\left(-t/\tau_2\right) + A_0\right],
+\label{eq:retention}
+\end{equation}
+其中 $A_1 = A_2 = (1-A_0)/2$，$A_0 = 0.6$。
+默认参数 $\tau_1 = 140$~ms、$\tau_2 = 610$~ms 取自基于 DNTT 保留测量的手册器件先验~\citep{vincze2025dualplasticity}。
+该形式捕获了初始快速下降、中间较慢衰减以及非零持久分数。
+
+\subsection{光电子前端补偿}
+
+为建模有机光晶体管前端，框架使用次线性光电流响应：
+\begin{equation}
+I_{\text{photo}} = \alpha P^{\gamma_{\text{phys}}} + I_{\text{dark}} + \eta_{\text{shot}},
+\label{eq:photocurrent}
+\end{equation}
+其中 $P$ 为入射光信号，$\alpha$ 为响应度尺度，$\gamma_{\text{phys}}$ 捕获非线性转移特性，$I_{\text{dark}}$ 为暗电流，$\eta_{\text{shot}}$ 为信号相关随机项。
+补偿机制施加逆伽马预处理：
+\begin{equation}
+P_{\text{in}} = X^{1/\gamma_{\text{phys}}},
+\label{eq:inverse-gamma}
+\end{equation}
+使后续器件响应在原始归一化输入 $X$ 上近似线性。
+该补偿并非 universally 有益：由于散粒噪声（shot noise）方差随光电流缩放，
+逆伽马预处理亦重塑了噪声统计。
+因此其收益必须被诠释为任务与体制依赖的权衡，而非免费的鲁棒性提升。
+
+\subsection{ADC 量化与外围非理想性}
+
+在每个交叉阵列列输出处，模数转换器（ADC）将累积电流离散化。
+对于 $b$ 位转换器，连续电流首先量化至 $2^b$ 个名义码，
+差分非线性（Differential Non-Linearity, DNL）通过扰动每个步宽注入：
+\begin{equation}
+\Delta_{\text{actual}}[i] = \Delta_{\text{ideal}} \left(1 + \mathcal{N}(0, \sigma_{\text{DNL}}^2)\right),
+\label{eq:dnl}
+\end{equation}
+默认配置中 $\sigma_{\text{DNL}} = 0.5$~LSB。
+
+能量模型与精度模型显式分离：
+一阶估计汇总模拟 MAC 成本、ADC 成本、DAC 成本、数字 MAC 成本和存储访问成本。
+这种分离是故意的：它允许将实测精度与估计能量在帕累托分析中结合，
+而不混淆前向模拟器的物理保真度与能量常数的占位性质。
+
+\section{PyTorch 自动微分集成}
+\label{sec:pytorch-integration}
+
+框架实现为一组 drop-in PyTorch 模块，用模拟感知等价物替换标准 \texttt{nn.Linear} 和 \texttt{nn.Conv2d} 层。
+本节解释物理管道如何集成至自动微分图，使 HAT 成为训练模式开关而非自定义优化器重写。
+
+\subsection{直通估计器量化器}
+
+基本自动微分原语是实现均匀量化且恒等反向路径的自定义 \texttt{torch.autograd.Function}。
+前向方向上，输入被钳位至 $[x_{\min}, x_{\max}]$，归一化至 $[0,1]$，
+四舍五入至 $n_{\text{levels}}$ 个离散值之一，再反归一化：
+\begin{equation}
+x_{\text{quant}} = \left\lfloor \frac{x_{\text{clamped}} - x_{\min}}{x_{\max} - x_{\min}} (n_{\text{levels}} - 1) \right\rceil \frac{x_{\max} - x_{\min}}{n_{\text{levels}} - 1} + x_{\min}.
+\label{eq:ste-forward}
+\end{equation}
+反向方向上，梯度直接通过：$\partial \mathcal{L} / \partial x_{\text{quant}}$ 返回为 $\partial \mathcal{L} / \partial x$。
+这是分段恒定电导态的标准 STE 近似。
+
+本实现的特点在于反向路径可选地按非线性写入非对称因子重新缩放梯度。
+量化器因此同时服务于两个目的：使梯度流经离散电导层级，以及通过同一代码路径将实测写入非线性注入优化器。
+
+\subsection{差分对电导映射}
+
+每个模拟映射权重张量 $\mathbf{W}$ 被转换为差分对电导表示。
+令
+\begin{equation}
+\mathbf{W}^{+} = \max(\mathbf{W}, 0), \qquad
+\mathbf{W}^{-} = \max(-\mathbf{W}, 0).
+\label{eq:weight-split}
+\end{equation}
+为避免梯度通过归一化常数传播，尺度因子从计算图分离：
+\begin{equation}
+s_W = \lVert \mathbf{W} \rVert_{\infty}^{\mathrm{detach}} + \varepsilon.
+\label{eq:scale-detach}
+\end{equation}
+正负分量随后映射至物理电导范围 $[G_{\min}, G_{\max}]$：
+\begin{equation}
+\mathbf{G}^{+} = G_{\min} + \frac{\mathbf{W}^{+}}{s_W}(G_{\max} - G_{\min}), \qquad
+\mathbf{G}^{-} = G_{\min} + \frac{\mathbf{W}^{-}}{s_W}(G_{\max} - G_{\min}).
+\label{eq:conductance-mapping}
+\end{equation}
+编程电导通过 STE 量化至 $n_{\text{states}}$ 个离散层级：
+\begin{equation}
+\widetilde{\mathbf{G}} = \operatorname{STEQuantize}(\mathbf{G}; n_{\text{states}}, G_{\min}, G_{\max}),
+\label{eq:ste-quantize}
+\end{equation}
+使前向路径观测离散电导态，而反向路径以恒等方式传递梯度。
+
+有效模拟权重用于矩阵--向量乘法的是差分电导
+\begin{equation}
+\mathbf{W}_{\text{eff}} = \widetilde{\mathbf{G}}^{+} - \widetilde{\mathbf{G}}^{-},
+\label{eq:eff-weight}
+\end{equation}
+可选地后接尺度恢复：
+\begin{equation}
+\widehat{\mathbf{W}}_{\text{eff}} = \mathbf{W}_{\text{eff}} \cdot \frac{\lVert \mathbf{W} \rVert_{\infty}^{\mathrm{detach}}}{G_{\max} - G_{\min}}.
+\label{eq:scale-recovery}
+\end{equation}
+
+尺度恢复是本研究的关键物理简化之一。
+它以层wise浮点因子实现为理想后阵列数字重缩放步骤。
+这是算法--器件协同设计的有用一阶行为抽象，
+但隐式假设外围读出链能够以可忽略的量化或控制开销实现所需增益校准。
+在本研究中，尺度恢复因此被视为校准后的数字后处理原语，而非零成本物理电路的宣称。
+
+\subsection{前向路径噪声注入}
+
+模拟层前向传播遵循严格的物理顺序：
+\begin{enumerate}
+\item \textbf{量化}：浮点权重 $\rightarrow$ 差分电导对 $\rightarrow$ STE 量化；
+\item \textbf{保留}：对编程电导可选地施加双指数衰减；
+\item \textbf{失配}：D2D 噪声（固定缓冲区）与 C2C 噪声（每次前向重采样）加至有效权重；
+\item \textbf{尺度恢复}：可选的数字重缩放以恢复原始权重大小；
+\item \textbf{线性运算}：以含噪有效权重执行标准 \texttt{F.linear} 或 \texttt{F.conv2d}。
+\end{enumerate}
+
+该顺序并非任意：它反映了权重首先被编程至离散电导层级，
+随后随时间漂移，最终在固定失配和读取时变异性下被观测的物理诠释。
+由于每一步均通过 STE 可微，整个管道在硬件感知训练期间参与梯度下降。
+
+\subsection{模型转换与层替换}
+
+框架提供模型转换工具，对 PyTorch 层进行原地替换。
+给定标准模型（如来自 \texttt{timm} 的 Tiny-ViT），该工具遍历模块树，
+对名称匹配可配置模式集的层替换为模拟等价物。
+对于 Tiny-ViT，模拟映射层包括 patch 嵌入卷积、注意力投影矩阵 $\mathbf{W}_Q$、$\mathbf{W}_K$、$\mathbf{W}_V$、
+注意力输出投影，以及每个 transformer 块中的两个前馈矩阵。
+移动倒置瓶颈卷积（Mobile Inverted Bottleneck Convolution, MBConv）块、下采样路径、
+局部深度可分离卷积、动态注意力乘积、softmax、LayerNorm、激活函数及分类头保留数字。
+
+对于 Tiny-ViT-5M，映射将 $4{,}730{,}016$ 个参数发送至模拟域，$662{,}748$ 个参数保留数字，
+模拟映射参数比例为~$87.7\%$。
+在 $128 \times 128$ 物理阵列约束和差分对存储下，这需要 812 个阵列和 $13{,}303{,}808$ 个独立器件。
+模拟 footprint 集中于 transformer 阶段：patch 嵌入仅贡献 8 个差分对阵列，
+Stage~1 贡献 48 个阵列，Stage~2 贡献 384 个阵列，Stage~3 贡献 372 个阵列。
+
+转换工具将原始数字层的已学习权重复制至模拟替换层，
+因此预训练检查点可在无需重新初始化的情况下转换为混合形式。
+这对后续章节报告的微调实验至关重要。
+
+\section{HAT 重采样频率的形式化定义}
+\label{sec:cadence-definitions}
+
+三种 canonical 变体运行于同一混合模拟--数字推理栈：
+稠密线性算子在差分对交叉阵列上执行，控制密集型算子保留数字，
+模拟权重通过尺度恢复律（式~\ref{eq:scale-recovery}）回收。
+有效电导 $G_{\mathrm{eff}}$ 受 D2D 失配场 $M$ 和每次前向 C2C 噪声 $\varepsilon$ 扰动。
+D2D 场具有空间结构性，对给定硬件实例固定不变；C2C 项在多次前向传播间独立同分布（i.i.d.）。
+
+\subsection{固定掩膜 HAT}
+
+\textbf{固定掩膜 HAT}（fixed-mask HAT）在训练前采样一次 D2D 实现 $M_{0}$，
+并在所有轮次和所有 mini-batch 中保持不变。
+优化目标为
+\begin{equation}
+    \theta_{\mathrm{fix}}^{\star}=\arg\min_{\theta}\frac{1}{N}\sum_{n=1}^{N}\ell\!\left(f(x_{n};\theta,M_{0}),y_{n}\right).
+\label{eq:hat-fixed}
+\end{equation}
+这是论文中 canonical V4 实验采用的协议（Tiny-ViT V4 在 CIFAR-10 上最佳测试精度为~$91.94\%$，参见~\texttt{noise\_sweep\_results\_gpt.json}）。
+其计算开销最小，因为失配图被缓存；其弱点在于已学习参数可能耦合至 $M_{0}$ 的特定空间签名。
+当部署阵列呈现不同固定实现 $M'\sim p(M)$ 时，为 $M_{0}$ 学习的校准和特征路由不再有效，精度崩溃。
+在 CIFAR-10 上，固定掩膜模型的 fresh-instance 精度为~$10.00\%$（$n=10$ 个全新实例，参见~\texttt{fresh\_instance\_eval.json}）。
+
+\subsection{Ensemble HAT（轮次级重采样）}
+
+\textbf{Ensemble HAT} 在每个训练轮次开始时重采样 D2D 场，并在该轮次内所有 mini-batch 中保持不变。
+目标变为对失配图的期望：
+\begin{equation}
+    \theta_{\mathrm{ens}}^{\star}=\arg\min_{\theta}\;\mathbb{E}_{M\sim p(M)}\!\left[\frac{1}{N}\sum_{n=1}^{N}\ell\!\left(f(x_{n};\theta,M),y_{n}\right)\right].
+\label{eq:hat-ensemble}
+\end{equation}
+由于每轮次抽取一张新图，模型接触序列 $\{M^{(1)},M^{(2)},\dots,M^{(E)}\}$ 中的多个结构化空间实例。
+期望通过 $E$ 次独立采样进行蒙特卡罗估计，$E$ 为训练轮次数。
+同一轮次内的小批量梯度在相同 $M^{(e)}$ 下相关，优化器因此拥有足够的平稳步数来适应该实例，再于轮次切换时接触新实例。
+论文报告该协议在 10 个全新硬件实例上保持~$86.37\pm1.54\%$ 精度（参见~\texttt{fresh\_instance\_eval.json}），
+远超固定掩膜 HAT 的随机水平崩溃。
+
+\subsection{每批次重采样}
+
+\textbf{每批次重采样}（per-batch resampling）为每次前向传播独立抽取新 D2D 场。
+目标在函数形式上与式~\ref{eq:hat-ensemble}相同，但蒙特卡罗估计使用 $B\times E$ 次独立抽取，$B$ 为每轮次 mini-batch 数。
+训练轨迹现在每几百个样本即暴露于新空间实例。
+直觉上这似乎更优，因为模型接触``更多多样性''；
+实证上其表现低于轮次级重采样，因为优化器从未经历足够稳定的前向路径以 settle 入与任何单一结构化实例兼容的 basin。
+
+\subsection{三种体制的可视化比较}
+
+图~\ref{fig:cadence-visual}~复用论文中的 Ensemble HAT 概念图锚定讨论，
+表~\ref{tab:cadence-comparison}~总结了结构属性。
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=0.78\linewidth]{../latex_gpt/figures/figS3_ensemble_hat}
+    \caption{固定掩膜与轮次级重采样 HAT 的概念对比（复用自论文补充材料）。左图：单张失配图贯穿所有轮次；右图：每轮次一张新图。每批次重采样（未示出）将在每个 mini-batch 边界替换图。}
+    \label{fig:cadence-visual}
+\end{figure}
+
+\begin{table}[t]
+    \centering
+    \caption{三种 canonical HAT 重采样频率的结构比较。}
+    \label{tab:cadence-comparison}
+    \small
+    \begin{tabular}{lccc}
+        \toprule
+        \textbf{属性} & \textbf{固定掩膜} & \textbf{轮次级} & \textbf{每批次} \\
+        \midrule
+        重采样频率 & 从不 & 每轮次 & 每 mini-batch \\
+        每 100 轮次采样次数 & 1 & 100 & $100B$ \\
+        梯度相关时间 & 完整训练 & 一轮次 & 一个 mini-batch \\
+        前向路径稳定性 & 最大 & 中等 & 最小 \\
+        Fresh-instance 保证 & 无 & 隐式期望 & 隐式期望 \\
+        挂钟开销 & 基线 & $\sim$1$\times$ & 略高 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+轮次级与每批次之间的区别微妙但决定性。
+轮次级重采样创建块平稳优化景观：在每个块内梯度场一致，优化器可以下降；
+跨块时景观偏移，迫使解趋向共享 basin。
+每批次重采样创建完全非平稳景观，每个梯度步看到不同空间结构。
+实证结果（下节展开）表明块平稳体制产生最佳的 fresh-instance 精度。
+
+\section{Ensemble 频率扫描：频率消融}
+\label{sec:frequency-sweep}
+
+\subsection{实验协议}
+
+所有消融检查点均在 canonical Tiny-ViT V4 配方下训练：
+AdamW 优化器，学习率 $5\times10^{-4}$，权重衰减 $0.05$，100 轮次余弦退火（消融扫描使用缩短的 50 轮次日程），
+batch size 64，4 位差分电导映射。
+唯一操纵变量为 D2D 重采样频率。比较三种条件：
+\begin{itemize}[leftmargin=1.4em]
+    \item \textbf{固定掩膜对照}：初始化时抽取一次 D2D 实现并冻结；
+    \item \textbf{轮次级（Ensemble HAT）}：每轮次开始时抽取新 D2D 实现；
+    \item \textbf{每批次对照}：训练期间每次前向传播抽取新 D2D 实现。
+\end{itemize}
+
+训练后，每个检查点在未用于早停的 held-out 验证划分上评估。
+报告的数值因此来自单轮次扫描的 held-out 精度，而非论文锁定的 Ensemble HAT 基线的完整 ten-instance fresh-instance 协议。
+
+\subsection{结果}
+
+探索性 50 轮次扫描 yielded 以下 held-out 精度
+（参见~\texttt{ensemble\_frequency\_ablation.json}）：
+\begin{itemize}[leftmargin=1.4em]
+    \item 轮次级重采样（Ensemble HAT）：$\mathbf{88.41\%}$
+    \item 固定掩膜训练：$\mathbf{87.18\%}$
+    \item 每批次重采样：$\mathbf{86.16\%}$
+\end{itemize}
+
+这些数值不能直接等同于论文锁定的 $86.37\pm1.54\%$ fresh-instance 均值，
+因为它们来自缩短训练日程和 held-out 验证划分而非完整的 ten-instance 蒙特卡罗协议。
+其重要性在于相对而非绝对：即使在弱化训练预算下，轮次级重采样仍 outperform 固定掩膜和每批次替代方案。
+图~\ref{fig:fresh-instance-ablation}~复用了论文补充面板以可视化该比较。
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=0.96\textwidth]{../latex_gpt/figures/fig_fresh_instance_ablation}
+    \caption{Fresh-instance 鲁棒性与 D2D 重采样频率消融（复用自论文补充材料）。\textbf{左图：}标准 HAT 在每张全新阵列上均崩溃至随机水平，而 Ensemble HAT 保持鲁棒精度。\textbf{右图：}50 轮次扫描下不同重采样频率的 held-out 精度。轮次级重采样达到 88.41\%，超过固定掩膜（87.18\%）和每批次（86.16\%）对照。}
+    \label{fig:fresh-instance-ablation}
+\end{figure}
+
+\subsection{解读：为何轮次级重采样胜出}
+
+该结果初看令人惊讶，因为每批次重采样暴露模型于更多 D2D 多样性，
+按预期应产生更不变的解。
+其表现更差说明多样性本身并非目标；
+相反，优化器需要足够长的时间在单一结构化实例下学习兼容的特征，
+然后再通过足够多样的实例来泛化至整个分布。
+
+固定掩膜训练拥有 unlimited 的单实例时间，因此源域精度高，但缺乏分布广度以支持迁移。
+轮次级重采样恰好处于 sweet spot：每个轮次提供足够的稳定性使优化器下降，
+而轮次序列提供足够的分布广度以防止实例特定过拟合。
+
+\section{噪声轮廓靶向：均匀、比例与混合}
+\label{sec:noise-profile-targeting}
+
+频率讨论假设特定噪声定律：canonical 均匀噪声模型中 D2D 和 C2C 扰动为按满电导窗口缩放的高斯采样。
+真实器件往往 exhibits 状态相关方差。本节将分类学扩展至噪声轮廓轴。
+
+\subsection{均匀（加性）噪声}
+
+\textbf{均匀噪声}体制下，电导扰动的标准差为动态范围的固定分数：
+\begin{equation}
+    \sigma_{\mathrm{D2D}} = \alpha\,(G_{\max}-G_{\min}), \qquad \sigma_{\mathrm{C2C}} = \beta\,(G_{\max}-G_{\min}).
+\end{equation}
+Canonical 轮廓使用 $\alpha=10\%$、$\beta=5\%$。
+由于噪声以全局窗口为参考，小电导器件与大电导器件经历相同的绝对扰动。
+在尺度恢复律（式~\ref{eq:scale-recovery}）下，许多扰动落入恢复后权重网格的半步以下而被掩盖。
+这种``尺度掩盖''（scale-masking）效应是无噪声混合对照高精度（$91.94\%$）
+以及 canonical 均匀噪声下相对温和退化的原因。
+
+\subsection{比例（状态相关）噪声}
+
+\textbf{比例噪声}体制下，标准差与瞬时电导幅度成比例：
+\begin{equation}
+    \sigma_{\mathrm{D2D}}(G) = \alpha\,|G|, \qquad \sigma_{\mathrm{C2C}}(G) = \beta\,|G|.
+\end{equation}
+高电导态因此经历更大的绝对扰动。
+尺度掩盖保护失效，因为扰动随信号本身增长：主导网络输出的大权重亦接收最大的相对噪声。
+当均匀噪声下训练的模型在比例噪声下评估时，Tiny-ViT V4 精度崩溃至~$10.00\%$
+（参见~\texttt{v4\_proportional\_noise\_results\_gpt.json}），
+表明均匀模型高估了 intrinsic 鲁棒性。
+
+比例噪声并非 merely 压力测试；它是欧姆电导通道及若干有机器件族的物理预期体制，
+其中电导波动跟踪均值。
+论文因此将比例噪声 HAT 视为体制匹配训练实验，而非对抗扰动。
+
+\subsection{混合轮廓}
+
+\textbf{混合}噪声轮廓叠加均匀（floor）分量和状态相关（比例）分量：
+\begin{equation}
+    \sigma(G) = \sigma_{0} + \kappa\,|G|.
+\end{equation}
+该形式捕获真实阵列 exhibits 的基线制造扩散（均匀）和状态相关读取或编程波动（比例）。
+框架通过 JSON 器件配置文件接口支持混合轮廓，
+尽管 canonical 论文实验为可解释性使用纯均匀或纯比例模式。
+
+\subsection{体制匹配训练与跨体制崩溃}
+
+论文报告，当训练与评估均在比例定律下进行时，比例噪声 HAT 将 Tiny-ViT 恢复至~$97.37\pm0.05\%$
+（参见~\texttt{v4\_proportional\_hat\_train\_results\_gpt.json}、\texttt{v4\_proportional\_hat\_eval\_proportional\_results\_gpt.json}）。
+这证明比例体制是可学习的。
+然而，同一检查点反向迁移至均匀噪声评估时表现不佳，反之亦然。
+结论是 HAT 鲁棒性是\emph{分布特定的}（distribution-specific）：
+训练目标必须匹配部署噪声定律，不存在免费的跨体制泛化。
+
+表~\ref{tab:noise-regime-matrix}~总结了 Tiny-ViT 的跨体制行为。
+对角项（匹配训练与评估）高；非对角项（不匹配）低。
+该矩阵是决定采用何种噪声模型作为 canonical 轮廓的核心工具：
+若物理器件被认为运行于比例体制，则均匀噪声 HAT 是乐观虚构；
+反之，若器件主要均匀，则比例噪声训练是不必要的悲观。
+
+\begin{table}[t]
+    \centering
+    \caption{Tiny-ViT 在均匀与比例噪声下的跨体制精度矩阵。对角项为匹配体制结果；非对角项显示跨体制崩溃。}
+    \label{tab:noise-regime-matrix}
+    \small
+    \begin{tabular}{lcc}
+        \toprule
+        & \textbf{评估：均匀} & \textbf{评估：比例} \\
+        \midrule
+        训练：均匀（V4） & $\sim$91\% & $10.00\%$ \\
+        训练：比例 & $\sim$10\% & $97.37\%$ \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\section{核心洞见：重采样频率作为隐式迁移保证}
+\label{sec:cadence-transfer-guarantee}
+
+\S\ref{sec:frequency-sweep}~与~\S\ref{sec:noise-profile-targeting}~的实证结果可统一于单一理论观察：
+重采样频率隐式定义了学习分类器保证泛化的分布族。
+
+\subsection{固定掩膜 HAT：单例保证}
+
+固定掩膜 HAT 求解式~\ref{eq:hat-fixed}，这是以单一样本 $M_{0}$ 为条件的标准经验风险最小化问题。
+其提供的保证是平凡的：模型保证在 $M_0$ 本身上表现良好，对其他任何实例均无保证。
+形式上，若 $\mathcal{R}(\theta,M)$ 表示失配图 $M$ 下的风险，
+则固定掩膜 HAT 最小化 $\mathcal{R}(\theta,M_{0})$，
+对 $M'\neq M_{0}$ 的 $\mathcal{R}(\theta,M')$ 不提供任何界。
+$10.00\%$ 的 fresh-instance 崩溃正是这一保证缺失的实证签名。
+
+\subsection{每批次 HAT：乘积分布保证}
+
+每批次重采样以 $B\times E$ 次独立抽取求解式~\ref{eq:hat-ensemble}。
+优化器因此看到的失配图服从乘积分布 $p(M)^{\otimes(B\times E)}$，
+但每个梯度步在单一样本下计算。
+所得解最小化边际分布 $p(M)$ 下的期望风险，
+但梯度估计的高方差阻止优化器找到同时与任何单一结构化实例兼容的 basin。
+实证结果——held-out 精度 $86.16\%$，低于轮次级——
+表明乘积多样性保证过弱：模型学会在平均噪声下存活，但无法在特定实现上存活。
+
+\subsection{轮次级 HAT：块平稳保证}
+
+轮次级重采样以 $E$ 个块平稳抽取求解式~\ref{eq:hat-ensemble}。
+在每个块内，优化器在固定 $M^{(e)}$ 下下降；跨块时，它寻找共享 basin。
+隐式保证强于乘积分布保证，因为优化器必须找到的参数向量不仅要在期望下良好，
+还要在 $E$ 个独立实现中的每一个上都能支撑至少一整轮次的下降。
+实证结果——held-out 精度 $88.41\%$，fresh-instance 精度 $86.37\pm1.54\%$——
+表明这一块平稳要求足以迫使模型进入跨部署分布泛化的 basin。
+
+\subsection{噪声轮廓匹配作为分布对齐条件}
+
+同一逻辑延伸至噪声轮廓。
+均匀噪声下训练的模型最小化均匀噪声分布 $p_{\mathrm{uni}}(M)$ 下的风险；
+比例噪声下训练的模型最小化 $p_{\mathrm{prop}}(M)$ 下的风险。
+由于 $p_{\mathrm{uni}}$ 与 $p_{\mathrm{prop}}$ 在大扰动尾部互异，
+在一者下最优的分类器在另一者下甚至不能保证可接受。
+$10.00\%$ 的跨体制崩溃是这一分布失配的实证签名。
+
+实际后果是噪声轮廓选择并非次要建模细节；
+它是必须与物理器件匹配的分布先验。
+默认使用均匀噪声的模拟器将对遵循比例定律的器件高估部署精度。
+配置文件驱动的替换接口因此不仅是便利特性；
+它是使训练目标与物理部署分布对齐的机制。
+
+\section{评估协议}
+\label{sec:eval-protocols}
+
+为区分``在训练时实例上表现良好''与``在全新硬件实例上部署可靠''，
+本研究建立三级评估协议：
+
+\subsection{源域评估（Source-domain evaluation）}
+
+源域评估在训练时使用的同一固定 D2D 实现上进行。
+对于标准 HAT，这对应于训练期间缓存的 $M_0$；
+对于 Ensemble HAT，通常选择最后一次训练轮次使用的实现或独立采样的新实现进行报告。
+源域精度回答的问题是：``模型在它被训练的那张阵列上表现如何？''
+
+在 CIFAR-10 Tiny-ViT V4 canonical 设置下，标准 HAT 的源域精度为~$91.94\%$
+（ checkpoint 最佳精度，参见~\texttt{noise\_sweep\_results\_gpt.json}）；
+Ensemble HAT 的源域精度约为~$91.13\%$（参见~\texttt{fresh\_instance\_cadence\_control.json}）。
+
+\subsection{Fresh-instance 评估}
+
+Fresh-instance 评估在从相同分布 $p(M)$ 独立采样的全新固定 D2D 实现上进行，
+模型权重保持不变。
+每个全新实例上进行多次蒙特卡罗前向运行（通常 5 次）以平均 C2C 波动，
+然后跨实例汇总统计量。
+该协议回答的问题是：``模型在从未见过的制造实例上表现如何？''
+
+本研究采用 ``$10$~个实例~$\times$~$5$~次蒙特卡罗运行'' 作为标准 fresh-instance 协议
+（参见~\texttt{fresh\_instance\_eval.json}、\texttt{fresh\_instance\_cadence\_control.json}）。
+在 CIFAR-10 Tiny-ViT V4 上：
+\begin{itemize}
+    \item 固定掩膜标准 HAT：$10.00\pm0.00\%$
+    \item Ensemble HAT：$86.37\pm1.54\%$
+\end{itemize}
+
+\subsection{跨数据集评估（Cross-dataset evaluation）}
+
+跨数据集评估将训练于 CIFAR-10 的检查点零样本迁移至其他视觉数据集（如 Flowers-102），
+以测试模型在分布外数据与模拟噪声双重偏移下的鲁棒性。
+该协议回答的问题是：``模型的特征表示是否足够通用，以在全新数据域和全新硬件实例上同时存活？''
+
+跨数据集结果将在后续章节中报告。
+初步结果表明，Ensemble HAT 的分布级训练不仅提升了跨实例迁移，
+也对 moderate 程度的跨数据偏移提供了一定程度的韧性，
+尽管极端域差距仍需额外适应机制。
+
+\section{本章小结}
+
+本章将硬件感知训练视为具有两个主轴的设计空间：重采样频率与噪声轮廓靶向。
+
+在\textbf{频率轴}上，三种 canonical 协议被形式化定义：
+固定掩膜 HAT（式~\ref{eq:hat-fixed}）、轮次级 Ensemble HAT（式~\ref{eq:hat-ensemble}）和每批次重采样。
+探索性 50 轮次消融表明轮次级重采样达到 $88.41\%$ held-out 精度，
+outperform 固定掩膜（$87.18\%$）和每批次（$86.16\%$）对照。
+解读是块平稳暴露——每轮次一个结构化实例——为优化器提供足够的前向路径稳定性以进行下降，
+而轮次序列提供足够的分布广度以防止实例特定过拟合。
+
+在\textbf{噪声轮廓轴}上，均匀（加性）、比例（状态相关）和混合噪声定律被比较。
+比例噪声摧毁了使均匀噪声模型看似鲁棒的尺度掩盖保护，
+且体制匹配训练是恢复精度的必要条件。
+均匀噪声下训练的模型在比例评估下崩溃至 $10.00\%$，反之亦然，
+证明 HAT 鲁棒性是分布特定的。
+
+\textbf{核心洞见}是重采样频率隐式定义迁移保证：
+固定掩膜 HAT 提供单例保证（仅在训练实例上有效），
+每批次 HAT 提供过弱的乘积分布保证，
+轮次级 HAT 提供 empirically 泛化至全新硬件实例的块平稳保证。
+该分类学揭示了症状，但症状并非诊断；后续章节将命名疾病——
+并在物理真实感扩展（相关 D2D、保留漂移）下验证块平稳保证的稳健性。

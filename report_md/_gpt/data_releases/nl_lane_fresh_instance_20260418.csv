@@ -1,0 +1,7 @@
+lane,train_best_acc,fresh_mean,cross_instance_std,status
+fixed,91.94,10.00,0.00,complete
+epoch,91.13,86.33,1.61,complete
+batch,90.30,89.48,0.36,complete
+mlp_only,87.79,32.12,7.72,complete
+qkv_only,18.72,10.01,0.10,complete
+all_linear,87.49,,,pending

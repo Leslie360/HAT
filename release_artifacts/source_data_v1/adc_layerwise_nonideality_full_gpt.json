@@ -1,0 +1,99 @@
+{
+  "metadata": {
+    "experiment": "V4",
+    "dataset": "cifar10",
+    "device": "cuda",
+    "seeds": [
+      42,
+      123,
+      456
+    ],
+    "notes": "ADC offset/gain/INL injected at analog-layer outputs via forward hooks using per-layer calibrated output ranges."
+  },
+  "results": [
+    {
+      "name": "Ideal",
+      "adc_bits": 8,
+      "offset_lsb": 0.0,
+      "gain_error": 0.0,
+      "inl_lsb": 0.0,
+      "accuracies": [
+        81.85,
+        82.13,
+        82.14
+      ],
+      "mean": 82.03999999999999,
+      "std": 0.16462077633154548
+    },
+    {
+      "name": "Offset +/-0.5 LSB",
+      "adc_bits": 8,
+      "offset_lsb": 0.5,
+      "gain_error": 0.0,
+      "inl_lsb": 0.0,
+      "accuracies": [
+        81.84,
+        82.25,
+        82.12
+      ],
+      "mean": 82.07000000000001,
+      "std": 0.2095232683975683
+    },
+    {
+      "name": "Gain +/-5%",
+      "adc_bits": 8,
+      "offset_lsb": 0.0,
+      "gain_error": 0.05,
+      "inl_lsb": 0.0,
+      "accuracies": [
+        81.55,
+        81.91,
+        82.15
+      ],
+      "mean": 81.87,
+      "std": 0.30199337741083393
+    },
+    {
+      "name": "INL 0.5 LSB",
+      "adc_bits": 8,
+      "offset_lsb": 0.0,
+      "gain_error": 0.0,
+      "inl_lsb": 0.5,
+      "accuracies": [
+        80.72,
+        80.92,
+        80.92
+      ],
+      "mean": 80.85333333333334,
+      "std": 0.1154700538379268
+    },
+    {
+      "name": "Combined realistic",
+      "adc_bits": 8,
+      "offset_lsb": 0.5,
+      "gain_error": 0.05,
+      "inl_lsb": 0.5,
+      "accuracies": [
+        81.65,
+        81.76,
+        82.18
+      ],
+      "mean": 81.86333333333334,
+      "std": 0.2797022226106431
+    },
+    {
+      "name": "Combined pessimistic",
+      "adc_bits": 8,
+      "offset_lsb": 1.0,
+      "gain_error": 0.1,
+      "inl_lsb": 1.0,
+      "accuracies": [
+        77.2,
+        76.7,
+        76.79
+      ],
+      "mean": 76.89666666666668,
+      "std": 0.2665207934352083
+    }
+  ]
+}

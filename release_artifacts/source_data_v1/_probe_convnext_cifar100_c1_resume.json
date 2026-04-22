@@ -1,0 +1,50 @@
+{
+  "results": [
+    {
+      "experiment": "C1",
+      "name": "C1_FP32_baseline",
+      "dataset": "cifar100",
+      "num_classes": 100,
+      "n_states": 16,
+      "sigma_c2c": 0.0,
+      "sigma_d2d": 0.0,
+      "hat_training": false,
+      "best_test_acc": 64.12,
+      "mc_mean_acc": 64.12,
+      "mc_std_acc": 0.0,
+      "total_time_s": 46.059953689575195,
+      "epochs": 200
+    }
+  ],
+  "histories": {
+    "C1": {
+      "train_loss": [
+        0.002215729992389679,
+        0.002086787555213086,
+        0.0021160690450679974
+      ],
+      "train_acc": [
+        99.938,
+        99.932,
+        99.926
+      ],
+      "test_loss": [
+        2.32237672996521,
+        2.321832915496826,
+        2.3217432886123657
+      ],
+      "test_acc": [
+        64.01,
+        64.12,
+        64.08
+      ],
+      "lr": [
+        9.868792685367987e-07,
+        2.4673503667882426e-07,
+        0.0
+      ]
+    }
+  },
+  "retention": null,
+  "retention_metadata": null
+}

@@ -1,0 +1,8 @@
+% !TeX root = ../main.tex
+\begin{abstract}
+Organic optoelectronic devices offer multilevel conductance tuning and low static power, yet whether these characteristics suffice for modern vision tasks remains unknown. We present a profile-driven first-order behavioral simulation framework that maps literature-derived device metrics to task-level performance through a replaceable profile interface, incorporating photoresponse (with inverse-gamma compensation and shot-noise trade-off analysis), retention, and write nonlinearity that are not directly captured by inorganic-memory simulators.
+
+Across Tiny-ViT-5M, ConvNeXt-Tiny, and ResNet-18 on three vision datasets, we find that ADC resolution—not nominal conductance quantization—dominates accuracy under the simulated canonical regime: reducing ADC resolution below 6 bits causes abrupt accuracy collapse, and a Sobol decomposition over a 63-point D2D--ADC grid confirms that once 6-bit readout is secured, device-to-device variability dominates the residual accuracy budget. Standard HAT overfits a single D2D realization and collapses to 10.00\% on fresh hardware, whereas Ensemble HAT recovers $86.37 \pm 1.54\%$ by resampling D2D masks during training. A literature-anchored 2025 OPECT case study reaches 88.53\% zero-shot transfer accuracy in the same workflow. Under the present baseline gradient-scaling approximation, however, severe nonlinear write ($NL=2.0$) presents a practical recovery bottleneck for the current training recipe and limits accuracy to $27.72 \pm 0.82\%$.
+
+Taken together, the framework serves as a simulation-based materials-to-system decision aid for identifying device characteristics that constrain edge-vision deployment.
+\end{abstract}

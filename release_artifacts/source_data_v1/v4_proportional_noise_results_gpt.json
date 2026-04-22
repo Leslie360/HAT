@@ -1,0 +1,40 @@
+{
+  "results": [
+    {
+      "model": "tinyvit",
+      "experiment": "V4",
+      "experiment_name": "V4_hybrid_standard_noise_hat",
+      "dataset": "cifar10",
+      "checkpoint_path": "/home/qiaosir/projects/compute_vit/checkpoints/V4_hybrid_standard_noise_hat_best.pt",
+      "checkpoint_epoch": 99,
+      "checkpoint_best_acc": 91.94,
+      "sweep_type": "noise",
+      "amp_enabled": true,
+      "device_profile": null,
+      "profile_kind": null,
+      "profile_source": null,
+      "dynamic_range": null,
+      "n_states": null,
+      "sigma_c2c": 0.05,
+      "sigma_d2d": 0.1,
+      "adc_bits": null,
+      "adc_label": "native",
+      "eval_runs": 10,
+      "test_loss_mean": 7.8029163064575195,
+      "test_acc_mean": 10.0,
+      "test_acc_min": 10.0,
+      "test_acc_max": 10.0,
+      "test_acc_std": 0.0
+    }
+  ],
+  "metadata": {
+    "generated_at": "2026-04-06T01:44:52",
+    "last_model": "tinyvit",
+    "last_experiment": "V4",
+    "last_sweep_type": "noise",
+    "eval_runs": 10,
+    "profile_source": "checkpoint_default",
+    "noise_mode_override": "proportional",
+    "preserve_checkpoint_d2d": true
+  }
+}

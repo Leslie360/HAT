@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-ROOT="/home/qiaosir/projects/compute_vit"
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 MAIN_LOG="${ROOT}/logs/_gpt/p13_aihwkit_full_cifar10_gpu_r2.log"
 HEARTBEAT_LOG="${ROOT}/logs/_gpt/p13_runtime_heartbeat.log"
 WATCH_LOG="${ROOT}/logs/_gpt/watch_p13_r2_and_post_queue.log"

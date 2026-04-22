@@ -13,7 +13,7 @@ It is the shared normalization reference for:
 |:--|:--|
 | `Horowitz 2014` | `horowitz2014computing` |
 | `Peng et al. 2020` | `peng2020dnnneurosim` |
-| `Alibart 2016` | `alibart2016physical` |
+| `Lin 2016` | `lin2016physical` |
 | `Xu et al. 2025` | `xu2025emerging` |
 | `Guo et al. 2024` | `guo2024organic` |
 | `Zeng et al. 2023` | `zeng2023organicmemristor` |

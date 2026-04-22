@@ -13,7 +13,9 @@ import os
 import sys
 import dataclasses
 
-sys.path.insert(0, '/home/qiaosir/projects/compute_vit')
+from repo_bootstrap import ensure_repo_root
+
+ensure_repo_root()
 
 from train_convnext import (
     build_model, get_dataloaders,

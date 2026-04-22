@@ -3,8 +3,8 @@
 
 set -euo pipefail
 
-PYTHON_BIN="/home/qiaosir/miniconda3/envs/LLM/bin/python"
-ROOT="/home/qiaosir/projects/compute_vit"
+PYTHON_BIN="${PYTHON_BIN:-${PYTHON:-python}}"
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 SEED=42
 FRACTIONS=("0.10" "0.25" "0.50" "1.00")
 

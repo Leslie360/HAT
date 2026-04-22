@@ -15,9 +15,10 @@ import json
 from datetime import datetime
 import time
 
-# Add CrossSim to path
-sys.path.insert(0, '/home/qiaosir/projects/cross-sim')
-sys.path.insert(0, '/home/qiaosir/projects/cross-sim/applications/dnn')
+from repo_bootstrap import configure_crosssim_paths, ensure_repo_root
+
+REPO_ROOT = ensure_repo_root()
+configure_crosssim_paths()
 
 print("=" * 70)
 print("CrossSim vs Our Framework - Canonical 8-bit ADC Comparison")
@@ -291,10 +292,10 @@ if crosssim_mean:
     print(f"Δ:        {digital_acc - crosssim_mean:.2f} pp")
 
 # Save
-output_dir = "/home/qiaosir/projects/compute_vit/report_md/_gpt"
-os.makedirs(output_dir, exist_ok=True)
-with open(f"{output_dir}/crosssim_comparison_final.json", 'w') as f:
+output_dir = REPO_ROOT / "report_md" / "_gpt"
+output_dir.mkdir(parents=True, exist_ok=True)
+with (output_dir / "crosssim_comparison_final.json").open("w", encoding="utf-8") as f:
     json.dump(results, f, indent=2)
 
-print(f"\nSaved to: {output_dir}/crosssim_comparison_final.json")
+print(f"\nSaved to: {output_dir / 'crosssim_comparison_final.json'}")
 print("=" * 70)

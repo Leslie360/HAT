@@ -8,8 +8,10 @@ import os
 import subprocess
 import sys
 from datetime import datetime
+from pathlib import Path
 
-PYTHON = "/home/qiaosir/miniconda3/envs/LLM/bin/python"
+ROOT = Path(__file__).resolve().parents[2]
+PYTHON = os.environ.get("PYTHON", sys.executable)
 LOG_DIR = "logs/_gpt/multi_seed"
 os.makedirs(LOG_DIR, exist_ok=True)
 
@@ -54,7 +56,8 @@ SEEDS = [42, 123, 2026]
 def main():
     print(f"Generating suite for {len(TASKS) * len(SEEDS)} runs...")
     
-    with open("scripts/_gpt/run_multi_seed_suite_gpt.sh", "w") as f:
+    script_path = ROOT / "scripts" / "_gpt" / "run_multi_seed_suite_gpt.sh"
+    with script_path.open("w", encoding="utf-8") as f:
         f.write("#!/bin/bash\n")
         f.write("set -e\n")
         for model_type, exp, script, args, bs, checkpoint_name in TASKS:
@@ -79,8 +82,8 @@ def main():
                     f"2>&1 | tee {eval_log}\n"
                 )
 
-    os.chmod("scripts/_gpt/run_multi_seed_suite_gpt.sh", 0o755)
-    print("Created scripts/_gpt/run_multi_seed_suite_gpt.sh with train+eval chained runs.")
+    os.chmod(script_path, 0o755)
+    print(f"Created {script_path.relative_to(ROOT)} with train+eval chained runs.")
 
 if __name__ == "__main__":
     main()

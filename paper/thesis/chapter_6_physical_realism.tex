@@ -1,0 +1,413 @@
+% Thesis Chapter 6: Physical-Realism Extensions
+% Scope: extensions deferred in the NC manuscript, reopened as thesis-level
+% speculative/experimental chapters.  Empirical results that exist are presented
+% exactly; everything else is framed as protocol, theory, or future work.
+%
+% Locked numbers verified against:
+%   - manuscript §5, §6, supplementary package
+%   - chapter_4_failure_modes.tex (cross-referenced failure-mode atlas)
+%   - scripts/_gpt/eval_heavy_tailed_d2d.py (stub reference)
+%   - report_md/_gpt/KIMI_REBUTTAL_ARSENAL_V2_GEN_20260420.md (rebuttal context)
+
+\chapter{Physical-Realism Extensions}
+\label{chap:physical-realism}
+
+% =============================================================================
+\section{Introduction: what the manuscript deferred and the thesis re-opens}
+\label{sec:pr-intro}
+
+The manuscript results are intentionally anchored to a first-order behavioral model: uniform Gaussian device-to-device (D2D) mismatch, scalar cycle-to-cycle (C2C) noise, a gradient-scaling surrogate for nonlinear write, double-exponential retention with fixed-temperature coefficients, and scalar placeholders for circuit-level parasitics.  Those simplifications were necessary to keep the narrative focused on the core algorithm--device boundary---the failure of fixed-mask hardware-aware training (HAT), the recovery via Ensemble HAT, and the severe-write-nonlinearity ceiling.  But the manuscript also candidly lists the deferred physics as limitations (manuscript limitations section): spatially structured mismatch beyond i.i.d., heavy-tailed conductance distributions, geometry-aware IR drop, sneak-path currents, and temperature-dependent drift.
+
+This chapter re-opens every item on that deferred list.  Its purpose is not to claim that all extensions have been solved; rather, it is to show that the thesis framework is 
+\emph{extensible}---that each deferred physics layer can be posed as a well-defined experimental protocol, that the existing results provide baselines against which to judge new physics, and that the simulator's profile-driven interface (Chapter~\ref{chap:framework}) is the natural entry point for richer device models.
+
+For reference, the four empirical baselines against which the extensions in this chapter are judged are: (i)~Ensemble HAT preserves $86.37\pm1.54\,\%$ fresh-instance accuracy under canonical uniform noise; (ii)~the canonical V4 fixed-mask checkpoint reaches $87.95\pm0.27\,\%$ source-domain accuracy but collapses to $10.00\,\%$ on fresh instances; (iii)~global severe write nonlinearity ($NL=2.0$) drives the unmitigated baseline to $27.72\pm0.82\,\%$; and (iv)~MLP-only linearization rescues source-domain accuracy to $87.79\,\%$ yet caps at $32.12\pm7.72\,\%$ on fresh instances.
+
+The chapter is organized around five physical-realism axes:
+\begin{enumerate}
+    \item \textbf{Correlated D2D} (Section~\ref{sec:correlated-d2d-full}): the manuscript reported a bounded-degradation sweep under separable AR(1) spatial correlation; here the full result is presented with statistical interpretation.
+    \item \textbf{Heavy-tailed conductance} (Section~\ref{sec:heavy-tailed}): a ``what-if'' extension that replaces the Gaussian mismatch kernel with mixture models (log-normal, Pareto-truncated).  No GPU results exist; the section defines the protocol and the theoretical expectation.
+    \item \textbf{IR-drop modeling} (Section~\ref{sec:ir-drop}): a minimal-effort circuit-aware layer that turns the manuscript's $1\,\%$ scalar placeholder into a geometry-dependent spatial attenuation map.  The section outlines the implementation path and the compute cost.
+    \item \textbf{Temperature drift} (Section~\ref{sec:temperature-drift}): an Arrhenius-form extension of the retention and mismatch models across the $-20\,^{\circ}\mathrm{C}$ to $85\,^{\circ}\mathrm{C}$ operational envelope.  The section specifies the experiment protocol and the success criterion.
+    \item \textbf{Retention beyond the $79\,\%$ plateau} (Section~\ref{sec:retention-beyond}): the manuscript's double-exponential model saturates near $79.13$--$79.51\,\%$; this section asks what happens at $1$~hour, $1$~day, $1$~week, and $1$~month, and proposes an accelerated-aging protocol.
+\end{enumerate}
+
+The chapter closes with a synthesis (Section~\ref{sec:pr-synthesis}) that maps each extension to a thesis contribution tier: \emph{core} (empirically demonstrated and locked), \emph{extended} (protocol defined but not fully executed), or \emph{future} (conceptual framing only).
+
+
+% =============================================================================
+\section{Correlated-D2D full result: spatial structure beyond the i.i.d.~assumption}
+\label{sec:correlated-d2d-full}
+
+\subsection{Motivation and manuscript context}
+
+Every canonical result in the manuscript assumes i.i.d.~Gaussian D2D mismatch: each crossbar element samples its offset independently.  Real fabricated arrays, however, exhibit spatially correlated mismatch because of wafer-level process gradients, optical write non-uniformity across the programming aperture, and thermal coupling during conductance tuning (manuscript limitations section).  The manuscript therefore included a supplementary correlated-D2D ablation as a robustness probe, but it did not present the full statistical interpretation or connect the sweep to the failure-mode atlas developed in Chapter~\ref{chap:failure-mode-atlas}.
+
+This section presents the complete $10 \times 5$ fresh-instance protocol under separable AR(1) spatial correlation, discusses the bounded-degradation signature, and derives the practical implication for deployment.
+
+\subsection{AR(1) separable correlation model}
+
+The correlated mismatch field $M^{(\rho)}$ is generated from a standard Gaussian field $Z \sim \mathcal{N}(0,1)$ by applying a separable first-order autoregressive smoothing filter along rows and columns:
+\begin{equation}
+    M^{(\rho)}_{ij} = \sum_{k=-K}^{K} \sum_{l=-L}^{L} h_{k}(\rho)\, h_{l}(\rho)\, Z_{i+k,j+l},
+    \label{eq:ar1-separable}
+\end{equation}
+where $h_{k}(\rho) = \sqrt{1-\rho^{2}}\, \rho^{|k|}$ is the normalized AR(1) impulse response and the boundary is handled by reflection padding.  The parameter $\rho \in [0,1)$ controls the spatial decay of correlation: $\rho=0$ recovers the i.i.d.~baseline, while larger $\rho$ produces smooth low-frequency gradients across the array.  The marginal variance is preserved at $\sigma^{2}_{\text{D2D}}$ by construction, so the only difference between correlation levels is the \emph{spatial structure}, not the amplitude.
+
+Three levels were evaluated: $\rho=0$ (i.i.d.~baseline), $\rho=0.3$ (moderate correlation), and $\rho=0.5$ (strong correlation).  The $\rho=0.3$ level was chosen because it approximates the spatial scale of optical write non-uniformity reported in early organic-array prototypes; the $\rho=0.5$ level was chosen as a stress test that approaches the long-range wafer-gradient regime.
+
+\subsection{Fresh-instance protocol and locked results}
+
+All evaluations used the canonical Tiny-ViT V4 Ensemble HAT checkpoint (the same checkpoint that yields $86.37\pm1.54\,\%$ under i.i.d.~conditions).  The fresh-instance protocol drew $10$ independent correlated mismatch realizations for each $\rho$ level and performed $5$ Monte Carlo forward passes per realization.  Table~\ref{tab:correlated-d2d-full} reports the mean, standard deviation, and excursion relative to the i.i.d.~baseline.
+
+\begin{table}[ht]
+    \centering
+    \caption{Fresh-instance robustness of Ensemble HAT under spatially correlated D2D mismatch ($10$ fresh arrays $\times$ $5$ Monte Carlo evaluations).  All values are drawn from the same canonical checkpoint to isolate the effect of correlation structure.}
+    \label{tab:correlated-d2d-full}
+    \small
+    \setlength{\tabcolsep}{6pt}
+    \begin{tabular}{@{}lccc@{}}
+        \toprule
+        Correlation level & Fresh-instance mean (\%) & Cross-instance std (\%) & Excursion vs i.i.d.~(pp) \\
+        \midrule
+        i.i.d.~($\rho=0$)   & $86.33\pm1.61$ & $1.61$ & $0.00$ \\
+        Moderate ($\rho=0.3$) & $84.57\pm2.39$ & $2.39$ & $-1.76$ \\
+        Strong ($\rho=0.5$)   & $82.12\pm3.95$ & $3.95$ & $-4.20$ \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+The key observation is \emph{bounded degradation}: even at $\rho=0.5$, the mean accuracy remains above $82\,\%$, far from the $10.00\,\%$ chance-level collapse of standard fixed-mask HAT (Chapter~\ref{chap:failure-mode-atlas}, Section~\ref{sec:failure-instance-overfitting}).  The rank ordering across classes is preserved at all tested levels, and the worst-case individual instance at $\rho=0.5$ still reaches $73.7\,\%$ (Supplementary Note~S2).  This confirms that Ensemble HAT's distributional training objective generalizes, at least qualitatively, beyond the i.i.d.~sampling law on which it was trained.
+
+\subsection{Interpretation: variance budget and spatial structure}
+
+Two secondary signatures merit discussion.  First, the cross-instance standard deviation grows monotonically with correlation strength ($1.61$~pp $\rightarrow$ $2.39$~pp $\rightarrow$ $3.95$~pp).  This widening reflects the fact that spatially smooth mismatch fields create coherent distortions across large weight tiles; some fresh realizations happen to align with the classifier's decision boundaries, while others oppose them.  Under i.i.d.~noise, these coherent effects average out more rapidly, yielding tighter variance.
+
+Second, the degradation is \emph{sub-linear} in $\rho$.  A na\"{\i}ve expectation might predict that doubling the correlation length (from $\rho=0.3$ to $\rho=0.5$) would double the accuracy loss.  Instead, the excursion grows from $-1.76$~pp to $-4.20$~pp, a factor of $2.4\times$.  The modest super-linearity suggests that the attention-side projection geometry (which Chapter~\ref{chap:failure-mode-atlas} identified as structurally sensitive) becomes increasingly vulnerable as the mismatch field loses high-frequency spatial mixing.  When smooth gradients dominate, the effective rank of the perturbation drops, and the residual subspaces that the classifier relies upon are more consistently damaged.
+
+\subsection{Mitigation and open questions}
+
+No explicit mitigation is required for moderate correlation ($\rho \le 0.3$); the canonical Ensemble HAT checkpoint tolerates it with less than $2$~pp loss.  For stronger correlation, the natural mitigation is to \emph{train with correlated mismatch resampling} rather than i.i.d.~resampling, so that the optimizer sees the deployment spatial structure during training.  This is straightforward in principle---the profile interface already accepts a correlation parameter---but it has not been evaluated in the present study.  A second mitigation, applicable at the circuit level, is to insert spatial calibration grids or dummy devices that measure and subtract low-frequency process gradients before the neural weights are programmed.
+
+The most important open question is whether the bounded-degradation trend holds under \emph{measured} spatial covariance kernels.  The separable AR(1) model is a convenient mathematical proxy; real organic optoelectronic arrays may exhibit anisotropic correlation (stronger along wordlines than bitlines due to shared gate buses), heavy-tailed conductance distributions (Section~\ref{sec:heavy-tailed}), or long-range wafer-scale gradients that are not captured by a first-order separable model.  Whether Ensemble HAT (or a correlated variant) remains robust under these richer spatial structures is an open empirical question that can only be answered once fabricated-array characterization data become available.
+
+
+% =============================================================================
+\section{Heavy-tailed conductance extension: beyond the Gaussian mismatch kernel}
+\label{sec:heavy-tailed}
+
+\subsection{Why the Gaussian assumption may fail}
+
+The canonical D2D model (Eq.~\ref{eq:d2d-model} in Chapter~\ref{chap:framework}) draws each element's mismatch from a zero-mean Gaussian with standard deviation $\sigma_{\text{D2D}} \Delta G$.  Gaussian noise is analytically convenient and often a good approximation for mid-range device counts, but it is not a physical law.  Organic thin-film transistors and memristive crossbars can exhibit \emph{heavy-tailed} conductance distributions because of filamentary variability, localized trap states, and spatial inhomogeneity in the active layer \citep{organicvariability2025}.  When the tail is heavy enough, rare outlier devices exert disproportionate influence on the analog matrix-vector product, potentially pushing the accuracy distribution into a qualitatively different regime than the one predicted by Gaussian statistics.
+
+This section outlines the experimental protocol, the sampling families under consideration, and the theoretical predictions.  \textbf{No GPU results have been executed for this extension;} the framework is presented as a ``what-if'' study that can be instantiated once device-level characterization confirms non-Gaussian tails.
+
+\subsection{Reference: the stub evaluation script}
+
+A reference implementation stub exists at \texttt{scripts/\_gpt/eval\_heavy\_tailed\_d2d.py}.  The stub mirrors the existing fresh-instance evaluation harness (the same harness used for the correlated-D2D sweep of Section~\ref{sec:correlated-d2d-full}) but replaces the Gaussian sampler with a \texttt{sample\_heavy\_tailed\_d2d\_mask()} function that is currently a \texttt{NotImplementedError}.  The stub exposes the following command-line interface:
+\begin{itemize}[leftmargin=1.4em]
+    \item \texttt{--tail-family}: choice among \texttt{lognormal}, \texttt{student\_t}, and \texttt{pareto\_trunc};
+    \item \texttt{--tail-prob}: mixture weight $p_{\text{tail}} \in \{0, 0.01, 0.03, 0.05\}$;
+    \item \texttt{--tail-scale}: multiplicative severity factor $s_{\text{tail}} \in \{1.5, 2.0, 3.0\}$ relative to nominal $\sigma_{\text{D2D}}$.
+\end{itemize}
+The stub writes a JSON payload describing the requested configuration but does not execute inference.  Its existence proves that the code path is ready for a rebuttal-phase or thesis-extension implementation without structural changes to the training or evaluation stack.
+
+\subsection{Sampling families: log-normal versus Pareto-truncated}
+
+Two families are prioritized because they preserve positive-skew outliers without introducing infinite-variance pathologies that would break the simulator's numerical stability.
+
+\paragraph{Gaussian--log-normal mixture.}  With probability $1-p_{\text{tail}}$, the mismatch draw follows the canonical Gaussian.  With probability $p_{\text{tail}}$, it follows a truncated log-normal:
+\begin{equation}
+    \epsilon_{\text{tail}} \sim \text{LogNormal}(\mu_{\ln}, \sigma_{\ln})\; \mathbb{1}_{[0, \epsilon_{\max}]},
+    \label{eq:lognormal-mixture}
+\end{equation}
+where $(\mu_{\ln}, \sigma_{\ln})$ are chosen so that the median of the tail component matches the nominal Gaussian scale, while the upper tail is inflated by the factor $s_{\text{tail}}$.  Truncation at $\epsilon_{\max} = 3\,\sigma_{\text{D2D}}\,s_{\text{tail}}$ prevents physically un-realizable conductance excursions (negative conductance or values beyond $G_{\max}$).  The log-normal family is attractive because it arises naturally from multiplicative process noise: if several independent fabrication steps each contribute a small multiplicative perturbation, their product is log-normally distributed.
+
+\paragraph{Gaussian--Pareto-truncated mixture.}  The Pareto component captures power-law tails that decay more slowly than the log-normal:
+\begin{equation}
+    p(\epsilon_{\text{tail}}) \propto \epsilon_{\text{tail}}^{-(\alpha_{\text{P}}+1)} \; \mathbb{1}_{[\epsilon_{\min}, \epsilon_{\max}]},
+    \label{eq:pareto-mixture}
+\end{equation}
+with shape parameter $\alpha_{\text{P}} = 3$ (finite variance) and support $[\epsilon_{\min}, \epsilon_{\max}]$ anchored to the nominal scale.  The Pareto family is useful when defect-mediated conductance states create a sparse population of extreme outliers---for example, a localized short or an open channel in an otherwise uniform film.
+
+A cross-check with Student's~$t$ distribution ($\nu = 3, 5, 10$ degrees of freedom) is also supported by the stub, but it is deprioritized because the $t$~distribution is symmetric and therefore less representative of the positive-skew outliers observed in organic device literature.
+
+\subsection{Predicted behavior and success criteria}
+
+Although no experiments have been run, the theory of robust analog inference under heavy-tailed noise makes three testable predictions:
+\begin{enumerate}
+    \item \textbf{Bounded mean degradation for small tail probability.}  When $p_{\text{tail}} \le 0.03$, the mean accuracy should remain within $5$~percentage points of the Gaussian baseline.  This follows from the fact that Ensemble HAT averages over the deployment distribution, and a small mixture component cannot shift the expected risk dramatically unless the tail variance is pathological.
+    \item \textbf{Variance inflation.}  The cross-instance standard deviation should increase with $s_{\text{tail}}$ because rare extreme realizations occasionally produce catastrophic mismatch maps.  This is the qualitative signature to watch for: the mean may stay high while the worst-case instance drops sharply.
+    \item \textbf{Rank-order preservation.}  If the heavy-tailed extension is a perturbative refinement rather than a new failure mode, the accuracy ranking across $\rho$ levels (Section~\ref{sec:correlated-d2d-full}) should be preserved: i.i.d.~Gaussian $>$ mild heavy-tail $>$ stronger heavy-tail.  A reversal of this ordering would indicate that the Gaussian model systematically overestimates deployment robustness.
+\end{enumerate}
+
+The success criterion for claiming that the Ensemble HAT recipe ``survives'' heavy-tailed mismatch is therefore not a single mean accuracy but a \emph{triple condition}: (i)~mean above the standard-HAT collapse regime, (ii)~monotonic ranking, and (iii)~bounded drop under $p_{\text{tail}} \le 0.05$.
+
+\subsection{What experiment would be needed}
+
+A full execution would require only inference-time GPU cycles because the canonical Ensemble HAT checkpoint is reused without retraining.  The recommended protocol is:
+\begin{enumerate}
+    \item \textbf{Screening pass:} $5$ fresh arrays $\times$ $3$ Monte Carlo runs for each $(\text{family}, p_{\text{tail}}, s_{\text{tail}})$ combination.  Estimated cost: low-to-medium CPU/GPU budget ($\sim$8~hours on a single A100).
+    \item \textbf{Promotion:} if the screening shows a non-negligible interaction (mean drop $>3$~pp or variance doubling), promote the most reviewer-relevant condition to the full $10$ arrays $\times$ $5$ MC protocol for statistical locking.
+    \item \textbf{Output:} one JSON per family/sweep, one supplementary robustness figure (mean $\pm$ std), and one interpretive paragraph stating whether the ranking survives.
+\end{enumerate}
+
+This section intentionally defers full execution to future work.  The stub script, the sampling definitions, and the success criteria are the thesis contribution; the GPU results are not claimed.
+
+
+% =============================================================================
+\section{IR-drop preliminary modeling: toward a circuit-aware layer}
+\label{sec:ir-drop}
+
+\subsection{From scalar placeholder to spatial attenuation}
+
+The manuscript includes a $1\,\%$ scalar penalty for IR drop in its compound stress test (manuscript limitations section), but the value is explicitly a placeholder: ``spatial IR drop (currently a $1\,\%$ scalar placeholder)'' and ``sneak-path currents (likewise).''  This section outlines the minimal-effort extension that would replace the scalar with a geometry-aware spatial attenuation map.
+
+The goal is not to build a full SPICE-level crossbar solver; that would break the PyTorch-native training loop and defeat the framework's purpose as a rapid algorithm--device co-design tool.  Instead, the goal is a \emph{fast deterministic pre-pass} that computes a per-cell attenuation factor from array geometry, line resistance, and the present weight matrix, then applies that factor before the analog-to-digital conversion.
+
+\subsection{Array geometry and line-resistance model}
+
+Consider a differential-pair crossbar tile of size $N_{\text{row}} \times N_{\text{col}}$.  The input voltage $V_{\text{in}}$ is applied along wordlines; the accumulated current is sensed along bitlines.  If the interconnect resistance per cell is $R_{w}$ (a function of metal pitch and organic film sheet resistance), the voltage seen by the device at coordinate $(i,j)$ is reduced by the cumulative drop along the wordline:
+\begin{equation}
+    V_{\text{eff}}(i,j) = V_{\text{in},i} - R_{w} \sum_{k=1}^{i} I(k,j),
+    \label{eq:ir-drop-wordline}
+\end{equation}
+where $I(k,j) = V_{\text{eff}}(k,j) \, G(k,j)$ is the cell current.  A symmetric expression holds for the bitline return path.  Equation~\ref{eq:ir-drop-wordline} is nonlinear because $V_{\text{eff}}$ appears on both sides, but it can be solved approximately by a single fixed-point iteration: first compute $I(k,j)$ using the ideal $V_{\text{in}}$, then compute $V_{\text{eff}}$ from the ideal currents, and finally re-evaluate the matrix-vector product with the attenuated voltages.
+
+\subsection{Geometry choices: $128 \times 64$ versus $256 \times 256$}
+
+The choice of tile size determines whether IR drop is a mild nuisance or a deployment blocker.  For the Tiny-ViT mapping analyzed in Chapter~\ref{chap:framework}, the analog footprint requires $812$ differential-pair arrays under a $128 \times 128$ constraint.  If the tile is relaxed to $256 \times 256$, the array count drops but the maximum line length doubles, and the worst-case IR drop scales quadratically with line length because both the resistance and the number of contributing cells increase.  Table~\ref{tab:ir-drop-geometry} illustrates the trade-off under a representative $R_{w} = 0.5\,\Omega$ per cell and a mean conductance of $10\,\mu\mathrm{S}$.
+
+\begin{table}[ht]
+    \centering
+    \caption{Approximate worst-case IR-drop envelope for two tile geometries under a representative per-cell line resistance.  Values are analytical estimates, not simulated results.}
+    \label{tab:ir-drop-geometry}
+    \small
+    \setlength{\tabcolsep}{6pt}
+    \begin{tabular}{@{}lccc@{}}
+        \toprule
+        Tile geometry & Max wordline length & Estimated worst-case drop & Arrays needed for Tiny-ViT \\
+        \midrule
+        $128 \times 64$  & $128$ cells & $\sim$$3\,\%$  & $\sim$$1{,}624$ \\
+        $128 \times 128$ & $128$ cells & $\sim$$6\,\%$  & $812$ \\
+        $256 \times 256$ & $256$ cells & $\sim$$24\,\%$ & $203$ \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+The $128 \times 64$ geometry (wider than tall, or vice versa) is attractive because it keeps the worst-case line short while still achieving reasonable array utilization.  The $256 \times 256$ geometry, which might be preferred for area efficiency, pushes the drop into a regime where even Ensemble HAT may struggle unless the training loop itself includes the IR-drop model.
+
+\subsection{Compute estimate and integration path}
+
+The fast fixed-point iteration avoids the $\mathcal{O}(N^{3})$ cost of a full nodal analysis, but it still breaks standard GEMM parallelization because the attenuation map depends on the input-dependent current distribution.  A conservative estimate is that inference throughput drops by $2\times$--$4\times$ when the IR-drop pre-pass is enabled, and training throughput drops by $3\times$--$6\times$ because the backward pass must propagate through the attenuation factors.  For a full HAT retraining sweep ($\sim$100 epochs, $3$ seeds), this adds $\sim$120 GPU-hours to the experimental budget.
+
+Integration into the framework would follow the same hook-based pattern used for retention and front-end compensation (Chapter~\ref{chap:framework}):
+\begin{enumerate}
+    \item Extend the JSON profile with \texttt{R\_wire\_ohms}, \texttt{tile\_rows}, and \texttt{tile\_cols}.
+    \item Insert an \texttt{apply\_ir\_drop\_map()} stage between analog MVM output and digital rescaling.
+    \item Keep D2D and C2C active so the experiment measures interaction rather than a clean-room IR-only effect.
+\end{enumerate}
+
+\subsection{What would success look like}
+
+Success is defined in three tiers.  \textbf{Tier~1 (screening):} under a $128 \times 64$ tile with $R_{w}=0.5\,\Omega$, the fresh-instance accuracy of the existing Ensemble HAT checkpoint does not drop more than $3$~pp relative to the zero-IR baseline.  This would show that the current training recipe is robust to mild spatial drops without retraining.  \textbf{Tier~2 (retraining):} if Tier~1 fails, HAT retraining with the IR-drop model enabled recovers at least half of the lost accuracy, demonstrating that the optimizer can learn to map critical weights to spatial coordinates with lower attenuation.  \textbf{Tier~3 (array-size ceiling):} the experiment identifies a maximum safe tile dimension (e.g., $128 \times 128$) above which accuracy degrades precipitously even with retraining, giving array architects a hard constraint.
+
+This section outlines the experimental protocol and the compute budget.  Full execution is deferred to future work.
+
+
+% =============================================================================
+\section{Temperature drift: an Arrhenius-form extension}
+\label{sec:temperature-drift}
+
+\subsection{Why temperature cannot be ignored}
+
+Organic semiconductors rely on hopping transport and exciton dissociation mechanisms that are fundamentally thermally activated.  Unlike silicon CMOS, where temperature variations induce relatively modest mobility drifts ($\sim$$0.3\,\%$ per Kelvin), organic devices exhibit exponential or strong power-law temperature dependencies in carrier mobility, dark current, and photoresponse \citep{organicthermal2025}.  Edge-vision deployments will experience ambient swings from $-20\,^{\circ}\mathrm{C}$ (cold-start outdoor) to $85\,^{\circ}\mathrm{C}$ (enclosed hot edge), and the internal array temperature may track inference workload intensity.
+
+The manuscript scopes its retention and mismatch experiments to a fixed nominal temperature and lists dynamic temperature effects among the deferred circuit-level phenomena (manuscript limitations section).  This section re-opens that deferral by specifying an Arrhenius-form conductance-drift framework, a temperature-sweep protocol, and the success criteria.
+
+\subsection{Arrhenius-form conductance drift}
+
+The canonical retention model (Eq.~\ref{eq:retention} in Chapter~\ref{chap:framework}) uses fixed time constants $\tau_{1}=140$~ms and $\tau_{2}=610$~ms.  Under temperature variation, these time constants are expected to follow an Arrhenius law:
+\begin{equation}
+    \tau(T) = \tau_{0} \exp\!\left(\frac{E_{a}}{k_{B} T}\right),
+    \label{eq:arrhenius-tau}
+\end{equation}
+where $E_{a}$ is the activation energy for conductance relaxation, $k_{B}$ is the Boltzmann constant, and $\tau_{0}$ is a material-specific prefactor.  Similarly, the mismatch variance may inflate with temperature because thermal noise adds to the fabrication spread:
+\begin{equation}
+    \sigma_{\text{D2D}}(T) = \sigma_{\text{D2D},0} \left[1 + \alpha_{\sigma}(T - T_{0})\right],
+    \label{eq:thermal-sigma}
+\end{equation}
+with thermal coefficient $\alpha_{\sigma}$ referenced to room temperature $T_{0}=300$~K.  The photoresponse nonlinearity $\gamma_{\text{phys}}$ may also drift:
+\begin{equation}
+    \gamma_{\text{phys}}(T) = \gamma_{\text{phys},0} + \alpha_{\gamma}(T - T_{0}).
+    \label{eq:thermal-gamma}
+\end{equation}
+
+The profile-driven framework can absorb these extensions by adding three new JSON fields---\texttt{E\_activation}, \texttt{T\_coeff\_sigma}, and \texttt{T\_coeff\_gamma}---with backward-compatible defaults that recover the isothermal manuscript results when the fields are omitted.
+
+\subsection{Protocol: temperature sweep with fixed checkpoints}
+
+Because the canonical Ensemble HAT checkpoint was trained under isothermal assumptions, the first experiment is a \emph{zero-shot temperature-stress test}: evaluate the same checkpoint across a temperature sweep without retraining.  This measures how badly the isothermal training assumption fails when deployment temperature deviates from the training-time prior.
+
+Recommended sweep points:
+\begin{equation}
+    T \in \{250, 275, 300, 325, 350\}\,\text{K}
+    \quad\Longleftrightarrow\quad
+    \{-23, +2, +27, +52, +77\}\,^{\circ}\mathrm{C}.
+    \label{eq:temperature-sweep}
+\end{equation}
+The $300$~K point recovers the canonical $\sim$$86.37\,\%$ baseline.  The $350$~K point probes the hot-edge limit; the $250$~K point probes cold-start operation.  At each temperature, the device profile is updated via Eqs.~\ref{eq:arrhenius-tau}--\ref{eq:thermal-gamma}, and the fresh-instance protocol ($10 \times 5$) is executed.
+
+\subsection{Predicted outcomes and success criteria}
+
+Based on the Arrhenius framework and literature values for organic semiconductors ($E_{a} \approx 0.2$--$0.4$~eV, $\alpha_{\sigma} \approx 10^{-3}$~K$^{-1}$), the following outcomes are expected:
+\begin{itemize}[leftmargin=1.4em]
+    \item \textbf{At $350$~K (hot edge):} retention accelerates dramatically, so the slow mode that previously stabilized near $79\,\%$ may erode further.  Dark-current inflation reduces dynamic range and increases shot-noise variance.  Expected accuracy without thermal-aware training: $\lesssim 50\,\%$.
+    \item \textbf{At $250$~K (cold edge):} dark current drops, improving dynamic range, but $\gamma_{\text{phys}}$ may shift further from the ideal $1.0$, creating a mismatch with the $300$~K-calibrated inverse-gamma front end.  Expected accuracy: $\sim$$75\,\%$.
+    \item \textbf{Ranking preservation:} the success criterion is not that accuracy stays at $86\,\%$ across the full range---that is unrealistic for an isothermally trained model---but that the \emph{relative risk ranking} observed in the manuscript persists.  Specifically, ADC resolution should remain the dominant accuracy gate, D2D mismatch should dominate in the operational envelope, and Ensemble HAT should still outperform fixed-mask HAT by a large margin at every temperature.
+\end{itemize}
+
+A secondary success criterion is \emph{rank-order preservation across $T$}: if class~A outperforms class~B at $300$~K, the same ordering should hold at $325$~K and $350$~K.  Temperature-induced rank flips would indicate that the decision boundaries are unstable, which is a more severe deployment risk than uniform accuracy erosion.
+
+\subsection{Thermal--IR-drop coupling}
+
+Temperature effects do not operate in isolation.  The interconnect wire resistance $R_{w}$ (Section~\ref{sec:ir-drop}) has a positive temperature coefficient: $R_{w}(T) = R_{w,0}[1 + \text{PTC}\,(T-T_{0})]$.  As $T$ increases, $R_{w}$ increases, simultaneously worsening the spatial IR drop.  A fully coupled simulator would update $R_{w}(T)$ before computing the IR-drop attenuation map, then evaluate retention with temperature-accelerated time constants, and finally inject the temperature-inflated D2D field.  The modular profile interface makes this coupling straightforward in principle, but the joint parameter space ($T$, $R_{w}$, $\tau$, $\sigma_{\text{D2D}}$) is large enough that a systematic sweep would require $\sim$200 GPU-hours.  This section therefore limits itself to outlining the coupling; full execution is deferred.
+
+
+% =============================================================================
+\section{Retention beyond the $79\,\%$ plateau: long-horizon drift}
+\label{sec:retention-beyond}
+
+\subsection{The manuscript plateau and its physical meaning}
+
+The manuscript retention experiments (manuscript retention-drift section and Chapter~\ref{chap:failure-mode-atlas}, Section~\ref{sec:failure-retention-plateau}) exhibit a two-phase decay: a rapid drop from $91.63\,\%$ at $t=0$~s to $82.66\,\%$ at $t=1$~s, followed by a broad asymptotic plateau near $79.13$--$79.51\,\%$ from $10$~s to $10{,}000$~s.  The plateau is stable across three orders of magnitude in time, indicating that the slow decay mode ($\tau_{2}=610$~ms) carries only a small residual accuracy cost once dynamic scale recalibration is applied.
+
+The $79\,\%$ plateau is a direct consequence of the specific parameter values $(\tau_{1}, \tau_{2}, A_{0})$ extracted from one literature source on DNTT-based organic transistors \citep{vincze2026dualplasticity}.  It is \emph{not} a universal bound for all organic devices.  Faster slow modes, stronger state dependence, or temperature-accelerated drift (Section~\ref{sec:temperature-drift}) could shift the plateau downward; better materials or periodic refresh could shift it upward.
+
+\subsection{What happens at $1$~hour, $1$~day, $1$~week, and $1$~month?}
+
+The manuscript's longest evaluated interval is $10{,}000$~s ($\sim$$2.8$~hours).  Real edge deployments, however, may require weights to remain valid for days or weeks between programming events.  Extrapolating the double-exponential model to longer times predicts a further slow erosion:
+\begin{equation}
+    G(t) = G_{\min} + (G - G_{\min}) \left[A_{1} e^{-t/\tau_{1}} + A_{2} e^{-t/\tau_{2}} + A_{0}\right],
+    \label{eq:retention-extrapolate}
+\end{equation}
+but this extrapolation is physically questionable.  Organic conductance drift often exhibits a \emph{stretched-exponential} or \emph{power-law} tail at very long times, reflecting the broad distribution of trap-depth energies in disordered films.  The double-exponential may therefore underestimate the decay at $t > 10^{5}$~s.
+
+To bracket the uncertainty, three hypothetical long-horizon models are considered:
+\begin{enumerate}
+    \item \textbf{Double-exponential continuation:} the existing $(\tau_{1}, \tau_{2}, A_{0})$ values are trusted out to $1$~month.  Under this law, the conductance fraction remaining at $1$~month is $A_{0} + A_{2}\exp(-t/\tau_{2}) \approx 0.60 + 0.20 \times 0 = 0.60$, i.e.~$60\,\%$ of the programmed window.  The corresponding accuracy is unknown but would likely sit in the $70$--$75\,\%$ range if the relationship between conductance retention and classifier accuracy were roughly linear near the plateau.
+    \item \textbf{Stretched-exponential tail:} replace the slow mode with $A_{2} \exp\!\left[-(t/\tau_{2})^{\beta}\right]$ where $\beta \approx 0.5$--$0.7$ for disordered organics.  This accelerates the long-time decay relative to the pure exponential, pushing the $1$-month retained fraction closer to $A_{0}$ itself ($\sim$$60\,\%$) and potentially dropping accuracy below $70\,\%$.
+    \item \textbf{Power-law tail:} model the slow decay as $A_{2}\,(t/\tau_{2})^{-p}$ with $p \approx 0.1$--$0.3$.  Power-law drift has no asymptotic plateau; accuracy would erode indefinitely, albeit slowly, making periodic refresh mandatory for any long-horizon deployment.
+\end{enumerate}
+
+\subsection{Accelerated-aging protocol}
+
+Because waiting $1$~month for a real-time retention measurement is impractical during a thesis cycle, an accelerated-aging protocol is proposed:
+\begin{enumerate}
+    \item \textbf{Elevated-temperature stress:} program the array (or its simulator equivalent) at $300$~K, then hold at $T_{\text{stress}} \in \{325, 350, 375\}$~K for logarithmically spaced durations.
+    \item \textbf{Time--temperature superposition:} using the Arrhenius law (Eq.~\ref{eq:arrhenius-tau}), map each $(T_{\text{stress}}, t_{\text{stress}})$ pair to an equivalent room-temperature age $t_{\text{eq}}$.
+    \item \textbf{Checkpoint evaluation:} at each equivalent age, evaluate the retained Ensemble HAT checkpoint under the standard fresh-instance protocol.
+    \item \textbf{Model selection:} fit the accuracy-versus-time curve to double-exponential, stretched-exponential, and power-law models; select the best fit via Bayesian information criterion (BIC).
+\end{enumerate}
+
+The compute cost of this protocol is moderate: it requires only inference-time evaluation (no retraining), but the temperature sweep and multiple time points add up to $\sim$30 GPU-hours for a single model.
+
+\subsection{What-if: can the plateau be pushed upward?}
+
+The $79\,\%$ plateau is a lower bound on deployment accuracy under the present device prior.  Several ``what-if'' interventions could push it upward:
+\begin{itemize}[leftmargin=1.4em]
+    \item \textbf{Periodic refresh:} reprogram the array before the fast mode erodes accuracy below the application threshold.  For CIFAR-10, a refresh interval shorter than $\sim$$1$~s would be needed to maintain $>82\,\%$; if $79\,\%$ is acceptable, the refresh interval can extend to $10{,}000$~s or longer.
+    \item \textbf{Inferential scale recalibration with reference cells:} instead of co-tracking the D2D buffers with the same decay law (which is analytically exact in simulation but physically approximate), periodically read out dedicated reference conductance pairs to update the digital gain coefficients.  The energy and latency cost of such recalibration is not included in the manuscript's $11.45\times$ energy-reduction estimate and should be treated as additional peripheral overhead.
+    \item \textbf{Material improvement:} if the slow-mode time constant $\tau_{2}$ were increased from $610$~ms to $10$~s, the plateau would likely rise above $85\,\%$ because the residual decay during the inference window would be smaller.  This is a materials-science target, not an algorithmic one.
+\end{itemize}
+
+This section does not claim that any of these interventions have been executed.  It frames them as the natural next steps that the $79\,\%$ plateau surfaces as high-priority open questions.
+
+
+% =============================================================================
+\section{Synthesis: core, extended, and future contributions}
+\label{sec:pr-synthesis}
+
+This chapter has traversed five physical-realism extensions, each at a different stage of empirical maturity.  The closing synthesis maps each extension to a thesis contribution tier and restates the boundary between what has been demonstrated, what has been specified, and what remains conceptually open.
+
+\subsection{Contribution tier definitions}
+
+\begin{description}[leftmargin=1.4em,style=nextline]
+    \item[\textbf{Core contribution.}]  Empirically demonstrated, statistically locked, and reproducible from the manuscript or thesis experimental package.  These results answer the deployment question with the same fresh-instance protocol used throughout the thesis.
+    \item[\textbf{Extended contribution.}]  Protocol fully specified, code path ready (stub or hook implemented), and theoretical predictions formulated, but GPU execution either partial or entirely deferred.  These contributions define the next experiments rather than report their outcomes.
+    \item[\textbf{Future contribution.}]  Conceptually framed and connected to the existing results, but lacking even a detailed protocol.  These are research directions that the thesis surfaces as important but does not claim to have scoped.
+\end{description}
+
+\subsection{Tier mapping for each extension}
+
+Table~\ref{tab:tier-mapping} summarizes the mapping.
+
+\begin{table}[ht]
+    \centering
+    \caption{Thesis contribution tier for each physical-realism extension.}
+    \label{tab:tier-mapping}
+    \small
+    \setlength{\tabcolsep}{4pt}
+    \begin{tabular}{@{}lp{4.2cm}p{4.2cm}p{3.8cm}@{}}
+        \toprule
+        \textbf{Extension} & \textbf{What we did} & \textbf{What we only spec'd} & \textbf{What remains open} \\
+        \midrule
+        Correlated D2D (\S\ref{sec:correlated-d2d-full}) & $10 \times 5$ AR(1) sweep at $\rho=0.0/0.3/0.5$; bounded degradation ($-1.76$~pp, $-4.20$~pp) locked. & Training \emph{with} correlated resampling (not evaluated). & Measured anisotropic covariance kernels from fabricated arrays. \\
+        \addlinespace
+        Heavy-tailed conductance (\S\ref{sec:heavy-tailed}) & Stub script and sampling families (log-normal, Pareto-truncated) defined. Success criteria formulated. & No GPU inference executed. & Mixed correlated $+$ heavy-tailed joint distribution. \\
+        \addlinespace
+        IR-drop modeling (\S\ref{sec:ir-drop}) & Fast fixed-point pre-pass derived. Tile geometry trade-offs analyzed. Compute budget estimated. & No circuit-aware layer integrated or evaluated. & Full SPICE-calibrated parasitic model; training-time IR-drop HAT. \\
+        \addlinespace
+        Temperature drift (\S\ref{sec:temperature-drift}) & Arrhenius framework specified. Temperature sweep protocol defined. & No thermal inference or retraining executed. & Joint thermal--IR-drop coupling; thermal-aware training (TAT). \\
+        \addlinespace
+        Retention beyond $79\,\%$ (\S\ref{sec:retention-beyond}) & Accelerated-aging protocol designed. Long-horizon decay models compared. & No long-horizon ($>10{,}000$~s) evaluation executed. & Stretched-exponential or power-law model selection from measured data. \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\paragraph{Correlated D2D} is the only \textbf{core} extension in this chapter.  The empirical result---bounded degradation with preserved rank ordering---is locked and reproducible.  The open question is whether the same trend holds under measured spatial covariance rather than the AR(1) proxy.
+
+\paragraph{Heavy-tailed conductance, IR-drop modeling, temperature drift, and long-horizon retention} are all \textbf{extended} contributions.  Each has a well-defined protocol, a clear success criterion, and a compute estimate, but none has been executed.  They are framed as ``what-if'' extensions that the thesis explicitly opens for future work.
+
+\paragraph{Joint interactions} between the extensions remain \textbf{future} territory.  Does Ensemble HAT retain its $86\,\%$ fresh-instance accuracy when retention drift has progressed for $1{,}000$~s \emph{and} the temperature is $350$~K \emph{and} the mismatch field is heavy-tailed?  The present framework evaluates each non-ideality in isolation; their joint statistics are the highest-priority unexplored region.
+
+\subsection{Cross-cutting principle: the approximation ceiling}
+
+Every result in this thesis---core, extended, or future---is conditioned on the present first-order behavioral approximations.  The correlated-D2D sweep uses a separable AR(1) proxy, not a measured spatial kernel.  The heavy-tailed extension is defined but not executed.  The IR-drop model is a fast pre-pass, not a nodal solver.  The temperature framework uses literature Arrhenius coefficients, not measured activation energies.  The retention plateau is a double-exponential fit, not a physical drift law.
+
+This is not a weakness; it is a methodological choice.  The thesis treats each approximation as a \emph{decision aid} that ranks which physics extensions deserve experimental priority.  The correlated-D2D result tells a fabrication team that moderate spatial structure is survivable.  The IR-drop outline tells an array architect that tile geometry matters more than exact line resistance.  The temperature framework tells a packaging engineer that dynamic range erosion at the hot edge is the dominant risk.  These rankings are the thesis-level contribution of the physical-realism extensions, even when the full GPU results are deferred.
+
+\subsection{Connection to the failure-mode atlas}
+
+Chapter~\ref{chap:failure-mode-atlas} catalogued five failure modes under the canonical first-order model.  This chapter adds a cross-cutting dimension: \emph{how does each failure mode move when the first-order approximations are relaxed?}
+\begin{itemize}[leftmargin=1.4em]
+    \item Hardware-instance overfitting (the $10.00\,\%$ collapse) is \emph{mitigated} by correlated D2D: the degradation is bounded rather than catastrophic.
+    \item The dual-attention nonlinear-write collapse is \emph{unchanged} by the extensions in this chapter; it is a surrogate-fidelity problem, not a statistics problem.
+    \item The MLP-only diagnostic bound ($32.12\pm7.72\,\%$ fresh-instance ceiling) and the all-linear bound ($87.49\,\%$ best / $84.81\,\%$ final, $32.60\pm9.18\,\%$ fresh-instance) could both be \emph{worsened} by heavy-tailed mismatch or IR drop, because both extensions increase the variance of the effective weights beyond the Gaussian baseline that produced the $32\,\%$ ceiling.
+    \item The retention plateau ($79.13$--$79.51\,\%$) is \emph{downward-shifted} by temperature acceleration and long-horizon extrapolation.
+\end{itemize}
+
+This mapping provides a structured way to update the atlas when new device data arrive.  It is the final thesis-differentiated contribution of the chapter: not merely to list deferred physics, but to show how each deferred physics layer would reshape the boundaries of the failure modes that the manuscript identified.
+
+
+% =============================================================================
+\section{Summary}
+\label{sec:pr-summary}
+
+This chapter has reopened the physical-realism extensions that the manuscript candidly deferred.  The contributions are layered:
+
+\begin{enumerate}
+    \item \textbf{Correlated D2D} (Section~\ref{sec:correlated-d2d-full}): the full $10 \times 5$ AR(1) sweep is presented and interpreted.  Ensemble HAT fresh-instance accuracy degrades from $86.33\pm1.61\,\%$ (i.i.d.) to $84.57\pm2.39\,\%$ ($\rho=0.3$) to $82.12\pm3.95\,\%$ ($\rho=0.5$).  The degradation is bounded, rank order is preserved, and the worst-case instance remains far from chance level.
+    
+    \item \textbf{Heavy-tailed conductance} (Section~\ref{sec:heavy-tailed}): a ``what-if'' extension is defined via the stub script at \texttt{scripts/\_gpt/eval\_heavy\_tailed\_d2d.py}.  Log-normal and Pareto-truncated mixture sampling are specified, success criteria are formulated, and the inference-only protocol is costed.  Full execution is deferred to future work.
+    
+    \item \textbf{IR-drop modeling} (Section~\ref{sec:ir-drop}): a minimal-effort circuit-aware layer is outlined, based on a fast fixed-point pre-pass and geometry-dependent tile sizing ($128 \times 64$ versus $256 \times 256$).  Compute estimates and success tiers are defined.  No GPU results are claimed.
+    
+    \item \textbf{Temperature drift} (Section~\ref{sec:temperature-drift}): an Arrhenius-form extension of retention and mismatch models is specified for the $-20\,^{\circ}\mathrm{C}$ to $85\,^{\circ}\mathrm{C}$ envelope.  The temperature-sweep protocol, predicted outcomes, and rank-preservation success criterion are stated.  Execution is deferred.
+    
+    \item \textbf{Retention beyond $79\,\%$} (Section~\ref{sec:retention-beyond}): the manuscript's $79.13$--$79.51\,\%$ plateau is contextualized, and an accelerated-aging protocol is proposed to probe $1$~hour--$1$~month horizons.  Three long-horizon decay models (double-exponential, stretched-exponential, power-law) are compared as ``what-if'' scenarios.
+\end{enumerate}
+
+The synthesis (Section~\ref{sec:pr-synthesis}) maps each extension to a contribution tier---core, extended, or future---and connects the extensions back to the failure-mode atlas of Chapter~\ref{chap:failure-mode-atlas}.  The overarching principle is that the first-order behavioral model is a decision aid, not a chip-predictive emulator.  Its value lies in ranking which physics extensions most urgently need measured device data, and in providing the profile-driven interface through which those data can enter the training loop once they arrive.
+
+Surviving physical realism is necessary but not sufficient; the thesis now translates survival into deployment rules.

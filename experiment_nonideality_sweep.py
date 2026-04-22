@@ -243,7 +243,7 @@ def run_nonideality_sweep(
     
     # Summary table
     print("\nSummary Table (Accuracy %):")
-    print(f"{'IR\\Sneak':<10}", end="")
+    print("{:<10}".format("IR\\Sneak"), end="")
     for sk in sneak_levels:
         print(f"{sk*100:>5.0f}%   ", end="")
     print()

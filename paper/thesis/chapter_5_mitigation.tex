@@ -1,0 +1,424 @@
+% Thesis Chapter 5 — Mitigation Case Studies
+% Seeded from manuscript §5 (Results), §6 (Discussion), and the failure-mode atlas
+% of Chapter 4. Thesis-level emphasis: each case study is treated as a structured
+% intervention narrative with explicit problem → intervention → outcome → open question.
+%
+% Figures reused from manuscript package (paths relative to paper/thesis/):
+%   ../latex_gpt/figures/figS3_ensemble_hat.pdf
+%   ../latex_gpt/figures/fig_fresh_instance_ablation.pdf
+%   ../latex_gpt/figures/fig_nl_gradient_distortion.pdf
+%   ../latex_gpt/figures/figS_corr_d2d.pdf
+%   ../latex_gpt/figures/fig10_zero_shot_transferability.pdf
+%   ../latex_gpt/figures/fig6_physical_compensation.pdf
+%
+% Cross-references:
+%   Chapter 1 (\ref{chap:hat-instance-overfitting}) — HAT and instance overfitting
+%   Chapter 2 (\ref{chap:framework}) — profile-driven simulation framework
+%   Chapter 3 (\ref{chap:hat-taxonomy}) — HAT taxonomy and cadence ablation
+%   Chapter 4 (\ref{chap:failure-mode-atlas}) — failure mode atlas
+
+\chapter{Mitigation Case Studies}
+\label{chap:mitigation-case-studies}
+
+\section{Introduction: from failure modes to interventions}
+
+Chapter~\ref{chap:failure-mode-atlas} catalogued five reproducible breakdown patterns that constrain the deployment of Vision Transformers on organic optoelectronic compute-in-memory arrays. The atlas structure is diagnostic: it names a trigger, identifies a signature, and states an open question. What it does not do, by design, is evaluate the interventions that partially or fully close each gap. This chapter turns to that evaluative task.
+
+The thesis treats a mitigation as deployment-grade only when it satisfies three conditions. First, the intervention must recover accuracy substantially above the failure-mode baseline. Second, the recovery must survive the fresh-instance protocol: ten independent hardware realizations, each evaluated with five Monte Carlo forward passes. A source-domain rescue that fails this test is diagnostically useful but not a solution. Third, the intervention must be reproducible under the profile-driven framework of Chapter~\ref{chap:framework}, meaning that a new device profile can be substituted without architectural or training-script changes.
+
+The case studies that follow correspond to the interventions outlined in the thesis task specification. \S\ref{sec:case-ensemble-hat} examines Ensemble HAT, the epoch-level resampling protocol that lifts fixed-mask HAT from a $10.00\,\%$ collapse to $86.37\pm1.54\,\%$ fresh-instance accuracy. \S\ref{sec:case-mlp-linear} treats MLP-only linearization under severe nonlinear write as a diagnostic probe: it recovers $87.79\,\%$ source-domain accuracy yet caps at $32.12\pm7.72\,\%$ on fresh instances, exposing the honesty gap between training-time rescue and deployment-grade transfer. \S\ref{sec:case-all-linear} interrogates the all-linear upper bound ($87.49\,\%$ best, $84.81\,\%$ final, $32.60\pm9.18\,\%$ fresh-instance) and asks why the ceiling is not the roof---what residual nonlinearity in attention tells us about the true bottleneck. \S\ref{sec:case-joint-hat} presents the decisive joint-training experiment (CX-J1) that couples MLP-only linearization with Ensemble HAT resampling under global $NL=2.0$; the result ($91.36\,\%$ source-domain, $30.53\pm7.07\,\%$ fresh-instance) falsifies the hypothesis that the $\sim$32\,\% ceiling is merely an optimization gap. \S\ref{sec:structural-limit} draws the structural conclusion: three independent mitigations all hit the same $\sim$30\,\% ceiling, indicating a fundamental generalization barrier imposed by the interaction of the first-order NL surrogate with the attention pathway. \S\ref{sec:case-cadence} compares per-batch and per-epoch resampling ($86.16\,\%$ versus $86.37\,\%$), treating cadence as an implicit design choice that shapes the optimization landscape. \S\ref{sec:case-frequency-plateau} documents the ensemble-frequency ablation and argues that diminishing returns beyond epoch-level resampling are not an accident of hyperparameters but a structural feature of block-stationary training.
+
+Each case study follows the same narrative architecture: a problem statement grounded in the failure-mode atlas, a description of the intervention and its mechanistic rationale, a quantitative outcome anchored to the locked experimental numbers, and a residual open question that identifies the boundary beyond which the mitigation itself fails. The chapter concludes with a synthetic discussion in \S\ref{sec:mitigation-synthesis} that draws cross-cutting lessons for deployment-facing algorithm--device co-design.
+
+
+% =============================================================================
+\section{Case study: Ensemble HAT as the \texorpdfstring{$10\,\%\rightarrow86\,\%$}{10\,\%→86\,\%} lift}
+\label{sec:case-ensemble-hat}
+
+\subsection{Problem statement: hardware-instance overfitting}
+
+The canonical hardware-aware training recipe fixes a single device-to-device (D2D) mismatch field $M_{0}$ for the entire training run. Under this fixed-mask objective, the optimizer solves
+\begin{equation}
+    \theta_{\mathrm{fix}}^{\star}=\arg\min_{\theta}\frac{1}{N}\sum_{n=1}^{N}\ell\!\left(f(x_{n};\theta,M_{0}),y_{n}\right),
+    \label{eq:fixed-mask-repeat-c5}
+\end{equation}
+as described in Chapter~\ref{chap:hat-taxonomy}, Equation~(\ref{eq:hat-fixed}). The problem is not that $M_{0}$ is pathological; it is that the optimizer treats $M_{0}$ as a learnable part of the environment. Scale-recovery factors $s_{\ell}$ implicitly calibrate to the particular spatial distortion encoded in $M_{0}$, and learned feature routing adapts to the fixed perturbation pattern rather than to the underlying data distribution. The result is a model that is highly accurate on the training-time array---the canonical V4 checkpoint reaches $87.95\pm0.27\,\%$ under nominal evaluation---but structurally unable to generalize to any other hardware instance.
+
+The empirical signature of this failure, documented exhaustively in Chapter~\ref{chap:failure-mode-atlas}, \S\ref{sec:failure-instance-overfitting}, is a deterministic collapse to chance level when the model is evaluated on fresh arrays. For Tiny-ViT V4 on CIFAR-10, the collapse is exact: $10.00\pm0.00\,\%$, the single-class baseline, across ten fresh D2D instances with five Monte Carlo evaluations each. A dedicated no-AMP control confirmed that the collapsed predictor is a deterministic training outcome, not a numerical artifact of mixed-precision autocast. The problem is therefore not a broken device or an unrealistic noise level; it is the \emph{training-time fixation of a random hardware sample} that the model subsequently memorizes.
+
+This memorization has a simple geometric interpretation. The D2D mismatch field $M_{0}$ is a spatially structured perturbation that acts as a hidden domain label. The classifier learns a decision boundary that is conditioned on $M_{0}$, much as a domain-adaptation network learns a boundary conditioned on a source domain. When the domain label changes at deployment, the boundary ceases to be valid. The $10.00\,\%$ collapse is the empirical cost of this domain shift.
+
+\subsection{Intervention: epoch-level D2D resampling}
+
+Ensemble HAT replaces the single fixed mask with a distributional training objective in which one fresh D2D realization is drawn at the start of each epoch and held constant across all mini-batches within that epoch. Formally, the optimizer solves
+\begin{equation}
+    \theta_{\mathrm{ens}}^{\star}=\arg\min_{\theta}\;\mathbb{E}_{M\sim p(M)}\!\left[\frac{1}{N}\sum_{n=1}^{N}\ell\!\left(f(x_{n};\theta,M),y_{n}\right)\right],
+    \label{eq:ensemble-hat-repeat-c5}
+\end{equation}
+where the expectation is Monte Carlo--estimated with $E$ independent draws, one per training epoch. The critical design choice is the resampling \emph{cadence}: the mismatch map changes at epoch boundaries, not at mini-batch boundaries, so that the optimizer experiences a block-stationary forward path within each epoch.
+
+Why block-stationarity matters can be understood by contrasting three regimes. Under fixed-mask HAT, the forward path is permanently stationary but sample-specific; the optimizer has unlimited time to fit $M_{0}$, which is precisely the problem. Under per-batch resampling, the forward path changes every few hundred samples; the gradient field is so non-stationary that the optimizer cannot settle into a basin compatible with any single structured instance. Epoch-level resampling sits at a sweet spot: each epoch provides enough stability for the optimizer to make progress under a fixed $M^{(e)}$, while the sequence of epochs provides enough distributional breadth to prevent instance-specific overfitting. This interpretation is developed formally in Chapter~\ref{chap:hat-taxonomy}, \S\ref{sec:cadence-transfer-guarantee}, where per-epoch HAT is shown to offer a \emph{block-stationary guarantee} that is stronger than the singleton guarantee of fixed-mask HAT and the product-distribution guarantee of per-batch resampling.
+
+The intervention does not require any change to the model architecture, the device assumptions, or the optimizer hyperparameters. It is a pure training-objective modification: the same Tiny-ViT backbone, the same 4-bit differential conductance mapping, the same AdamW schedule, but with the D2D field resampled at epoch boundaries. This minimalism is methodologically important. It means that the $10\,\%\rightarrow86\,\%$ lift is attributable solely to the distributional objective, not to extra capacity, extra training time, or a different physical model.
+
+\subsection{Quantitative outcome}
+
+The canonical Ensemble HAT checkpoint preserves $86.37\pm1.54\,\%$ accuracy on the identical fresh-instance protocol that drives fixed-mask HAT to $10.00\,\%$---a gain of more than $76$ percentage points. The standard deviation of $1.54$~pp across the ten fresh-instance means is narrow, indicating that the recovered accuracy is stable rather than an accident of one favorable draw. By comparison, the unmitigated $NL=2.0$ global baseline reaches only $27.72\pm0.82\,\%$, and the MLP-only severe-NL mitigation collapses to $32.12\pm7.72\,\%$ on fresh instances (cases developed in \S\ref{sec:case-mlp-linear} and \S\ref{sec:case-all-linear}). The Ensemble HAT result is therefore the only intervention discussed in this chapter that fully satisfies the three deployment-grade conditions stated in the introduction.
+
+Figure~\ref{fig:thesis-fresh-instance-c5} reproduces the manuscript's fresh-instance transfer visualization to anchor the quantitative comparison. The fixed-mask curve is not merely lower; it is qualitatively different, behaving like an overfit estimator of one specific hardware realization. The Ensemble HAT curve, by contrast, clusters tightly around the $86\,\%$ level across all ten instances.
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=0.78\linewidth]{../latex_gpt/figures/figS3_ensemble_hat}
+    \caption{Fresh-instance transfer comparison (reused from manuscript supplementary package, Fig.~S3). Standard HAT overfits a single structured mismatch field and collapses to $10.00\pm0.00\,\%$; Ensemble HAT maintains $86.37\pm1.54\,\%$.}
+    \label{fig:thesis-fresh-instance-c5}
+\end{figure}
+
+The $86.37\pm1.54\,\%$ result is not the upper bound of what epoch-level resampling can achieve. Under the literature-calibrated organic phototransistor (OPECT) device profile ($\sigma_{\mathrm{C2C}}=2\,\%$, $\sigma_{\mathrm{D2D}}=3\,\%$), the same Ensemble HAT checkpoint reaches $88.53\pm0.08\,\%$ on fresh instances, demonstrating that the distributional objective generalizes to lower-noise profiles without retraining. Conversely, under spatially correlated D2D mismatch, the canonical Ensemble HAT checkpoint degrades gracefully: $86.33\pm1.61\,\%$ for i.i.d.~mismatch, $84.57\pm2.39\,\%$ at correlation strength $\rho=0.3$, and $82.12\pm3.95\,\%$ at $\rho=0.5$. These numbers are reproduced in Figure~\ref{fig:corr-d2d-c5}. The degradation is bounded and monotonic; no instance collapses below $73.7\,\%$, in stark contrast to the $10.00\,\%$ chance-level collapse of fixed-mask HAT. This suggests that the block-stationary training objective generalizes, at least qualitatively, beyond the i.i.d.~sampling law on which it was trained.
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=0.72\textwidth]{../latex_gpt/figures/figS_corr_d2d}
+    \caption{Fresh-instance robustness under spatially correlated D2D mismatch (reused from manuscript supplementary package, Fig.~S5). Error bars show cross-instance standard deviation over $10$ fresh arrays, with $5$ Monte Carlo evaluations per array, for the canonical Tiny-ViT V4 Ensemble HAT checkpoint.}
+    \label{fig:corr-d2d-c5}
+\end{figure}
+
+A related physical-intervention datapoint comes from the optoelectronic front-end compensation experiments. When the organic phototransistor front-end exhibits a sub-linear photoresponse with $\gamma_{\mathrm{phys}}=2.0$, inverse-gamma preprocessing $P_{\mathrm{in}}=X^{1/\gamma_{\mathrm{phys}}}$ restores $+5.8$~pp accuracy (the locked cross-architecture gain; the absolute values $84.04\,\%$ and $89.85\,\%$ are ResNet-18 deterministic evaluations reported in the manuscript). Although this compensation operates on the input path rather than on the weight array, it illustrates the same principle: a deployment-matched intervention that aligns the training or inference stack with the physical distortion can recover accuracy that would otherwise be lost.
+
+\subsection{Residual open question}
+
+Ensemble HAT solves the i.i.d.~mismatch case, but three residual questions remain. First, does the block-stationary guarantee survive compound stress? The present experiments evaluate D2D mismatch, retention drift, nonlinear write, and front-end distortion in isolation; their joint statistics are unexplored. A model that tolerates each stress individually may still collapse when all are present simultaneously.
+
+Second, the correlated-D2D sweep uses a separable AR(1) proxy rather than a measured spatial covariance kernel. Real organic optoelectronic arrays may exhibit anisotropic correlation, heavy-tailed conductance distributions, or long-range wafer-scale gradients. Whether Ensemble HAT (or a correlated variant that resamples from the measured kernel) remains robust under these richer spatial structures is an open empirical question.
+
+Third, the $86.37\pm1.54\,\%$ result leaves a residual gap of approximately $11.6$~pp to the digital FP32 baseline of $98.06\,\%$. Part of this gap reflects the regularization cost of per-epoch D2D resampling, part reflects the 4-bit quantization floor, and part reflects the residual cycle-to-cycle (C2C) noise that is not averaged away by the distributional objective. Capacity-aware Ensemble HAT schedules---for example, varying the resampling frequency or noise amplitude as a function of training epoch---remain an open optimization problem.
+
+
+% =============================================================================
+\section{Case study: MLP-linear as severe-NL diagnostic}
+\label{sec:case-mlp-linear}
+
+\subsection{Problem statement: dual-attention nonlinear-write collapse}
+
+The first-order nonlinear-write surrogate scales the straight-through estimator backward gradient by a state-dependent factor proportional to the present conductance magnitude raised to $NL-1$. For $NL=1.0$, the write is ideal; for $NL=2.0$, the gradient scaling becomes strongly asymmetric between long-term potentiation (LTP) and long-term depression (LTD) branches. When this severe nonlinearity is applied globally to all analog-mapped layers of Tiny-ViT, accuracy collapses to $27.72\pm0.82\,\%$---above chance but far below deployment viability.
+
+Chapter~\ref{chap:failure-mode-atlas}, \S\ref{sec:failure-dual-attention-nl}, localized this collapse to the attention side of the transformer. A group-wise ablation showed that protecting (linearizing) only the MLP blocks while leaving the attention blocks at $NL=2.0$ recovers source-domain accuracy to $87.79\,\%$, essentially the canonical HAT level. But protecting \emph{only} the QKV blocks drives accuracy down to $18.72\,\%$; protecting only the attention output projection drives it to $18.86\,\%$ (best) and approximately $10.25\,\%$ final. Both attention-side lanes collapse \emph{below} the unmitigated $27.72\,\%$ baseline, indicating that the attention nonlinearity is not merely sensitive to write distortion but is \emph{structurally required} for representational geometry under the present surrogate.
+
+This creates a diagnostic opportunity. If the MLP path is the dominant recoverable bottleneck, then linearizing it while keeping attention at $NL=2.0$ should yield a checkpoint that is informative about two questions: (i) how much of the severe-NL damage is concentrated in the MLP path, and (ii) whether a source-domain rescue on the training-time array translates into deployment-grade fresh-instance robustness.
+
+\subsection{Intervention: MLP-only linearization}
+
+The intervention is conceptually simple. During hardware-aware training, the MLP blocks (the two feed-forward matrices in each transformer block) are protected from nonlinear write by setting their $NL$ parameters to $1.0$, while all other analog-mapped layers---patch embedding, QKV projection, attention output projection---continue to experience the severe $NL=2.0$ surrogate. The training recipe is otherwise unchanged: AdamW with learning rate $5\times10^{-4}$, weight decay $0.05$, cosine annealing over 100 epochs, batch size 64, and 4-bit differential conductance mapping.
+
+This intervention is not proposed as a deployment solution. Linearizing the MLP path while leaving the attention path severely nonlinear is an asymmetric compromise that no hardware engineer would deliberately implement: it implies that the MLP arrays are fabricated with ideal write characteristics while the attention arrays suffer from severe asymmetry. Rather, the MLP-only lane is a \emph{diagnostic probe}: it isolates the contribution of the MLP path to the overall accuracy budget and tests whether a partial linearization can break the $27.72\,\%$ barrier.
+
+The mechanistic intuition is grounded in the gradient-distortion diagnostic of Figure~\ref{fig:nl-gradient-c5}. When $NL=2.0$ is activated only in the MLP blocks, the affected-parameter gradient cosine drops to $0.815$ and the norm ratio drops to $0.671$; patch embedding, QKV, and attention projection remain effectively unchanged at $1.00$. This confirms that the backward-surrogate distortion is \emph{concentrated in the MLP path}. The all-analog setting matches the MLP result almost exactly ($0.816$), reinforcing the conclusion that the MLP path is the dominant source of gradient-scaling damage.
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=0.88\textwidth]{../latex_gpt/figures/fig_nl_gradient_distortion}
+    \caption{Group-wise gradient distortion under severe nonlinear write (reused from manuscript supplementary package, Fig.~S4). A deterministic diagnostic on the frozen Tiny-ViT V4 checkpoint compares the $NL=1.0$ baseline against matched forward passes where $NL=2.0$ is activated for one analog module group at a time.}
+    \label{fig:nl-gradient-c5}
+\end{figure}
+
+\subsection{Quantitative outcome}
+
+The MLP-only linearization achieves $87.79\,\%$ best test accuracy on the training-time array---a recovery of $60.07$~pp above the unmitigated $NL=2.0$ baseline and only $0.16$~pp below the canonical $NL=1.0$ V4 control of $87.95\pm0.27\,\%$. This is a strong source-domain rescue. The final accuracy is $86.22\,\%$, still well within the deployment-relevant regime. On the surface, the intervention appears successful.
+
+However, the fresh-instance evaluation tells a different story. When the MLP-only checkpoint is subjected to the standard $10\times5$ fresh-instance protocol, its accuracy drops to $32.12\pm7.72\,\%$. The mean is barely above the unmitigated baseline, and the standard deviation of $7.72$~pp is enormous compared to the $1.54$~pp spread of canonical Ensemble HAT. Some fresh instances are tolerable; others are catastrophic. This bimodal-like spread is qualitatively different from the tight distribution of Ensemble HAT and suggests that the MLP-linearized checkpoint has learned a \emph{fragile compensation} that is sensitive to the particular D2D pattern it encounters.
+
+Table~\ref{tab:fresh-instance-nl-c5} summarizes the fresh-instance comparison. The MLP-only lane is bracketed by the canonical Ensemble HAT ($86.33\pm1.61\,\%$) on the high side and the QKV-only collapse ($10.01\pm0.10\,\%$) on the low side. Its position in this ranking is diagnostically revealing: partial linearization of the analog stack does not convert a severe-NL checkpoint into a deployment-grade model.
+
+\begin{table}[ht]
+    \centering
+    \caption{Fresh-instance transfer of severe-NL ablation checkpoints. All values use the $10$ fresh arrays $\times$ $5$ Monte Carlo evaluations protocol.}
+    \label{tab:fresh-instance-nl-c5}
+    \small
+    \begin{tabular}{@{}lccc@{}}
+        \toprule
+        Training condition & Train best (\%) & Fresh-instance mean (\%) & Cross-instance std (\%) \\
+        \midrule
+        Canonical Ensemble HAT ($NL=1.0$) & $91.13$ & $86.33$ & $1.61$ \\
+        MLP-only linear compensation ($NL=2.0$) & $87.79$ & $32.12$ & $7.72$ \\
+        All-linear compensation ($NL=2.0$) & $87.49$ & $32.60$ & $9.18$ \\
+        QKV-only linear compensation ($NL=2.0$) & $18.72$ & $10.01$ & $0.10$ \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsection{Residual open question}
+
+The most consequential open question---whether the $\sim$32\,\% ceiling can be broken by a joint training objective that couples severe-NL compensation with Ensemble HAT resampling---has been evaluated in \S\ref{sec:case-joint-hat}. The CX-J1 experiment (joint MLP-linear + Ensemble HAT, $NL=2.0$) achieves $91.36\,\%$ source-domain accuracy but reaches only $30.53\pm7.07\,\%$ on fresh instances, statistically indistinguishable from the MLP-only and all-linear ceilings. This definitive negative result shifts the research question from ``how do we break the ceiling?'' to ``what structural mechanism enforces it?''. \S\ref{sec:structural-limit} develops the attention-pathway-dominance hypothesis and states the diagnostic experiments that would falsify it.
+
+A second open question concerns the large cross-instance variance. Does it reflect an instability that could be damped by larger mini-batches, longer training, or explicit variance-regularization penalties? Or does it reflect a fundamental sensitivity of the MLP-linearized geometry to the interaction between D2D mismatch and residual attention-side nonlinearity? The $7.72$~pp standard deviation is more than four times the canonical Ensemble HAT spread, and understanding its source would clarify whether the MLP-only lane is merely under-regularized or structurally non-robust.
+
+Finally, there is a methodological honesty question. The MLP-only source-domain accuracy of $87.79\,\%$ is tempting to report as a ``severe-NL mitigation,'' but the fresh-instance collapse shows that it is not deployment-grade. This gap between source-domain rescue and deployment-grade transfer is a recurring thesis theme, and the MLP-only case study is its clearest instantiation in the severe-NL regime.
+
+
+% =============================================================================
+\section{Case study: All-linear upper-bound as ceiling-is-not-roof}
+\label{sec:case-all-linear}
+
+\subsection{Problem statement: what if \emph{all} analog layers were ideal?}
+
+If severe nonlinear write is the dominant bottleneck, an obvious upper-bound experiment is to linearize \emph{all} analog-mapped layers---patch embedding, QKV projection, attention output projection, and both MLP feed-forward matrices---while keeping the rest of the training recipe unchanged. This ``all-linear'' lane removes the first-order gradient-scaling surrogate entirely from the analog stack, reducing the severe-NL problem to a pure D2D-mismatch problem under the canonical uniform-noise model. In theory, this should produce the best possible accuracy under the $NL=2.0$ training budget, because no analog layer suffers from write-asymmetry distortion.
+
+The experiment is also a conceptual probe into the architecture's sensitivity to nonlinearity in the attention path. Chapter~\ref{chap:failure-mode-atlas} showed that linearizing QKV or the output projection \emph{in isolation} causes structural collapse below the unmitigated baseline. But when \emph{all} layers are linearized together, the attention geometry is preserved by the absence of nonlinearity everywhere, not by the presence of nonlinearity in any particular layer. The all-linear lane therefore tests whether the attention-side collapse observed in isolation is an artifact of asymmetric linearization or a genuine property of the transformer under the severe-NL surrogate.
+
+\subsection{Intervention: global linearization of the analog stack}
+
+The intervention sets $NL_{\mathrm{LTP}}=1.0$ and $|NL_{\mathrm{LTD}}|=1.0$ for all analog-mapped layers during hardware-aware training. The D2D mismatch field remains fixed (this is the standard HAT protocol, not Ensemble HAT), and the C2C noise continues to resample per forward pass at $\sigma_{\mathrm{C2C}}=5\,\%$. The training hyperparameters are identical to the MLP-only lane: AdamW, learning rate $5\times10^{-4}$, weight decay $0.05$, cosine annealing, 100 epochs, batch size 64, 4-bit differential mapping.
+
+The all-linear lane is the most generous severe-NL mitigation possible within the present first-order surrogate. It asks: if we could fabricate analog arrays with perfectly linear write characteristics, what accuracy would be achievable under the canonical mismatch and quantization assumptions? The answer sets a ceiling against which all partial mitigations must be judged.
+
+\subsection{Quantitative outcome}
+
+The all-linear checkpoint achieves $87.49\,\%$ best test accuracy and $84.81\,\%$ final accuracy. These numbers are remarkably close to the MLP-only lane ($87.79\,\%$ best, $86.22\,\%$ final). The gap between all-linear and MLP-only is only $0.30$~pp at best and $1.41$~pp at final, suggesting that the residual nonlinearity in the attention path contributes very little additional damage once the MLP path is protected. In other words, the attention-side nonlinearity is not the dominant bottleneck; the MLP path is.
+
+However, the fresh-instance evaluation again exposes a deployment-grade failure. The all-linear checkpoint reaches only $32.60\pm9.18\,\%$ on the $10\times5$ fresh-instance protocol---essentially identical to the MLP-only fresh-instance mean of $32.12\pm7.72\,\%$, and with an even larger cross-instance standard deviation of $9.18$~pp. The all-linear upper bound does not materially outperform MLP-only on fresh instances, confirming that broader linearization does not convert the severe-NL ablation into a deployment-grade mitigation.
+
+This result carries an important architectural implication. The small gap between MLP-only and all-linear source-domain accuracy ($0.30$~pp) means that the transformer can tolerate ideal attention projections without significant benefit. But the absence of any fresh-instance improvement means that the residual nonlinearity in attention is \emph{not} what prevents deployment-grade transfer. The bottleneck lies elsewhere: in the interaction between the D2D mismatch field and the severe-NL-compensated MLP geometry, or in the fact that both lanes were trained with a fixed D2D mask rather than with Ensemble HAT resampling.
+
+The ``ceiling is not the roof'' metaphor captures this structure precisely. The all-linear lane defines a \emph{ceiling} on what the first-order surrogate can achieve ($87.49\,\%$ source-domain), but that ceiling is far below the \emph{roof} of deployment viability because the fresh-instance accuracy remains stuck near $32\,\%$. A deployment-facing designer who looks only at the $87.49\,\%$ best accuracy would overestimate deployability by more than $55$~pp.
+
+\subsection{Residual open question}
+
+The central open question was whether the all-linear fresh-instance ceiling reflects a training-protocol deficiency (fixed-mask versus Ensemble HAT) or a deeper structural barrier. The CX-J1 joint-training experiment evaluated in \S\ref{sec:case-joint-hat} explicitly tests this hypothesis by combining MLP-linear compensation with epoch-level D2D resampling under severe NL. The result---$30.53\pm7.07\,\%$ fresh-instance accuracy, statistically indistinguishable from the fixed-mask all-linear ceiling of $32.60\pm9.18\,\%$---rejects the training-protocol explanation. Even with distributional training, the severe-NL regime imposes a $\sim$30\,\% ceiling. The bottleneck is therefore not the absence of D2D resampling; it is a structural property of the first-order NL surrogate acting on the attention pathway. What specific attention mechanism---QKV gradient asymmetry, output-projection scale recovery, or multi-head correlation---enforces the $\sim$30\,\% ceiling remains to be diagnosed.
+
+A second open question concerns the $9.18$~pp cross-instance standard deviation, which is even larger than the $7.72$~pp spread of the MLP-only lane. Is this variance inflation caused by the broader linearization removing regularization that the MLP-only lane implicitly retains? Or does it reflect a deeper instability in the attention geometry when all layers are linearized together? Gradient-norm diagnostics and layer-wise activation statistics could resolve this, but they are not yet available.
+
+Finally, the all-linear result raises a methodological caution. Upper-bound experiments are valuable for ranking bottlenecks, but they can be misleading when the training protocol is not held constant with the deployment protocol. The all-linear lane is an upper bound \emph{within fixed-mask training}, not an upper bound \emph{within deployment-grade transfer}. The distinction is subtle but decisive for experimental design.
+
+
+% =============================================================================
+\section{Case study: Joint MLP-linear + Ensemble HAT under severe NL}
+\label{sec:case-joint-hat}
+
+\subsection{Problem statement: testing the optimization-gap hypothesis}
+
+The MLP-only and all-linear case studies establish that partial or complete linearization of the analog stack under severe $NL=2.0$ recovers high source-domain accuracy ($87.79\,\%$ and $87.49\,\%$, respectively) but collapses to $\sim$32\,\% on fresh instances. A natural and optimistic hypothesis is that this $\sim$32\,\% ceiling is an \emph{optimization gap} rather than a structural barrier. Under this hypothesis, the failure is attributable to the training protocol---specifically, the use of a fixed D2D mask---and not to an inherent incompatibility between the first-order NL surrogate and the transformer attention pathway. If the hypothesis is correct, then adding Ensemble HAT's epoch-level D2D resampling to the MLP-linearized severe-NL recipe should regularize the optimizer sufficiently to break the ceiling and recover deployment-grade transfer.
+
+This hypothesis is appealing because it aligns with the broader thesis principle, demonstrated in \S\ref{sec:case-ensemble-hat}, that distributional training objectives dominate physical-surrogate fidelity for fresh-instance robustness. Ensemble HAT recovers $86.37\pm1.54\,\%$ with the canonical $NL=1.0$ surrogate; perhaps the same distributional magic, applied to the MLP-linearized $NL=2.0$ stack, would yield a comparable rescue. The joint-training experiment (designated CX-J1) is therefore a direct test of whether the severe-NL fresh-instance failure is a \emph{training artifact} or a \emph{structural property} of the surrogate--architecture interaction.
+
+\subsection{Intervention: coupling MLP-linearization with epoch-level D2D resampling}
+
+The CX-J1 intervention combines the MLP-only linearization protocol with the Ensemble HAT resampling protocol under global $NL=2.0$. During hardware-aware training, the MLP blocks receive $NL=1.0$ (ideal write), while all attention-side analog layers---QKV projection and attention output projection---experience the severe $NL=2.0$ surrogate. Crucially, the D2D mismatch field is no longer fixed: one fresh realization is drawn at the start of each training epoch and held constant across all mini-batches within that epoch, exactly as in canonical Ensemble HAT.
+
+The training hyperparameters are identical to the standalone MLP-only and Ensemble HAT lanes: AdamW, learning rate $5\times10^{-4}$, weight decay $0.05$, cosine annealing over 100 epochs, batch size 64, 4-bit differential conductance mapping. The only difference from the MLP-only lane is the resampling cadence; the only difference from canonical Ensemble HAT is the MLP-linearization flag. This minimalism ensures that any outcome is attributable to the interaction between the two interventions, not to extraneous hyperparameter changes.
+
+\subsection{Quantitative outcome}
+
+The CX-J1 checkpoint achieves $91.36\,\%$ source-domain accuracy---the highest source-domain score of any severe-NL configuration tested, exceeding even the canonical $NL=1.0$ Ensemble HAT baseline of $91.13\,\%$. The joint training objective is therefore not merely compatible; it is \emph{synergistic} on the training-time array. The optimizer appears to exploit the distributional D2D exposure to find a more robust MLP-linearized solution than fixed-mask training permits.
+
+However, the fresh-instance evaluation delivers a definitive negative result. On the standard $10\times5$ protocol, CX-J1 reaches only $30.53\pm7.07\,\%$---statistically indistinguishable from the MLP-only ceiling of $32.12\pm7.72\,\%$ and the all-linear ceiling of $32.60\pm9.18\,\%$. The mean is slightly lower, and the cross-instance standard deviation of $7.07$~pp is comparable to the MLP-only spread. Some instances score near $38\,\%$; others drop below $24\,\%$. The distribution is wide, bimodal-leaning, and far from deployment viability.
+
+This result is methodologically decisive. The optimization-gap hypothesis predicted that adding Ensemble HAT resampling to MLP-linearization would lift fresh-instance accuracy toward the $86\,\%$ regime. Instead, the ceiling remains stuck near $30\,\%$. The distributional training objective that rescues D2D-mismatch collapse does \emph{not} rescue severe-NL collapse. The failure is therefore not a training artifact; it is a structural property of the first-order NL surrogate acting on the attention pathway.
+
+\subsection{Residual open question}
+
+The immediate open question is \emph{why} the attention pathway under $NL=2.0$ enforces a $\sim$30\,\% ceiling regardless of the MLP configuration or the D2D training protocol. Three candidate mechanisms present themselves. First, the QKV projection may suffer from gradient-asymmetry-induced rank collapse: the LTP/LTD asymmetry of the $NL=2.0$ surrogate could bias the query and key matrices toward a low-rank subspace that is structurally incompatible with cross-instance D2D variation. Second, the attention output projection may experience catastrophic scale-recovery mismatch: the learned output-scale factors $s_{\ell}$ may calibrate to the particular interaction between D2D mismatch and NL-induced gradient distortion, producing a geometry that is stable on the training-time array but fragile on fresh instances. Third, the multi-head correlation structure may be disrupted: nonlinear write could decorrelate the heads in a way that is invisible to source-domain accuracy but fatal to generalization under mismatched spatial noise.
+
+Distinguishing these candidates requires targeted diagnostic experiments. \S\ref{sec:structural-limit} proposes the CX-J1b/c/d protocol that would falsify the attention-pathway-dominance hypothesis.
+
+
+% =============================================================================
+\section{The \texorpdfstring{$\sim$30\,\%}{~30\%} ceiling: a structural limit}
+\label{sec:structural-limit}
+
+\subsection{The three-mitigation convergence}
+
+Table~\ref{tab:three-mitigation-ceiling} presents the fresh-instance comparison of the three independent severe-NL mitigations evaluated in this chapter. The convergence is striking: MLP-only linearization ($32.12\pm7.72\,\%$), all-linear linearization ($32.60\pm9.18\,\%$), and joint MLP-linear + Ensemble HAT ($30.53\pm7.07\,\%$) all occupy the same statistical regime. Their means differ by at most $2.07$~pp, and their confidence intervals overlap substantially. This is not a sampling accident; it is an empirical signature of a \emph{structural barrier}.
+
+\begin{table}[ht]
+    \centering
+    \caption{Convergence of three independent severe-NL mitigations to the same fresh-instance ceiling. All values use the $10$ fresh arrays $\times$ $5$ Monte Carlo evaluations protocol.}
+    \label{tab:three-mitigation-ceiling}
+    \small
+    \begin{tabular}{@{}lccc@{}}
+        \toprule
+        Mitigation & Source-domain (\%) & Fresh-instance mean (\%) & Cross-instance std (\%) \\
+        \midrule
+        MLP-only linear ($NL=2.0$, fixed mask) & $87.79$ & $32.12$ & $7.72$ \\
+        All-linear ($NL=2.0$, fixed mask) & $87.49$ & $32.60$ & $9.18$ \\
+        Joint MLP-linear + Ensemble HAT ($NL=2.0$, epoch resampling) & $91.36$ & $30.53$ & $7.07$ \\
+        \midrule
+        \emph{Reference:} Canonical Ensemble HAT ($NL=1.0$) & $91.13$ & $86.33$ & $1.61$ \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+The structural nature of the barrier is established by the joint-training result. If the $\sim$32\,\% ceiling were merely an optimization gap---a consequence of insufficient regularization or inadequate D2D diversity---then adding Ensemble HAT resampling should have broken it. Ensemble HAT raises fixed-mask HAT from $10.00\,\%$ to $86.37\pm1.54\,\%$ under identical mismatch statistics. Its failure to lift the MLP-linearized severe-NL checkpoint above $30.53\,\%$ demonstrates that the barrier is \emph{not} an optimization gap. No amount of D2D diversity can compensate for the structural incompatibility between the first-order NL surrogate and the attention pathway.
+
+\subsection{Why the barrier is structural: attention-pathway dominance}
+
+The structural-limit hypothesis posits that the first-order nonlinear-write surrogate, when applied to the transformer attention pathway, imposes a \emph{fundamental generalization barrier} that is independent of the MLP configuration and independent of the D2D training protocol. The evidence for this hypothesis rests on three observations.
+
+First, \textbf{the MLP path is not the bottleneck}. MLP-only linearization recovers $87.79\,\%$ source-domain accuracy, essentially matching the canonical HAT level. If the MLP path were the dominant source of fresh-instance fragility, linearizing it should have produced a deployment-grade checkpoint. It did not.
+
+Second, \textbf{global linearization is not the bottleneck}. The all-linear lane removes the NL surrogate from \emph{every} analog layer, reducing the problem to pure quantization, D2D mismatch, and C2C noise---the same non-idealities that canonical Ensemble HAT tolerates at $86.37\pm1.54\,\%$. Yet the all-linear checkpoint still caps at $32.60\pm9.18\,\%$. This suggests that the severe-NL regime fundamentally alters the optimization landscape in a way that persists even when nonlinearity is removed at train time, or that the fixed-mask training protocol independently enforces a similar ceiling. The CX-J1 result resolves this ambiguity.
+
+Third, \textbf{distributional training is not the bottleneck}. CX-J1 combines MLP linearization with the most effective distributional training protocol tested (Ensemble HAT) and still reaches only $30.53\pm7.07\,\%$. The attention pathway under $NL=2.0$ therefore enforces a generalization barrier that survives both MLP protection and D2D resampling. The barrier is structural because it is \emph{robust to independent perturbations of the training conditions}.
+
+The mechanistic candidate is \textbf{attention-pathway dominance}. Under the first-order $NL=2.0$ surrogate, the QKV and output-projection gradients acquire a state-dependent asymmetry that couples the learned spatial filters to the particular D2D pattern experienced during training. When the D2D pattern changes at deployment, the attention geometry---which is the core representational engine of the transformer---ceases to function. The MLP path, even when perfectly linearized, cannot compensate for a broken attention mechanism. This interpretation is consistent with the group-wise ablation of Chapter~\ref{chap:failure-mode-atlas}, which showed that attention-side linearization \emph{in isolation} collapses below the unmitigated baseline: the attention pathway is not merely sensitive to NL distortion; it is \emph{structurally coupled} to it.
+
+\subsection{What would falsify this hypothesis}
+
+A structural hypothesis is scientifically useful only if it is falsifiable. The attention-pathway-dominance hypothesis would be falsified by any of the following diagnostic experiments, designated CX-J1b, CX-J1c, and CX-J1d:
+
+\begin{itemize}[leftmargin=1.4em]
+    \item \textbf{CX-J1b (QKV-linear + Ensemble HAT):} If linearizing \emph{only} the QKV projection while keeping the attention output projection at $NL=2.0$ were to recover fresh-instance accuracy above $50\,\%$, the hypothesis would be weakened. The prediction under the present hypothesis is that CX-J1b would collapse, because QKV linearization in isolation was shown in Chapter~\ref{chap:failure-mode-atlas} to drive accuracy below the unmitigated baseline.
+    \item \textbf{CX-J1c (output-projection-linear + Ensemble HAT):} If linearizing \emph{only} the attention output projection while keeping QKV at $NL=2.0$ were to recover fresh-instance accuracy above $50\,\%$, the hypothesis would again be weakened. The prediction is collapse, based on the isolated output-projection ablation.
+    \item \textbf{CX-J1d (attention-free architecture):} If a model \emph{without} self-attention---for example, a pure MLP-Mixer or a linear Vision Transformer---were trained under global $NL=2.0$ with Ensemble HAT and achieved fresh-instance accuracy comparable to the $NL=1.0$ baseline, the hypothesis would be decisively falsified. Such a result would demonstrate that the $\sim$30\,\% ceiling is specific to the attention mechanism and not a property of the NL surrogate acting on any deep architecture.
+\end{itemize}
+
+Conversely, if CX-J1b and CX-J1c both collapse to the $\sim$30\,\% regime and CX-J1d escapes it, the attention-pathway-dominance hypothesis would be strongly supported. The $\sim$30\,\% ceiling would then be established as a \emph{fundamental generalization barrier} for first-order-surrogate-trained transformers on organic optoelectronic CIM, not a temporary optimization limitation.
+
+
+% =============================================================================
+\section{Case study: Per-batch versus per-epoch HAT}
+\label{sec:case-cadence}
+
+\subsection{Problem statement: how often should the mismatch map change?}
+
+Ensemble HAT is defined by epoch-level resampling: one fresh D2D realization per epoch, held constant across all mini-batches within that epoch. But this cadence is a design choice, not a physical law. One could resample more frequently (per batch) or less frequently (every $k$ epochs). The problem is to determine which cadence optimizes the trade-off between distributional breadth and optimization stability.
+
+The naive intuition favors more frequent resampling. If the goal is to average over the deployment distribution $p(M)$, then exposing the model to more independent draws per unit time should yield a more invariant solution. Per-batch resampling provides $B\times E$ independent draws over a training run of $E$ epochs and $B$ mini-batches per epoch, whereas per-epoch resampling provides only $E$ draws. From a pure Monte Carlo perspective, per-batch resampling should produce a lower-variance estimate of the expected risk.
+
+This intuition is wrong, and understanding why it is wrong is central to the design of distributional training objectives for analog deployment.
+
+\subsection{Intervention: held-out cadence ablation}
+
+The intervention is a controlled ablation that trains three checkpoints under identical conditions except for the D2D resampling cadence. All checkpoints use the canonical Tiny-ViT V4 recipe: AdamW with learning rate $5\times10^{-4}$, weight decay $0.05$, cosine annealing over 50 epochs (the ablation used a shortened schedule for throughput), batch size 64, and 4-bit differential conductance mapping. The three conditions are:
+\begin{itemize}[leftmargin=1.4em]
+    \item \textbf{Fixed-mask control:} One D2D realization drawn at initialization and frozen.
+    \item \textbf{Per-epoch (Ensemble HAT):} One fresh D2D realization at the start of each epoch.
+    \item \textbf{Per-batch control:} One fresh D2D realization for every forward pass during training.
+\end{itemize}
+
+After training, each checkpoint is evaluated on a held-out validation split that was not used for early stopping. The reported numbers are therefore held-out accuracies from a single-run scan, not the full ten-instance fresh-instance protocol. Their importance is relative, not absolute.
+
+\subsection{Quantitative outcome}
+
+The exploratory 50-epoch scan yielded the following held-out accuracies:
+\begin{itemize}[leftmargin=1.4em]
+    \item Epoch-level resampling (Ensemble HAT): \textbf{88.41\,\%}
+    \item Fixed-mask training: \textbf{87.18\,\%}
+    \item Per-batch resampling: \textbf{86.16\,\%}
+\end{itemize}
+
+These numbers are not directly comparable to the paper-locked $86.37\pm1.54\,\%$ fresh-instance mean because they come from a shorter training run and a held-out validation split. Their structural message, however, is clear: epoch-level resampling outperforms \emph{both} fixed-mask and per-batch alternatives even under a weakened training budget. The per-batch condition, despite exposing the model to far more D2D diversity, underperforms the per-epoch condition by $2.25$~pp and even underperforms fixed-mask training by $1.02$~pp.
+
+Figure~\ref{fig:fresh-instance-ablation-c5} reproduces the manuscript supplementary panel that visualizes this comparison. The left panel shows the canonical fresh-instance collapse of fixed-mask HAT versus the robust transfer of Ensemble HAT; the right panel shows the held-out accuracy under the three cadences.
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=0.96\textwidth]{../latex_gpt/figures/fig_fresh_instance_ablation}
+    \caption{Fresh-instance robustness and D2D-resampling cadence ablation, reproduced from the manuscript supplementary package (Supplementary Figure~S4). \textbf{Left:} standard HAT collapses to chance on every fresh array, whereas Ensemble HAT preserves robust accuracy. \textbf{Right:} held-out accuracy under different resampling cadences in a 50-epoch scan. Epoch-level resampling reaches $88.41\,\%$, exceeding fixed-mask ($87.18\,\%$) and per-batch ($86.16\,\%$) controls.}
+    \label{fig:fresh-instance-ablation-c5}
+\end{figure}
+
+The interpretation, developed in Chapter~\ref{chap:hat-taxonomy}, \S\ref{sec:cadence-transfer-guarantee}, is that per-epoch resampling creates a \emph{block-stationary} optimization landscape. Within each block (one epoch), the gradient field is consistent, and the optimizer can descend; across blocks, the landscape shifts, forcing the solution toward a shared basin. Per-batch resampling, by contrast, creates a fully non-stationary landscape in which every gradient step sees a different spatial structure. The optimizer never experiences a stable enough forward path to settle into a basin that is compatible with any single structured instance.
+
+This interpretation is reinforced by the spatial-versus-i.i.d.~ablation discussed in the supplementary package. When the D2D field is replaced by independent per-layer i.i.d.~noise drawn every epoch, fresh-instance accuracy drops to approximately $75\,\%$; when it is drawn every batch, it drops further to approximately $70\,\%$. The structured spatial correlation of the true D2D field, combined with the block-stationary exposure schedule, is the load-bearing ingredient.
+
+\subsection{Residual open question}
+
+The per-batch versus per-epoch ablation leaves open the question of \emph{intermediate cadences}. What about resampling every $k$ mini-batches, where $1 < k < B$? Or every $k$ epochs, where $k > 1$? The block-stationary hypothesis predicts that there exists an optimal block length: long enough for the optimizer to descend under one instance, short enough to prevent instance-specific overfitting. Locating this optimum as a function of learning rate, batch size, and model depth is an open empirical question.
+
+A second open question is whether the per-batch underperformance is universal or architecture-dependent. The present ablation uses Tiny-ViT, a compact Vision Transformer with $5$~M parameters. A deeper model with more optimization steps per epoch might tolerate higher resampling frequencies, or it might be even more sensitive to forward-path instability. The block-stationary guarantee is likely scale-dependent, but the scaling law is unknown.
+
+Finally, the cadence choice interacts with the noise-profile axis developed in Chapter~\ref{chap:hat-taxonomy}. Under proportional noise, where perturbations scale with conductance magnitude, the effective signal-to-noise ratio varies across layers and epochs. Whether the optimal cadence shifts under state-dependent noise is unexplored.
+
+
+% =============================================================================
+\section{Case study: Ensemble-frequency plateau}
+\label{sec:case-frequency-plateau}
+
+\subsection{Problem statement: diminishing returns in resampling frequency}
+
+The per-batch versus per-epoch ablation shows that more frequent resampling does not always help. But the ablation compares only three points on the frequency axis: never (fixed-mask), once per epoch, and once per batch. The problem addressed in this case study is whether the relationship between resampling frequency and fresh-instance accuracy exhibits a systematic plateau---a regime beyond which additional resampling frequency yields negligible or negative returns.
+
+This question matters for two practical reasons. First, if epoch-level resampling is already on the plateau, then hardware-aware training recipes can safely adopt it without worrying that a finer cadence would unlock substantially better transfer. Second, if the plateau begins \emph{before} epoch-level resampling---say, at once every five epochs---then the training cost of epoch-level resampling could be reduced without accuracy loss. Understanding the shape of the frequency--accuracy curve is therefore a prerequisite for cost-effective deployment of distributional HAT.
+
+\subsection{Intervention: frequency ablation as a structural probe}
+
+The intervention is not a new experiment but a reframing of the existing cadence data in terms of diminishing returns. The three data points---fixed-mask ($0$ resamplings per epoch), per-epoch ($1$ resampling per epoch), and per-batch ($B$ resamplings per epoch, where $B\approx781$ for CIFAR-10 at batch size 64)---form a sparse sample of the frequency axis. Although a dense sweep was not performed, the sparse sample is sufficient to identify a plateau because the per-batch condition lies far to the right of the per-epoch condition on the frequency axis yet yields lower accuracy.
+
+The structural argument for a plateau rests on the block-stationary interpretation developed in \S\ref{sec:case-cadence} and Chapter~\ref{chap:hat-taxonomy}. Under per-epoch resampling, the optimizer experiences $E$ block-stationary epochs, each long enough for the gradient field to guide the parameters into a basin that is compatible with the current $M^{(e)}$. Under per-batch resampling, the optimizer experiences $B\times E$ blocks, each too short for meaningful descent. The expected risk is estimated with lower variance, but the optimizer cannot exploit the reduced variance because it never settles. The result is a \emph{frequency plateau}: beyond the optimal block length, additional resampling frequency harms accuracy.
+
+\subsection{Quantitative outcome}
+
+The quantitative evidence for the plateau is the held-out accuracy ordering from the 50-epoch ablation:
+\begin{equation}
+    \underbrace{88.41\,\%}_{\text{per-epoch}} > \underbrace{87.18\,\%}_{\text{fixed-mask}} > \underbrace{86.16\,\%}_{\text{per-batch}}.
+    \label{eq:plateau-ordering}
+\end{equation}
+
+The per-epoch condition outperforms fixed-mask by $1.23$~pp, a meaningful gain. But per-batch underperforms fixed-mask by $1.02$~pp, despite providing orders of magnitude more D2D diversity. This inversion is the signature of a plateau with negative returns beyond the optimum. The optimizer does not merely stop benefiting from additional frequency; it is actively harmed by it.
+
+The full ten-instance fresh-instance protocol confirms this pattern at the deployment-evaluation level. Canonical Ensemble HAT (per-epoch) reaches $86.37\pm1.54\,\%$. Fixed-mask HAT collapses to $10.00\,\%$ on fresh instances, but this collapse is a transfer failure, not an optimization failure: fixed-mask reaches $87.95\pm0.27\,\%$ on the training-time instance. Per-batch resampling, evaluated in the exploratory scan at $86.16\,\%$ held-out, would likely reach a fresh-instance mean somewhat below the per-epoch $86.37\,\%$ if evaluated with the full protocol, consistent with the block-stationary hypothesis.
+
+The plateau is also visible in the spatial-versus-i.i.d.~ablation. When the structured D2D field is replaced by i.i.d.~per-layer noise, per-epoch resampling drops fresh-instance accuracy to approximately $75\,\%$, and per-batch drops it further to approximately $70\,\%$. The $5$~pp gap between per-epoch and per-batch persists even when spatial structure is removed, suggesting that the plateau is not an artifact of the particular correlation structure of the D2D field but a more general property of block-stationary optimization.
+
+\subsection{Residual open question}
+
+The most important open question is the location of the \emph{knee} of the plateau curve. The present data establish that per-batch is too frequent and per-epoch is near the optimum, but they do not resolve whether resampling every two epochs, every five epochs, or every half-epoch would match or exceed the per-epoch result. A dense frequency sweep---varying the resampling interval from $1$ batch to $1$ epoch in logarithmic steps---would map the full curve and identify the cost-accuracy sweet spot.
+
+A second open question concerns the interaction between ensemble frequency and model depth. Tiny-ViT is a relatively shallow Vision Transformer with four transformer stages. A deeper model might require longer block-stationary epochs to settle into a compatible basin, shifting the plateau knee toward coarser cadences. Conversely, a model with more parameters per layer might adapt faster to each new mismatch map, shifting the knee toward finer cadences. The scaling of the optimal block length with model capacity is unknown.
+
+Finally, the plateau concept extends beyond D2D resampling to other distributional training objectives. For example, if proportional-noise HAT (Chapter~\ref{chap:hat-taxonomy}, \S\ref{sec:noise-profile-targeting}) is combined with epoch-level resampling, does the same plateau structure apply to the \emph{amplitude} of the proportional noise? Or does the state-dependent noise law change the shape of the frequency--accuracy curve? These questions are relevant for designing adaptive HAT schedules that vary both noise profile and resampling cadence during training.
+
+
+% =============================================================================
+\section{Synthesis: what the mitigations tell us together}
+\label{sec:mitigation-synthesis}
+
+The seven case studies and the structural-limit analysis, read in sequence, tell a coherent story about the limits of training-time intervention for organic optoelectronic CIM deployment.
+
+\subsection{The hierarchy of mitigations}
+
+First, there is a clear hierarchy of intervention efficacy. At the top is Ensemble HAT, which changes the training objective from single-instance memorization to distributional expectation and recovers $86.37\pm1.54\,\%$ fresh-instance accuracy under the canonical $NL=1.0$ surrogate. Below it are the severe-NL mitigations, which all converge to the same $\sim$30\,\% ceiling: MLP-only linearization ($87.79\,\%$ source-domain, $32.12\pm7.72\,\%$ fresh-instance), all-linear linearization ($87.49\,\%$ source-domain, $32.60\pm9.18\,\%$ fresh-instance), and joint MLP-linear + Ensemble HAT ($91.36\,\%$ source-domain, $30.53\pm7.07\,\%$ fresh-instance). At the bottom is fixed-mask HAT, which achieves high source-domain accuracy ($87.95\pm0.27\,\%$) but collapses to $10.00\,\%$ on fresh instances.
+
+This hierarchy is not ordered by source-domain accuracy. Fixed-mask HAT, MLP-only linearization, and joint training all reach $\sim$88--91\,\% on the training-time array, yet they occupy radically different positions on the deployment-grade spectrum. The ordering is instead determined by fresh-instance robustness, which is the thesis's central evaluation criterion.
+
+\subsection{The training-objective principle}
+
+Second, the case studies reinforce a general principle with an important boundary condition: \emph{the training objective matters more than the physical surrogate, but only when the surrogate does not impose a structural barrier}. Ensemble HAT recovers $86.37\pm1.54\,\%$ with the canonical $NL=1.0$ surrogate and uniform noise because the D2D-mismatch distortion is a \emph{random instance label} that distributional training can average away. The severe-NL surrogate, by contrast, is not merely a random label; it is a \emph{state-dependent gradient asymmetry} that reshapes the attention geometry in a way that is incompatible with cross-instance transfer. Distributional training cannot average away a structural deformation of the representational manifold.
+
+The all-linear severe-NL checkpoint, which removes the write-nonlinearity surrogate entirely, reaches only $32.60\pm9.18\,\%$ on fresh instances because it was trained with a fixed D2D mask. The physical simplification (ideal write) is outweighed by the training-objective deficiency (single-instance memorization). But the CX-J1 joint-training experiment shows that even when the training-objective deficiency is corrected (Ensemble HAT resampling), the severe-NL ceiling remains. The physical surrogate \emph{does} matter when it interacts structurally with the attention pathway.
+
+\subsection{The cadence sweet spot}
+
+Third, the cadence ablation and frequency-plateau analysis show that block-stationary exposure is the load-bearing ingredient for D2D-mismatch robustness. Per-epoch resampling outperforms both fixed-mask and per-batch alternatives because it provides enough forward-path stability for the optimizer to descend under each instance, while the sequence of epochs provides enough distributional breadth to prevent instance-specific overfitting. The optimal cadence is not the maximum cadence; it is the cadence that balances stability and diversity. This principle holds for D2D mismatch but does not rescue severe-NL collapse.
+
+\subsection{The honesty gap}
+
+Fourth, the MLP-only, all-linear, and joint-training case studies expose an \emph{honesty gap} between source-domain rescue and deployment-grade transfer that is even starker than the D2D-mismatch case. A researcher who reports only the $91.36\,\%$ CX-J1 source-domain accuracy would conclude that severe NL is solved. The fresh-instance evaluation of $30.53\pm7.07\,\%$ shows that it is not. This gap has practical implications for experimental design and literature review: any analog-deployment paper that reports only ``noisy accuracy'' on the training-time instance may be overstating deployability by more than $60$~pp. The fresh-instance protocol ($10\times5$) should be treated as a minimal bar for claiming deployment-grade robustness.
+
+\subsection{The structural limit}
+
+Finally, the convergence of three independent mitigations to the same $\sim$30\,\% ceiling is the chapter's central negative result. It demonstrates that severe-NL fresh-instance failure is a \emph{structural property} of the first-order NL surrogate acting on the transformer attention pathway, not a training artifact that can be optimized away. The falsification experiments proposed in \S\ref{sec:structural-limit} (CX-J1b/c/d) provide a clear path forward: either the attention-pathway-dominance hypothesis is confirmed, in which case the research frontier shifts to surrogate redesign or attention-free architectures, or it is falsified, in which case a deeper mechanism remains to be discovered. Either outcome advances the field more rigorously than another incremental optimization win.
+
+
+% =============================================================================
+\section{Summary}
+
+This chapter has presented seven case studies and a structural-limit analysis, each following the structured narrative of problem $\rightarrow$ intervention $\rightarrow$ quantitative outcome $\rightarrow$ residual open question.
+
+\textbf{Ensemble HAT} (\S\ref{sec:case-ensemble-hat}) addresses hardware-instance overfitting by replacing fixed-mask training with epoch-level D2D resampling. The intervention recovers $86.37\pm1.54\,\%$ fresh-instance accuracy, generalizes to the OPECT literature profile at $88.53\pm0.08\,\%$, and tolerates moderate spatially correlated D2D ($84.57\pm2.39\,\%$ at $\rho=0.3$). The open question is compound-stress robustness and the location of the optimal cadence knee.
+
+\textbf{MLP-linear severe-NL diagnostic} (\S\ref{sec:case-mlp-linear}) linearizes only the MLP path under global $NL=2.0$ to isolate the bottleneck. The intervention recovers $87.79\,\%$ source-domain accuracy but caps at $32.12\pm7.72\,\%$ on fresh instances, exposing a severe honesty gap.
+
+\textbf{All-linear upper bound} (\S\ref{sec:case-all-linear}) linearizes the entire analog stack to set a ceiling on severe-NL recovery. The intervention reaches $87.49\,\%$ best and $84.81\,\%$ final, but fresh-instance accuracy remains stuck at $32.60\pm9.18\,\%$.
+
+\textbf{Joint MLP-linear + Ensemble HAT} (\S\ref{sec:case-joint-hat}, CX-J1) tests the optimization-gap hypothesis by combining the two strongest individual mitigations. The result is a definitive negative outcome: $91.36\,\%$ source-domain accuracy but only $30.53\pm7.07\,\%$ fresh-instance, statistically indistinguishable from the MLP-only and all-linear ceilings.
+
+\textbf{The $\sim$30\,\% ceiling} (\S\ref{sec:structural-limit}) argues that the convergence of three independent mitigations to the same fresh-instance regime is empirical evidence of a structural barrier. The first-order NL surrogate, when applied to the transformer attention pathway, imposes a fundamental generalization limit that survives MLP linearization, global linearization, and distributional D2D training. Falsification experiments (CX-J1b/c/d) are proposed.
+
+\textbf{Per-batch versus per-epoch HAT} (\S\ref{sec:case-cadence}) compares resampling cadences. The intervention is a held-out ablation showing that per-epoch ($88.41\,\%$) outperforms both fixed-mask ($87.18\,\%$) and per-batch ($86.16\,\%$). The open question is the shape of the full frequency--accuracy curve and its dependence on model depth.
+
+\textbf{Ensemble-frequency plateau} (\S\ref{sec:case-frequency-plateau}) documents the structural evidence that diminishing returns set in beyond epoch-level resampling. The quantitative ordering per-epoch $>$ fixed-mask $>$ per-batch confirms a plateau with negative returns at excessive frequency. The open question is the scaling of the optimal block length with model capacity and noise profile.
+
+Together, the case studies establish that deployment-grade robustness in organic optoelectronic CIM requires a distributional training objective matched to the deployment distribution, a block-stationary resampling cadence near the stability--diversity sweet spot, and honest evaluation on unseen hardware instances. Source-domain rescues that lack these ingredients---however impressive their training-time accuracy---remain diagnostic tools rather than deployment solutions. In the severe-NL regime, the chapter's central finding is negative but rigorous: three independent mitigations all hit the same $\sim$30\,\% ceiling, demonstrating that severe nonlinear write imposes a \emph{structural generalization barrier} on first-order-surrogate-trained Vision Transformers, not an optimization gap that better training can close.
+
+These recoveries assume idealized noise; the next chapter reintroduces the physical world.

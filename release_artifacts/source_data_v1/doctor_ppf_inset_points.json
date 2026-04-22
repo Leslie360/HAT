@@ -1,0 +1,6 @@
+{
+  "source": "manual_user_supplied_raw_points_2026-04-16",
+  "delta_t_raw": [200, 500, 800, 2000, 3000],
+  "ppf_percent": [173.059, 158.686, 146.218, 130.760, 124.360],
+  "note": "Direct raw PPF inset points supplied manually by the user after clarifying that 小图.txt itself is an Origin fit report sheet."
+}

@@ -5,116 +5,93 @@
 \subsection{Hybrid Analog/Digital Deployment}
 \label{subsec:hybrid-deployment}
 
-We adopt a hybrid analog/digital inference stack: dense linear operators execute on differential-pair crossbars; control-heavy operators remain digital. Figure~\ref{fig:system-architecture} summarizes this division at the system level, and Table~\ref{tab:operator-mapping} lists the operator-level rationale following established practice in heterogeneous CIM accelerators \citep{wu2023bwq,wang2024epim,ge2024allspark,kim2025hemlet,lin2024hardsea}.
+We adopt a hybrid analog/digital inference stack: dense linear operators execute on differential-pair crossbars; control-heavy operators remain digital. Concretely, the analog partition contains patch embeddings, query/key/value (Q/K/V) and output projections, and feed-forward layers; the digital partition contains softmax, layer normalization, GELU activation, positional encoding, residual additions, and the class token. The system-level split and the operator-level rationale are summarized in the Supplementary Information following established practice in heterogeneous CIM accelerators \citep{wu2023bwq,wang2024epim,ge2024allspark,kim2025hemlet,lin2024hardsea}.
 
-Under this mapping, 87.7\% of parameters are assigned to analog execution, whereas 57.9\% of the estimated energy remains in the digital domain, largely because of attention operations. This split reflects a basic architectural constraint: analog crossbars are well suited to weight-stationary matrix multiplication, but much less suited to dynamic, input-dependent computations \citep{kim2025hemlet}. Recent heterogeneous CIM accelerators for Vision Transformers follow the same logic, keeping attention digital even as linear projections move to analog arrays \citep{lin2024hardsea,wang2024epim,ge2024allspark}. The present organic device literature likewise demonstrates regular static array programming more naturally than fully dynamic interaction engines \citep{gebregiorgis2023organiccim,zhang2026opect}.
-
-\begin{figure}[t]
-    \centering
-    \resizebox{0.98\textwidth}{!}{
-    \begin{tikzpicture}[
-        >=Latex,
-        font=\small\rmfamily\upshape,
-        node distance=6mm and 8mm,
-        stage/.style={draw=black!60, rounded corners=4pt, thick, fill=black!2, minimum height=30mm, align=center},
-        analog/.style={draw=teal!70!black, rounded corners=4pt, thick, fill=teal!8, minimum height=13mm, align=center},
-        digital/.style={draw=black!55, rounded corners=4pt, thick, fill=black!5, minimum height=11mm, align=center},
-        arrow/.style={->, thick, draw=black!65}
-    ]
-    \node[stage, minimum width=27mm] (input) {\textbf{Input}\\edge-vision image};
-    \node[stage, minimum width=34mm, right=of input, draw=teal!70!black, fill=teal!10] (front) {\textbf{Physical frontend}\\photoresponse\\preprocessing};
-
-    \node[draw=black!45, dashed, rounded corners=6pt, inner sep=6pt, fit={(0,0) (0,0)}] (dummy) {};
-    \node[analog, minimum width=54mm, right=13mm of front, yshift=8mm] (analogpath) {\textbf{Analog CIM path}\\patch embedding, QKV / output, MLP};
-    \node[digital, minimum width=54mm, below=7mm of analogpath] (digitalpath) {\textbf{Digital path}\\depthwise conv, attention, softmax, LN, head};
-    \node[draw=black!45, dashed, rounded corners=6pt, inner sep=8pt, fit={(analogpath)(digitalpath)}] (backbone) {};
-    \node[font=\bfseries, fill=white, inner sep=2pt, above=1mm of backbone.north] {Hybrid backbone};
-
-    \node[stage, minimum width=38mm, right=11mm of analogpath, yshift=-8mm] (periph) {\textbf{Peripheral / calibration}\\ADC / DAC\\scale recovery};
-    \node[stage, minimum width=25mm, right=of periph] (output) {\textbf{Output}\\classifier\\prediction};
-
-    \draw[arrow] (input.east) -- (front.west);
-    \draw[arrow, draw=teal!75!black] (front.east) -- ++(6mm,0) |- (analogpath.west);
-    \draw[arrow] (front.east) -- ++(6mm,0) |- (digitalpath.west);
-    \draw[arrow, draw=teal!75!black] (analogpath.east) -- (periph.west |- analogpath.east);
-    \draw[arrow] (digitalpath.east) -- (periph.west |- digitalpath.east);
-    \draw[arrow] (periph.east) -- (output.west);
-
-    \end{tikzpicture}
-    }
-    \caption{\textbf{Hybrid organic-CIM inference stack.} Dense weight-stationary operators are executed on analog crossbars, whereas dynamic attention and control-heavy operators remain in the digital path.}
-    \label{fig:system-architecture}
-\end{figure}
-
-\begin{table}[t]
-\centering
-\caption{\textbf{Analog/digital operator mapping rationale.} The split maximizes array utilization for weight-stationary operations while preserving precision for dynamic, irregular computations.}
-\label{tab:operator-mapping}
-\small
-\begin{tabular}{@{}ll>{\raggedright\arraybackslash}p{6.5cm}@{}}
-\toprule
-\textbf{Operator} & \textbf{Domain} & \textbf{Rationale} \\
-\midrule
-Patch embedding (conv) & Analog & High weight reuse, regular access pattern; natural fit for crossbar MVM \\
-QKV projections & Analog & Dense matrix-vector multiplications; weights stationary during inference \\
-Attention output proj. & Analog & Post-attention linear projection; same characteristics as QKV \\
-Feed-forward networks & Analog & MLP layers dominate parameter count; efficient crossbar utilization \\
-\midrule
-Depthwise convolutions & Digital & Low weight reuse, irregular spatial access; poor crossbar utilization \citep{wu2023bwq} \\
-Layer normalization & Digital & Requires mean/variance computation across features; hard to parallelize on crossbar \\
-$\mathbf{QK}^{\top}$ (attention scores) & Digital & Dynamic, input-dependent computation; irregular memory access \citep{lin2024hardsea} \\
-Softmax & Digital & Non-linear transcendental function; precision-critical; no efficient analog implementation \citep{bettayeb2024memristorattention} \\
-\bottomrule
-\end{tabular}
-\end{table}
+Under this mapping, approximately 88\% of parameters are assigned to analog execution, whereas roughly 60\% of the estimated energy remains in the digital domain under the present placeholder constants, largely because of attention operations. This split reflects a basic architectural constraint: analog crossbars are well suited to weight-stationary matrix multiplication, but much less suited to dynamic, input-dependent computations \citep{kim2025hemlet}. Recent heterogeneous CIM accelerators for Vision Transformers follow the same logic, keeping attention digital even as linear projections move to analog arrays \citep{lin2024hardsea,wang2024epim,ge2024allspark}. The present organic device literature likewise demonstrates regular static array programming more naturally than fully dynamic interaction engines \citep{gebregiorgis2023organiccim,zhang2025opect}. Layer-wise mapping ablations that vary the analog--digital boundary are supported by the framework's modular operator assignment, but they are deferred here so that the present study can isolate the impact of device non-idealities on a single, widely adopted hybrid partition.
 
 \subsection{Modeling Physical Non-Idealities}
 \label{subsec:modeling-nonidealities}
 
-The framework injects quantization, cycle-to-cycle (C2C) and device-to-device (D2D) variability, ADC distortion, retention drift, and nonlinear-write surrogates directly into the forward path. Each analog-mapped weight $W_{ij}$ is converted into a differential conductance representation quantized to $n_{\text{states}}$ levels. We first decompose the weight into positive and negative branches:
+The framework injects quantization, cycle-to-cycle (C2C) and device-to-device (D2D) variability, ADC distortion, retention drift, and nonlinear-write surrogates directly into the forward path. Each analog-mapped weight is decomposed into positive and negative branches, mapped to the conductance window $[G_{\min}, G_{\max}]$, and quantized to $n_{\mathrm{states}}$ levels via a straight-through estimator (STE) quantizer $Q_{n}(\cdot)$. Differential readout recovers $G_{\mathrm{eff}}=\tilde{G}^{+}-\tilde{G}^{-}$, and the downstream digital weight is
 \begin{equation}
-    W_{ij}^{+} = \max(0, W_{ij}), \quad W_{ij}^{-} = \max(0, -W_{ij})
+    \hat{W}_{ij}=s_{\ell}\,G_{\mathrm{eff},ij},
+    \qquad
+    s_{\ell}=
+    \begin{cases}
+        \dfrac{w_{\max}}{G_{\max}-G_{\min}}, & \text{standard calibration} \\[6pt]
+        \dfrac{w_{\max}}{\max_{i,j}|G_{\mathrm{eff},ij}|+\epsilon}, & \text{retention-time recalibration}
+    \end{cases}
+\label{eq:scale-recovery}
 \end{equation}
-These are then mapped to the physical conductance window $[G_{\min}, G_{\max}]$:
+with layer index $\ell$ omitted. Unless otherwise stated, we use the standard-calibration branch; the retention-recalibration branch is used only for the V8 retention-drift experiments (Section~\ref{subsec:retention-drift}). The recovered weight step is $\Delta_{\hat{W}}=s_{\ell}(G_{\max}-G_{\min})/(n_{\mathrm{states}}-1)$, so perturbations smaller than half a step are masked. The differential-pair scheme suppresses common-mode noise \citep{wei2020voltagedifferential,kim2024sttmram}.
+
+Hardware-aware training (HAT) keeps forward perturbations active during optimization while back-propagating through a straight-through estimator. Standard HAT fixes one D2D mismatch field $M_{0}$,
 \begin{equation}
-    G_{pos,ij} = G_{\min} + \frac{W_{ij}^{+}}{\max|W|} (G_{\max} - G_{\min})
+    \theta_{\mathrm{std}}^{\star}=\arg\min_{\theta}\frac{1}{N}\sum_{n=1}^{N}\ell\!\left(f(x_{n};\theta,M_{0}),y_{n}\right),
+\label{eq:hat-standard}
 \end{equation}
-with $G_{neg,ij}$ calculated symmetrically. The differential-pair scheme enables signed-weight representation while partially suppressing common-mode noise \citep{wei2020voltagedifferential,kim2024sttmram}.
- Hardware-aware training (HAT) is implemented by keeping these forward perturbations active during optimization while propagating gradients through a straight-through estimator. For transformer deployments, the recovered post-array weight scale is modeled as an ideal calibrated digital rescaling step with fixed layer-wise factors, and its control overhead is therefore not itemized separately in the energy model.
+whereas Ensemble HAT resamples $M^{(e)}\sim p(M)$ at each epoch,
+\begin{equation}
+    \theta_{\mathrm{ens}}^{\star}=\arg\min_{\theta}\;\mathbb{E}_{M\sim p(M)}\!\left[\frac{1}{N}\sum_{n=1}^{N}\ell\!\left(f(x_{n};\theta,M),y_{n}\right)\right].
+\label{eq:hat-ensemble}
+\end{equation}
+The expectation is Monte Carlo--estimated with one freshly sampled mismatch map per training epoch, held constant across all mini-batches within that epoch.
+Fresh-instance transfer evaluates on unseen draws $M'\sim p(M)$:
+\begin{equation}
+    \mathrm{Acc}_{\mathrm{fresh}}=\mathbb{E}_{M'\sim p(M)}\!\left[\mathrm{Acc}\!\left(f(\cdot;\theta_{\mathrm{ens}}^{\star},M')\right)\right].
+\label{eq:fresh-instance}
+\end{equation}
+Each fresh array corresponds to an i.i.d. Gaussian draw $M' \sim \mathcal{N}(0, \sigma_{\mathrm{D2D}}^2)$ held constant over the evaluation pass, distinct from the cycle-to-cycle perturbation that re-samples per forward pass.
+For the canonical Ensemble HAT transfer result, each fresh-instance mean is itself the mean of five forward-pass Monte Carlo evaluations, and the reported $\pm 1.54$\,pp spread is the standard deviation across the ten fresh-instance means rather than across all fifty forward passes pooled together.
 
-First-order modeling of nonlinear write (\texttt{NL\_LTP/NL\_LTD}) and double-exponential retention is supported, with parameters anchored to measured DNTT transients \citep{vincze2026dualplasticity}. For optoelectronic sensing, we incorporate a physical frontend model (V6) characterized by the photoresponse exponent $\gamma_{phys}$, representing the power-law relation between light intensity and conductance, and the dark current $I_{dark}$, which sets the dynamic range floor. The released profiler uses representative edge-node energy and latency parameters.
+\subsection{Training Protocol}
+\label{subsec:training-protocol}
+
+All Tiny-ViT experiments are trained with AdamW ($lr = 5\times10^{-4}$, weight decay $0.05$) for 100 epochs using a batch size of 64 and a cosine annealing learning-rate schedule ($T_{\max}=100$). Images are resized to $224\times224$, augmented with random horizontal flips, and normalized by dataset statistics. The default analog programming resolution is $n_{\mathrm{states}}=16$ conductance levels. Experiment V1 uses standard digital training; V2 uses hybrid layers without noise; V3 uses hybrid layers with fixed D2D mismatch ($\sigma_{\mathrm{D2D}}=10\%$) active during training but no per-forward C2C resampling; V4--V7 employ full hardware-aware training in which fixed D2D mismatch is resampled at the start of every epoch and C2C noise ($\sigma_{\mathrm{C2C}}=5\%$ or $10\%$) is drawn on each forward pass. V6 additionally enables the physical photoresponse front end, and V7 evaluates post-training retention decay. Complete experiment settings and the open-source training scaffold are summarized in the Supplementary Information and repository release package.
+
+First-order nonlinear-write and double-exponential retention surrogates are supported, with parameters anchored to measured dinaphtho-thieno-thiophene (DNTT) transients \citep{vincze2025dualplasticity}. Nonlinear write modifies the STE backward pass by scaling the straight-through gradient with a state-dependent factor proportional to the present conductance magnitude raised to $NL-1$ (Supplementary Eq.~S2 gives the exact piecewise form); ideal write is recovered when $NL_{\mathrm{LTP}}=1$ (long-term potentiation) and $|NL_{\mathrm{LTD}}|=1$ (long-term depression). For optoelectronic sensing, we incorporate a physical front-end model (V6) that first applies inverse-gamma preprocessing to the normalized input $X \in [0,1]$,
+\begin{equation}
+    P_{\mathrm{in}} = X^{1/\gamma_{\mathrm{phys}}},
+\label{eq:inverse-gamma}
+\end{equation}
+and then propagates it through a photocurrent response model,
+\begin{equation}
+    I_{\mathrm{photo}}
+    =
+    \alpha P_{\mathrm{in}}^{\gamma_{\mathrm{phys}}}
+    +
+    I_{\mathrm{dark}}
+    +
+    \varepsilon_{\mathrm{shot}}
+    \approx
+    \alpha X + I_{\mathrm{dark}} + \varepsilon_{\mathrm{shot}},
+\label{eq:frontend-photoresponse}
+\end{equation}
+with $\mathrm{Var}[\varepsilon_{\mathrm{shot}}] \propto I_{\mathrm{photo}}$. The proportionality coefficient is absorbed into the per-profile front-end calibration, so its exact value (governed by photodetector quantum efficiency and integration time) is implicit in the reported results. The uncompensated form ($P_{\mathrm{in}}=X$) and the front-end theory derivation are given in the Supplementary Information. The simulated photocurrent is finally renormalized on a per-sample basis,
+\begin{equation}
+    X_{\mathrm{norm}}
+    =
+    \frac{I_{\mathrm{photo}}-I_{\min}}{I_{\max}-I_{\min}+\epsilon},
+\label{eq:frontend-renorm}
+\end{equation}
+before dataset normalization. The released profiler uses representative edge-node energy and latency parameters.
 
 
-\begin{figure}[ht]
-    \centering
-    \resizebox{0.98\textwidth}{!}{
-    \begin{tikzpicture}[
-        >=Latex,
-        font=\small\rmfamily\upshape,
-        box/.style={draw=black!60, rounded corners=4pt, thick, fill=black!3, minimum height=18mm, minimum width=28mm, align=center},
-        accent/.style={draw=teal!70!black, fill=teal!10},
-        arrow/.style={->, thick, draw=black!65}
-    ]
-    \node[box] (fp) {\textbf{FP32 weights}\\tensor $W$};
-    \node[box, right=7mm of fp] (split) {\textbf{Branch split}\\$W_{ij}^{+}$ and $W_{ij}^{-}$};
-    \node[box, accent, right=7mm of split] (map) {\textbf{Conductance map}\\$[G_{\min}, G_{\max}]$\\$n_{\mathrm{states}}$ levels};
-    \node[box, accent, right=7mm of map] (profile) {\textbf{Profile effects}\\D2D / C2C\\retention / NL};
-    \node[box, right=7mm of profile, minimum width=40mm] (readout) {\textbf{Readout + calibration}\\$G_{\mathrm{eff}} = G_{pos} - G_{neg}$\\$\hat{W}$};
-
-    \draw[arrow] (fp.east) -- (split.west);
-    \draw[arrow] (split.east) -- (map.west);
-    \draw[arrow] (map.east) -- (profile.west);
-    \draw[arrow] (profile.east) -- (readout.west);
-
-    \end{tikzpicture}
-    }
-    \caption{\textbf{Behavioral weight-to-conductance mapping.} Floating-point weights are split into differential branches, mapped to a bounded conductance window, quantized, and perturbed by the selected device profile before differential readout.}
-    \label{fig:weight-mapping}
-\end{figure}
+The full weight-to-conductance mapping pipeline is illustrated in the Supplementary Information.
 
 \subsection{Profile-Driven Substitution Interface}
 \label{subsec:profile-interface}
 
-The profile interface allows technology-specific parameters $(\sigma_{\text{D2D}}, \sigma_{\text{C2C}}, n_{\text{states}}, G_{\max}/G_{\min})$ to be substituted directly into the simulation workflow. In practice, this means that the same framework can absorb literature priors at present and measured-device characterizations later without changing the underlying evaluation pipeline. We therefore archive the optimization settings and random seeds needed for independent reruns. The resulting methodology is intended as a first-order behavioral framework for deployment-facing risk assessment, rather than as a pulse-accurate emulator.
+The profile interface packages technology-specific assumptions into a replaceable JSON parameter bundle $(\sigma_{\mathrm{D2D}}, \sigma_{\mathrm{C2C}}, n_{\mathrm{states}}, G_{\min}, G_{\max}, NL_{\mathrm{LTP}}, NL_{\mathrm{LTD}}, \tau_{1}, \tau_{2}, A_{0}, \gamma_{\mathrm{phys}}, I_{\mathrm{dark}}, \ldots)$. The deployment evaluation holds the digital backbone and training recipe fixed while substituting the profile into the same mixed-signal inference path, enabling literature priors today and measured-device characterizations later without code changes. Representative profile fields and provenance are documented in the Supplementary Information.
+
+\subsection{Sensitivity and Energy Metrics}
+\label{subsec:sensitivity-energy}
+
+For the joint D2D--ADC sweep, we quantify first-order factor importance with Sobol indices 
+\begin{equation}
+    S_{i} = \frac{\mathrm{Var}_{X_{i}}\!\left(\mathbb{E}[Y \mid X_{i}]\right)}{\mathrm{Var}(Y)},
+\label{eq:sobol-first-order}
+\end{equation}
+estimated directly from the $7 \times 9$ grid of Monte Carlo means as $\mathrm{Var}(\mathrm{mean}_{\text{grid}}[X_{i}]) / \mathrm{Var}(Y)$, with MC noise realizations drawn independently per grid point and per architecture (seeds are not shared across the grid or across models). Indices are reported over both the full grid and the operational subregion. Energy is estimated via a first-order analytical model described in the Supplementary Methods from operator counts and placeholder per-operation constants; the numbers are intended for relative comparison rather than routed-circuit prediction.
 
 \FloatBarrier

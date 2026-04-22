@@ -1,0 +1,323 @@
+{
+  "generated_at": "2026-04-05T13:29:51",
+  "device": "cuda",
+  "eval_runs": 10,
+  "sigma_c2c": 0.05,
+  "sigma_d2d": 0.1,
+  "layer_names": [
+    "patch_embed.conv1.conv",
+    "stages.1.blocks.0.attn.qkv",
+    "stages.3.blocks.1.mlp.fc2"
+  ],
+  "conditions": [
+    {
+      "label": "V2_current_path",
+      "experiment": "V2",
+      "checkpoint_path": "checkpoints/V2_hybrid_no_noise_best.pt",
+      "checkpoint_epoch": 94,
+      "checkpoint_best_acc": 97.38,
+      "resample_d2d": false,
+      "d2d_buffer_summary": {
+        "analog_layers": 42,
+        "mean_abs_d2d": 0.0,
+        "mean_std_d2d": 0.0
+      },
+      "summary": {
+        "eval_runs": 10,
+        "test_loss_mean": 0.14884702686071397,
+        "test_acc_mean": 97.39,
+        "test_acc_min": 97.39,
+        "test_acc_max": 97.39,
+        "test_acc_std": 0.0
+      },
+      "layer_diagnostics": [
+        {
+          "layer": "patch_embed.conv1.conv",
+          "kind": "AnalogConv2d",
+          "shape": [
+            32,
+            3,
+            3,
+            3
+          ],
+          "n_states": 16,
+          "G_min": 1.0,
+          "G_max": 10.0,
+          "sigma_c2c": 0.05,
+          "sigma_d2d": 0.1,
+          "weight_std": 0.0911492183804512,
+          "conductance_weight_std": 1.4553340673446655,
+          "effective_weight_std": 0.09194548428058624,
+          "d2d_noise_std_conductance": 0.0,
+          "c2c_noise_std_conductance": 0.4473840892314911,
+          "total_noise_std_conductance": 0.4473840892314911,
+          "d2d_noise_std_weight": 0.0,
+          "c2c_noise_std_weight": 0.028264950960874557,
+          "total_noise_std_weight": 0.028264950960874557,
+          "scale_recovery_factor": 0.06317826360464096,
+          "noise_to_conductance_weight_ratio": 0.30740989252575335,
+          "noise_to_weight_ratio": 0.31009537397126546,
+          "noise_to_effective_weight_ratio": 0.3074098873047378
+        },
+        {
+          "layer": "stages.1.blocks.0.attn.qkv",
+          "kind": "AnalogLinear",
+          "shape": [
+            384,
+            128
+          ],
+          "n_states": 16,
+          "G_min": 1.0,
+          "G_max": 10.0,
+          "sigma_c2c": 0.05,
+          "sigma_d2d": 0.1,
+          "weight_std": 0.09820183366537094,
+          "conductance_weight_std": 1.0032261610031128,
+          "effective_weight_std": 0.09967512637376785,
+          "d2d_noise_std_conductance": 0.0,
+          "c2c_noise_std_conductance": 0.4493551254272461,
+          "total_noise_std_conductance": 0.4493551254272461,
+          "d2d_noise_std_weight": 0.0,
+          "c2c_noise_std_weight": 0.04464549943804741,
+          "total_noise_std_weight": 0.04464549943804741,
+          "scale_recovery_factor": 0.09935459494590759,
+          "noise_to_conductance_weight_ratio": 0.44791009534474435,
+          "noise_to_weight_ratio": 0.45462999795074927,
+          "noise_to_effective_weight_ratio": 0.44791013628247633
+        },
+        {
+          "layer": "stages.3.blocks.1.mlp.fc2",
+          "kind": "AnalogLinear",
+          "shape": [
+            320,
+            1280
+          ],
+          "n_states": 16,
+          "G_min": 1.0,
+          "G_max": 10.0,
+          "sigma_c2c": 0.05,
+          "sigma_d2d": 0.1,
+          "weight_std": 0.10253360122442245,
+          "conductance_weight_std": 0.6424030661582947,
+          "effective_weight_std": 0.10654765367507935,
+          "d2d_noise_std_conductance": 0.0,
+          "c2c_noise_std_conductance": 0.45013242959976196,
+          "total_noise_std_conductance": 0.45013242959976196,
+          "d2d_noise_std_weight": 0.0,
+          "c2c_noise_std_weight": 0.07465803623199463,
+          "total_noise_std_weight": 0.07465803623199463,
+          "scale_recovery_factor": 0.1658579558134079,
+          "noise_to_conductance_weight_ratio": 0.7007009357717554,
+          "noise_to_weight_ratio": 0.7281323911425424,
+          "noise_to_effective_weight_ratio": 0.7007008944529818
+        }
+      ]
+    },
+    {
+      "label": "V2_resampled_d2d",
+      "experiment": "V2",
+      "checkpoint_path": "checkpoints/V2_hybrid_no_noise_best.pt",
+      "checkpoint_epoch": 94,
+      "checkpoint_best_acc": 97.38,
+      "resample_d2d": true,
+      "d2d_buffer_summary": {
+        "analog_layers": 42,
+        "mean_abs_d2d": 0.7196260520390102,
+        "mean_std_d2d": 0.9018110576130095
+      },
+      "summary": {
+        "eval_runs": 10,
+        "test_loss_mean": 0.14884702686071397,
+        "test_acc_mean": 97.39,
+        "test_acc_min": 97.39,
+        "test_acc_max": 97.39,
+        "test_acc_std": 0.0
+      },
+      "layer_diagnostics": [
+        {
+          "layer": "patch_embed.conv1.conv",
+          "kind": "AnalogConv2d",
+          "shape": [
+            32,
+            3,
+            3,
+            3
+          ],
+          "n_states": 16,
+          "G_min": 1.0,
+          "G_max": 10.0,
+          "sigma_c2c": 0.05,
+          "sigma_d2d": 0.1,
+          "weight_std": 0.0911492183804512,
+          "conductance_weight_std": 1.4553340673446655,
+          "effective_weight_std": 0.09194548428058624,
+          "d2d_noise_std_conductance": 0.9590542316436768,
+          "c2c_noise_std_conductance": 0.46445462107658386,
+          "total_noise_std_conductance": 1.0510621070861816,
+          "d2d_noise_std_weight": 0.060591381043195724,
+          "c2c_noise_std_weight": 0.029343439266085625,
+          "total_noise_std_weight": 0.06640427559614182,
+          "scale_recovery_factor": 0.06317826360464096,
+          "noise_to_conductance_weight_ratio": 0.7222136351167127,
+          "noise_to_weight_ratio": 0.728522710079361,
+          "noise_to_effective_weight_ratio": 0.7222135607388681
+        },
+        {
+          "layer": "stages.1.blocks.0.attn.qkv",
+          "kind": "AnalogLinear",
+          "shape": [
+            384,
+            128
+          ],
+          "n_states": 16,
+          "G_min": 1.0,
+          "G_max": 10.0,
+          "sigma_c2c": 0.05,
+          "sigma_d2d": 0.1,
+          "weight_std": 0.09820183366537094,
+          "conductance_weight_std": 1.0032261610031128,
+          "effective_weight_std": 0.09967512637376785,
+          "d2d_noise_std_conductance": 0.8954545855522156,
+          "c2c_noise_std_conductance": 0.45028629899024963,
+          "total_noise_std_conductance": 1.0031505823135376,
+          "d2d_noise_std_weight": 0.08896753191947937,
+          "c2c_noise_std_weight": 0.04473801329731941,
+          "total_noise_std_weight": 0.09966760873794556,
+          "scale_recovery_factor": 0.09935459494590759,
+          "noise_to_conductance_weight_ratio": 0.9999246643553438,
+          "noise_to_weight_ratio": 1.0149261476885385,
+          "noise_to_effective_weight_ratio": 0.9999245786175971
+        },
+        {
+          "layer": "stages.3.blocks.1.mlp.fc2",
+          "kind": "AnalogLinear",
+          "shape": [
+            320,
+            1280
+          ],
+          "n_states": 16,
+          "G_min": 1.0,
+          "G_max": 10.0,
+          "sigma_c2c": 0.05,
+          "sigma_d2d": 0.1,
+          "weight_std": 0.10253360122442245,
+          "conductance_weight_std": 0.6424030661582947,
+          "effective_weight_std": 0.10654765367507935,
+          "d2d_noise_std_conductance": 0.9008427262306213,
+          "c2c_noise_std_conductance": 0.4500707685947418,
+          "total_noise_std_conductance": 1.0068860054016113,
+          "d2d_noise_std_weight": 0.14941193163394928,
+          "c2c_noise_std_weight": 0.07464782148599625,
+          "total_noise_std_weight": 0.16700005531311035,
+          "scale_recovery_factor": 0.1658579558134079,
+          "noise_to_conductance_weight_ratio": 1.5673742210213928,
+          "noise_to_weight_ratio": 1.6287349056197262,
+          "noise_to_effective_weight_ratio": 1.5673743114267222
+        }
+      ]
+    },
+    {
+      "label": "V4_reference",
+      "experiment": "V4",
+      "checkpoint_path": "checkpoints/V4_hybrid_standard_noise_hat_best.pt",
+      "checkpoint_epoch": 99,
+      "checkpoint_best_acc": 91.94,
+      "resample_d2d": false,
+      "d2d_buffer_summary": {
+        "analog_layers": 42,
+        "mean_abs_d2d": 0.7180304839497521,
+        "mean_std_d2d": 0.8996811494940803
+      },
+      "summary": {
+        "eval_runs": 10,
+        "test_loss_mean": 0.4534738199985027,
+        "test_acc_mean": 91.731,
+        "test_acc_min": 91.5,
+        "test_acc_max": 92.0,
+        "test_acc_std": 0.17546446300541296
+      },
+      "layer_diagnostics": [
+        {
+          "layer": "patch_embed.conv1.conv",
+          "kind": "AnalogConv2d",
+          "shape": [
+            32,
+            3,
+            3,
+            3
+          ],
+          "n_states": 16,
+          "G_min": 1.0,
+          "G_max": 10.0,
+          "sigma_c2c": 0.05,
+          "sigma_d2d": 0.1,
+          "weight_std": 0.12746405601501465,
+          "conductance_weight_std": 1.6396454572677612,
+          "effective_weight_std": 0.1281098872423172,
+          "d2d_noise_std_conductance": 0.8827237486839294,
+          "c2c_noise_std_conductance": 0.45029109716415405,
+          "total_noise_std_conductance": 0.982986330986023,
+          "d2d_noise_std_weight": 0.06896957010030746,
+          "c2c_noise_std_weight": 0.035182446241378784,
+          "total_noise_std_weight": 0.07680335640907288,
+          "scale_recovery_factor": 0.07813267409801483,
+          "noise_to_conductance_weight_ratio": 0.5995115142904317,
+          "noise_to_weight_ratio": 0.6025491327533607,
+          "noise_to_effective_weight_ratio": 0.5995115448333892
+        },
+        {
+          "layer": "stages.1.blocks.0.attn.qkv",
+          "kind": "AnalogLinear",
+          "shape": [
+            384,
+            128
+          ],
+          "n_states": 16,
+          "G_min": 1.0,
+          "G_max": 10.0,
+          "sigma_c2c": 0.05,
+          "sigma_d2d": 0.1,
+          "weight_std": 0.11172759532928467,
+          "conductance_weight_std": 1.1333599090576172,
+          "effective_weight_std": 0.11314092576503754,
+          "d2d_noise_std_conductance": 0.9046207666397095,
+          "c2c_noise_std_conductance": 0.45107364654541016,
+          "total_noise_std_conductance": 1.0111879110336304,
+          "d2d_noise_std_weight": 0.09030637890100479,
+          "c2c_noise_std_weight": 0.04502972960472107,
+          "total_noise_std_weight": 0.10094475746154785,
+          "scale_recovery_factor": 0.09982788562774658,
+          "noise_to_conductance_weight_ratio": 0.8922037059475907,
+          "noise_to_weight_ratio": 0.9034899315969566,
+          "noise_to_effective_weight_ratio": 0.8922037430662556
+        },
+        {
+          "layer": "stages.3.blocks.1.mlp.fc2",
+          "kind": "AnalogLinear",
+          "shape": [
+            320,
+            1280
+          ],
+          "n_states": 16,
+          "G_min": 1.0,
+          "G_max": 10.0,
+          "sigma_c2c": 0.05,
+          "sigma_d2d": 0.1,
+          "weight_std": 0.10187169164419174,
+          "conductance_weight_std": 0.611347496509552,
+          "effective_weight_std": 0.10628612339496613,
+          "d2d_noise_std_conductance": 0.8987356424331665,
+          "c2c_noise_std_conductance": 0.45071837306022644,
+          "total_noise_std_conductance": 1.0058339834213257,
+          "d2d_noise_std_weight": 0.15625014901161194,
+          "c2c_noise_std_weight": 0.07835987955331802,
+          "total_noise_std_weight": 0.17486977577209473,
+          "scale_recovery_factor": 0.1738555133342743,
+          "noise_to_conductance_weight_ratio": 1.6452737422890715,
+          "noise_to_weight_ratio": 1.7165688814009696,
+          "noise_to_effective_weight_ratio": 1.6452738154939315
+        }
+      ]
+    }
+  ]
+}

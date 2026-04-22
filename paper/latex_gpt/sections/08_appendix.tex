@@ -17,11 +17,11 @@ To document the reproducibility of the canonical Tiny-ViT HAT path, we lock the 
 \toprule
 \textbf{Seed / Aggregate} & \textbf{Noisy MC Accuracy} & \textbf{Statistic Type} \\
 \midrule
-42 & \(87.64 \pm 0.48\)\% & 10-run mean \(\pm\) std \\
-123 & \(88.10 \pm 0.33\)\% & 10-run mean \(\pm\) std \\
-2026 & \(88.11 \pm 0.47\)\% & 10-run mean \(\pm\) std \\
+42 & \(87.64\pm0.48\)\% & 10-run mean \(\pm\) std \\
+123 & \(88.10\pm0.33\)\% & 10-run mean \(\pm\) std \\
+2026 & \(88.11\pm0.47\)\% & 10-run mean \(\pm\) std \\
 \midrule
-Cross-seed aggregate & \(\mathbf{87.95 \pm 0.27}\)\% & mean \(\pm\) std of seed means \\
+Cross-seed aggregate & \(\mathbf{87.95\pm0.27}\)\% & mean \(\pm\) std of seed means \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -39,11 +39,11 @@ Cross-seed aggregate & \(\mathbf{87.95 \pm 0.27}\)\% & mean \(\pm\) std of seed 
 \toprule
 \textbf{Parameter} & \textbf{Canonical Organic Profile} & \textbf{Zhang 2025 OPECT Case Study} & \textbf{Task 34-36 Stress Tests} & \textbf{Provenance / Derivation Notes} \\
 \midrule
- Conductance Range (\(G_{\max}/G_{\min}\)) & 10 & 47.3 & 10 & Canonical anchored to scalable OPECTs; Zhang derives from reported max/min current levels \citep{zhang2026opect}. \\ 
- Effective States ($n_{states}$) & 16 (4-bit) & 34 & 16 (4-bit) & Canonical matches general low-precision target. Zhang anchored to Fig.3h \& Supp.Fig.8 \citep{zhang2026opect}. \\ 
- Cycle-to-Cycle Noise (\(\sigma_{\text{C2C}}\)) & 5\% & 2\% & 5\% (Proportional) & Zhang value is a proxy estimate from 8-cycle repeatability (Supp.Fig.15) \citep{zhang2026opect}. Proportional stress scales \(\sigma \propto |G|\). \\
-  Device-to-Device Variability (\(\sigma_{\text{D2D}}\)) & 10\% & 3\% & 10\% (Proportional) & Zhang uses 3\% as a conservative conductance-domain proxy from the reported $\sim$1\% $V_{th}$ spread \citep{zhang2026opect}. \\
- Retention Decay (\(\tau_1, \tau_2, A_0\)) & 140ms, 610ms, 0.6 & Not fitted & 140ms, 610ms, 0.6 & Canonical dual-exponential fit anchored to Vincze \citep{vincze2026dualplasticity}. Zhang (Fig.2d) is qualitative only. \\ 
+ Conductance Range (\(G_{\max}/G_{\min}\)) & 10 & 47.3 & 10 & Canonical anchored to scalable OPECTs; Zhang derives from reported max/min current levels \citep{zhang2025opect}. \\ 
+ Effective States ($n_{states}$) & 16 (4-bit) & 34 & 16 (4-bit) & Canonical matches general low-precision target. Zhang anchored to Fig.3h \& Supp.Fig.8 \citep{zhang2025opect}. \\ 
+ Cycle-to-Cycle Noise (\(\sigma_{\text{C2C}}\)) & 5\% & 2\% & 5\% (Proportional) & Zhang value is a proxy estimate from 8-cycle repeatability (Supp.Fig.15) \citep{zhang2025opect}. Proportional stress scales \(\sigma \propto |G|\). \\
+  Device-to-Device Variability (\(\sigma_{\text{D2D}}\)) & 10\% & 3\% & 10\% (Proportional) & Zhang uses 3\% as a conservative conductance-domain proxy from the reported $\sim$1\% $V_{th}$ spread \citep{zhang2025opect}. \\
+ Retention Decay (\(\tau_1, \tau_2, A_0\)) & 140ms, 610ms, 0.6 & Not fitted & 140ms, 610ms, 0.6 & Canonical dual-exponential fit anchored to Vincze \citep{vincze2025dualplasticity}. Zhang (Fig.2d) is qualitative only. \\ 
  Nonlinear Write Asymmetry (\(NL\)) & 1.0 (LTP), -1.0 (LTD) & Canonical defaults retained & 2.0 (LTP), -2.0 (LTD) & Zhang does not report a pulse-level NL fit, so the case study keeps the canonical symmetric-write defaults rather than injecting a separate literature-fit NL term. Stress tests (\(NL=2\)) enforce severe gradient-scaling asymmetry. \\ 
  Noise Mode & Uniform & Uniform & Proportional & Uniform injects noise normalized to full range. Proportional applies state-dependent noise magnitudes. \\ 
 \bottomrule
@@ -55,12 +55,12 @@ Cross-seed aggregate & \(\mathbf{87.95 \pm 0.27}\)\% & mean \(\pm\) std of seed 
 \subsection{Vincze et al. 2025 Parameter Extraction}
 \label{subsec:vincze-extraction}
 
-Because Vincze et al.\ \citep{vincze2026dualplasticity} is currently available as a 2025 Early Access paper, we explicitly list the extracted parameters used to define our canonical organic profile. These values were derived from the reported transient and steady-state characterization of the dual-plasticity organic synaptic transistor:
+Because Vincze et al.\ \citep{vincze2025dualplasticity} is currently available as a 2025 Early Access paper, we explicitly list the extracted parameters used to define our canonical organic profile. These values were derived from the reported transient and steady-state characterization of the dual-plasticity organic synaptic transistor:
 
 \begin{itemize}
     \item \textbf{Conductance Window}: $G_{\max}/G_{\min} \approx 10$, anchored to the scalable operation regime.
     \item \textbf{Retention Time Constants}: The dual-exponential fit for temporal drift yields a fast decay constant $\tau_1 = 140$~ms, a slow decay constant $\tau_2 = 610$~ms, and an initial amplitude ratio $A_0 = 0.6$. These align with the short-term and long-term plasticity dynamics reported for the device.
-    \item \textbf{Nonlinear Write Asymmetry ($NL$)}: While the canonical profile uses symmetric writes ($NL=1.0$), the physical profile derived from the literature indicates moderate write non-linearity corresponding to $NL_{LTP} = 2.0$ and $NL_{LTD} = -2.0$, which we evaluate directly in our severe stress tests.
+    \item \textbf{Nonlinear Write Asymmetry ($NL$)}: While the canonical profile uses symmetric writes ($NL=1.0$), the physical profile derived from the literature indicates moderate write nonlinearity corresponding to $NL_{LTP} = 2.0$ and $NL_{LTD} = -2.0$, which we evaluate directly in our severe stress tests.
 \end{itemize}
 
 By explicitly defining these parameters in the configuration files, the simulation framework allows any reader to reproduce our exact device assumptions without requiring access to the original materials manuscript.
@@ -139,7 +139,7 @@ The accuracy difference stays below 0.1 percentage points across all tested time
 
 To reduce manual profile tuning in future measured-device studies, we implemented an automated fitting utility (\path{profile_auto_fitter_gpt.py}). It ingests four raw-data categories:
 \begin{enumerate}
-    \item \textbf{Pulsed Programming Curves}: Fits the conductance range ($G_{\min}, G_{\max}$) and non-linearity coefficients ($NL_{LTP}, NL_{LTD}$) using a behavioral exponential model.
+    \item \textbf{Pulsed Programming Curves}: Fits the conductance range ($G_{\min}, G_{\max}$) and nonlinearity coefficients ($NL_{LTP}, NL_{LTD}$) using a behavioral exponential model.
     \item \textbf{Cycle-to-Cycle (C2C) Statistics}: Extracts the $\sigma_{\text{C2C}}$ noise parameter from repeated write-verify measurements at identical target states.
     \item \textbf{Device-to-Device (D2D) Mismatch}: Calculates the $\sigma_{\text{D2D}}$ parameter from conductance distributions across multiple physical devices in an array.
     \item \textbf{Retention Decay}: Fits the double-exponential decay constants ($\tau_1, \tau_2, A_0$) from long-term conductance-vs-time measurements.

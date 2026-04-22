@@ -1,0 +1,415 @@
+% 第7章 部署包络
+\chapter{部署包络}
+\label{chap:deployment-envelope}
+
+本章将前六章的仿真数据转化为可操作的部署知识，为有机光电存算一体（CIM）阵列上的视觉Transformer落地提供定量边界。
+前序章节已建立了HAT分类学、失效模式图谱与缓解策略的完整物理图景；
+本章的任务是回答一个工程问题：
+在给定的器件参数组合下，Ensemble HAT训练协议能否在未见硬件实例上保持可用的精度排序？
+若不能，崩溃边界在哪里？
+
+全章仅使用已冻结的实验数据，所有外推均明确标注不确定度。
+
+\section{部署场景定义}
+\label{sec:deployment-scenario}
+
+\subsection{目标应用：边缘视觉推理}
+
+本章的部署包络面向\emph{边缘视觉推理}场景：
+在功耗受限的端侧设备上，对 $32\times32$ 至 $224\times224$ 分辨率的图像执行单标签分类。
+基准模型为 Tiny-ViT-5M（CIFAR-10 数字基线 $98.06\%$），
+阵列映射方式采用第~\ref{chap:framework}~章所述的混合模拟--数字分区：
+注意力 QKV、投影层与 MLP 的权重矩阵部署于有机光电阻变阵列，
+层归一化、Softmax 与分类头保留数字实现。
+
+\subsection{CIM 阵列规模与外围约束}
+
+仿真框架将每个模拟层视为独立的交叉阵列瓦片（crossbar tile）。
+以 Tiny-ViT-5M 为例，全模型共 $42$ 个可映射的模拟层，
+其中 Attention QKV $10$ 层、Attention Projection $10$ 层、FFN (fc1+fc2) $20$ 层、Patch Embedding $2$ 层。
+层敏感度扫描（冻结数据，见 \texttt{layer\_sensitivity\_results\_gpt.json}）表明，
+在标准 HAT 检查点上对各层组单独注入 $5\%$ C2C 噪声时，
+各组孤立精度均维持在 $91.61\%$--$91.72\%$ 区间，
+差异小于 $0.11$~pp，说明在 canonical 均匀噪声下没有单一模拟层构成明显的精度瓶颈。
+
+外围读出电路的能效约束通过一阶解析模型估算。
+在 $8$~bit ADC、$100$ 个阵列、$1000$ 次转换的基准假设下，
+系统总能量约为 $65$~pJ，对应相对 FP32 的加速比约为 $15.4\times$
+（见 \texttt{energy\_sensitivity\_analysis.json}）。
+该估算仅为数量级参考，实际部署需根据具体 CMOS 工艺节点重新标定。
+
+\subsection{功耗约束与刷新策略}
+
+有机阵列的保留漂移（retention drift）引入时间维度上的功耗--精度权衡。
+V8 保留轨迹显示：$t=0$~s 时源域精度为 $91.63\%$，
+$t=1$~s 骤降至 $82.66\%$，随后在 $10$~s 至 $10{,}000$~s 区间形成 $79.13$--$79.51\%$ 的宽平台。
+若应用要求 $>82\%$ 精度，则动态标度重校准的刷新间隔须短于约 $1$~s；
+若可接受 $79\%$ 精度，则间隔可延长至数小时。
+该任务依赖性刷新规格直接影响外围参考单元读出电路的能耗预算。
+
+
+\section{ADC 分辨率包络}
+\label{sec:adc-envelope}
+
+\subsection{6-bit 悬崖：量化主导区与 D2D 主导区的分界}
+
+ADC 精度是决定系统能否脱离近随机猜测状态的首要参数。
+在 $63$ 点联合扫描（$\sigma_{\mathrm{D2D}} \in \{1,3,5,8,10,15,20\}\%$，
+ADC $\in \{2,3,4,5,6,7,8,10,12\}$~bit，C2C=$5\%$，$NL=1.0$，
+每点 $10$ 次蒙特卡洛运行）中，
+精度随 ADC 位宽呈现明显的两阶段结构（见 \texttt{iso\_accuracy\_contour\_data.json}）：
+
+\begin{itemize}
+    \item \textbf{亚 5-bit 区}：所有 D2D 水平下精度均接近随机（$\sim$$10\%$--$15\%$）。
+    3-bit ADC 在 $10\%$ D2D 下均值仅 $13.62\%$；
+    2-bit ADC 在所有 D2D 水平下均低于 $12\%$。
+    \item \textbf{5--6-bit 过渡区}：存在约 $7$~pp 的陡峭跳变。
+    以 $10\%$ D2D 为例，5-bit 均值 $76.85\%$，6-bit 跃升至 $84.77\%$，
+    增量达 $7.92$~pp；
+    七个 D2D 级别的平均跳变为 $\sim$$7$~pp（单行间 $5.8$--$8.1$~pp）。
+    \item \textbf{$\ge$6-bit 操作区}：精度退化由 D2D 主导。
+    在 $10\%$ D2D 下，6-bit 为 $84.77\%$，8-bit 为 $87.12\%$，
+    12-bit 为 $86.98\%$；继续提升 ADC 位宽收益递减。
+\end{itemize}
+
+\subsection{Sobol 全局敏感度分解}
+
+为定量区分 ADC 精度与 D2D 失配的相对贡献，
+对联合扫描数据执行一阶 Sobol 敏感度分析
+（见 \texttt{sobol\_sensitivity.json}）：
+
+\begin{itemize}
+    \item \textbf{全参数网格}（含亚 5-bit 区）：
+    $S_{\mathrm{ADC}} = 0.976$，$S_{\mathrm{D2D}} = 0.018$，
+    交互项 $S_{\mathrm{inter}} = 0.006$。
+    ADC 位宽解释了约 $97.6\%$ 的精度方差，
+    说明在跨越悬崖的宏观尺度上，读出精度是压倒性主因。
+    \item \textbf{操作区}（ADC $\ge$ 6-bit 且 $\sigma_{\mathrm{D2D}} \le 15\%$）：
+    $S_{\mathrm{ADC}} = 0.041$，$S_{\mathrm{D2D}} = 0.922$，
+    交互项 $S_{\mathrm{inter}} = 0.038$。
+    一旦越过 6-bit 悬崖，D2D 失配立即成为剩余方差的 $92.2\%$ 来源。
+\end{itemize}
+
+该两阶段结构具有明确的工程含义：
+\textbf{6-bit ADC 是当前混合架构的最小可行外围}。
+低于 5-bit，无论训练协议如何精进，系统均无法脱离随机水平；
+高于 6-bit，投资回报比的排序变为 D2D 均匀性 $>$ ADC 位宽。
+
+\subsection{ADC 非理想性的边际效应}
+
+在 8-bit 基线上，对偏移、增益误差与积分非线性（INL）的独立扫描
+（见 \texttt{adc\_nonideality\_final.json}）显示：
+$\pm 0.5$~LSB 偏移几乎无影响（$63.02\%$ vs 理想 $63.04\%$）；
+$\pm 5\%$ 增益误差导致 $-0.77$~pp；
+$0.5$~LSB INL 无影响；
+组合现实场景（$\pm 0.5$~LSB 偏移 $+5\%$ 增益误差 $+0.5$~LSB INL）
+仅下降 $-0.75$~pp 至 $62.29\%$。
+这些非理想性在绝对数值上远小于 6-bit 悬崖的 $7$~pp 跳变，
+说明在部署包络中，\emph{位宽本身比位宽内的线性度更重要}。
+
+
+\section{D2D 失配包络}
+\label{sec:d2d-envelope}
+
+\subsection{固定掩膜 HAT 的硬件实例过拟合}
+
+标准 HAT（固定掩膜，fixed-mask）在训练时阵列上可达 $87.95\pm0.27\%$，
+但在 $10$ 个全新硬件实例上的 fresh-instance 评估中，
+精度 deterministic 地崩塌至 $10.00\pm0.00\%$
+（见 \texttt{fresh\_instance\_eval\_v4\_standard\_noamp.json}）。
+该结果已在 AMP 关闭的 FP32 推理路径上独立复现，
+确认其为优化器耦合到特定空间失配图 $M_0$ 的结构性后果，
+而非数值 artifact。
+
+该崩塌是\textbf{绝对的}：
+它不因 D2D 幅度降低而改善。
+在文献标定的 OPECT 低噪声代理（$\sigma_{\mathrm{D2D}}=3\%$，$\sigma_{\mathrm{C2C}}=2\%$）下，
+标准 HAT 检查点同样崩塌至 $10.00\%$
+（见 \texttt{literature\_profile\_eval.json}）。
+因此，对于任何要求跨实例鲁棒性的有机 RRAM 工艺，
+\textbf{固定掩膜 HAT 不可作为部署候选}。
+
+\subsection{Ensemble HAT 的跨实例统计}
+
+Ensemble HAT 通过每轮epoch重采样 D2D 失配图，
+将实例分布烘焙进训练目标。
+在相同的 $10$ 实例 $\times$ $5$ MC 评估协议下，其结果为：
+
+\begin{itemize}
+    \item \textbf{Canonical 均匀噪声}（$\sigma_{\mathrm{D2D}}=10\%$，i.i.d.）：
+    $86.37\pm1.54\%$
+    （见 \texttt{fresh\_instance\_eval.json}）。
+    \item \textbf{中度空间相关 D2D}（$\rho=0.3$，可分 AR(1) 模型）：
+    $84.57\pm2.39\%$
+    （见 \texttt{fresh\_instance\_eval\_v4\_ensemble\_correlated\_d2d.json}）。
+    相对 i.i.d.~基线仅下降 $1.76$~pp，排序保持。
+    \item \textbf{强空间相关 D2D}（$\rho=0.5$）：
+    $82.12\pm3.95\%$
+    （同前）。
+    相对基线下降 $4.20$~pp，但最差实例仍为 $73.7\%$，远离随机水平。
+\end{itemize}
+
+\begin{table}[t]
+\centering
+\caption{D2D 失配包络：标准 HAT 与 Ensemble HAT 的 fresh-instance 精度对比（CIFAR-10 top-1，$10 \times 5$ 协议）}
+\label{tab:d2d-envelope}
+\small
+\begin{tabular}{@{}lccc@{}}
+\toprule
+\textbf{D2D 条件} & \textbf{标准 HAT} & \textbf{Ensemble HAT} & \textbf{差值} \\
+\midrule
+i.i.d.~$10\%$ D2D & $10.00\pm0.00$ & $86.37\pm1.54$ & $+76.37$~pp \\
+OPECT 代理 $3\%$ D2D & $10.00\pm0.00$ & $88.53\pm0.08$ & $+78.53$~pp \\
+空间相关 $\rho=0.3$ & $10.00$（外推） & $84.57\pm2.39$ & $+74.57$~pp \\
+空间相关 $\rho=0.5$ & $10.00$（外推） & $82.12\pm3.95$ & $+72.12$~pp \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+表~\ref{tab:d2d-envelope}~表明，
+Ensemble HAT 的精度优势不依赖于 $10\%$ D2D 的特定假设：
+在低噪声文献代理和高空间相关性两种极端条件下，
+排序均稳定保持，且跨实例标准差随相关性增强而增大
+（$1.54$~pp $\to$ $3.95$~pp），均值相应下降。
+
+
+\section{噪声--非线性权衡}
+\label{sec:noise-nl-tradeoff}
+
+\subsection{严重写入非线性的结构性极限}
+
+写入非线性（$NL$）是第二道硬边界。
+在 $NL=2.0$、canonical 均匀噪声下，
+标准 HAT 的 $10$ 次评估均值仅 $27.72\pm0.82\%$
+（见 \texttt{nl\_sweep\_consolidated\_20260417.json}），
+已处于不可商用区间。
+
+为定位瓶颈，执行了三组线性化消融：
+\begin{itemize}
+    \item \textbf{MLP-only 线性化}：
+    源域最佳精度 $87.79\%$，最终 $86.22\%$
+    （见 \texttt{v4\_nl2\_mlp\_linear\_comp\_train\_results\_gpt.json}）。
+    这说明 MLP 路径是 $NL=2.0$ 下最主要的可恢复瓶颈。
+    \item \textbf{全模拟层线性化}：
+    源域最佳 $87.49\%$，最终 $84.81\%$
+    （见 \texttt{v4\_nl2\_all\_linear\_comp\_train\_results\_gpt.json}）。
+    与 MLP-only 基本持平，表明注意力路径的线性化收益有限。
+    \item \textbf{联合 MLP 线性化 + Ensemble HAT}：
+    源域 $91.36\%$，但 fresh-instance 评估仅 $30.53\pm7.07\%$
+    （见 \texttt{joint\_mlp\_linear\_ensemble\_hat\_full\_fresh.json}）。
+\end{itemize}
+
+三组独立缓解策略在 fresh-instance 上收敛于同一约 $30\%$ 的天花板，
+说明严重写入非线性在注意力通路中引入了\emph{训练协议无法逾越的泛化壁垒}。
+该壁垒存在于一阶行为代理框架内；
+若实际有机写入动力学偏离 $(G_{\max}-G)^{NL-1}$ 近似，
+需以实测数据重新标定。
+
+\subsection{从 $NL=1.0$ 到 $NL=2.0$ 的非线性跃迁}
+
+$NL=1.0$ 时 Ensemble HAT fresh-instance 精度为 $86.37\%$，
+$NL=2.0$ 时降至约 $30\%$（联合缓解）或 $27.7\%$（无缓解）。
+二者之间不存在线性插值关系：
+若假设线性，$NL=1.5$ 的预测值约为 $59\%$，
+但无直接实验支持。
+梯度缩放替代模型在 $NL$ 增大时逐渐病态化，
+且第~\ref{chap:failure-mode-atlas}~章记录的双注意力崩塌暗示\emph{分岔}而非渐变。
+保守边界为：\textbf{任何 $NL \ge 2.0$ 均处于 fresh-instance ViT 部署的崩塌区}，
+实际阈值可能低至 $NL \approx 1.5$--$1.7$。
+
+
+\section{跨器件零样本迁移}
+\label{sec:cross-device-transfer}
+
+\subsection{文献标定器件：OPECT 代理}
+
+作为文献锚定的参考点，
+将 Ensemble HAT 检查点零样本迁移至 Zhang et al.~(2025) 报道的 OPECT 阵列代理
+（$\sigma_{\mathrm{D2D}}=3\%$，$\sigma_{\mathrm{C2C}}=2\%$，动态范围 $47.3$，$34$ 电导态）
+（见 \texttt{literature\_profile\_eval.json} 与 \texttt{ensemble\_literature\_profile\_eval.json}）：
+\begin{itemize}
+    \item Ensemble HAT：$\mathbf{88.53\pm0.08\%}$（$n=10$ fresh-instance 评估）。
+    \item 标准 HAT：$\mathbf{10.00\pm0.00\%}$，同样 deterministic 崩塌。
+\end{itemize}
+
+$88.53\%$ 距数字 FP32 基线（$98.06\%$）仍差约 $9.5$~pp，
+但已比标准 HAT 的崩塌高出约 $78.5$~pp。
+该结果同时设定了当前 Tiny-ViT 架构在接近理想模拟条件下的\emph{精度天花板}：
+约 $88.5\%$，跨实例标准差仅 $0.08$~pp，
+小于 CIFAR-10 测试集本身的采样噪声。
+
+\subsection{内部实测器件：Doctor OECT}
+
+对内部实测的非易失 OECT 器件配置文件（源自博士论文 PPT 原始数据导出）
+执行相同协议（见 \texttt{doctor\_measured\_profile\_eval.json}）：
+\begin{itemize}
+    \item RC-16 配置（$16$ 态，动态范围 $5.75$）：
+    Ensemble HAT $89.8\%$；标准 HAT $10.2\%$。
+    \item RC-64 配置（$64$ 态，动态范围 $6.18$）：
+    Ensemble HAT $89.2\%$；标准 HAT $10.2\%$。
+\end{itemize}
+
+实测器件的 D2D 几乎为零（$\sigma_{\mathrm{D2D}}=0$），C2C 亦低于 $0.37\%$，
+因此精度高于 OPECT 文献代理，
+但标准 HAT 仍崩塌至 $10.2\%$，
+再次确认\textbf{硬件实例过拟合风险不随器件均匀性改善而自动消失}。
+
+\subsection{跨仿真器验证：CrossSim 基准}
+
+为验证框架结果的外部一致性，
+在 ConvNeXt-Tiny C4 检查点上与 CrossSim~\citep{crosssim2026} 执行同参数对比
+（见 \texttt{crosssim\_standard\_noise.json}，
+$\sigma_{\mathrm{C2C}}=5\%$，$\sigma_{\mathrm{D2D}}=5\%$，8-bit ADC，4-bit 权重，$n=3$ 种子）：
+\begin{itemize}
+    \item 本框架（含 fresh D2D 重采样 + ADCQuantHookManager）：
+    $\mathbf{81.63\pm0.56\%}$。
+    \item CrossSim（通用编程误差/读取噪声映射）：
+    $67.20\pm2.67\%$。
+\end{itemize}
+
+在零噪声基线（\texttt{crosssim\_clean\_baseline.json}）下，
+本框架 $86.2\%$，CrossSim $83.7\%$，差距缩小至 $2.5$~pp；
+在低噪声（$1\%$ D2D/C2C）下，本框架 $85.9\%$，CrossSim $82.9\%$。
+差距主要来源于噪声映射方式：
+本框架采用固定 D2D + 每前向 C2C 的显式分离，
+而 CrossSim 使用统一编程误差/读取噪声幅度，
+在高噪声区对失配结构的建模更保守。
+$81.63\%$ 与 CrossSim 的 $67.2\%$ 之间的 $14.4$~pp 差距
+说明训练--仿真失配（training-simulation mismatch）对精度预测有显著影响，
+本框架的 profile-driven 接口旨在缩小这一差距。
+
+
+\section{部署建议与风险排序}
+\label{sec:deployment-recommendations}
+
+\subsection{三级成熟度决策矩阵}
+
+基于上述包络，将器件工艺划分为三个成熟度等级，
+给出可操作的通过/不通过建议：
+
+\begin{table}[t]
+\centering
+\caption{按器件成熟度等级的部署决策矩阵}
+\label{tab:maturity-matrix}
+\small
+\begin{tabular}{@{}llll@{}}
+\toprule
+\textbf{参数} & \textbf{研究级} & \textbf{中试级} & \textbf{量产级} \\
+\midrule
+$\sigma_{\mathrm{D2D}}$ & $\ge 10\%$（常 $15$--$20\%$） & $3\%$--$8\%$ & $\le 3\%$ \\
+写入非线性 $NL$ & $\ge 1.5$ & $1.0$--$1.2$ & $\approx 1.0$ \\
+ADC 位宽 & $\le 5$ bit（未标定） & $6$--$8$ bit（已标定） & $\ge 8$ bit \\
+动态重校准 & 无 & 有（间歇式） & 有（片上） \\
+\midrule
+\textbf{ViT 部署建议} & \textcolor{red}{不通过} & \textcolor{green}{通过} + Ensemble HAT & \textcolor{green}{通过} + Ensemble HAT \\
+\textbf{预期精度} & $<32\%$（崩塌） & $84$--$89\%$ & $88$--$90\%$ \\
+\textbf{首要投资方向} & 外围读出 & 前端补偿 + 刷新策略 & 良率规划 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{研究级}（表~\ref{tab:maturity-matrix}）不应部署 ViT：
+亚 5-bit ADC 产生近随机精度，严重 $NL$ 使 fresh-instance 天花板低于 $32\%$。
+建议将该等级阵列用作\emph{训练诊断平台}：
+以 Ensemble HAT 训练检查点，评估源域与 fresh-instance 之间的精度鸿沟，
+用该鸿沟指导工艺改进。
+\textbf{中试级}可部署：
+6-bit ADC 已越过悬崖，OPECT 代理给出 $88.53\pm0.08\%$，
+canonical $10\%$ D2D 给出 $86.37\pm1.54\%$，均处于商用可行区间。
+\textbf{量产级}应将 Ensemble HAT 视为\emph{保险而非救援}：
+即使噪声极低，标准 HAT 仍存在跨实例崩塌风险。
+
+\subsection{风险排序：非协商项与可协商项}
+
+将各物理参数按\emph{不可协商程度}排序：
+
+\begin{enumerate}
+    \item \textbf{ADC $\ge$ 6 bit（绝对非协商）}。
+    低于 5 bit 时所有训练协议均失效。
+    从 5 bit 提升至 6 bit 是投资回报率最高的单点干预。
+    
+    \item \textbf{写入线性度 $NL < 1.5$（强非协商）}。
+    $NL=2.0$ 时即使 MLP 线性化 + Ensemble HAT 亦仅 $30.5\%$，
+    低于多数分类部署阈值。
+    若工艺无法将 $NL$ 压至 $1.5$ 以下，应转向更简单的 CNN 架构或修复工艺。
+    
+    \item \textbf{训练协议 = Ensemble HAT（强非协商）}。
+    标准 HAT 在所有测试条件下均 deterministic 崩塌至 $10\%$，
+    无例外。固定掩膜训练不可用于任何要求跨实例鲁棒性的场景。
+    
+    \item \textbf{D2D 均匀性（可协商，影响均值与方差）}。
+    在 ADC $\ge$ 6 bit 且 $NL=1.0$ 时，
+    D2D 从 $3\%$ 恶化至 $20\%$ 仅使 Ensemble HAT 均值从 $88.5\%$ 降至 $74.5\%$，
+    不会导致崩塌。空间相关性 $\rho$ 增大主要加宽方差（$1.54$~pp $\to$ $3.95$~pp），
+    可经由良率规划吸收。
+    
+    \item \textbf{C2C 重复性（弱可协商）}。
+    在操作区内，C2C 被数字恢复路径大量屏蔽；
+    $5\%$ C2C 的有效误差常低于半 LSB。
+    应优先投资空间均匀性而非时序稳定性。
+\end{enumerate}
+
+\subsection{对项目管理者的行动清单}
+
+\begin{itemize}
+    \item \textbf{空间协方差测量}：
+    在中试线上测量 D2D 空间协方差核；
+    若 $\rho > 0.4$，需引入空间校准网格或 correlated-HAT 训练，
+    否则最坏实例可能跌破 $75\%$。
+    
+    \item \textbf{NRE 节省}：
+    Ensemble HAT 免除逐器件重新训练。
+    按单卡单轮 $100$ epoch、每 epoch $\sim$$2$~小时估算，
+    $100$ 片测试阵列可节省约 $20{,}000$ GPU--时，
+    对应 $2025$ 年云算力成本约 $5$--$10$~k 美元。
+    
+    \item \textbf{刷新频率协商}：
+    在定案阵列规模前，与应用团队确认精度阈值与刷新间隔的联合规格。
+    外围参考单元读出能耗随模拟层数线性增长，
+    需在 $11.45\times$ 能效增益估算中扣除 $5$--$15\%$ 的外围开销。
+    
+    \item \textbf{化合物应力冒烟测试}：
+    单一组合应力测试（$2\%$ C2C + $3\%$ D2D + 6-bit ADC + $1\%$ IR 压降 + $1\%$  sneak path + $1{,}000$~s 保留）
+    给出 $89.61\%$ 的单次运行精度。
+    该值非锁定保证，但可作为集成计划的\emph{冒烟测试}：
+    若目标剖面的组合应力预测低于 $80\%$，设计过于激进，应在流片前降规。
+\end{itemize}
+
+\subsection{包络的显式边界}
+
+本章所有推荐均受以下未建模现象约束：
+\begin{itemize}
+    \item \textbf{空间 IR 压降}：
+    当前框架仅含 $1\%$ 标量占位符，未建模字线/位线上的位置相关电压衰减。
+    大规模阵列（如 $512\times512$）远角的有效失配可能超过 $15\%$。
+    \item \textbf{ sneak path}：
+    被动交叉阵列的潜行电流可产生乘性误差，破坏标度恢复假设，
+    可能将 6-bit 悬崖上推。
+    \item \textbf{温度漂移}：
+    当前假设室温（$\approx 300$~K）。
+    有机半导体载流子迁移率与陷阱态占据对温度高度敏感；
+    $25^{\circ}$C 有效的包络在 $60^{\circ}$C 可能失效。
+    \item \textbf{交互前沿}：
+    严重 $NL$ + 空间相关 D2D + 长期保留漂移的联合效应尚未测量，
+    保守外推认为可能低于 $25\%$。
+\end{itemize}
+
+在以上边界之内，部署包络为有机光电 CIM 上的现代视觉骨干网络提供了从仿真数据到出货判据的定量桥梁。
+
+
+\section*{本章小结}
+
+本章构建了有机光电存算一体阵列上 Tiny-ViT 部署的定量包络：
+\begin{itemize}
+    \item ADC 分辨率存在\textbf{6-bit 悬崖}，Sobol 分解确认全网格 $S_{\mathrm{ADC}}=0.976$；
+    越过悬崖后 D2D 主导剩余方差（$S_{\mathrm{D2D}}=0.922$）。
+    \item D2D 失配包络显示 Ensemble HAT 在 $10\%$ i.i.d.、$\rho=0.5$ 相关、OPECT $3\%$ 代理下分别保持 $86.37\%$、$82.12\%$、$88.53\%$，
+    而标准 HAT 全部崩塌至 $10\%$。
+    \item 噪声--非线性权衡揭示 $NL=2.0$ 的\textbf{结构性极限}：
+    MLP-only 线性化可在源域恢复至 $87.79\%$，但 fresh-instance 天花板仅约 $30$--$32\%$。
+    \item 跨器件零样本迁移中，OPECT 代理达 $88.53\%$，Doctor OECT 实测器件达 $89.8\%$，
+    CrossSim 交叉验证达 $81.63\%$。
+    \item 部署建议将 ADC $\ge$ 6 bit、$NL < 1.5$、Ensemble HAT 列为非协商项，
+    D2D 均匀性列为可协商项，并给出按成熟度等级的通过/不通过决策矩阵。
+\end{itemize}
+包络之外，空间 IR 压降、潜行电流、温度漂移与联合交互前沿是下一阶段的优先扩展方向。

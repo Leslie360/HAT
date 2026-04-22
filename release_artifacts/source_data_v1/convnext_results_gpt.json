@@ -1,0 +1,36 @@
+{
+  "results": [
+    {
+      "experiment": "C2",
+      "name": "C2_4bit_no_noise",
+      "n_states": 16,
+      "sigma_c2c": 0.0,
+      "sigma_d2d": 0.0,
+      "hat_training": false,
+      "best_test_acc": 90.69,
+      "mc_mean_acc": 90.69,
+      "mc_std_acc": 0.0,
+      "total_time_s": 3631.0,
+      "epochs": 200
+    },
+    {
+      "experiment": "C3",
+      "name": "C3_4bit_noise_standard",
+      "n_states": 16,
+      "sigma_c2c": 0.05,
+      "sigma_d2d": 0.1,
+      "hat_training": false,
+      "best_test_acc": 70.48,
+      "mc_mean_acc": 69.58,
+      "mc_std_acc": 0.55,
+      "total_time_s": 3636.0,
+      "epochs": 200
+    }
+  ],
+  "histories": {
+    "C2": {},
+    "C3": {}
+  },
+  "retention": null,
+  "retention_metadata": null
+}

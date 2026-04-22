@@ -26,7 +26,7 @@ from inference_analysis_utils import (
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Evaluate measured-device profiles on a checkpoint.")
-    parser.add_argument("--profile-json", type=str, default="report_md/_gpt/json_gpt/doctor_measured_profiles.json")
+    parser.add_argument("--profile-json", type=str, default="report_md/_gpt/json_gpt/measured_device_profiles.json")
     parser.add_argument("--profile-audit-json", type=str, default=None)
     parser.add_argument("--profile-name", type=str, default=None)
     parser.add_argument("--model-type", type=str, choices=["tinyvit", "convnext"], default="tinyvit")
@@ -41,7 +41,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--eval-runs", type=int, default=1)
     parser.add_argument("--amp", action="store_true")
     parser.add_argument("--max-samples", type=int, default=None)
-    parser.add_argument("--output", type=str, default="report_md/_gpt/doctor_measured_profile_eval.json")
+    parser.add_argument("--output", type=str, default="report_md/_gpt/measured_profile_eval.json")
     parser.add_argument("--bundle-dir", type=str, default=None)
     return parser.parse_args()
 

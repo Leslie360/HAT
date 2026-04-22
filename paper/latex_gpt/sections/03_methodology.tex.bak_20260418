@@ -1,0 +1,91 @@
+% !TeX root = ../main.tex
+\section{Methodology}
+\label{sec:methodology}
+
+\subsection{Hybrid Analog/Digital Deployment}
+\label{subsec:hybrid-deployment}
+
+We adopt a hybrid analog/digital inference stack: dense linear operators execute on differential-pair crossbars; control-heavy operators remain digital. The system-level split and the operator-level rationale are summarized in the Supplementary Information following established practice in heterogeneous CIM accelerators \citep{wu2023bwq,wang2024epim,ge2024allspark,kim2025hemlet,lin2024hardsea}.
+
+Under this mapping, approximately 88\% of parameters are assigned to analog execution, whereas roughly 60\% of the estimated energy remains in the digital domain under the present placeholder constants, largely because of attention operations. This split reflects a basic architectural constraint: analog crossbars are well suited to weight-stationary matrix multiplication, but much less suited to dynamic, input-dependent computations \citep{kim2025hemlet}. Recent heterogeneous CIM accelerators for Vision Transformers follow the same logic, keeping attention digital even as linear projections move to analog arrays \citep{lin2024hardsea,wang2024epim,ge2024allspark}. The present organic device literature likewise demonstrates regular static array programming more naturally than fully dynamic interaction engines \citep{gebregiorgis2023organiccim,zhang2026opect}.
+
+The hybrid inference stack and the operator-level mapping rationale are documented explicitly in the Supplementary Information.
+
+\subsection{Modeling Physical Non-Idealities}
+\label{subsec:modeling-nonidealities}
+
+The framework injects quantization, cycle-to-cycle (C2C) and device-to-device (D2D) variability, ADC distortion, retention drift, and nonlinear-write surrogates directly into the forward path. Each analog-mapped weight is decomposed into positive and negative branches, mapped to the conductance window $[G_{\min}, G_{\max}]$, and quantized to $n_{\mathrm{states}}$ levels via a straight-through quantizer $Q_{n}(\cdot)$. Differential readout recovers $G_{\mathrm{eff}}=\tilde{G}^{+}-\tilde{G}^{-}$, and the downstream digital weight is
+\begin{equation}
+    \hat{W}_{ij}=s_{\ell}\,G_{\mathrm{eff},ij},
+    \qquad
+    s_{\ell}=
+    \begin{cases}
+        \dfrac{w_{\max}}{G_{\max}-G_{\min}}, & \text{standard calibration} \\[6pt]
+        \dfrac{w_{\max}}{\max_{i,j}|G_{\mathrm{eff},ij}|+\epsilon}, & \text{retention-time recalibration}
+    \end{cases}
+\label{eq:scale-recovery}
+\end{equation}
+with layer index $\ell$ omitted. The recovered weight step is $\Delta_{\hat{W}}=s_{\ell}(G_{\max}-G_{\min})/(n_{\mathrm{states}}-1)$, so perturbations smaller than half a step are masked. The differential-pair scheme suppresses common-mode noise \citep{wei2020voltagedifferential,kim2024sttmram}.
+
+Hardware-aware training (HAT) keeps forward perturbations active during optimization while back-propagating through a straight-through estimator. Standard HAT fixes one D2D mismatch field $M_{0}$,
+\begin{equation}
+    \theta_{\mathrm{std}}^{\star}=\arg\min_{\theta}\frac{1}{N}\sum_{n=1}^{N}\ell\!\left(f(x_{n};\theta,M_{0}),y_{n}\right),
+\label{eq:hat-standard}
+\end{equation}
+whereas Ensemble HAT resamples $M^{(e)}\sim p(M)$ at each epoch,
+\begin{equation}
+    \theta_{\mathrm{ens}}^{\star}=\arg\min_{\theta}\;\mathbb{E}_{M\sim p(M)}\!\left[\frac{1}{N}\sum_{n=1}^{N}\ell\!\left(f(x_{n};\theta,M),y_{n}\right)\right].
+\label{eq:hat-ensemble}
+\end{equation}
+Fresh-instance transfer evaluates on unseen draws $M'\sim p(M)$:
+\begin{equation}
+    \mathrm{Acc}_{\mathrm{fresh}}=\mathbb{E}_{M'\sim p(M)}\!\left[\mathrm{Acc}\!\left(f(\cdot;\theta_{\mathrm{ens}}^{\star},M')\right)\right].
+\label{eq:fresh-instance}
+\end{equation}
+
+First-order nonlinear-write and double-exponential retention surrogates are supported, with parameters anchored to measured DNTT transients \citep{vincze2026dualplasticity}. Nonlinear write modifies the STE backward pass according to the present conductance state (Supplementary Eq.~S2); ideal write is recovered when $NL_{\mathrm{LTP}}=1$ and $|NL_{\mathrm{LTD}}|=1$. For optoelectronic sensing, we incorporate a physical frontend model (V6) that first applies inverse-gamma preprocessing to the normalized input $X \in [0,1]$,
+\begin{equation}
+    P_{\mathrm{in}} = X^{1/\gamma_{\mathrm{phys}}},
+\label{eq:inverse-gamma}
+\end{equation}
+and then propagates it through a photocurrent response model,
+\begin{equation}
+    I_{\mathrm{photo}}
+    =
+    \alpha P_{\mathrm{in}}^{\gamma_{\mathrm{phys}}}
+    +
+    I_{\mathrm{dark}}
+    +
+    \varepsilon_{\mathrm{shot}}
+    \approx
+    \alpha X + I_{\mathrm{dark}} + \varepsilon_{\mathrm{shot}},
+\label{eq:frontend-photoresponse}
+\end{equation}
+with $\mathrm{Var}[\varepsilon_{\mathrm{shot}}] \propto I_{\mathrm{photo}}$. The uncompensated form ($P_{\mathrm{in}}=X$) and the frontend-theory derivation are given in the Supplementary Information. The simulated photocurrent is finally renormalized on a per-sample basis,
+\begin{equation}
+    X_{\mathrm{norm}}
+    =
+    \frac{I_{\mathrm{photo}}-I_{\min}}{I_{\max}-I_{\min}+\epsilon},
+\label{eq:frontend-renorm}
+\end{equation}
+before dataset normalization. The released profiler uses representative edge-node energy and latency parameters.
+
+
+The full weight-to-conductance mapping pipeline is illustrated in the Supplementary Information.
+
+\subsection{Profile-Driven Substitution Interface}
+\label{subsec:profile-interface}
+
+The profile interface packages technology-specific assumptions into a replaceable JSON parameter bundle $(\sigma_{\mathrm{D2D}}, \sigma_{\mathrm{C2C}}, n_{\mathrm{states}}, G_{\min}, G_{\max}, NL_{\mathrm{LTP}}, NL_{\mathrm{LTD}}, \tau_{1}, \tau_{2}, A_{0}, \gamma_{\mathrm{phys}}, I_{\mathrm{dark}}, \ldots)$. The deployment evaluation holds the digital backbone and training recipe fixed while substituting the profile into the same mixed-signal inference path, enabling literature priors today and measured-device characterizations later without code changes. Representative profile fields and provenance are documented in the Supplementary Information.
+
+\subsection{Sensitivity and Energy Metrics}
+\label{subsec:sensitivity-energy}
+
+For the joint D2D--ADC sweep, we quantify first-order factor importance with Sobol indices 
+\begin{equation}
+    S_{i} = \frac{\mathrm{Var}_{X_{i}}\!\left(\mathbb{E}[Y \mid X_{i}]\right)}{\mathrm{Var}(Y)},
+\label{eq:sobol-first-order}
+\end{equation}
+reported over both the full grid and the operational subregion. Energy is estimated via a first-order analytical model described in the Supplementary Methods from operator counts and placeholder per-operation constants; the numbers are intended for relative comparison rather than routed-circuit prediction.
+
+\FloatBarrier

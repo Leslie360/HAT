@@ -7,9 +7,9 @@ Important state notes:
 - `sections/*.tex` and `main.tex` are now the live paper source.
 - The project is **not** locked to a single venue right now.
 - Current strategy is multi-track: keep the paper submission-ready, keep venue choice open, allow selective high-ROI experiments, and prepare for future measured-data integration.
-- The exact compile-time figure assets live in `/home/qiaosir/projects/compute_vit/paper/latex_gpt/figures/`.
-- `/home/qiaosir/projects/compute_vit/paper/figures/` may hold synchronized mirrors, but the LaTeX package itself compiles from `latex_gpt/figures/`.
-- Historical markdown files in `/home/qiaosir/projects/compute_vit/paper/*.md` are helpful mirrors, but should not override the current LaTeX source if drift appears.
+- The exact compile-time figure assets live in `paper/latex_gpt/figures/`.
+- `paper/figures/` may hold synchronized mirrors, but the LaTeX package itself compiles from `latex_gpt/figures/`.
+- Historical markdown files in `paper/*.md` are helpful mirrors, but should not override the current LaTeX source if drift appears.
 
 ## Current contents
 
@@ -39,15 +39,15 @@ Important state notes:
 
 Preferred local compiler:
 
-- `/home/qiaosir/miniconda3/envs/LLM/bin/tectonic`
+- `tectonic`
 
 Direct commands:
 
 ```bash
-cd /home/qiaosir/projects/compute_vit/paper/latex_gpt
-/home/qiaosir/miniconda3/envs/LLM/bin/tectonic -X compile main.tex --keep-logs --keep-intermediates
-/home/qiaosir/miniconda3/envs/LLM/bin/tectonic -X compile supplementary_main.tex --keep-logs --keep-intermediates
-/home/qiaosir/miniconda3/envs/LLM/bin/tectonic -X compile cover_letter.tex --keep-logs --keep-intermediates
+cd paper/latex_gpt
+tectonic -X compile main.tex --keep-logs --keep-intermediates
+tectonic -X compile supplementary_main.tex --keep-logs --keep-intermediates
+tectonic -X compile cover_letter.tex --keep-logs --keep-intermediates
 ```
 
 VSCode workspace tasks are also configured for root-independent use:
@@ -63,9 +63,9 @@ If LaTeX Workshop is focused on a log/output tab rather than a `.tex` file, pref
 
 For paper-state truth, check:
 
-1. `/home/qiaosir/projects/compute_vit/MASTER_PLAN.md`
-2. `/home/qiaosir/projects/compute_vit/report_md/_gpt/CLAUDE_TASK_gpt.md`
-3. `/home/qiaosir/projects/compute_vit/report_md/_gpt/AGENT_SYNC_gpt.md` (latest Codex block)
+1. `MASTER_PLAN.md`
+2. `report_md/_gpt/CLAUDE_TASK_gpt.md`
+3. `report_md/_gpt/AGENT_SYNC_gpt.md` (latest Codex block)
 4. `main.tex`
 5. `sections/*.tex`
 

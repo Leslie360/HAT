@@ -1,0 +1,142 @@
+% 第2章 相关工作
+\chapter{相关工作}
+\label{chap:related-work}
+
+\section{存内计算模拟器与混合映射}
+
+\subsection{系统级 CIM 评估层次}
+
+存内计算（CIM）仿真工具链的建立遵循从器件到系统的层次化模板：
+器件模型 feeding 电路模型，电路模型 feeding 架构模型，最终报告精度、能耗与面积。
+DNN+NeuroSim 是这一样板的奠基工作，其支持完整的片上训练，并已与 fabricated macro 进行验证~\citep{peng2020dnnneurosim}。
+在这一层次结构中，硬件感知训练（Hardware-Aware Training, HAT, 硬件感知训练）以训练层选项的形式出现，
+但标准 DNN+NeuroSim 工作流并不强调 fresh-instance 迁移：
+D2D 失配通常被视为一次性制造扩散，训练好的模型在与其训练时相同的扩散上进行评估。
+本研究因此扩展了 DNN+NeuroSim 的哲学，将 fresh-instance 协议作为标准评估原语纳入。
+
+\subsection{IBM AIHWKIT 与批次级随机变异性}
+
+IBM 的 AIHWKIT 提供了与 PyTorch 集成的模拟交叉阵列仿真工具包，支持硬件感知训练~\citep{rasch2021aihwkit}。
+其噪声模型实用且经过良好校准，主要针对相变存储器（PCM）与阻变存储器（ReRAM）器件。
+在底层实现中，AIHWKIT 注入每批次权重噪声（per-batch weight noise），并支持 per-tile 变异性，
+但并未暴露一种 canonical 基线来针对每个硬件实例重采样完整的结构化 D2D 失配图。
+作为方法一致性检验，在共享体制（shared regime）下——4 位权重、$\sigma=5\%$ 噪声——
+数字基线达到~$95.46\%$，而 AIHWKIT 模拟瓦片基线达到~$90.08\pm0.21\%$（10 次运行，参见~\texttt{framework\_comparison.json}）。
+这一结果仅用于验证本文模拟器与成熟无机工具包在单一匹配体制下的数值一致性；
+它并不为保留、光响应或有机非线性写入建立物理验证。
+因此，本框架并非声称在数字基准上 outperform 成熟的 RRAM 模拟器，
+而是作为补充工具，专门用于暴露有机特异性物理非理想性的系统级后果。
+
+\subsection{MemTorch 与 PyTorch 原生嵌入}
+
+MemTorch 展示了如何将忆阻器非理想性嵌入 PyTorch 工作流以进行端到端评估~\citep{lammie2022memtorch}。
+其器件模块在概念上与本文使用的配置文件接口相似，但面向丝状 ReRAM 而非有机光电子电导调控。
+MemTorch 中的频率讨论聚焦于推理时故障注入（inference-time fault injection），而非训练时 D2D 重采样。
+本研究扩展了这一 PyTorch 原生哲学，将重采样频率（resampling cadence, 重采样频率）作为一等训练超参数。
+
+\subsection{CrossSim 与 GPU 加速查表训练}
+
+CrossSim 提供了 GPU 加速的交叉阵列精度工作流，涵盖寄生电阻、ADC 模型与漂移~\citep{crosssim2024}。
+其训练模型基于查表（lookup-table）而非直通估计器（Straight-Through Estimator, STE），这改变了 HAT 的语义：
+替代模型是预表征的非理想性查表，而非可微噪声注入。
+CrossSim 因此不直接支持本文开发的轮次级 D2D 重采样协议，因为其查表与特定器件表征绑定。
+本研究的 STE 方法以部分物理保真度换取梯度路径灵活性，从而实现了作为本章焦点的频率与噪声轮廓扫描。
+
+为验证基线一致性，本文在共享体制（8 位 ADC、均匀噪声、确定性基线、标准差分对映射）下与 CrossSim 进行了交叉框架比较。
+在 1{,}000 张 CIFAR-10 测试子集上，干净基线体制中两框架产出一致：
+$86.2\%$（本文）对~$83.7\%$（CrossSim）；
+在 $\sigma=5\%$ 均匀噪声注入下，预测出现显著分歧：
+$81.63\pm0.56\%$（本文）对~$67.20\pm2.67\%$（CrossSim），差距达 $14.43$ 个百分点
+（参见~\texttt{crosssim\_clean\_baseline.json}、\texttt{crosssim\_standard\_noise.json}）。
+这一分歧恰恰说明：精度预测对噪声到电导映射的具体实现极度敏感——
+方差以全局窗口还是局部状态为参考、噪声在量化前还是量化后添加、差分对共模抵消如何建模。
+CrossSim 比较因此作为基线实现的有价值 sanity check，同时确认了有机特异性扩展
+（光响应、保留、比例噪声、集成重采样）代表了超越共享无机工具集的真实能力增量。
+
+\section{有机神经形态与光电子器件}
+
+\subsection{器件特性与近期进展}
+
+有机突触与忆阻器件为神经形态硬件提供了光学敏感性、多级电导可调性以及柔性基底兼容性~\citep{xu2025emerging,photonics2025organicreview,beller2024organicneurons,ji2025singleoectneuron}。
+近期实验演示包括多级存储~\citep{guo2024organic,jung2024organicfilaments}、长保留尾迹~\citep{zeng2023organicmemristor}，
+以及集成光电子阵列~\citep{gebregiorgis2023organiccim,zhang2025opect,zhang2025mooptoelectronic,cui2025multimode}。
+阵列级研究开始将主动矩阵寻址、空间光学响应与串扰视为系统约束而非纯粹的材料观测~\citep{visionarch2023crosstalk,amspa2024insensor,jang2023insensor}；
+耐温有机突触与高温突触光晶体管则表明热稳定性也正成为部署相关因素~\citep{fuller2020tempresilient,guo2024hightemp}。
+
+\subsection{从器件到网络的鸿沟}
+
+尽管器件进展迅速，该文献的主体仍以器件为中心。
+网络演示往往局限于理想化映射或小型基准，而变异性或完全缺失，或仅被定性处理。
+在面向有机变异性 aware 仿真的前期工作中，Lin~\emph{et al.}~的蒙特卡罗研究为简单有机阻变感知机采样了器件参数~\citep{lin2016physical}。
+本研究继承了这一变异性 aware 视角，但将其扩展至现代深度学习软件、CIFAR 规模任务，以及更具表达能力的视觉主干网络。
+
+\section{视觉Transformer与混合映射策略}
+
+\subsection{ViT 的模拟部署挑战}
+
+近期异构 CIM 加速器面向视觉Transformer（Vision Transformer, ViT, 视觉Transformer）的映射策略与本研究采用的策略高度趋同：
+线性投影（query-key-value, Q/K/V, 输出层、前馈层）映射至模拟阵列，
+而注意力分数、softmax 归一化及其他动态交互因精度要求和 irregular 访问模式而保留数字域或委托给专用混合信号子路径~\citep{kim2025hemlet,lin2024hardsea}。
+模拟忆阻器自注意力加速器亦作为竞争方向被探索~\citep{bettayeb2024memristorattention,qiu2025m3dattention,mia2026trilinear}，
+但它们依赖与本研究保守混合映射 substantially 不同的硬件分区策略。
+
+\subsection{低精度 ViT 量化的启示}
+
+本研究对混合映射的选择与近期低比特 ViT 量化发现收敛：
+在激进精度缩减下，注意力邻接计算被反复识别为尤其敏感~\citep{liu2021ptqvit,li2022qvit,lin2023vitptq}。
+将稠密线性算子映射至交叉阵列、将动态注意力乘积保留数字的分割方式，
+因此并非本研究模拟器的产物，而是对交叉阵列权重 stationary 优势与动态、输入依赖算子需求之间错配的广泛采用的架构回应。
+
+\section{域随机化与 sim-to-real 迁移}
+
+Ensemble HAT 在概念上与机器人学中的域随机化（domain randomization, 域随机化）相关，
+后者通过随机化训练环境使策略泛化至真实世界~\citep{tobin2017domain}。
+关键差异在于结构：域随机化通常随机化独立同分布（i.i.d.）的纹理或光照参数，
+而 D2D 失配是空间相关的固定场（spatially correlated fixed field）。
+本研究中的对比实验表明，当 D2D 场被替换为每轮次独立采样的 i.i.d. 噪声时，
+fresh-instance 精度下降至约~$87.39\%$（参见~\texttt{ensemble\_hat\_ablation\_FIXED.json}），
+低于结构化重采样的~$86.57\%$ 源域表现，但差距不如空间结构完全丧失时显著。
+更关键的是，当 i.i.d. 噪声改为每批次采样时，精度进一步下降。
+这确认了空间结构的重要性：Ensemble HAT 不仅仅是``更多噪声增广''，
+而是与部署分布的相关结构相匹配的增广。
+
+\section{领域空白与本研究定位}
+
+\subsection{现有工具链的局限}
+
+面向无机存储器的系统级 CIM 模拟器——DNN+NeuroSim~\citep{peng2020dnnneurosim}、MemTorch~\citep{lammie2022memtorch}、AIHWKIT~\citep{rasch2021aihwkit}、CrossSim~\citep{crosssim2024}——
+并不直接捕获定义有机光电子推理的耦合光响应、保留与写入非线性。
+这些成熟模拟器主要围绕无机阻变存储器开发，
+而有机特异性扩展——逆伽马（inverse-gamma）光响应、双指数保留（double-exponential retention）——
+并非其一等器件原语。
+
+\subsection{本研究的定位}
+
+本研究的行为配置文件驱动（behavioral profile-driven, 行为配置文件驱动）方法因此作为有机特异性补充，而非这些无机工具包的直接替代。
+具体而言：
+\begin{itemize}
+    \item 与 DNN+NeuroSim 相比：添加了 fresh-instance 协议作为标准评估原语；
+    \item 与 AIHWKIT 相比：暴露了完整结构化 D2D 失配图的重采样机制，而非仅限于每批次随机扰动；
+    \item 与 MemTorch 相比：将重采样频率作为一等训练超参数，并面向有机光电子器件而非丝状 ReRAM；
+    \item 与 CrossSim 相比：采用 STE 而非查表，使轮次级 D2D 重采样和噪声轮廓替换成为可能。
+\end{itemize}
+
+本研究并不声称在无机基准上 outperform 这些成熟工具；
+其价值在于量化同一混合映射在有机特异性噪声定律和不同 HAT 频率下的行为，
+而非假设单一固定失配训练配方即可适用于所有物理体制。
+
+\subsection{有机光电子 CIM 的系统级评估空白}
+
+在有机光电子阵列演示~\citep{gebregiorgis2023organiccim,zhang2025opect,zhang2025mooptoelectronic,cui2025multimode}和系统约束研究~\citep{visionarch2023crosstalk,amspa2024insensor,jang2023insensor,fuller2020tempresilient,guo2024hightemp}的基础上，
+本研究致力于填补以下空白：
+\begin{enumerate}
+    \item 缺乏将文献报道的有机器件特性与现代 ViT 主干网络连接的框架；
+    \item 缺乏对 HAT 在有机光电子噪声体制下的系统级失效模式分析；
+    \item 缺乏区分``在训练实例上表现良好''与``在全新硬件实例上部署可靠''的评估协议。
+\end{enumerate}
+
+为此，本研究建立了可替换配置文件接口，
+将电导窗口、D2D/C2C 变异性、保留动力学、光响应非线性和写入非对称性等器件参数
+统一编码为结构化配置对象，
+使得文献先验与实测标定可以互换地驱动同一训练脚本。
+该框架将在下一章中详细阐述。

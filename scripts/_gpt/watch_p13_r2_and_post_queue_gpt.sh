@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-REPO_ROOT="/home/qiaosir/projects/compute_vit"
+REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 P13_LOG="$REPO_ROOT/logs/_gpt/p13_aihwkit_full_cifar10_gpu_r2.log"
 WATCH_LOG="$REPO_ROOT/logs/_gpt/watch_p13_r2_and_post_queue.log"
 FINALIZER="$REPO_ROOT/scripts/_gpt/finalize_p13_aihwkit_full_result_gpt.py"

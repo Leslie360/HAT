@@ -1,0 +1,84 @@
+{
+  "generated_at": "2026-04-17T21:09:55.614438",
+  "protocol": "1 fresh D2D instances x 1 MC evaluations per instance on CIFAR-10 Tiny-ViT V4 checkpoints",
+  "results": {
+    "fixed": {
+      "checkpoint_path": "checkpoints/V4_hybrid_standard_noise_hat_best.pt",
+      "train_best_acc": 91.94,
+      "train_best_epoch": 99,
+      "fresh_instances": 1,
+      "mc_runs_per_instance": 1,
+      "cross_instance_mean": 10.0,
+      "cross_instance_std": 0.0,
+      "instance_means": [
+        10.0
+      ],
+      "instances": [
+        {
+          "instance_index": 0,
+          "seed": 42,
+          "resampled_modules": 42,
+          "eval_runs": 1,
+          "test_loss_mean": 7.541692085266114,
+          "test_acc_mean": 10.0,
+          "test_acc_std": 0.0,
+          "test_acc_raw": [
+            10.0
+          ]
+        }
+      ]
+    },
+    "epoch": {
+      "checkpoint_path": "checkpoints/_ensemble/V4_hybrid_standard_noise_hat_best.pt",
+      "train_best_acc": 91.13,
+      "train_best_epoch": 94,
+      "fresh_instances": 1,
+      "mc_runs_per_instance": 1,
+      "cross_instance_mean": 87.45,
+      "cross_instance_std": 0.0,
+      "instance_means": [
+        87.45
+      ],
+      "instances": [
+        {
+          "instance_index": 0,
+          "seed": 42,
+          "resampled_modules": 42,
+          "eval_runs": 1,
+          "test_loss_mean": 0.7767005934357644,
+          "test_acc_mean": 87.45,
+          "test_acc_std": 0.0,
+          "test_acc_raw": [
+            87.45
+          ]
+        }
+      ]
+    },
+    "batch": {
+      "checkpoint_path": "checkpoints/_cadence_control_smoke/V4_hybrid_standard_noise_hat_batch_control_best.pt",
+      "train_best_acc": 65.87,
+      "train_best_epoch": 0,
+      "fresh_instances": 1,
+      "mc_runs_per_instance": 1,
+      "cross_instance_mean": 66.17,
+      "cross_instance_std": 0.0,
+      "instance_means": [
+        66.17
+      ],
+      "instances": [
+        {
+          "instance_index": 0,
+          "seed": 42,
+          "resampled_modules": 42,
+          "eval_runs": 1,
+          "test_loss_mean": 0.9666276956558227,
+          "test_acc_mean": 66.17,
+          "test_acc_std": 0.0,
+          "test_acc_raw": [
+            66.17
+          ]
+        }
+      ]
+    }
+  }
+}

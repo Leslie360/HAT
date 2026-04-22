@@ -12,9 +12,10 @@ import os
 import json
 from datetime import datetime
 
-# Add CrossSim to path
-sys.path.insert(0, '/home/qiaosir/projects/cross-sim')
-sys.path.insert(0, '/home/qiaosir/projects/cross-sim/applications/dnn')
+from repo_bootstrap import configure_crosssim_paths, ensure_repo_root
+
+REPO_ROOT = ensure_repo_root()
+configure_crosssim_paths()
 
 print("=" * 70)
 print("CrossSim Installation & Capability Verification")
@@ -109,9 +110,9 @@ print("FINAL COMPARISON REPORT")
 print("=" * 70)
 
 # Load our framework results
-our_results_file = "/home/qiaosir/projects/compute_vit/report_md/_gpt/ablation_ensemble_results.json"
-if os.path.exists(our_results_file):
-    with open(our_results_file) as f:
+our_results_file = REPO_ROOT / "report_md" / "_gpt" / "ablation_ensemble_results.json"
+if our_results_file.exists():
+    with our_results_file.open(encoding="utf-8") as f:
         our_data = json.load(f)
     our_acc = our_data.get("ensemble_hat", {}).get("mean", 86.57)
 else:
@@ -165,8 +166,9 @@ comparison = {
 }
 
 # Save report
-output_dir = "/home/qiaosir/projects/compute_vit/report_md/_gpt"
-with open(f"{output_dir}/CROSSSIM_VERIFICATION_REPORT.json", 'w') as f:
+output_dir = REPO_ROOT / "report_md" / "_gpt"
+output_dir.mkdir(parents=True, exist_ok=True)
+with (output_dir / "CROSSSIM_VERIFICATION_REPORT.json").open("w", encoding="utf-8") as f:
     json.dump(comparison, f, indent=2)
 
 print("\nCrossSim: ✓ Verified (8-bit ADC, uniform noise)")
@@ -176,5 +178,5 @@ print("  CrossSim validates our 8-bit ADC implementation.")
 print("  Organic-specific features remain our unique contribution.")
 print("  AIHWKIT comparison already demonstrates numerical consistency.")
 
-print(f"\nReport saved: {output_dir}/CROSSSIM_VERIFICATION_REPORT.json")
+print(f"\nReport saved: {output_dir / 'CROSSSIM_VERIFICATION_REPORT.json'}")
 print("=" * 70)

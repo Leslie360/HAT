@@ -1,0 +1,19 @@
+experiment_id,architecture,dataset,condition,MC_seed,accuracy,error_bar,source_metric,source_file,provenance_note
+C1,ConvNeXt-Tiny,cifar10,FP32,,90.740000,,mc_mean_acc,convnext_full_results_gpt.json,plotted bar height; summary row used in Fig. 4
+C4,ConvNeXt-Tiny,cifar10,HAT,,89.710000,0.170000,mc_mean_acc,convnext_full_results_gpt.json,plotted bar height; summary row used in Fig. 4
+C3,ConvNeXt-Tiny,cifar10,Standard-noise,,69.580000,0.550000,mc_mean_acc,convnext_full_results_gpt.json,plotted bar height; summary row used in Fig. 4
+V1,Tiny-ViT-5M,cifar10,FP32,,97.480000,,best_test_acc,tinyvit_v1_results_gpt.json,plotted bar height; summary row used in Fig. 4
+V4,Tiny-ViT-5M,cifar10,HAT,,91.940000,,best_test_acc,tinyvit_v2v7_results_gpt.json,plotted bar height; summary row used in Fig. 4
+V3,Tiny-ViT-5M,cifar10,Standard-noise,,89.540000,,best_test_acc,tinyvit_v2v7_results_gpt.json,plotted bar height; summary row used in Fig. 4
+C1,ConvNeXt-Tiny,cifar100,FP32,,64.120000,,mc_mean_acc,convnext_cifar100_c134_results_gpt.json,plotted bar height; summary row used in Fig. 4
+C4,ConvNeXt-Tiny,cifar100,HAT,,60.153000,0.113846,mc_mean_acc,convnext_cifar100_c134_results_gpt.json,plotted bar height; summary row used in Fig. 4
+C3,ConvNeXt-Tiny,cifar100,Standard-noise,,23.652000,0.254551,mc_mean_acc,convnext_cifar100_c134_results_gpt.json,plotted bar height; summary row used in Fig. 4
+V1,Tiny-ViT-5M,cifar100,FP32,,86.940000,,best_test_acc,tinyvit_cifar100_v134_results_gpt.json,plotted bar height; summary row used in Fig. 4
+V4,Tiny-ViT-5M,cifar100,HAT,,65.480000,,best_test_acc,tinyvit_cifar100_v134_results_gpt.json,plotted bar height; summary row used in Fig. 4
+V3,Tiny-ViT-5M,cifar100,Standard-noise,,44.060000,,best_test_acc,tinyvit_cifar100_v134_results_gpt.json,plotted bar height; summary row used in Fig. 4
+C1,ConvNeXt-Tiny,flowers102,FP32,,33.224915,,mc_mean_acc,convnext_flowers102_c134_results_gpt.json,plotted bar height; summary row used in Fig. 4
+C4,ConvNeXt-Tiny,flowers102,HAT,,2.032851,0.681099,mc_mean_acc,convnext_flowers102_c134_results_gpt.json,plotted bar height; summary row used in Fig. 4
+C3,ConvNeXt-Tiny,flowers102,Standard-noise,,1.569361,0.827016,mc_mean_acc,convnext_flowers102_c134_results_gpt.json,plotted bar height; summary row used in Fig. 4
+V1,Tiny-ViT-5M,flowers102,FP32,,97.967149,,best_test_acc,tinyvit_flowers102_v134_results_gpt.json,plotted bar height; summary row used in Fig. 4
+V4,Tiny-ViT-5M,flowers102,HAT,,22.475199,,best_test_acc,tinyvit_flowers102_v134_results_gpt.json,plotted bar height; summary row used in Fig. 4
+V3,Tiny-ViT-5M,flowers102,Standard-noise,,4.813791,,best_test_acc,tinyvit_flowers102_v134_results_gpt.json,plotted bar height; summary row used in Fig. 4

@@ -3,7 +3,7 @@
 
 set -euo pipefail
 
-ROOT="/home/qiaosir/projects/compute_vit"
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 LOG_DIR="${ROOT}/logs/_gpt"
 QUEUE_LOG="${LOG_DIR}/post_p13_ablation_queue_20260411.log"
 

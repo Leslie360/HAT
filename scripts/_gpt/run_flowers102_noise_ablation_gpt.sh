@@ -3,8 +3,8 @@
 
 set -euo pipefail
 
-PYTHON_BIN="/home/qiaosir/miniconda3/envs/LLM/bin/python"
-ROOT="/home/qiaosir/projects/compute_vit"
+PYTHON_BIN="${PYTHON_BIN:-${PYTHON:-python}}"
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 SEED="42"
 SAVE_DIR="${ROOT}/checkpoints/_gpt/p14_flowers_v2"
 TRAIN_LOG="${ROOT}/logs/_gpt/p14_flowers_v2_ablation.log"

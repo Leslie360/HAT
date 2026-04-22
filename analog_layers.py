@@ -17,6 +17,8 @@ Reference:
   - Device physics: §2.1 (n_states, G range, NL, noise, retention)
   - Noise model: §2.1 W_noisy = W + N(0, σ_D2D²), W_inference = W_noisy + N(0, σ_C2C²)
   - Retention: §2.1 G(t) = G₀ × [A₁·exp(-t/τ₁) + A₂·exp(-t/τ₂) + A₀]
+
+These layers are the building blocks for the hybrid models evaluated in Fig. 4.
 """
 
 import math
@@ -49,6 +51,10 @@ class AnalogLinearConfig:
     # Non-linearity (for future HAT weight update modeling)
     NL_LTP: float = 1.0         # Long-term potentiation non-linearity
     NL_LTD: float = -1.0        # Long-term depression non-linearity
+
+    # Higher-order surrogate (CX-J1d)
+    use_second_order_ste: bool = False  # Enable 2nd-order Taylor-corrected STE
+    delta_g_eff: float = 0.0            # Effective perturbation scale for curvature correction
 
     # Noise
     sigma_c2c: float = 0.05     # 5% cycle-to-cycle noise (re-sampled per forward)
@@ -156,7 +162,9 @@ class StraightThroughQuantize(torch.autograd.Function):
     def forward(ctx, x: torch.Tensor, n_levels: int,
                 x_min: float, x_max: float,
                 nl_ltp: float = 1.0, nl_ltd: float = -1.0,
-                inl_table: Optional[torch.Tensor] = None) -> torch.Tensor:
+                inl_table: Optional[torch.Tensor] = None,
+                use_second_order_ste: bool = False,
+                delta_g_eff: float = 0.0) -> torch.Tensor:
         eps = 1e-8
         scale = x_max - x_min + eps
         # Clamp to valid range
@@ -166,6 +174,8 @@ class StraightThroughQuantize(torch.autograd.Function):
         ctx.x_max = float(x_max)
         ctx.nl_ltp = float(nl_ltp)
         ctx.nl_ltd = float(nl_ltd)
+        ctx.use_second_order_ste = bool(use_second_order_ste)
+        ctx.delta_g_eff = float(delta_g_eff)
 
         if inl_table is not None:
             # Nearest-neighbor lookup in the INL table.
@@ -217,16 +227,37 @@ class StraightThroughQuantize(torch.autograd.Function):
             ltd_scale = torch.ones_like(grad_output)
 
         grad_input = torch.where(grad_output >= 0, grad_output * ltp_scale, grad_output * ltd_scale)
+
+        # Second-order Taylor correction (CX-J1d)
+        if getattr(ctx, 'use_second_order_ste', False) and getattr(ctx, 'delta_g_eff', 0.0) > 0.0:
+            delta_g = ctx.delta_g_eff
+            # Second derivative for LTP branch: d^2/dx^2 [x^nl] = nl*(nl-1)*x^(nl-2)
+            if not (math.isclose(nl_ltp, 1.0, rel_tol=0.0, abs_tol=1e-8) or math.isclose(nl_ltp, 0.0, rel_tol=0.0, abs_tol=1e-8)):
+                ltp_corr = 0.5 * nl_ltp * (nl_ltp - 1.0) * torch.pow(ltp_ratio.clamp_min(eps), nl_ltp - 2.0) * delta_g
+            else:
+                ltp_corr = torch.zeros_like(grad_output)
+
+            if not (math.isclose(nl_ltd, 1.0, rel_tol=0.0, abs_tol=1e-8) or math.isclose(nl_ltd, 0.0, rel_tol=0.0, abs_tol=1e-8)):
+                ltd_corr = 0.5 * nl_ltd * (nl_ltd - 1.0) * torch.pow(ltd_ratio.clamp_min(eps), nl_ltd - 2.0) * delta_g
+            else:
+                ltd_corr = torch.zeros_like(grad_output)
+
+            correction = torch.where(grad_output >= 0, grad_output * ltp_corr, grad_output * ltd_corr)
+            grad_input = grad_input + correction
+
         # No gradient for quantizer hyperparameters.
-        return grad_input, None, None, None, None, None, None
+        return grad_input, None, None, None, None, None, None, None, None
 
 
 def ste_quantize(x: torch.Tensor, n_levels: int,
                  x_min: float, x_max: float,
                  nl_ltp: float = 1.0, nl_ltd: float = -1.0,
-                 inl_table: Optional[torch.Tensor] = None) -> torch.Tensor:
+                 inl_table: Optional[torch.Tensor] = None,
+                 use_second_order_ste: bool = False,
+                 delta_g_eff: float = 0.0) -> torch.Tensor:
     """Convenience wrapper for StraightThroughQuantize."""
-    return StraightThroughQuantize.apply(x, n_levels, x_min, x_max, nl_ltp, nl_ltd, inl_table)
+    return StraightThroughQuantize.apply(x, n_levels, x_min, x_max, nl_ltp, nl_ltd, inl_table,
+                                         use_second_order_ste, delta_g_eff)
 
 
 def _init_sparsity_state(module: nn.Module):
@@ -380,6 +411,7 @@ class AnalogLinear(nn.Module):
             nn.init.uniform_(self.bias, -bound, bound)
 
     def resample_d2d_noise(self):
+        """Draw a new fixed D2D noise pattern for this layer."""
         with torch.no_grad():
             G_range = self.config.G_max - self.config.G_min
             self.d2d_noise.copy_(_sample_d2d_noise(self.d2d_noise, self.config.sigma_d2d, G_range))
@@ -415,8 +447,8 @@ class AnalogLinear(nn.Module):
             G_neg = cfg.G_min + W_neg_norm * G_range
 
             # Quantize to discrete conductance levels
-            G_pos = ste_quantize(G_pos, cfg.n_states, cfg.G_min, cfg.G_max, cfg.NL_LTP, cfg.NL_LTD, cfg.inl_table)
-            G_neg = ste_quantize(G_neg, cfg.n_states, cfg.G_min, cfg.G_max, cfg.NL_LTP, cfg.NL_LTD, cfg.inl_table)
+            G_pos = ste_quantize(G_pos, cfg.n_states, cfg.G_min, cfg.G_max, cfg.NL_LTP, cfg.NL_LTD, cfg.inl_table, cfg.use_second_order_ste, cfg.delta_g_eff)
+            G_neg = ste_quantize(G_neg, cfg.n_states, cfg.G_min, cfg.G_max, cfg.NL_LTP, cfg.NL_LTD, cfg.inl_table, cfg.use_second_order_ste, cfg.delta_g_eff)
 
             # Apply asymmetry (if any) with offset correction
             if cfg.asymmetry_factor != 0.0:
@@ -628,6 +660,7 @@ class AnalogConv2d(nn.Module):
             nn.init.uniform_(self.bias, -bound, bound)
 
     def resample_d2d_noise(self):
+        """Draw a new fixed D2D noise pattern for this layer."""
         with torch.no_grad():
             G_range = self.config.G_max - self.config.G_min
             self.d2d_noise.copy_(_sample_d2d_noise(self.d2d_noise, self.config.sigma_d2d, G_range))
@@ -646,8 +679,8 @@ class AnalogConv2d(nn.Module):
             G_range = cfg.G_max - cfg.G_min
             G_pos = cfg.G_min + W_pos_norm * G_range
             G_neg = cfg.G_min + W_neg_norm * G_range
-            G_pos = ste_quantize(G_pos, cfg.n_states, cfg.G_min, cfg.G_max, cfg.NL_LTP, cfg.NL_LTD, cfg.inl_table)
-            G_neg = ste_quantize(G_neg, cfg.n_states, cfg.G_min, cfg.G_max, cfg.NL_LTP, cfg.NL_LTD, cfg.inl_table)
+            G_pos = ste_quantize(G_pos, cfg.n_states, cfg.G_min, cfg.G_max, cfg.NL_LTP, cfg.NL_LTD, cfg.inl_table, cfg.use_second_order_ste, cfg.delta_g_eff)
+            G_neg = ste_quantize(G_neg, cfg.n_states, cfg.G_min, cfg.G_max, cfg.NL_LTP, cfg.NL_LTD, cfg.inl_table, cfg.use_second_order_ste, cfg.delta_g_eff)
 
             # Apply asymmetry (if any) with offset correction
             if cfg.asymmetry_factor != 0.0:
@@ -739,6 +772,7 @@ class AnalogConv2d(nn.Module):
         return W_eff
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
+        """Analog Conv2d forward: quantize, apply noise, and convolve."""
         _record_input_sparsity(self, x)
         G_pos, G_neg = self._weight_to_conductance(self.weight)
         G_pos, G_neg = self._apply_retention(G_pos, G_neg)
@@ -749,6 +783,7 @@ class AnalogConv2d(nn.Module):
                         self.dilation, self.groups)
 
     def extra_repr(self) -> str:
+        """Return a string with layer configuration details."""
         cfg = self.config
         return (
             f"in_channels={self.in_channels}, out_channels={self.out_channels}, "
@@ -1125,6 +1160,7 @@ class EnergyProfiler:
         return result
 
     def estimate_latency(self) -> dict:
+        """Return latency breakdown in nanoseconds and microseconds."""
         total_latency_ns = sum(self.latency_ns.values())
         return {
             'latency_breakdown_ns': dict(self.latency_ns),
@@ -1177,18 +1213,21 @@ class EnergyProfiler:
 
 
 def enable_sparsity_tracking(model: nn.Module):
+    """Enable input-sparsity tracking on all analog layers."""
     for module in model.modules():
         if isinstance(module, (AnalogLinear, AnalogConv2d)):
             module.track_sparsity = True
 
 
 def disable_sparsity_tracking(model: nn.Module):
+    """Disable input-sparsity tracking on all analog layers."""
     for module in model.modules():
         if isinstance(module, (AnalogLinear, AnalogConv2d)):
             module.track_sparsity = False
 
 
 def reset_sparsity_tracking(model: nn.Module):
+    """Reset sparsity accumulators for all analog layers."""
     for module in model.modules():
         if isinstance(module, (AnalogLinear, AnalogConv2d)):
             module._sparsity_relative_accum = 0.0
@@ -1199,6 +1238,7 @@ def reset_sparsity_tracking(model: nn.Module):
 
 
 def get_sparsity_report(model: nn.Module) -> dict:
+    """Return aggregated zero-frac statistics across tracked analog layers."""
     layer_rows = []
     weighted_relative_sum = 0.0
     weighted_absolute_sum = 0.0
@@ -1252,6 +1292,7 @@ def get_sparsity_report(model: nn.Module) -> dict:
 
 def resample_d2d_buffers(model: nn.Module,
                          selector: Optional[Callable[[str, nn.Module], bool]] = None) -> int:
+    """Resample fixed D2D mismatch buffers for all (or selected) analog layers."""
     updated = 0
     for name, module in model.named_modules():
         if not isinstance(module, (AnalogLinear, AnalogConv2d)):

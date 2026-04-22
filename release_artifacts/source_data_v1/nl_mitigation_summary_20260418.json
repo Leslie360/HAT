@@ -1,0 +1,56 @@
+{
+  "rows": [
+    {
+      "label": "Severe NL baseline",
+      "kind": "baseline_eval",
+      "path": "/home/qiaosir/projects/compute_vit/report_md/_gpt/json_gpt/v4_nl2_hat_eval_results_gpt.json",
+      "exists": true,
+      "best_test_acc": 27.716,
+      "best_epoch": null,
+      "mean_eval_acc": 27.716,
+      "std_eval_acc": 0.8223705571902085,
+      "experiment_name": "V4_hybrid_standard_noise_hat"
+    },
+    {
+      "label": "MLP-only linear compensation",
+      "kind": "train_result",
+      "path": "/home/qiaosir/projects/compute_vit/report_md/_gpt/json_gpt/v4_nl2_mlp_linear_comp_train_results_gpt.json",
+      "exists": true,
+      "best_test_acc": 87.79,
+      "best_epoch": 73,
+      "mean_eval_acc": null,
+      "std_eval_acc": null,
+      "experiment_name": "V4_hybrid_standard_noise_hat_nl2_mlp_linear_comp"
+    },
+    {
+      "label": "QKV-only linear compensation",
+      "kind": "train_result",
+      "path": "/home/qiaosir/projects/compute_vit/report_md/_gpt/json_gpt/v4_nl2_qkv_linear_comp_train_results_gpt.json",
+      "exists": true,
+      "best_test_acc": 18.72,
+      "best_epoch": 2,
+      "mean_eval_acc": null,
+      "std_eval_acc": null,
+      "experiment_name": "V4_hybrid_standard_noise_hat_nl2_qkv_linear_comp"
+    },
+    {
+      "label": "All-analog linear compensation",
+      "kind": "train_result",
+      "path": "/home/qiaosir/projects/compute_vit/report_md/_gpt/json_gpt/v4_nl2_all_linear_comp_train_results_gpt.json",
+      "exists": true,
+      "best_test_acc": 87.49,
+      "best_epoch": 59,
+      "mean_eval_acc": null,
+      "std_eval_acc": null,
+      "experiment_name": "V4_hybrid_standard_noise_hat_nl2_all_linear_comp"
+    }
+  ],
+  "gradient_summary": {
+    "mlp_affected_grad_cosine_mean": 0.8150389939546585,
+    "mlp_affected_grad_norm_ratio_mean": 0.6712781248246112,
+    "qkv_affected_grad_cosine_mean": null,
+    "qkv_affected_grad_norm_ratio_mean": null,
+    "all_affected_grad_cosine_mean": null,
+    "all_affected_grad_norm_ratio_mean": null
+  }
+}

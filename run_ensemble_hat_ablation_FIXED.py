@@ -12,7 +12,9 @@ import os
 import sys
 import dataclasses
 
-sys.path.insert(0, '/home/qiaosir/projects/compute_vit')
+from repo_bootstrap import ensure_repo_root
+
+ensure_repo_root()
 
 # CRITICAL: Use train_tinyvit's functions (matching working ablation)
 from train_tinyvit import (

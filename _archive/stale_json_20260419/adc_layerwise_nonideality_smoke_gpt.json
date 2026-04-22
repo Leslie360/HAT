@@ -1,0 +1,25 @@
+{
+  "metadata": {
+    "experiment": "V4",
+    "dataset": "cifar10",
+    "device": "cuda",
+    "seeds": [
+      42
+    ],
+    "notes": "ADC offset/gain/INL injected at analog-layer outputs via forward hooks using per-layer calibrated output ranges."
+  },
+  "results": [
+    {
+      "name": "Ideal",
+      "adc_bits": 8,
+      "offset_lsb": 0.0,
+      "gain_error": 0.0,
+      "inl_lsb": 0.0,
+      "accuracies": [
+        80.46875
+      ],
+      "mean": 80.46875,
+      "std": 0.0
+    }
+  ]
+}

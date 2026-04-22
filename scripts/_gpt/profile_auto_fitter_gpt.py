@@ -506,11 +506,16 @@ def build_profiles(data_root: Path) -> Tuple[List[DeviceProfile], Dict[str, dict
 
 
 def write_audit_markdown(path: Path, profiles: Sequence[DeviceProfile], diagnostics: Dict[str, dict], output_json: str) -> None:
+    def fmt_num(value: float | None, spec: str) -> str:
+        if value is None:
+            return "n/a"
+        return format(float(value), spec)
+
     lines = [
         "# Doctor Measured Profile Audit",
         "",
         f"- Generated: `{diagnostics['generated_at']}`",
-        f"- Source root: `{diagnostics['source_note']}`",
+        f"- Source root: `{diagnostics.get('source_note', 'demo')}`",
         f"- Output JSON: `{output_json}`",
         "",
         "## Fitted Profiles",
@@ -520,10 +525,10 @@ def write_audit_markdown(path: Path, profiles: Sequence[DeviceProfile], diagnost
     ]
     for profile in profiles:
         lines.append(
-            f"| {profile.device_type} | {profile.G_min:.3e} | {profile.G_max:.3e} | "
-            f"{profile.dynamic_range:.2f} | {profile.n_states} | {profile.sigma_c2c:.4f} | "
-            f"{profile.sigma_d2d:.4f} | {profile.tau_1:.3f} | {profile.tau_2:.3f} | "
-            f"{profile.A_0:.3f} | {profile.gamma_phys:.3f} |"
+            f"| {profile.device_type} | {fmt_num(profile.G_min, '.3e')} | {fmt_num(profile.G_max, '.3e')} | "
+            f"{fmt_num(profile.dynamic_range, '.2f')} | {profile.n_states} | {fmt_num(profile.sigma_c2c, '.4f')} | "
+            f"{fmt_num(profile.sigma_d2d, '.4f')} | {fmt_num(profile.tau_1, '.3f')} | {fmt_num(profile.tau_2, '.3f')} | "
+            f"{fmt_num(profile.A_0, '.3f')} | {fmt_num(profile.gamma_phys, '.3f')} |"
         )
     lines.extend([
         "",
@@ -542,13 +547,24 @@ def write_audit_markdown(path: Path, profiles: Sequence[DeviceProfile], diagnost
         "- `sigma_d2d` is set to `0.0` because no explicit multi-device mismatch distribution was present in the supplied PPT raw export.",
         "- Third-page panel `(a)` inset now has both raw points and fit diagnostics archived, but the current nonvolatile profile schema still has no direct short-term facilitation / PPF field.",
         "- Fourth-page panel `(m)` was image-only; the available `(l)` raw file was not forced into the JSON profile without a clean mapping.",
-        "",
-        "## Photoresponse Fit",
-        "",
-        f"- points: `{diagnostics['photoresponse']['photo_points']}`",
-        f"- R^2: `{diagnostics['photoresponse']['photo_r2']:.4f}`",
-        "",
     ])
+    if diagnostics.get("photoresponse"):
+        lines.extend([
+            "",
+            "## Photoresponse Fit",
+            "",
+            f"- points: `{diagnostics['photoresponse']['photo_points']}`",
+            f"- R^2: `{diagnostics['photoresponse']['photo_r2']:.4f}`",
+            "",
+        ])
+    else:
+        lines.extend([
+            "",
+            "## Photoresponse Fit",
+            "",
+            "- Demo mode does not include a fitted photoresponse curve.",
+            "",
+        ])
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
@@ -591,11 +607,18 @@ def run_demo() -> Tuple[List[DeviceProfile], Dict[str, dict]]:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Measured-device profile auto-fitter.")
-    parser.add_argument("--demo", action="store_true", help="Run the synthetic demo instead of fitting the doctoral raw export.")
-    parser.add_argument("--doctor-data-root", type=str, default=str(ROOT / "数据_博士"))
-    parser.add_argument("--output", type=str, default=str(ROOT / "report_md/_gpt/json_gpt/doctor_measured_profiles.json"))
-    parser.add_argument("--audit-json", type=str, default=str(ROOT / "report_md/_gpt/json_gpt/doctor_measured_profile_summary.json"))
-    parser.add_argument("--audit-md", type=str, default=str(ROOT / "report_md/_gpt/DOCTOR_MEASURED_PROFILE_AUDIT_20260416.md"))
+    parser.add_argument("--demo", action="store_true", help="Run the synthetic demo instead of fitting a private raw export.")
+    parser.add_argument(
+        "--raw-data-root",
+        "--doctor-data-root",
+        dest="raw_data_root",
+        type=str,
+        default=None,
+        help="Path to a private measured-device raw-data directory. Required unless --demo is used.",
+    )
+    parser.add_argument("--output", type=str, default=str(ROOT / "report_md/_gpt/json_gpt/measured_device_profiles.json"))
+    parser.add_argument("--audit-json", type=str, default=str(ROOT / "report_md/_gpt/json_gpt/measured_device_profile_summary.json"))
+    parser.add_argument("--audit-md", type=str, default=str(ROOT / "report_md/_gpt/MEASURED_DEVICE_PROFILE_AUDIT.md"))
     return parser.parse_args()
 
 
@@ -604,7 +627,12 @@ def main() -> None:
     if args.demo:
         profiles, diagnostics = run_demo()
     else:
-        profiles, diagnostics = build_profiles(Path(args.doctor_data_root))
+        if not args.raw_data_root:
+            raise SystemExit(
+                "Missing --raw-data-root. Public releases do not embed private raw data; "
+                "pass an explicit path or use --demo."
+            )
+        profiles, diagnostics = build_profiles(Path(args.raw_data_root))
 
     output_path = dump_device_profiles_json(args.output, profiles, diagnostics.get("source_note", "demo"))
     audit_json_path = Path(args.audit_json)

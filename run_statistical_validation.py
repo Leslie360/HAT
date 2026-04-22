@@ -14,7 +14,9 @@ import json
 from datetime import datetime
 from scipy import stats
 
-sys.path.insert(0, '/home/qiaosir/projects/compute_vit')
+from repo_bootstrap import ensure_repo_root
+
+ensure_repo_root()
 sys.stdout.reconfigure(line_buffering=True)
 
 from train_tinyvit import (

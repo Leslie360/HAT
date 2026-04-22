@@ -1,0 +1,41 @@
+{
+  "results": [
+    {
+      "experiment": "C4",
+      "name": "C4_4bit_noise_HAT",
+      "n_states": 16,
+      "sigma_c2c": 0.05,
+      "sigma_d2d": 0.1,
+      "hat_training": true,
+      "best_test_acc": 91.98,
+      "mc_mean_acc": 91.91,
+      "mc_std_acc": 0.08,
+      "total_time_s": 103.0,
+      "epochs": 200
+    }
+  ],
+  "histories": {
+    "C4": {}
+  },
+  "retention": [
+    {
+      "time_s": 0,
+      "mean_acc": 89.58,
+      "std_acc": 0.0,
+      "mc_runs": 1
+    },
+    {
+      "time_s": 1,
+      "mean_acc": 85.78,
+      "std_acc": 0.0,
+      "mc_runs": 1
+    }
+  ],
+  "retention_metadata": {
+    "checkpoint_path": "checkpoints/C4_4bit_noise_HAT_best.pt",
+    "source_experiment": "C4_4bit_noise_HAT",
+    "epoch": 197,
+    "best_acc": 89.91,
+    "trained_epochs": 200
+  }
+}

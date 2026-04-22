@@ -8,9 +8,10 @@ from torchvision import datasets, transforms, models
 import numpy as np
 import sys
 
-# Add CrossSim to path
-sys.path.insert(0, '/home/qiaosir/projects/cross-sim')
-sys.path.insert(0, '/home/qiaosir/projects/cross-sim/applications/dnn')
+from repo_bootstrap import configure_crosssim_paths, ensure_repo_root
+
+ensure_repo_root()
+configure_crosssim_paths()
 
 print("Testing CrossSim import...")
 from simulator.algorithms.dnn.torch.convert import from_torch, convertible_modules

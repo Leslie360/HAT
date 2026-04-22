@@ -1,0 +1,28 @@
+[
+  {
+    "mode": "train",
+    "experiment": "V1",
+    "experiment_name": "V1_fp32_digital_baseline",
+    "dataset": "cifar10",
+    "num_classes": 10,
+    "use_hybrid": false,
+    "noise_enabled": false,
+    "sigma_c2c": 0.0,
+    "sigma_d2d": 0.0,
+    "hat_training": false,
+    "use_physical_frontend": false,
+    "retention_enabled": false,
+    "inference_time": 0.0,
+    "epochs": 100,
+    "batch_size": 64,
+    "lr": 0.0005,
+    "weight_decay": 0.05,
+    "best_test_acc": 97.48,
+    "best_epoch": 99,
+    "final_train_loss": 1.343510769045679e-05,
+    "final_train_acc": 100.0,
+    "final_test_loss": 0.1509142112198868,
+    "final_test_acc": 97.48,
+    "checkpoint_path": "checkpoints/V1_fp32_digital_baseline_best.pt"
+  }
+]

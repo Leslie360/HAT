@@ -69,9 +69,9 @@ All `cx_k4_*.md` and `cx_parity_*.md` files tagged with `[INVALID — pre-ab56c2
 | 23:54 | 24 | 96.31% | 89.49% | 90.15% |
 | 00:02 | **29** | **96.70%** | **89.53%** | **90.15%** |
 
-**Status:** PID 206014, running 48+ min, CPU ~760%, stable.
-**ETA:** ~1 hour to Epoch 100 completion. Fresh eval (10×5 instances) to follow.
-**Crucial:** Train/test gap is widening (~7 pp at Epoch 29). Monitor for overfit in later epochs.
+**Status:** PID 206014, running 71+ min, CPU ~760%, stable.
+**ETA:** ~45 min to Epoch 100 completion. Fresh eval (10×5 instances) to follow.
+**Crucial:** Train/test gap now ~8 pp (98.05% vs 89.92%). Test dipped to 88.43% at Epoch 39 before recovering. Monitor for overfit plateau in later epochs.
 
 ---
 

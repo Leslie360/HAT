@@ -21,6 +21,7 @@ Reference:
 These layers are the building blocks for the hybrid models evaluated in Fig. 4.
 """
 
+import copy
 import math
 from dataclasses import dataclass
 from typing import Callable, Dict, List, Optional
@@ -55,6 +56,7 @@ class AnalogLinearConfig:
     # Higher-order surrogate (CX-J1d)
     use_second_order_ste: bool = False  # Enable 2nd-order Taylor-corrected STE
     delta_g_eff: float = 0.0            # Effective perturbation scale for curvature correction
+    second_order_alpha: float = 1.0     # Scalar multiplier on the 2nd-order correction term
 
     # Noise
     sigma_c2c: float = 0.05     # 5% cycle-to-cycle noise (re-sampled per forward)
@@ -97,6 +99,20 @@ class AnalogLinearConfig:
             )
         if self.sigma_c2c < 0 or self.sigma_d2d < 0:
             raise ValueError("AnalogLinearConfig sigma_c2c and sigma_d2d must be non-negative")
+        if self.second_order_alpha < 0:
+            raise ValueError(
+                f"AnalogLinearConfig.second_order_alpha must be >= 0, got {self.second_order_alpha}"
+            )
+        # Warn if second-order STE is requested but delta_g_eff is non-positive,
+        # because backward() silently skips the correction when delta_g_eff <= 0.
+        if self.use_second_order_ste and self.delta_g_eff <= 0.0:
+            import warnings
+            warnings.warn(
+                f"AnalogLinearConfig: use_second_order_ste=True but delta_g_eff={self.delta_g_eff} "
+                f"(must be > 0 for the second-order correction to activate).",
+                RuntimeWarning,
+                stacklevel=2,
+            )
         if self.noise_mode not in {"uniform", "proportional"}:
             raise ValueError(
                 f"AnalogLinearConfig.noise_mode must be 'uniform' or 'proportional', got {self.noise_mode}"
@@ -164,7 +180,8 @@ class StraightThroughQuantize(torch.autograd.Function):
                 nl_ltp: float = 1.0, nl_ltd: float = -1.0,
                 inl_table: Optional[torch.Tensor] = None,
                 use_second_order_ste: bool = False,
-                delta_g_eff: float = 0.0) -> torch.Tensor:
+                delta_g_eff: float = 0.0,
+                second_order_alpha: float = 1.0) -> torch.Tensor:
         eps = 1e-8
         scale = x_max - x_min + eps
         # Clamp to valid range
@@ -176,6 +193,7 @@ class StraightThroughQuantize(torch.autograd.Function):
         ctx.nl_ltd = float(nl_ltd)
         ctx.use_second_order_ste = bool(use_second_order_ste)
         ctx.delta_g_eff = float(delta_g_eff)
+        ctx.second_order_alpha = float(second_order_alpha)
 
         if inl_table is not None:
             # Nearest-neighbor lookup in the INL table.
@@ -216,13 +234,13 @@ class StraightThroughQuantize(torch.autograd.Function):
         #   NL=0.0 is also treated as "no nonlinearity requested" for idealized profiles.
         if not (math.isclose(nl_ltp, 1.0, rel_tol=0.0, abs_tol=1e-8) or math.isclose(nl_ltp, 0.0, rel_tol=0.0, abs_tol=1e-8)):
             ltp_ratio = ((x_max - x_clamped) / conductance_span).clamp_min(eps)
-            ltp_scale = torch.pow(ltp_ratio, nl_ltp - 1.0)
+            ltp_scale = nl_ltp * torch.pow(ltp_ratio, nl_ltp - 1.0)
         else:
             ltp_scale = torch.ones_like(grad_output)
 
         if not (math.isclose(nl_ltd, 1.0, rel_tol=0.0, abs_tol=1e-8) or math.isclose(nl_ltd, 0.0, rel_tol=0.0, abs_tol=1e-8)):
             ltd_ratio = ((x_clamped - x_min) / conductance_span).clamp_min(eps)
-            ltd_scale = torch.pow(ltd_ratio, nl_ltd - 1.0)
+            ltd_scale = nl_ltd * torch.pow(ltd_ratio, nl_ltd - 1.0)
         else:
             ltd_scale = torch.ones_like(grad_output)
 
@@ -231,9 +249,10 @@ class StraightThroughQuantize(torch.autograd.Function):
         # Second-order Taylor correction (CX-J1d)
         if getattr(ctx, 'use_second_order_ste', False) and getattr(ctx, 'delta_g_eff', 0.0) > 0.0:
             delta_g = ctx.delta_g_eff
+            alpha = getattr(ctx, 'second_order_alpha', 1.0)
             # Second derivative for LTP branch: d^2/dx^2 [x^nl] = nl*(nl-1)*x^(nl-2)
             if not (math.isclose(nl_ltp, 1.0, rel_tol=0.0, abs_tol=1e-8) or math.isclose(nl_ltp, 0.0, rel_tol=0.0, abs_tol=1e-8)):
-                ltp_corr = 0.5 * nl_ltp * (nl_ltp - 1.0) * torch.pow(ltp_ratio.clamp_min(eps), nl_ltp - 2.0) * delta_g
+                ltp_corr = -0.5 * nl_ltp * (nl_ltp - 1.0) * torch.pow(ltp_ratio.clamp_min(eps), nl_ltp - 2.0) * delta_g
             else:
                 ltp_corr = torch.zeros_like(grad_output)
 
@@ -242,11 +261,11 @@ class StraightThroughQuantize(torch.autograd.Function):
             else:
                 ltd_corr = torch.zeros_like(grad_output)
 
-            correction = torch.where(grad_output >= 0, grad_output * ltp_corr, grad_output * ltd_corr)
+            correction = alpha * torch.where(grad_output >= 0, grad_output * ltp_corr, grad_output * ltd_corr)
             grad_input = grad_input + correction
 
         # No gradient for quantizer hyperparameters.
-        return grad_input, None, None, None, None, None, None, None, None
+        return grad_input, None, None, None, None, None, None, None, None, None
 
 
 def ste_quantize(x: torch.Tensor, n_levels: int,
@@ -254,10 +273,11 @@ def ste_quantize(x: torch.Tensor, n_levels: int,
                  nl_ltp: float = 1.0, nl_ltd: float = -1.0,
                  inl_table: Optional[torch.Tensor] = None,
                  use_second_order_ste: bool = False,
-                 delta_g_eff: float = 0.0) -> torch.Tensor:
+                 delta_g_eff: float = 0.0,
+                 second_order_alpha: float = 1.0) -> torch.Tensor:
     """Convenience wrapper for StraightThroughQuantize."""
     return StraightThroughQuantize.apply(x, n_levels, x_min, x_max, nl_ltp, nl_ltd, inl_table,
-                                         use_second_order_ste, delta_g_eff)
+                                         use_second_order_ste, delta_g_eff, second_order_alpha)
 
 
 def _init_sparsity_state(module: nn.Module):
@@ -382,7 +402,7 @@ class AnalogLinear(nn.Module):
         _require_positive_int("out_features", out_features)
         self.in_features = in_features
         self.out_features = out_features
-        self.config = config or AnalogLinearConfig()
+        self.config = copy.copy(config) if config is not None else AnalogLinearConfig()
 
         # Learnable weight (same as nn.Linear)
         self.weight = nn.Parameter(torch.empty(out_features, in_features))
@@ -447,8 +467,8 @@ class AnalogLinear(nn.Module):
             G_neg = cfg.G_min + W_neg_norm * G_range
 
             # Quantize to discrete conductance levels
-            G_pos = ste_quantize(G_pos, cfg.n_states, cfg.G_min, cfg.G_max, cfg.NL_LTP, cfg.NL_LTD, cfg.inl_table, cfg.use_second_order_ste, cfg.delta_g_eff)
-            G_neg = ste_quantize(G_neg, cfg.n_states, cfg.G_min, cfg.G_max, cfg.NL_LTP, cfg.NL_LTD, cfg.inl_table, cfg.use_second_order_ste, cfg.delta_g_eff)
+            G_pos = ste_quantize(G_pos, cfg.n_states, cfg.G_min, cfg.G_max, cfg.NL_LTP, cfg.NL_LTD, cfg.inl_table, cfg.use_second_order_ste, cfg.delta_g_eff, cfg.second_order_alpha)
+            G_neg = ste_quantize(G_neg, cfg.n_states, cfg.G_min, cfg.G_max, cfg.NL_LTP, cfg.NL_LTD, cfg.inl_table, cfg.use_second_order_ste, cfg.delta_g_eff, cfg.second_order_alpha)
 
             # Apply asymmetry (if any) with offset correction
             if cfg.asymmetry_factor != 0.0:
@@ -629,7 +649,7 @@ class AnalogConv2d(nn.Module):
         self.in_channels = in_channels
         self.out_channels = out_channels
         self.groups = groups
-        self.config = config or AnalogLinearConfig()
+        self.config = copy.copy(config) if config is not None else AnalogLinearConfig()
 
         # Learnable weight (same as nn.Conv2d)
         self.weight = nn.Parameter(
@@ -679,8 +699,8 @@ class AnalogConv2d(nn.Module):
             G_range = cfg.G_max - cfg.G_min
             G_pos = cfg.G_min + W_pos_norm * G_range
             G_neg = cfg.G_min + W_neg_norm * G_range
-            G_pos = ste_quantize(G_pos, cfg.n_states, cfg.G_min, cfg.G_max, cfg.NL_LTP, cfg.NL_LTD, cfg.inl_table, cfg.use_second_order_ste, cfg.delta_g_eff)
-            G_neg = ste_quantize(G_neg, cfg.n_states, cfg.G_min, cfg.G_max, cfg.NL_LTP, cfg.NL_LTD, cfg.inl_table, cfg.use_second_order_ste, cfg.delta_g_eff)
+            G_pos = ste_quantize(G_pos, cfg.n_states, cfg.G_min, cfg.G_max, cfg.NL_LTP, cfg.NL_LTD, cfg.inl_table, cfg.use_second_order_ste, cfg.delta_g_eff, cfg.second_order_alpha)
+            G_neg = ste_quantize(G_neg, cfg.n_states, cfg.G_min, cfg.G_max, cfg.NL_LTP, cfg.NL_LTD, cfg.inl_table, cfg.use_second_order_ste, cfg.delta_g_eff, cfg.second_order_alpha)
 
             # Apply asymmetry (if any) with offset correction
             if cfg.asymmetry_factor != 0.0:
@@ -1324,7 +1344,7 @@ def convert_to_hybrid(model: nn.Module,
     Returns:
         Modified model (in-place) with AnalogLinear / AnalogConv2d layers
     """
-    config = config or AnalogLinearConfig()
+    config = copy.copy(config) if config is not None else AnalogLinearConfig()
     replaced_linear = 0
     replaced_conv = 0
 
@@ -1413,7 +1433,7 @@ def convert_resnet_to_analog(model: nn.Module,
     Returns:
         Modified model with AnalogConv2d/AnalogLinear layers
     """
-    config = config or AnalogLinearConfig()
+    config = copy.copy(config) if config is not None else AnalogLinearConfig()
     replaced_conv = 0
     replaced_linear = 0
 

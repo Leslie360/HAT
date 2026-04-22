@@ -171,7 +171,14 @@ class StraightThroughQuantize(torch.autograd.Function):
     """Uniform quantization with STE gradient passthrough.
 
     Forward: clamp → normalize to [0,1] → round to n_levels → denormalize
-    Backward: identity (gradient passes straight through)
+    Backward: scaled STE (Branch A semantics).
+
+    Branch A note:
+      The first-order gradient scaling uses (ratio)^(NL-1) **without** an NL
+      multiplier. This matches paper Equation S2 (paper/latex_gpt/supplementary.tex).
+      The absence of the NL prefactor is intentional: the surrogate scales the
+      STE by the normalized conductance position, modeling state-dependent update
+      difficulty, rather than by the strict derivative of a power-law f(G)=G^NL.
     """
 
     @staticmethod
@@ -229,6 +236,12 @@ class StraightThroughQuantize(torch.autograd.Function):
         eps = 1e-8
         conductance_span = max(x_max - x_min, eps)
 
+        # Branch A first-order STE scaling (paper/latex_gpt/supplementary.tex Equation S2):
+        #   The surrogate scales the STE by the normalized conductance position
+        #   (ratio)^(NL-1), modeling state-dependent update difficulty.  There is
+        #   **no** NL prefactor — this is an intentional behavioral proxy, not the
+        #   strict derivative of f(G)=G^NL.
+        #
         # Backward compatibility:
         #   NL=1.0 is identity;
         #   NL=0.0 is also treated as "no nonlinearity requested" for idealized profiles.
@@ -250,7 +263,11 @@ class StraightThroughQuantize(torch.autograd.Function):
         if getattr(ctx, 'use_second_order_ste', False) and getattr(ctx, 'delta_g_eff', 0.0) > 0.0:
             delta_g = ctx.delta_g_eff
             alpha = getattr(ctx, 'second_order_alpha', 1.0)
-            # Second derivative for LTP branch: d^2/dx^2 [x^nl] = nl*(nl-1)*x^(nl-2)
+            # Second-order "brake" correction (CX-J1d):
+            #   This term applies a negative correction based on the first derivative
+            #   of the scaling factor S(u), not the second derivative of a power-law.
+            #   The negative sign acts as a brake, preventing the optimizer from
+            #   driving weights into the conductance bounds.
             if not (math.isclose(nl_ltp, 1.0, rel_tol=0.0, abs_tol=1e-8) or math.isclose(nl_ltp, 0.0, rel_tol=0.0, abs_tol=1e-8)):
                 ltp_corr = -0.5 * nl_ltp * (nl_ltp - 1.0) * torch.pow(ltp_ratio.clamp_min(eps), nl_ltp - 2.0) * delta_g
             else:

@@ -126,6 +126,9 @@ In the released surrogate, nonlinear write modifies the STE backward pass accord
     \end{cases}
 \label{eq:supp-nl-surrogate}
 \end{equation}
+The absence of an explicit $NL$ prefactor in Eq.~\ref{eq:supp-nl-surrogate} is intentional: the surrogate scales the STE by the normalized conductance position, modeling state-dependent update difficulty (weaker updates near the bounds), rather than by the derivative of a power-law function $f(G)=G^{NL}$.
+This is therefore a behavioral proxy for position-dependent gradient attenuation, not a strict functional derivative.
+When \texttt{use\_second\_order\_ste=True}, a second-order Taylor correction adds a negative-signed brake to both branches, preventing aggressive bound-pushing without changing the first-order scaling.\footnote{Branch~A ratified in canonical commit \texttt{ab56c2d}.}
 Ideal write is recovered when $NL_{\mathrm{LTP}}=1$ and $|NL_{\mathrm{LTD}}|=1$.
 
 \subsection{Detailed Experiment Matrix}

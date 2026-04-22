@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
 # ⚠️  DEPRECATED — DO NOT USE FOR NEW EXPERIMENTS  ⚠️
-# This file is an OUTDATED snapshot of analog_layers.py. It lacks second-order
-# STE support (use_second_order_ste, delta_g_eff, second_order_alpha). Any
-# experiment requiring CX-J1d / CX-K3 / CX-K4 must import from analog_layers.py.
-# Kept only for historical reference; will be removed in a future cleanup.
+# This file is an OUTDATED snapshot of analog_layers.py matching Branch A
+# canonical semantics (commit ab56c2d: no-multiplier first-order, sign-corrected
+# second-order). It lacks second-order STE support (use_second_order_ste,
+# delta_g_eff, second_order_alpha). Any experiment requiring CX-J1d / CX-K3 /
+# CX-K4 must import from analog_layers.py. Kept only for historical reference
+# of the Branch A first-order no-multiplier semantics; will be removed in a
+# future cleanup.
 """
 Phase A1.2: Physical-Aware Analog Layers for Crossbar Array Simulation
 

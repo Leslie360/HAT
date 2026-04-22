@@ -122,13 +122,13 @@ class StraightThroughQuantize(torch.autograd.Function):
         #   NL=0.0 is also treated as "no nonlinearity requested" for idealized profiles.
         if not (math.isclose(nl_ltp, 1.0, rel_tol=0.0, abs_tol=1e-8) or math.isclose(nl_ltp, 0.0, rel_tol=0.0, abs_tol=1e-8)):
             ltp_ratio = ((x_max - x_clamped) / conductance_span).clamp_min(eps)
-            ltp_scale = nl_ltp * torch.pow(ltp_ratio, nl_ltp - 1.0)
+            ltp_scale = torch.pow(ltp_ratio, nl_ltp - 1.0)
         else:
             ltp_scale = torch.ones_like(grad_output)
 
         if not (math.isclose(nl_ltd, 1.0, rel_tol=0.0, abs_tol=1e-8) or math.isclose(nl_ltd, 0.0, rel_tol=0.0, abs_tol=1e-8)):
             ltd_ratio = ((x_clamped - x_min) / conductance_span).clamp_min(eps)
-            ltd_scale = nl_ltd * torch.pow(ltd_ratio, nl_ltd - 1.0)
+            ltd_scale = torch.pow(ltd_ratio, nl_ltd - 1.0)
         else:
             ltd_scale = torch.ones_like(grad_output)
 

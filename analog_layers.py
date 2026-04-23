@@ -278,7 +278,10 @@ class StraightThroughQuantize(torch.autograd.Function):
             else:
                 ltd_corr = torch.zeros_like(grad_output)
 
-            correction = alpha * torch.where(grad_output >= 0, grad_output * ltp_corr, grad_output * ltd_corr)
+            # Map the second-order correction to the same physical update
+            # direction as the first-order branch: positive gradient -> LTD,
+            # negative gradient -> LTP.
+            correction = alpha * torch.where(grad_output >= 0, grad_output * ltd_corr, grad_output * ltp_corr)
             grad_input = grad_input + correction
 
         # No gradient for quantizer hyperparameters.

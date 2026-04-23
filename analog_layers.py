@@ -257,7 +257,7 @@ class StraightThroughQuantize(torch.autograd.Function):
         else:
             ltd_scale = torch.ones_like(grad_output)
 
-        grad_input = torch.where(grad_output >= 0, grad_output * ltp_scale, grad_output * ltd_scale)
+        grad_input = torch.where(grad_output >= 0, grad_output * ltd_scale, grad_output * ltp_scale)
 
         # Second-order Taylor correction (CX-J1d)
         if getattr(ctx, 'use_second_order_ste', False) and getattr(ctx, 'delta_g_eff', 0.0) > 0.0:
@@ -269,12 +269,12 @@ class StraightThroughQuantize(torch.autograd.Function):
             #   The negative sign acts as a brake, preventing the optimizer from
             #   driving weights into the conductance bounds.
             if not (math.isclose(nl_ltp, 1.0, rel_tol=0.0, abs_tol=1e-8) or math.isclose(nl_ltp, 0.0, rel_tol=0.0, abs_tol=1e-8)):
-                ltp_corr = -0.5 * nl_ltp * (nl_ltp - 1.0) * torch.pow(ltp_ratio.clamp_min(eps), nl_ltp - 2.0) * delta_g
+                ltp_corr = -0.5 * (nl_ltp - 1.0) * torch.pow(ltp_ratio.clamp_min(eps), nl_ltp - 2.0) * delta_g
             else:
                 ltp_corr = torch.zeros_like(grad_output)
 
             if not (math.isclose(nl_ltd, 1.0, rel_tol=0.0, abs_tol=1e-8) or math.isclose(nl_ltd, 0.0, rel_tol=0.0, abs_tol=1e-8)):
-                ltd_corr = -0.5 * nl_ltd * (nl_ltd - 1.0) * torch.pow(ltd_ratio.clamp_min(eps), nl_ltd - 2.0) * delta_g
+                ltd_corr = -0.5 * (nl_ltd - 1.0) * torch.pow(ltd_ratio.clamp_min(eps), nl_ltd - 2.0) * delta_g
             else:
                 ltd_corr = torch.zeros_like(grad_output)
 

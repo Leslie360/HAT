@@ -135,7 +135,7 @@ class StraightThroughQuantize(torch.autograd.Function):
         else:
             ltd_scale = torch.ones_like(grad_output)
 
-        grad_input = torch.where(grad_output >= 0, grad_output * ltp_scale, grad_output * ltd_scale)
+        grad_input = torch.where(grad_output >= 0, grad_output * ltd_scale, grad_output * ltp_scale)
         # No gradient for quantizer hyperparameters.
         return grad_input, None, None, None, None, None
 

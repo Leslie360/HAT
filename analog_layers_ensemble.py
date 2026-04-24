@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
 # ⚠️  DEPRECATED — DO NOT USE FOR NEW EXPERIMENTS  ⚠️
-# This file is an OUTDATED snapshot of analog_layers.py. It lacks second-order
-# STE support (use_second_order_ste, delta_g_eff, second_order_alpha). Any
-# experiment requiring CX-J1d / CX-K3 / CX-K4 must import from analog_layers.py.
-# Kept only for historical reference; will be removed in a future cleanup.
+# This file is an OUTDATED snapshot of analog_layers.py matching Branch A
+# canonical semantics (commit ab56c2d: no-multiplier first-order, sign-corrected
+# second-order). It lacks second-order STE support (use_second_order_ste,
+# delta_g_eff, second_order_alpha). Any experiment requiring CX-J1d / CX-K3 /
+# CX-K4 must import from analog_layers.py. Kept only for historical reference
+# of the Branch A first-order no-multiplier semantics; will be removed in a
+# future cleanup.
 """
 Phase A1.2: Physical-Aware Analog Layers for Crossbar Array Simulation
 
@@ -122,17 +125,17 @@ class StraightThroughQuantize(torch.autograd.Function):
         #   NL=0.0 is also treated as "no nonlinearity requested" for idealized profiles.
         if not (math.isclose(nl_ltp, 1.0, rel_tol=0.0, abs_tol=1e-8) or math.isclose(nl_ltp, 0.0, rel_tol=0.0, abs_tol=1e-8)):
             ltp_ratio = ((x_max - x_clamped) / conductance_span).clamp_min(eps)
-            ltp_scale = nl_ltp * torch.pow(ltp_ratio, nl_ltp - 1.0)
+            ltp_scale = torch.pow(ltp_ratio, nl_ltp - 1.0)
         else:
             ltp_scale = torch.ones_like(grad_output)
 
         if not (math.isclose(nl_ltd, 1.0, rel_tol=0.0, abs_tol=1e-8) or math.isclose(nl_ltd, 0.0, rel_tol=0.0, abs_tol=1e-8)):
             ltd_ratio = ((x_clamped - x_min) / conductance_span).clamp_min(eps)
-            ltd_scale = nl_ltd * torch.pow(ltd_ratio, nl_ltd - 1.0)
+            ltd_scale = torch.pow(ltd_ratio, nl_ltd - 1.0)
         else:
             ltd_scale = torch.ones_like(grad_output)
 
-        grad_input = torch.where(grad_output >= 0, grad_output * ltp_scale, grad_output * ltd_scale)
+        grad_input = torch.where(grad_output >= 0, grad_output * ltd_scale, grad_output * ltp_scale)
         # No gradient for quantizer hyperparameters.
         return grad_input, None, None, None, None, None
 
@@ -1121,7 +1124,7 @@ def convert_to_hybrid(model: nn.Module,
                 in_features=module.in_features,
                 out_features=module.out_features,
                 bias=module.bias is not None,
-                config=config,
+                config=copy.copy(config),
             )
             analog_layer.weight.data.copy_(module.weight.data)
             if module.bias is not None and analog_layer.bias is not None:
@@ -1142,7 +1145,7 @@ def convert_to_hybrid(model: nn.Module,
                 dilation=module.dilation,
                 groups=module.groups,
                 bias=module.bias is not None,
-                config=config,
+                config=copy.copy(config),
             )
             analog_layer.weight.data.copy_(module.weight.data)
             if module.bias is not None and analog_layer.bias is not None:
@@ -1214,7 +1217,7 @@ def convert_resnet_to_analog(model: nn.Module,
                 dilation=module.dilation,
                 groups=module.groups,
                 bias=module.bias is not None,
-                config=config,
+                config=copy.copy(config),
             )
             analog_conv.weight.data.copy_(module.weight.data)
             if module.bias is not None and analog_conv.bias is not None:
@@ -1236,7 +1239,7 @@ def convert_resnet_to_analog(model: nn.Module,
                 in_features=module.in_features,
                 out_features=module.out_features,
                 bias=module.bias is not None,
-                config=config,
+                config=copy.copy(config),
             )
             analog_linear.weight.data.copy_(module.weight.data)
             if module.bias is not None and analog_linear.bias is not None:

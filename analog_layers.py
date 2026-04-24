@@ -171,7 +171,14 @@ class StraightThroughQuantize(torch.autograd.Function):
     """Uniform quantization with STE gradient passthrough.
 
     Forward: clamp → normalize to [0,1] → round to n_levels → denormalize
-    Backward: identity (gradient passes straight through)
+    Backward: scaled STE (Branch A semantics).
+
+    Branch A note:
+      The first-order gradient scaling uses (ratio)^(NL-1) **without** an NL
+      multiplier. This matches paper Equation S2 (paper/latex_gpt/supplementary.tex).
+      The absence of the NL prefactor is intentional: the surrogate scales the
+      STE by the normalized conductance position, modeling state-dependent update
+      difficulty, rather than by the strict derivative of a power-law f(G)=G^NL.
     """
 
     @staticmethod
@@ -229,39 +236,52 @@ class StraightThroughQuantize(torch.autograd.Function):
         eps = 1e-8
         conductance_span = max(x_max - x_min, eps)
 
+        # Branch A first-order STE scaling (paper/latex_gpt/supplementary.tex Equation S2):
+        #   The surrogate scales the STE by the normalized conductance position
+        #   (ratio)^(NL-1), modeling state-dependent update difficulty.  There is
+        #   **no** NL prefactor — this is an intentional behavioral proxy, not the
+        #   strict derivative of f(G)=G^NL.
+        #
         # Backward compatibility:
         #   NL=1.0 is identity;
         #   NL=0.0 is also treated as "no nonlinearity requested" for idealized profiles.
         if not (math.isclose(nl_ltp, 1.0, rel_tol=0.0, abs_tol=1e-8) or math.isclose(nl_ltp, 0.0, rel_tol=0.0, abs_tol=1e-8)):
             ltp_ratio = ((x_max - x_clamped) / conductance_span).clamp_min(eps)
-            ltp_scale = nl_ltp * torch.pow(ltp_ratio, nl_ltp - 1.0)
+            ltp_scale = torch.pow(ltp_ratio, nl_ltp - 1.0)
         else:
             ltp_scale = torch.ones_like(grad_output)
 
         if not (math.isclose(nl_ltd, 1.0, rel_tol=0.0, abs_tol=1e-8) or math.isclose(nl_ltd, 0.0, rel_tol=0.0, abs_tol=1e-8)):
             ltd_ratio = ((x_clamped - x_min) / conductance_span).clamp_min(eps)
-            ltd_scale = nl_ltd * torch.pow(ltd_ratio, nl_ltd - 1.0)
+            ltd_scale = torch.pow(ltd_ratio, nl_ltd - 1.0)
         else:
             ltd_scale = torch.ones_like(grad_output)
 
-        grad_input = torch.where(grad_output >= 0, grad_output * ltp_scale, grad_output * ltd_scale)
+        grad_input = torch.where(grad_output >= 0, grad_output * ltd_scale, grad_output * ltp_scale)
 
         # Second-order Taylor correction (CX-J1d)
         if getattr(ctx, 'use_second_order_ste', False) and getattr(ctx, 'delta_g_eff', 0.0) > 0.0:
             delta_g = ctx.delta_g_eff
             alpha = getattr(ctx, 'second_order_alpha', 1.0)
-            # Second derivative for LTP branch: d^2/dx^2 [x^nl] = nl*(nl-1)*x^(nl-2)
+            # Second-order "brake" correction (CX-J1d):
+            #   This term applies a negative correction based on the first derivative
+            #   of the scaling factor S(u), not the second derivative of a power-law.
+            #   The negative sign acts as a brake, preventing the optimizer from
+            #   driving weights into the conductance bounds.
             if not (math.isclose(nl_ltp, 1.0, rel_tol=0.0, abs_tol=1e-8) or math.isclose(nl_ltp, 0.0, rel_tol=0.0, abs_tol=1e-8)):
-                ltp_corr = -0.5 * nl_ltp * (nl_ltp - 1.0) * torch.pow(ltp_ratio.clamp_min(eps), nl_ltp - 2.0) * delta_g
+                ltp_corr = -0.5 * (nl_ltp - 1.0) * torch.pow(ltp_ratio.clamp_min(eps), nl_ltp - 2.0) * delta_g
             else:
                 ltp_corr = torch.zeros_like(grad_output)
 
             if not (math.isclose(nl_ltd, 1.0, rel_tol=0.0, abs_tol=1e-8) or math.isclose(nl_ltd, 0.0, rel_tol=0.0, abs_tol=1e-8)):
-                ltd_corr = 0.5 * nl_ltd * (nl_ltd - 1.0) * torch.pow(ltd_ratio.clamp_min(eps), nl_ltd - 2.0) * delta_g
+                ltd_corr = -0.5 * (nl_ltd - 1.0) * torch.pow(ltd_ratio.clamp_min(eps), nl_ltd - 2.0) * delta_g
             else:
                 ltd_corr = torch.zeros_like(grad_output)
 
-            correction = alpha * torch.where(grad_output >= 0, grad_output * ltp_corr, grad_output * ltd_corr)
+            # Map the second-order correction to the same physical update
+            # direction as the first-order branch: positive gradient -> LTD,
+            # negative gradient -> LTP.
+            correction = alpha * torch.where(grad_output >= 0, grad_output * ltd_corr, grad_output * ltp_corr)
             grad_input = grad_input + correction
 
         # No gradient for quantizer hyperparameters.
@@ -1365,7 +1385,7 @@ def convert_to_hybrid(model: nn.Module,
                 in_features=module.in_features,
                 out_features=module.out_features,
                 bias=module.bias is not None,
-                config=config,
+                config=copy.copy(config),
             )
             analog_layer.weight.data.copy_(module.weight.data)
             if module.bias is not None and analog_layer.bias is not None:
@@ -1386,7 +1406,7 @@ def convert_to_hybrid(model: nn.Module,
                 dilation=module.dilation,
                 groups=module.groups,
                 bias=module.bias is not None,
-                config=config,
+                config=copy.copy(config),
             )
             analog_layer.weight.data.copy_(module.weight.data)
             if module.bias is not None and analog_layer.bias is not None:
@@ -1458,7 +1478,7 @@ def convert_resnet_to_analog(model: nn.Module,
                 dilation=module.dilation,
                 groups=module.groups,
                 bias=module.bias is not None,
-                config=config,
+                config=copy.copy(config),
             )
             analog_conv.weight.data.copy_(module.weight.data)
             if module.bias is not None and analog_conv.bias is not None:
@@ -1480,7 +1500,7 @@ def convert_resnet_to_analog(model: nn.Module,
                 in_features=module.in_features,
                 out_features=module.out_features,
                 bias=module.bias is not None,
-                config=config,
+                config=copy.copy(config),
             )
             analog_linear.weight.data.copy_(module.weight.data)
             if module.bias is not None and analog_linear.bias is not None:

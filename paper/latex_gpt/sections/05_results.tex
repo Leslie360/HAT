@@ -15,14 +15,14 @@ Quantization alone introduces only a modest penalty in 4-bit hybrid models. The 
 \begin{figure}[t]
     \centering
     \includegraphics[width=0.90\textwidth]{fig4_accuracy_comparison}
-    \caption{Cross-dataset accuracy under canonical deployment (4-bit quantization, 5\% C2C, 10\% D2D variability). Error bars denote $\pm 1$ standard deviation where Monte Carlo (MC) statistics are available; bars without visible error bars indicate deterministic baselines or currently available point estimates.}
+    \caption{Cross-dataset accuracy under canonical deployment (4-bit quantization, 5\% C2C, 10\% D2D variability) for Tiny-ViT-5M. Error bars denote $\pm 1$ standard deviation across Monte Carlo (MC) forward-pass averages ($n=10$ fresh instances, 5 runs per instance); bars without visible error bars indicate deterministic baselines (FP32 and V2 zero-noise hybrid).}
     \label{fig:accuracy-comparison}
 \end{figure}
 
 \begin{figure}[t]
     \centering
     \includegraphics[width=0.90\textwidth]{fig5_hat_recovery}
-    \caption{Accuracy degradation from FP32 to noisy deployment and HAT recovery. Tiny-ViT: 10-run MC; ConvNeXt: single-run estimates shown.}
+    \caption{Accuracy degradation from FP32 to noisy deployment and HAT recovery on CIFAR-10. Tiny-ViT: 10 fresh-instance MC averages (5 runs per instance); ConvNeXt: single-run deterministic estimates.}
     \label{fig:hat-recovery}
 \end{figure}
 
@@ -38,7 +38,7 @@ The corrected retention-aware follow-up model (V8) exhibits a rapid early drop (
 \subsection{Hardware-Instance Transferability}
 \label{subsec:hardware-transferability}
 
-Fresh-instance evaluation reveals that standard fixed-mask HAT (V4) collapses to chance level (10.00\%) on arrays with different fixed D2D realizations, indicating pronounced hardware-instance overfitting. In this setting the 10.00\% result reflects a collapsed single-class predictor on class-balanced CIFAR-10 rather than a noisy dispersion around chance. The collapse was independently confirmed under FP32 inference with autocast disabled across the same 10 fresh D2D instances and 5 Monte Carlo evaluations per instance, yielding \(10.00\pm0.00\%\) in the no-AMP recovery run (\texttt{fresh\_instance\_eval\_v4\_standard\_noamp.json}). The single-class predictor is a deterministic outcome of fixed-mask training under epoch-resampled D2D, not a numerical artifact. This motivates the distribution-matched Ensemble HAT objective (Eq.~\ref{eq:hat-ensemble}), formally defined in Section~\ref{sec:methodology} and instantiated in Section~\ref{subsec:nl-hat-stress}.
+Fresh-instance evaluation reveals that standard fixed-mask HAT (V4) collapses to chance level (10.00\%) on arrays with different fixed D2D realizations, indicating pronounced hardware-instance overfitting. In this setting the 10.00\% result reflects a collapsed single-class predictor on class-balanced CIFAR-10 rather than a noisy dispersion around chance. The collapse was independently confirmed under FP32 inference with autocast disabled across the same 10 fresh D2D instances and 5 Monte Carlo evaluations per instance, yielding \(10.00\pm0.00\%\) in the no-AMP recovery run (\texttt{fresh\_instance\_eval\_v4\_standard\_noamp.json}). The single-class predictor is a deterministic outcome of fixed-mask training under epoch-resampled D2D, not a numerical artifact. This motivates the distribution-matched Ensemble HAT objective (Eq.~\ref{eq:hat-ensemble-distribution}), formally defined in Section~\ref{sec:methodology} and instantiated in Section~\ref{subsec:nl-hat-stress}.
 
 \subsection{Physical Front-end Compensation}
 \label{subsec:frontend-compensation}
@@ -53,7 +53,7 @@ A 63-point joint sweep over $\sigma_{\mathrm{D2D}} \in \{1,3,5,8,10,15,20\}\%$ a
 \begin{figure}[t]
     \centering
     \includegraphics[width=0.88\textwidth]{fig_contour_map}
-    \caption{\textbf{Iso-accuracy contour map} for the Ensemble HAT Tiny-ViT model under joint $\sigma_{\mathrm{D2D}}$ and ADC precision sweep ($\sigma_{\mathrm{C2C}}=5\%$, $NL=1.0$, 10 MC runs per point). The 6-bit ADC cliff and the D2D-dominated degradation in the operational regime are visible.}
+    \caption{\textbf{Iso-accuracy contour map} for the Ensemble HAT Tiny-ViT model under joint $\sigma_{\mathrm{D2D}}$ and ADC precision sweep ($\sigma_{\mathrm{C2C}}=5\%$, $NL=1.0$, 10 MC runs per grid point). The 6-bit ADC cliff separates the collapse regime (below 5 bits, near-chance accuracy) from the operational regime (above 6 bits, D2D-dominated degradation).}
     \label{fig:contour-map}
 \end{figure}
 
@@ -62,24 +62,25 @@ A 63-point joint sweep over $\sigma_{\mathrm{D2D}} \in \{1,3,5,8,10,15,20\}\%$ a
 
 Proportional-noise HAT recovers Tiny-ViT to 97.37$\pm$0.05\% when training and evaluation physics are aligned. This robustness is strongly regime-specific: the same checkpoint falls to 10.38$\pm$0.44\% when evaluated under the original uniform-noise semantics. For ConvNeXt-Tiny, proportional-noise HAT reaches 91.98\% with 91.91$\pm$0.08\% Monte Carlo performance in the best single run.
 
-Ensemble HAT (Figure~\ref{fig:ensemble-hat-concept}; formally defined in Section~\ref{sec:methodology}, Eq.~\ref{eq:hat-ensemble}) preserves 86.37$\pm$1.54\% across 10 fresh arrays under canonical uniform noise ($NL=1.0$), overwhelming standard HAT (one-sample $t$-test against the chance-level baseline, $n=10$ fresh arrays per arm, $p<10^{-15}$). An exploratory single-run training-ablation cadence scan (Supplementary Fig.~\SuppFigZeroShot) shows epoch-level resampling reaches 88.41\% (50-epoch training ablation), versus 87.18\% (fixed) and 86.16\% (per-batch), confirming that structured epoch-level resampling rather than per-batch perturbation is the load-bearing schedule choice.
+Ensemble HAT (Figure~\ref{fig:ensemble-hat-concept}; formally defined in Section~\ref{sec:methodology}, Eq.~\ref{eq:hat-ensemble-distribution}) preserves 86.37$\pm$1.54\% across 10 fresh arrays under canonical uniform noise ($NL=1.0$), overwhelming standard HAT (one-sample $t$-test against the chance-level baseline, $n=10$ fresh arrays per arm, $p<10^{-15}$). An exploratory single-run training-ablation cadence scan (Supplementary Fig.~\SuppFigZeroShot) shows epoch-level resampling reaches 88.41\% (50-epoch training ablation), versus 87.18\% (fixed) and 86.16\% (per-batch), confirming that structured epoch-level resampling rather than per-batch perturbation is the load-bearing schedule choice.
 
 \begin{figure}[t]
     \centering
     \includegraphics[width=0.88\textwidth]{figS3_ensemble_hat}
-    \caption{\textbf{Ensemble HAT concept.} Standard HAT reuses one fixed D2D mismatch map throughout training, whereas Ensemble HAT resamples the mismatch map each epoch. The fresh-instance transfer panel highlights the resulting generalization gap between the two training protocols.}
+    \caption{\textbf{Ensemble HAT concept.} Standard HAT reuses one fixed D2D mismatch map throughout training, whereas Ensemble HAT resamples the mismatch map at each epoch. The fresh-instance transfer panel (right) shows that standard HAT collapses to chance level on unseen hardware instances, while Ensemble HAT maintains $86.37\pm1.54\%$ across ten fresh arrays.}
     \label{fig:ensemble-hat-concept}
 \end{figure}
 
 The full accuracy matrix is provided in the Supplementary Information. Tiny-ViT demonstrates superior baseline accuracy and significant recovery under HAT, especially on complex tasks, though it remains sensitive to nonlinear write dynamics.
 
 \paragraph{Severe-NL retraining after gradient-scaling correction.}
-Retraining under severe write non-linearity ($NL=2.0$) was repeated with a revised gradient-scaling recipe (Section~\ref{subsec:methodology-nl}). Table~\ref{tab:severe-nl-recovery} summarizes the local M-series results; remote batch-512 results (83.64\% Standard, 84.80\% Proportional) are provided in the Supplementary Information. All packets use true $NL_{\text{LTP}}=2.0$ and $NL_{\text{LTD}}=-2.0$ in both training and evaluation; the training forward path employs a differentiable ADC surrogate (no per-layer quantizers), while post-module-output hook diagnostic quantization is injected via inference-time hooks calibrated per-instance on each fresh noisy hardware realization (\S\ref{subsec:iso-accuracy}). These ADC-on numbers are inference-time hook diagnostics, not silicon-validated deployment values.
+Retraining under severe write non-linearity ($NL=2.0$) was repeated with a revised gradient-scaling recipe (Section~\ref{subsec:modeling-nonidealities}). Table~\ref{tab:severe-nl-recovery} summarizes the local M-series results; remote batch-512 results (83.64\% Standard, 84.80\% Proportional) are provided in the Supplementary Information. All packets use true $NL_{\text{LTP}}=2.0$ and $NL_{\text{LTD}}=-2.0$ in both training and evaluation; the training forward path employs a differentiable ADC surrogate (no per-layer quantizers), while post-module-output hook diagnostic quantization is injected via inference-time hooks calibrated per-instance on each fresh noisy hardware realization (\S\ref{subsec:iso-accuracy}). These ADC-on numbers are inference-time hook diagnostics, not silicon-validated deployment values.
 
 \begin{table}[htbp]
 \centering
-\caption{Severe Nonlinear Writing Recovery (M-Series). All models trained and evaluated with true $NL_{\text{LTP}}=2.0$ and $NL_{\text{LTD}}=-2.0$. Headline numbers are post-module-output hook diagnostic 8-bit ADC quantization with per-instance range recalibration on each fresh hardware realization (ADC-on); ADC-off training-surrogate baselines differ by approximately $-0.10$~pp on average (see text). Remote batch-512 results ($83.64$\% Standard, $84.80$\% Proportional) are provided in the Supplementary Information. The ADC-on values are diagnostic-only and should not be treated as deployment-fidelity until physical ADC boundary is implemented.}
+\caption{Severe Nonlinear Writing Recovery (M-Series). All models trained and evaluated with true $NL_{\text{LTP}}=2.0$ and $NL_{\text{LTD}}=-2.0$. Headline numbers are post-module-output hook diagnostic 8-bit ADC quantization with per-instance range recalibration on each fresh hardware realization (ADC-on); ADC-off training-surrogate baselines differ by approximately $-0.10$~pp on average (see text). Remote batch-512 results ($83.64$\% Standard, $84.80$\% Proportional) are provided in the Supplementary Information. The ADC-on values are diagnostic-only and should not be treated as deployment-fidelity claims until a physical ADC boundary is implemented.}
 \label{tab:severe-nl-recovery}
+\resizebox{\textwidth}{!}{%
 \begin{tabular}{clccccc}
 \toprule
 \textbf{Task} & \textbf{HAT Variant} & \textbf{Noise} & \textbf{Seed} & \textbf{ADC-on 8-bit (\%)} & \textbf{Std (\%)} & \textbf{ADC-off baseline (\%)} \\
@@ -91,10 +92,11 @@ M6 & Ensemble (V4) & Uniform & 456 & 81.04 & 1.73 & 81.18 \\
 M3 & Ensemble (V4) & Proportional & 123 & 80.64 & 0.13 & 80.71 \\
 M4 & Ensemble (V4) & Proportional & 456 & 80.67 & 0.41 & 80.75 \\
 \bottomrule
-\end{tabular}
+\end{tabular}%
+}
 \end{table}
 
-Four observations emerge from the M-series evidence. First, \textbf{all true-NL2 routes recover to the same $\sim$80--82\% band}, irrespective of noise law or D2D resampling strategy. Second, \textbf{Standard and Ensemble HAT do not separate within seed variance} (Standard uniform $81.12\%$ vs Ensemble uniform $80.72\%$). Third, \textbf{proportional noise offers no special advantage under $NL=2.0$} ($80.66\%$ vs uniform $80.72\%$). Fourth, \textbf{post-module-output hook diagnostic 8-bit ADC quantization does not materially alter the headline} ($-0.10$~pp on average), while a 6-bit spot-check reveals a larger $-2.8$~pp cliff, consistent with \S\ref{subsec:iso-accuracy}. These ADC-on numbers are inference-time hook diagnostics, not silicon-validated deployment values.
+Four observations emerge from the M-series evidence, now spanning three independent seeds (123, 456, 789). First, \textbf{all true-NL2 routes recover to the same $\sim$80--82\% band}, irrespective of noise law or D2D resampling strategy. Second, \textbf{Standard and Ensemble HAT do not separate within seed variance} (Standard uniform $81.20\%$ vs Ensemble uniform $80.54\%$ across three seeds). Third, \textbf{proportional noise offers no special advantage under $NL=2.0$} ($80.83\%$ vs uniform $80.54\%$). Fourth, \textbf{post-module-output hook diagnostic 8-bit ADC quantization does not materially alter the headline} ($-0.10$~pp on average), while a 6-bit spot-check reveals a larger $-2.8$~pp cliff, consistent with \S\ref{subsec:iso-accuracy}. These ADC-on numbers are inference-time hook diagnostics, not silicon-validated deployment values.
 
 With the revised gradient-scaling recipe, severe-NL retraining recovers to the $\sim$80--82\% band, leaving a residual gap of roughly 15~pp to the digital baseline that is a joint effect of non-linear write dynamics and fresh-instance transfer, not of transfer alone.
 
@@ -106,7 +108,7 @@ As a literature-anchored reference point, we simulated zero-shot transfer to a 2
 \begin{figure}[t]
     \centering
     \includegraphics[width=0.88\textwidth]{fig10_zero_shot_transferability}
-    \caption{\textbf{Zero-shot transfer across alternative device profiles.} Bars report the accuracy of standard-HAT checkpoints when evaluated on literature-calibrated or measured alternative device profiles without profile-specific retraining. ConvNeXt C4 retains partial transfer on the OPECT and idealized profiles but degrades sharply on phase-change memory (PCM) and resistive random-access memory (RRAM), whereas Tiny-ViT V4 collapses to chance level (10.00\%) across all shown alternatives. Dashed vertical lines mark the source-profile best accuracy, and unavailable architecture/profile combinations are labeled as n/a.}
+    \caption{\textbf{Zero-shot transfer across alternative device profiles.} Standard-HAT checkpoints are evaluated on literature-calibrated or measured alternative profiles without profile-specific retraining. ConvNeXt C4 retains partial transfer on OPECT and idealized profiles but degrades on PCM and RRAM; Tiny-ViT V4 collapses to chance level (10.00\%) across all alternatives. By contrast, Ensemble-HAT reaches $88.53\pm0.08\%$ on the OPECT proxy. Dashed vertical lines mark source-profile best accuracy; n/a indicates unavailable combinations.}
     \label{fig:case-study-transfer}
 \end{figure}
 

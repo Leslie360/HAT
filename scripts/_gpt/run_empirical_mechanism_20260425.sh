@@ -43,7 +43,9 @@ done
 # Hessian uses second-order autograd. Keep it alone on GPU.
 hlog="$LOG_DIR/empirical_E1_${TS}.log"
 echo "[launch] E1 -> $hlog"
-if ! "$PY" "$SCRIPT" --job hessian --batch-size 128 --num-workers 2 --hessian-batch 128 --lanczos-steps 50 --hessian-params analog >"$hlog" 2>&1; then
+if "$PY" "$SCRIPT" --job hessian --batch-size 128 --num-workers 2 --hessian-batch 128 --lanczos-steps 50 --hessian-params analog >"$hlog" 2>&1; then
+  echo "[done] E1 analog-param Hessian"
+else
   rc=$?
   echo "[fail] E1 analog-param Hessian rc=$rc; retrying lighter head-param fallback" | tee -a "$hlog"
   "$PY" "$SCRIPT" --job hessian --batch-size 128 --num-workers 2 --hessian-batch 64 --lanczos-steps 50 --hessian-params head >>"$hlog" 2>&1 || status=$?

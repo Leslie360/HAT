@@ -1,0 +1,43 @@
+% Supplementary Note S-HW: Hardware Calibration Pipeline
+% Placeholder for measured-device calibration workflow
+
+\section*{Supplementary Note S-HW: Hardware Calibration Pipeline}
+\label{supp:hardware-calibration}
+
+This note describes the ingest pipeline for substituting measured device statistics into the simulation framework. The pipeline is designed to accept four categories of measured data and produce a standardized JSON device profile compatible with the framework's replaceable profile interface.
+
+\subsection*{S-HW.1 Data categories}
+
+\begin{enumerate}[leftmargin=1.2em]
+    \item \textbf{Pulsed programming curves}: Conductance-vs-pulse measurements for LTP and LTD trajectories. The auto-fitter extracts $G_{\min}$, $G_{\max}$, $NL_{\mathrm{LTP}}$, and $NL_{\mathrm{LTD}}$ via a behavioral exponential model.
+    \item \textbf{Cycle-to-cycle statistics}: Repeated write-verify measurements at identical target states, from which $\sigma_{\mathrm{C2C}}$ is extracted.
+    \item \textbf{Device-to-device mismatch}: Conductance distributions across multiple devices in a fabricated array, from which $\sigma_{\mathrm{D2D}}$ is extracted.
+    \item \textbf{Retention decay}: Long-term conductance-vs-time measurements, from which $\tau_1$, $\tau_2$, and $A_0$ are fitted via dual-exponential regression.
+\end{enumerate}
+
+\subsection*{S-HW.2 Profile generation}
+
+The automated fitting utility (\path{profile_auto_fitter_gpt.py}) ingests raw data in CSV or JSON format and outputs a standardized profile. The profile can be injected directly into training and evaluation loops without code changes:
+
+\begin{verbatim}
+python profile_auto_fitter_gpt.py \
+  --programming-csv measured_pulse_data.csv \
+  --c2c-stats c2c_repeatability.json \
+  --d2d-distribution array_conductances.json \
+  --retention-csv retention_decay.csv \
+  --output profile_measured_device.json
+\end{verbatim}
+
+\subsection*{S-HW.3 Validation protocol}
+
+Before accepting a fitted profile for headline experiments, we recommend:
+
+\begin{enumerate}[leftmargin=1.2em]
+    \item Visual inspection of fit residuals for pulsed programming curves.
+    \item Kolmogorov-Smirnov test against the raw D2D distribution to verify the Gaussian approximation.
+    \item Cross-validation of retention predictions on held-out time points.
+\end{enumerate}
+
+\subsection*{S-HW.4 Current status}
+
+At the time of submission, measured-device data from the PhD collaborator array was not yet available. All reported results therefore use literature-derived profiles. When measured statistics become available, the same workflow can be rerun with the measured profile substituted for the literature prior, preserving comparability across all reported experiments.

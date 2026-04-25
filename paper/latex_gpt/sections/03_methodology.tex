@@ -95,4 +95,4 @@ For the joint D2D--ADC sweep, we quantify first-order factor importance with Sob
 \end{equation}
 estimated directly from the $7 \times 9$ grid of Monte Carlo means as $\mathrm{Var}(\mathrm{mean}_{\text{grid}}[X_{i}]) / \mathrm{Var}(Y)$, with MC noise realizations drawn independently per grid point and per architecture (seeds are not shared across the grid or across models). Indices are reported over both the full grid and the operational subregion. Energy is estimated via a first-order analytical model described in the Supplementary Methods from operator counts and placeholder per-operation constants; the numbers are intended for relative comparison rather than routed-circuit prediction.
 
-\FloatBarrier
+The framework presented here is intentionally modular: each non-ideality can be enabled, disabled, or substituted independently, and the profile interface allows the same codebase to migrate from literature-calibrated simulations to measured-device characterizations without architectural changes. The next section describes the experimental realization of these protocols.

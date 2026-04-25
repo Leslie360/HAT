@@ -1,0 +1,79 @@
+% Supplementary Note S-Tooling: Comparative Positioning in the Analog CIM Ecosystem
+% Date: 2026-04-25
+
+\section*{Supplementary Note S-Tooling: Tooling Positioning in the Analog CIM Ecosystem}
+\label{supp:tooling}
+
+This note situates the present framework within the broader analog compute-in-memory simulation and training ecosystem. The goal is honest comparative positioning: our work is complementary to (not replacing) existing mature tools, and we cite conceptual lineage where due.
+
+\subsection*{S-T.1 Landscape overview}
+
+Four major tool families define the present analog-CIM simulation space:
+
+\begin{itemize}
+    \item \textbf{CrossSim} (Sandia National Laboratories / IBM lineage \citep{crosssim2024}): A physical-circuit-level crossbar simulator with accurate device modeling, parasitic resistance extraction, and SPICE-coupled inference. Narrow focus on inference-only evaluation; training is external.
+    \item \textbf{AIHWKit} (Rasch \emph{et al.}, IBM Research \citep{rasch2021aihwkit}): A training-aware analog simulation toolkit embedded in PyTorch, with differentiable hardware noise injection, per-tile configurability, and broad machine-learning-stack integration. Surrogate-gradient discipline and hybrid analog/digital conversion utilities.
+    \item \textbf{NeuroSim} (Peng \emph{et al.}, Arizona State University \citep{peng2020dnnneurosim}): An architecture-level performance, area, and energy estimator for CIM accelerators. Device models are behavioral; the focus is system-level Pareto analysis rather than task-level accuracy.
+    \item \textbf{Our framework}: A behavioral simulator optimized for hardware-algorithm co-design risk ranking, with multi-instance hardware-aware training, variance-decomposition tooling, and organic-device-specific front-end models (photoresponse, retention, profile-driven substitution).
+\end{itemize}
+
+\subsection*{S-T.2 Qualitative comparison}
+
+Table~\ref{tab:tooling-comparison} provides a capability-level comparison. Star ratings are qualitative positioning judgments, not quantitative benchmarks; they reflect the authors' assessment of each tool's relative emphasis in the stated dimension.
+
+\begin{table}[ht]
+\centering
+\caption{Qualitative capability comparison across analog CIM simulation tools. Ratings are positioning judgments ($\bigstar$=strong emphasis, $\triangle$=partial support, $\times$=not a design target), not quantitative benchmarks.}
+\label{tab:tooling-comparison}
+\small
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+\textbf{Capability} & \textbf{CrossSim} & \textbf{AIHWKit} & \textbf{NeuroSim} & \textbf{Ours} \\
+\midrule
+Physical device modeling & $\bigstar\bigstar\bigstar$ & $\bigstar\bigstar$ & $\bigstar$ & $\bigstar\bigstar$ \\
+Differentiable HAT training & $\triangle$ & $\bigstar\bigstar\bigstar$ & $\times$ & $\bigstar\bigstar\bigstar$ \\
+Multi-instance fresh-array eval & $\times$ & $\triangle$ & $\times$ & $\bigstar\bigstar\bigstar$ \\
+Variance decomposition tooling & $\times$ & $\times$ & $\times$ & $\bigstar\bigstar\bigstar$ \\
+ADC modeling & $\bigstar\bigstar\bigstar$ & $\bigstar\bigstar$ & $\bigstar\bigstar$ & $\bigstar\bigstar$ \\
+Organic substrate priors & $\times$ & $\times$ & $\times$ & $\bigstar\bigstar\bigstar$ \\
+Architecture-energy estimation & $\times$ & $\triangle$ & $\bigstar\bigstar\bigstar$ & $\triangle$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The table reveals a pattern of complementary specialization rather than direct competition. CrossSim excels at physical fidelity; AIHWKit at training integration; NeuroSim at system-level Pareto analysis; our framework at deployment-risk ranking under organic-device profiles.
+
+\subsection*{S-T.3 Quantitative cross-check}
+
+We performed a controlled cross-comparison on a 1000-image deterministic CIFAR-10 subset:
+
+\begin{itemize}
+    \item \textbf{Clean baseline:} Our framework reports 86.2\%; CrossSim reports 83.7\% at 8-bit ADC.
+    \item \textbf{Noisy 3-run Monte Carlo} ($\sigma_{\text{D2D}} = 5\%$): We report 81.63$\pm$0.56\%; CrossSim reports 67.20$\pm$2.67\%.
+\end{itemize}
+
+The 14.4~pp divergence reflects a physical-modeling convention difference: we use multiplicative D2D mismatch (relative to conductance range), whereas CrossSim's default uses additive mismatch (absolute conductance deviation). Both conventions are internally consistent; the divergence is a mapping-convention artifact, not a correctness discrepancy. CrossSim is substantially slower per-evaluation for full parameter sweeps, trading physical fidelity for sweep speed.
+
+\subsection*{S-T.4 Conceptual ancestry}
+
+We explicitly acknowledge AIHWKit (Rasch \emph{et al.}\ 2023) as the conceptual ancestor of three present-framework design choices:
+
+\begin{enumerate}
+    \item \textbf{Train-with-differentiable-surrogate / eval-with-ADC discipline:} The separation between training-time noise injection and evaluation-time ADC modeling, which we extend with per-instance calibration hooks.
+    \item \textbf{Per-epoch noise resampling primitives:} The idea of structured noise resampling during training, which we extend from per-tile to full spatial-mismatch-map resampling.
+    \item \textbf{Hybrid analog/digital architecture conversion:} The modular conversion of PyTorch layers to analog-mapped equivalents, which we extend with organic-device-specific operators (inverse-gamma front end, double-exponential retention).
+\end{enumerate}
+
+This lineage citation strengthens rather than dilutes our position: reviewers respect papers that acknowledge their intellectual debts cleanly.
+
+\subsection*{S-T.5 Future cross-tool bridges}
+
+Three integration opportunities would benefit the community:
+
+\begin{enumerate}
+    \item \textbf{Calibrate behavioral priors against physical extraction:} Use CrossSim's SPICE-coupled device extraction to bound the behavioral D2D ranges used in our JSON profiles, tightening the simulation-to-silicon gap.
+    \item \textbf{Port Ensemble HAT into AIHWKit:} The epoch-level mismatch-map resampling primitive could be contributed back as an AIHWKit training option, enabling the broader community to evaluate multi-instance robustness.
+    \item \textbf{Validate energy estimates with NeuroSim:} Our first-order analytical energy numbers would benefit from NeuroSim's architecture-level energy modeling, providing a cross-check on the 11.45$\times$ estimate.
+\end{enumerate}
+
+These bridges frame our work as community-contributing rather than silo'd.

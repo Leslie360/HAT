@@ -38,6 +38,8 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from torch.utils.data import DataLoader
+from torchvision import datasets, transforms
 
 import matplotlib
 matplotlib.use("Agg")
@@ -46,6 +48,7 @@ import matplotlib.pyplot as plt
 from amp_utils import autocast_context
 from eval_fresh_instances_postfix import load_checkpoint_provenance, runtime_metadata
 from inference_analysis_utils import iter_analog_modules, load_model_bundle, set_uniform_noise
+from train_tinyvit import DATASET_STATS
 
 JSON_DIR = ROOT / "report_md/_gpt/json_gpt"
 CSV_DIR = ROOT / "report_md/_gpt/csv_gpt"
@@ -193,6 +196,8 @@ def base_metadata(extra: Optional[dict] = None) -> dict:
     meta = runtime_metadata()
     meta["code_sha256"] = code_sha256(CODE_PROVENANCE)
     meta["script"] = rel(__file__)
+    meta["gpu_resize_eval"] = os.environ.get("CODEX_EMPIRICAL_GPU_RESIZE", "1") != "0"
+    meta["gpu_resize_protocol"] = "CIFAR32 ToTensor -> GPU bilinear resize 224 -> GPU normalize" if meta["gpu_resize_eval"] else "canonical CPU Resize transform"
     meta["timestamp_unix"] = time.time()
     if extra:
         meta.update(extra)
@@ -246,7 +251,50 @@ def load_run(run_id: str, device: str, batch_size: int, num_workers: int, amp: b
         amp_enabled=amp,
     )
     configure_model_from_run(bundle, run_id)
+    maybe_enable_gpu_resize_loader(bundle, batch_size=batch_size, num_workers=num_workers)
     return bundle
+
+
+def maybe_enable_gpu_resize_loader(bundle, batch_size: int, num_workers: int) -> None:
+    """Replace CPU PIL resize with native 32x32 loading plus GPU resize.
+
+    This is scoped to this analysis script. It preserves the eval transform order
+    as closely as practical: ToTensor at 32x32, GPU bilinear resize to 224, then
+    CIFAR normalization on GPU.
+    """
+    if os.environ.get("CODEX_EMPIRICAL_GPU_RESIZE", "1") == "0":
+        return
+    if bundle.dataset != "cifar10":
+        return
+    stats = DATASET_STATS[bundle.dataset]
+    testset = datasets.CIFAR10(
+        root="./data",
+        train=False,
+        download=False,
+        transform=transforms.ToTensor(),
+    )
+    loader_kwargs = {
+        "batch_size": batch_size,
+        "shuffle": False,
+        "num_workers": num_workers,
+        "pin_memory": False,
+    }
+    if num_workers > 0:
+        loader_kwargs["persistent_workers"] = True
+    bundle.testloader = DataLoader(testset, **loader_kwargs)
+    bundle._codex_gpu_resize_size = 224
+    bundle._codex_norm_mean = torch.tensor(stats["mean"], dtype=torch.float32, device=bundle.device).view(1, -1, 1, 1)
+    bundle._codex_norm_std = torch.tensor(stats["std"], dtype=torch.float32, device=bundle.device).view(1, -1, 1, 1)
+
+
+def preprocess_inputs(bundle, inputs: torch.Tensor) -> torch.Tensor:
+    inputs = inputs.to(bundle.device, non_blocking=True)
+    size = getattr(bundle, "_codex_gpu_resize_size", None)
+    if size is not None:
+        if inputs.shape[-1] != size or inputs.shape[-2] != size:
+            inputs = F.interpolate(inputs, size=(size, size), mode="bilinear", align_corners=False)
+        inputs = (inputs - bundle._codex_norm_mean) / bundle._codex_norm_std
+    return inputs
 
 
 def clean_noise(bundle) -> None:
@@ -313,7 +361,7 @@ def eval_manual(bundle, max_batches: Optional[int] = None) -> Tuple[float, float
     for batch_idx, (inputs, targets) in enumerate(bundle.testloader):
         if max_batches is not None and batch_idx >= max_batches:
             break
-        inputs = inputs.to(bundle.device, non_blocking=True)
+        inputs = preprocess_inputs(bundle, inputs)
         targets = targets.to(bundle.device, non_blocking=True)
         with autocast_context(bundle.device, bundle.amp_enabled):
             outputs = model(inputs)
@@ -434,7 +482,7 @@ def collect_activations(bundle, max_layers: Optional[int] = None) -> Dict[str, t
     try:
         bundle.model.eval()
         inputs, _targets = next(iter(bundle.testloader))
-        inputs = inputs.to(bundle.device, non_blocking=True)
+        inputs = preprocess_inputs(bundle, inputs)
         with torch.no_grad(), autocast_context(bundle.device, bundle.amp_enabled):
             _ = bundle.model(inputs)
     finally:
@@ -735,7 +783,7 @@ def fixed_batch(bundle, batch_size: int) -> Tuple[torch.Tensor, torch.Tensor]:
         total += int(inputs.size(0))
         if total >= batch_size:
             break
-    x = torch.cat(xs, dim=0)[:batch_size].to(bundle.device)
+    x = preprocess_inputs(bundle, torch.cat(xs, dim=0)[:batch_size])
     y = torch.cat(ys, dim=0)[:batch_size].to(bundle.device)
     return x, y
 
@@ -744,6 +792,15 @@ def hessian_lanczos(bundle, params: Sequence[torch.Tensor], x: torch.Tensor, y: 
     criterion = bundle.criterion
     model = bundle.model
     model.eval()
+    if torch.cuda.is_available():
+        # Fused SDPA kernels in current PyTorch do not expose second
+        # derivatives. Hessian-vector products need the math attention path.
+        try:
+            torch.backends.cuda.enable_flash_sdp(False)
+            torch.backends.cuda.enable_mem_efficient_sdp(False)
+            torch.backends.cuda.enable_math_sdp(True)
+        except Exception:
+            pass
     n_params = sum(p.numel() for p in params)
     q = torch.randn(n_params, device=bundle.device, dtype=torch.float32)
     q = q / q.norm().clamp_min(1e-12)
@@ -830,6 +887,7 @@ def job_hessian(args) -> dict:
             "job": "E1_HESSIAN_EIGENSPECTRUM",
             "run_id": run_id,
             "method": "Lanczos Ritz spectrum on fixed CIFAR-10 eval batch with analog noise disabled",
+            "sdpa_backend_note": "CUDA flash/mem-efficient SDPA disabled for HVP because fused efficient-attention backward lacks second derivatives",
             "hessian_params": args.hessian_params,
             "param_count": param_count,
             "fixed_batch_size": int(x.size(0)),
@@ -1052,7 +1110,7 @@ def write_report(args) -> dict:
         "",
     ]
     meta = base_metadata()
-    for key in ["commit_hash", "git_worktree_dirty", "cuda_device_name", "pytorch_version", "code_sha256"]:
+    for key in ["commit_hash", "git_worktree_dirty", "cuda_device_name", "pytorch_version", "code_sha256", "gpu_resize_eval", "gpu_resize_protocol"]:
         lines.append(f"- {key}: `{meta.get(key)}`")
     lines.extend([
         "- Analysis script: `scripts/_gpt/empirical_mechanism_20260425.py`",
@@ -1065,15 +1123,25 @@ def write_report(args) -> dict:
         "",
     ])
     if hessian:
-        lines.append("| Checkpoint | Top-1 abs Ritz eigenvalue | JSON |")
-        lines.append("|:--|--:|:--|")
+        lines.append("| Checkpoint | Params | Batch | Top-1 abs Ritz eigenvalue | JSON |")
+        lines.append("|:--|:--|--:|--:|:--|")
         for run_id, row in hessian.get("results", {}).items():
-            lines.append(f"| {RUNS.get(run_id, {}).get('short', run_id)} | {fmt(row.get('top1_abs_eigenvalue'), 4)} | `{row.get('json')}` |")
+            indiv = load_optional_json(ROOT / str(row.get("json", "")))
+            params_mode = indiv.get("hessian_params") if indiv else "unknown"
+            batch = indiv.get("fixed_batch_size") if indiv else None
+            lines.append(f"| {RUNS.get(run_id, {}).get('short', run_id)} | {params_mode} | {fmt(batch, 0)} | {fmt(row.get('top1_abs_eigenvalue'), 4)} | `{row.get('json')}` |")
         if "canonical_ensemble" in hessian.get("results", {}) and "canonical_standard" in hessian.get("results", {}):
             e = hessian["results"]["canonical_ensemble"].get("top1_abs_eigenvalue")
             s = hessian["results"]["canonical_standard"].get("top1_abs_eigenvalue")
             ratio = abs(float(s)) / max(abs(float(e)), 1e-12) if e is not None and s is not None else None
             lines.append(f"\nStandard/Ensemble top-1 ratio: **{fmt(ratio, 2)}x**.")
+            if ratio is not None and ratio < 1.0:
+                lines.append("**Escalation:** E1 contradicts the simple global-Hessian flat-minima hypothesis: canonical Ensemble HAT has a larger analog-parameter top-1 Ritz value than canonical Standard HAT under this batch-32 Lanczos protocol.")
+            elif ratio is not None and ratio >= 2.0:
+                lines.append("E1 supports the simple global-Hessian flat-minima hypothesis under this Lanczos protocol.")
+            else:
+                lines.append("E1 gives weak/ambiguous global-Hessian support under this Lanczos protocol.")
+        lines.append("Protocol note: full analog-parameter HVP required disabling CUDA flash/mem-efficient SDPA because fused efficient-attention backward lacks second derivatives in this PyTorch build.")
         lines.append("Figure: `paper/figures/figS_hessian_spectrum.{png,pdf}`")
     else:
         lines.append("PENDING: Hessian JSON not landed yet.")
@@ -1125,9 +1193,20 @@ def write_report(args) -> dict:
         "",
         "## 3. Cross-Job Synthesis",
         "",
-        "Current synthesis should be treated as live until all E1-E5 JSONs are present. Paper-safe integration must not claim flat-minima confirmation unless E1/E2 both support it.",
+        "All five requested jobs have landed. The empirical picture is split: D2D-direction robustness is strongly supported, but a simple global-Hessian flatness story is not.",
         "",
     ])
+    if hessian and "canonical_ensemble" in hessian.get("results", {}) and "canonical_standard" in hessian.get("results", {}):
+        e = hessian["results"]["canonical_ensemble"].get("top1_abs_eigenvalue")
+        s = hessian["results"]["canonical_standard"].get("top1_abs_eigenvalue")
+        if e is not None and s is not None:
+            lines.append(f"- E1 analog-parameter Hessian is a negative/surprising diagnostic: Ensemble top-1 {fmt(e, 2)} exceeds Standard top-1 {fmt(s, 2)}. Do not claim Ensemble HAT is globally flatter in ordinary parameter space.")
+    if d2d:
+        ens_rows = {float(r["alpha"]): r for r in d2d.get("summary", {}).get("canonical_ensemble", [])}
+        std_rows = {float(r["alpha"]): r for r in d2d.get("summary", {}).get("canonical_standard", [])}
+        if 1.0 in ens_rows and 1.0 in std_rows:
+            gap1 = ens_rows[1.0]["acc_mean"] - std_rows[1.0]["acc_mean"]
+            lines.append(f"- E2 is the positive mechanism result: at alpha=1.0, Ensemble keeps {fmt(ens_rows[1.0]['acc_mean'])}% while Standard is {fmt(std_rows[1.0]['acc_mean'])}% (gap {fmt(gap1)} pp). This supports flatness specifically along the D2D mismatch direction.")
     if cka:
         lines.append(f"- E3 shows aggregate M-series off-diagonal CKA of {fmt(cka.get('aggregate_offdiag_mean'), 3)}, which tests whether 80-82% severe-NL recovery comes from representational convergence or multiple distinct routes.")
     if sens:
@@ -1145,7 +1224,8 @@ def write_report(args) -> dict:
         "## 4. Paper-Safe Statements",
         "",
         "- Use mechanism figures as supplementary diagnostics, not as replacements for frozen source/fresh headline metrics.",
-        "- If E1 is pending or contradictory, phrase Hessian analysis as `diagnostic` rather than `confirmation`.",
+        "- Do not write `Ensemble HAT finds a globally flatter Hessian minimum`; E1 contradicts that simple statement under the analog-parameter protocol.",
+        "- Prefer: `Ensemble HAT is robust along device-mismatch directions, while ordinary parameter-space Hessian sharpness is not the explanatory axis.`",
         "- E4 can replace the contaminated historical groupwise table only if the top-layer ranking is stable and post-fix provenance is cited.",
         "- E5, if near chance, supports the statement that per-epoch resampling is not equivalent to naive checkpoint averaging.",
         "",

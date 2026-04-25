@@ -2,7 +2,7 @@
 \section{Conclusion}
 \label{sec:conclusion}
 
-We presented a first-order behavioral simulation framework for organic optoelectronic compute-in-memory inference that links materials-level characterization to task-level vision performance. By combining differential mapping, variability, retention, and peripheral constraints within a profile-driven workflow, the framework serves as a practical materials-to-system decision aid for evaluating deployment risk before full array hardware becomes available.
+We presented a first-order behavioral simulation framework for organic optoelectronic compute-in-memory inference that links materials-level characterization to task-level vision performance. By combining differential mapping, variability, retention, and peripheral constraints within a profile-driven workflow, the framework serves as a practical materials-to-system decision aid for evaluating deployment risk and comparing mitigation strategies before full array hardware becomes available.
 
 Several observations stand out. A 63-point iso-accuracy sweep reveals a two-phase constraint hierarchy: ADC resolution below 6 bits causes abrupt collapse ($S_{\mathrm{ADC}}=0.98$ over the full grid), while within the operational envelope, device-to-device variability becomes the binding factor ($S_{\mathrm{D2D}}=0.92$). Fixed hardware-instance transfer, rather than nominal quantization, is the most prominent simulated deployment risk in the present regime: standard HAT collapses on fresh arrays, whereas Ensemble HAT raises fresh-instance accuracy from 10.00~\% to 86.37$\pm$1.54\%. In the canonical uniform-noise setting, quantization and nominal stochasticity are less limiting once scale recovery is active. By contrast, severe nonlinear write ($NL=2.0$) recovers to the $\sim$80--82\% band with the revised gradient-scaling recipe, leaving a residual gap of roughly 5~pp to the canonical $NL=1.0$ baseline, and determining whether physical organic devices enter this regime will require direct nonlinear-write measurements.
 
@@ -17,5 +17,3 @@ The simulation framework, training and evaluation scripts, device-profile utilit
 \section*{Competing Interests}
 The authors declare no competing interests.
 
-\section*{Author Contributions}
-S.L. conceived the framework, implemented the simulator, conducted all experiments, and wrote the manuscript.

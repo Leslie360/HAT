@@ -1,0 +1,414 @@
+% PhD Defense Beamer — Canonical Branch (post-9cdbe77)
+% Updated 2026-04-25 with Round-7 sprint outputs
+
+\PassOptionsToPackage{demo}{graphicx}
+\documentclass[aspectratio=169,11pt]{beamer}
+
+\usetheme{Madrid}
+\usecolortheme{seahorse}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{footline}[frame number]
+
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc}
+
+\newcommand{\dataset}[1]{\textsc{#1}}
+\newcommand{\commit}[1]{\texttt{#1}}
+
+\title[Ensemble HAT for Organic CIM]{Profile-Driven Hardware Simulation for Organic Optoelectronic Compute-in-Memory}
+\subtitle{Ensemble Hardware-Aware Training for Vision Transformer Deployment}
+\author{[Your Name]}
+\institute{{[Department]} \\ {[University]}}
+\date{\today}
+
+\begin{document}
+
+% ============================
+% Title
+% ============================
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\note{Welcome the committee. State the central question: how do we deploy Vision Transformers on organic optoelectronic CIM arrays when device variability, nonlinear write, and ADC resolution threaten every multiply-accumulate?}
+
+% ============================
+% Outline
+% ============================
+\begin{frame}{Outline}
+  \tableofcontents
+\end{frame}
+
+\note{Roadmap: motivation, simulation framework, Ensemble HAT methodology, theory, empirical mechanism, results, limitations, conclusions.}
+
+% ============================
+% 1. INTRODUCTION
+% ============================
+\section{Introduction}
+
+\begin{frame}{The Analog CIM Opportunity}
+  \begin{columns}
+    \begin{column}{0.55\textwidth}
+      \begin{itemize}
+        \item \textbf{Energy wall:} Data movement dominates AI inference; analog CIM offers 10--100$\times$ theoretical savings via Kirchhoff-current accumulation.
+        \item \textbf{Organic optoelectronics:} Wafer-scale, low-temperature, flexible substrates with inherent photosensitivity---enabling sensor-compute fusion.
+        \item \textbf{The catch:} Device variability, nonlinear write, and retention drift break deterministic digital assumptions.
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.42\textwidth}
+      \begin{block}{Key Numbers}
+        \begin{itemize}
+          \item Tiny-ViT-5M FP32: \textbf{98.06\%} (\dataset{CIFAR-10})
+          \item Analog-mapped params: \textbf{$\sim$88\%}
+          \item Energy reduction: \textbf{11.45$\times$} (first-order estimate)
+        \end{itemize}
+      \end{block}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Four Deployment Constraints}
+  \begin{enumerate}
+    \item \textbf{ADC resolution} --- below 6 bits causes abrupt collapse ($S_{\text{ADC}} = 0.98$)
+    \item \textbf{Sublinear photoresponse} --- inverse-gamma compensation restores +5.8~pp at $\gamma_{\text{phys}} = 2.0$
+    \item \textbf{Hardware-instance overfitting} --- Standard HAT collapses to 10.00\% on fresh arrays
+    \item \textbf{Severe nonlinear write} --- NL=2.0 recovers to $\sim$80--82\% band with revised gradient scaling
+  \end{enumerate}
+  \vfill
+  \centering
+  \textbf{Central claim:} Ensemble HAT raises fresh-instance accuracy from 10.00\% to \textbf{86.37$\pm$1.54\%}.
+\end{frame}
+
+% ============================
+% 2. FRAMEWORK
+% ============================
+\section{Simulation Framework}
+
+\begin{frame}{Hybrid Analog/Digital Stack}
+  \begin{columns}
+    \begin{column}{0.60\textwidth}
+      \textbf{Analog partition:}
+      \begin{itemize}
+        \item Patch embedding, Q/K/V projections, output projections, MLP layers
+        \item High weight reuse, regular access patterns
+      \end{itemize}
+      \textbf{Digital partition:}
+      \begin{itemize}
+        \item Softmax, LayerNorm, GELU, positional encoding, residual adds
+        \item Dynamic, precision-critical operations
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.38\textwidth}
+      \begin{block}{Parameter Split}
+        Analog: $\sim$88\%\\
+        Digital: $\sim$12\%\\
+        (Energy: digital $\sim$60\% due to attention)
+      \end{block}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Profile-Driven Simulation}
+  \textbf{Forward path:} Weight $\rightarrow$ differential conductance ($G^+$, $G^-$) $\rightarrow$ STE quantization $\rightarrow$ D2D mismatch + C2C noise $\rightarrow$ ADC $\rightarrow$ scale recovery
+  \vfill
+  \textbf{Profile interface (JSON):}
+  \begin{itemize}
+    \item $\sigma_{\text{D2D}}$, $\sigma_{\text{C2C}}$, $n_{\text{states}}$, $G_{\min}$, $G_{\max}$
+    \item $NL_{\text{LTP}}$, $NL_{\text{LTD}}$, $\tau_1$, $\tau_2$, $A_0$
+    \item $\gamma_{\text{phys}}$, $I_{\text{dark}}$, $\ldots$
+  \end{itemize}
+  \vfill
+  \textbf{Key feature:} Swap the profile $\rightarrow$ change technology without changing code.
+\end{frame}
+
+% ============================
+% 3. METHODOLOGY
+% ============================
+\section{Ensemble HAT Methodology}
+
+\begin{frame}{Standard HAT vs Ensemble HAT}
+  \begin{columns}
+    \begin{column}{0.48\textwidth}
+      \textbf{Standard HAT:}
+      \begin{equation*}
+        \theta^*_{\text{std}} = \arg\min_\theta \frac{1}{N}\sum_{n=1}^N \ell(f(x_n; \theta, M_0), y_n)
+      \end{equation*}
+      \begin{itemize}
+        \item One fixed D2D mask $M_0$ throughout training
+        \item Overfits to a specific hardware instance
+        \item \textcolor{red}{Collapses to 10.00\% on fresh instances}
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \textbf{Ensemble HAT:}
+      \begin{equation*}
+        \theta^*_{\text{ens}} = \arg\min_\theta \mathbb{E}_{M \sim p(M)}\!\left[\frac{1}{N}\sum_{n=1}^N \ell(f(x_n; \theta, M), y_n)\right]
+      \end{equation*}
+      \begin{itemize}
+        \item Resamples $M^{(e)}$ at each epoch
+        \item Matches deployment distribution
+        \item \textcolor{green!60!black}{86.37$\pm$1.54\% on fresh instances}
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Theoretical Foundation}
+  Second-order Taylor expansion of the Ensemble HAT objective reveals:
+  \begin{equation*}
+    \mathcal{L}_{\text{ens}} \approx \mathcal{L}_{\text{std}} + \frac{\sigma^2_{\text{D2D}}}{2} \sum_i \theta_i^2 \left(\frac{\partial \ell}{\partial \theta_i}\right)^2
+  \end{equation*}
+  \vfill
+  \begin{itemize}
+    \item \textbf{Implicit regularizer:} Fisher-weighted gradient-$L_2$ penalty
+    \item \textbf{Structural analogue:} Stochastic SAM (Sharpness-Aware Minimization) along D2D direction
+    \item \textbf{PAC-Bayes bound:} Generalization to fresh instances tracks training-distribution average
+    \item \textbf{No extra hyperparameters:} Regularization strength set by physical $\sigma_{\text{D2D}}$
+  \end{itemize}
+\end{frame}
+
+% ============================
+% 4. EMPIRICAL MECHANISM
+% ============================
+\section{Empirical Mechanism}
+
+\begin{frame}{D2D Loss-Landscape Interpolation}
+  Interpolate from training mask to fresh mask: $M(\alpha) = M_{\text{train}} + \alpha(M_{\text{fresh}} - M_{\text{train}})$
+  \vfill
+  \begin{table}
+    \centering
+    \small
+    \begin{tabular}{lccc}
+      \toprule
+      Model & $\alpha=0$ & $\alpha=1$ & $\alpha=3$ \\
+      \midrule
+      Standard HAT & 94.67\% & \textcolor{red}{10.00\%} & 9.55\% \\
+      Ensemble HAT & 91.25\% & \textcolor{green!60!black}{88.39\%} & 27.06\% \\
+      \bottomrule
+    \end{tabular}
+  \end{table}
+  \vfill
+  \textbf{Interpretation:} Ensemble HAT maintains 88.39\% on fresh masks (78~pp gap). Even at $3\times$ extrapolated mismatch, it outperforms Standard by 17.5~pp.
+\end{frame}
+
+\begin{frame}{Per-Layer Sensitivity Analysis}
+  Perturb exactly one analog layer at a time with fixed $\sigma_{\text{D2D}} = 10\%$:
+  \vfill
+  \begin{table}
+    \centering
+    \small
+    \begin{tabular}{clcc}
+      \toprule
+      Rank & Layer & Group & Drop (pp) \\
+      \midrule
+      1 & stages.2.blocks.4.mlp.fc2 & MLP & 1.38 \\
+      2 & patch\_embed.conv1.conv & Patch embed & 1.18 \\
+      3 & stages.2.blocks.1.mlp.fc1 & MLP & 0.31 \\
+      4 & stages.2.blocks.5.mlp.fc2 & MLP & 0.29 \\
+      5 & stages.2.blocks.2.mlp.fc1 & MLP & 0.28 \\
+      \bottomrule
+    \end{tabular}
+  \end{table}
+  \vfill
+  \textbf{Finding:} 4/5 most sensitive layers are MLP layers. Severe-NL failure localizes to the MLP path.
+\end{frame}
+
+% ============================
+% 5. RESULTS
+% ============================
+\section{Results}
+
+\begin{frame}{Canonical Deployment Results}
+  \begin{columns}
+    \begin{column}{0.50\textwidth}
+      \textbf{Canonical regime ($NL=1.0$):}
+      \begin{itemize}
+        \item Ensemble HAT: \textbf{86.37$\pm$1.54\%}
+        \item Standard HAT fresh: \textbf{10.00\%}
+        \item OPECT zero-shot: \textbf{88.53$\pm$0.08\%}
+      \end{itemize}
+      \textbf{Severe-NL regime ($NL=2.0$):}
+      \begin{itemize}
+        \item Standard uniform: \textbf{81.20\%}
+        \item Ensemble uniform: \textbf{80.54\%}
+        \item Ensemble proportional: \textbf{80.83\%}
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Key Insights}
+        \begin{itemize}
+          \item All true-NL2 routes recover to $\sim$80--82\% band
+          \item Standard vs Ensemble do not separate under NL=2.0
+          \item Proportional noise offers no special advantage
+        \end{itemize}
+      \end{block}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{ADC Resolution: The 6-Bit Cliff}
+  \begin{columns}
+    \begin{column}{0.55\textwidth}
+      \textbf{Sobol analysis:}
+      \begin{itemize}
+        \item Full grid: $S_{\text{ADC}} = 0.98$ (dominates)
+        \item Operational envelope: $S_{\text{D2D}} = 0.92$ (dominates)
+      \end{itemize}
+      \textbf{Two-phase hierarchy:}
+      \begin{enumerate}
+        \item Secure $\geq$6-bit ADC first
+        \item Then minimize D2D variability
+      \end{enumerate}
+      \vfill
+      5-to-6-bit transition: consistent $\sim$7~pp jump across all D2D levels.
+    \end{column}
+    \begin{column}{0.43\textwidth}
+      \begin{block}{Design Rule}
+        \centering
+        \textbf{6 bits = minimum viable}\\
+        for transformer CIM
+      \end{block}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Zero-Shot Transfer to Literature-Calibrated Device}
+  \textbf{OPECT array (Zhang 2025):} $\sigma_{\text{D2D}} = 3\%$, $\sigma_{\text{C2C}} = 2\%$, 34 states, $G_{\max}/G_{\min} = 47.3$
+  \vfill
+  \begin{columns}
+    \begin{column}{0.48\textwidth}
+      \textbf{Standard HAT:}
+      \begin{itemize}
+        \item Collapses to 10.00\% across all profiles
+        \item Fails on PCM, RRAM alternatives
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \textbf{Ensemble HAT:}
+      \begin{itemize}
+        \item Reaches \textbf{88.53$\pm$0.08\%}
+        \item No profile-specific retraining
+      \end{itemize}
+    \end{column}
+  \end{columns}
+  \vfill
+  \centering
+  \textbf{Same framework, different JSON profile.} Demonstrates profile-driven extensibility.
+\end{frame}
+
+% ============================
+% 6. LIMITATIONS & OUTLOOK
+% ============================
+\section{Limitations}
+
+\begin{frame}{Limitations and Future Work}
+  \begin{itemize}
+    \item \textbf{Simulation level:} Behavioral, not circuit-accurate. IR drop, sneak paths, thermal effects are scalar placeholders.
+    \item \textbf{Dataset scale:} CIFAR-10/100 and Flowers-102. ImageNet validation is future work.
+    \item \textbf{Energy model:} First-order analytical with placeholder per-operation constants. Not silicon-validated.
+    \item \textbf{Device profiles:} Literature-calibrated; measured-device calibration pending PhD collaborator data.
+    \item \textbf{ADC modeling:} Hook diagnostics, not physical ADC boundary implementation.
+  \end{itemize}
+  \vfill
+  \centering
+  Framework purpose: \textbf{materials-to-system risk ranking before fabrication.}
+\end{frame}
+
+% ============================
+% 7. CONCLUSION
+% ============================
+\section{Conclusion}
+
+\begin{frame}{Summary}
+  \begin{enumerate}
+    \item \textbf{Framework:} First profile-driven behavioral simulation for organic optoelectronic CIM with ViT backbones.
+    \item \textbf{Discovery:} Hardware-instance overfitting is the dominant deployment risk, not nominal quantization.
+    \item \textbf{Solution:} Ensemble HAT resamples D2D masks per epoch, raising fresh-instance accuracy from 10.00\% to 86.37\%.
+    \item \textbf{Theory:} Second-order expansion reveals implicit regularizer + SAM analogue + PAC-Bayes bound.
+    \item \textbf{Design rules:} Secure $\geq$6-bit ADC, then control D2D, then use Ensemble HAT.
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}
+  \centering
+  \vspace{2cm}
+  {\Huge Thank You}
+  \vspace{1cm}
+  
+  {\large Questions?}
+  \vspace{1.5cm}
+  
+  \texttt{compute\_vit} framework: \url{https://github.com/OrgOptEdge/compute\_vit}
+\end{frame}
+
+% ============================
+% BACKUP SLIDES
+% ============================
+\appendix
+\section{Backup Slides}
+
+\begin{frame}{Backup: M-Series Fresh-Eval Detail}
+  \small
+  \begin{table}
+    \centering
+    \begin{tabular}{clcc}
+      \toprule
+      Model & HAT / Noise & Mean & Std \\
+      \midrule
+      M1 & Standard / Uniform & 81.89\% & 1.02\% \\
+      M5 & Standard / Uniform & 80.37\% & 0.08\% \\
+      M7 & Standard / Uniform & 81.33\% & 0.46\% \\
+      M2 & Ensemble / Uniform & 80.37\% & 0.59\% \\
+      M6 & Ensemble / Uniform & 81.04\% & 1.73\% \\
+      M8 & Ensemble / Uniform & 80.21\% & 0.20\% \\
+      M3 & Ensemble / Proportional & 80.64\% & 0.13\% \\
+      M4 & Ensemble / Proportional & 80.67\% & 0.41\% \\
+      M9 & Ensemble / Proportional & 81.18\% & 0.37\% \\
+      \bottomrule
+    \end{tabular}
+  \end{table}
+  Cross-seed averages (n=3): Standard 81.20\%, Ensemble Uniform 80.54\%, Proportional 80.83\%.
+\end{frame}
+
+\begin{frame}{Backup: Correlated D2D Robustness}
+  Spatially correlated D2D (AR(1)-style separable correlation):
+  \begin{itemize}
+    \item i.i.d. baseline ($\rho = 0$): 86.33$\pm$1.61\%
+    \item $\rho = 0.3$: 84.57$\pm$2.39\% ($-1.76$~pp)
+    \item $\rho = 0.5$: 82.12$\pm$3.95\% ($-4.20$~pp)
+  \end{itemize}
+  Rank ordering preserved; no instance collapses below 73.7\%.
+\end{frame}
+
+\begin{frame}{Backup: Training-Ablation Cadence Scan}
+  Single-run ablation of D2D resampling frequency:
+  \begin{itemize}
+    \item Per-batch resampling: 86.16\%
+    \item Fixed mask: 87.18\%
+    \item Epoch-level resampling: 88.41\%
+  \end{itemize}
+  Epoch-level is the load-bearing schedule choice.
+\end{frame}
+
+\begin{frame}{Backup: Hessian Spectrum Nuance}
+  Full-parameter-space Hessian top eigenvalue:
+  \begin{itemize}
+    \item Standard HAT: 23.28
+    \item Ensemble HAT: 221.30
+  \end{itemize}
+  Counter-intuitive: Standard appears ``flatter'' globally. But this flatness is \textbf{mask-specific}---Standard collapses on fresh masks. The relevant metric is D2D-directional sensitivity, not global curvature.
+\end{frame}
+
+\begin{frame}{Backup: Checkpoint Averaging Ablation}
+  Naive parameter-space average of two Standard HAT checkpoints (seed 123 + 456):
+  \begin{itemize}
+    \item Average checkpoint fresh-instance: \textbf{10.00$\pm$0.00\%}
+    \item Ensemble HAT reference: 86.37\%
+  \end{itemize}
+  Simple averaging does \textbf{not} recover fresh-instance generalization. The training objective (per-epoch resampling) is load-bearing.
+\end{frame}
+
+\end{document}

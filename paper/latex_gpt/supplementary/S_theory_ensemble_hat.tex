@@ -46,19 +46,30 @@ For uncorrelated D2D, $\Sigma_M = \sigma_{\text{D2D}}^2 I$. We expand the networ
     \label{eq:taylor-f}
 \end{equation}
 
-Let $\ell(f,y)$ denote the loss (e.g., cross-entropy). Expanding $\ell$ to second order in $f$ around $f(x;\theta)$:
+Let $\ell(f,y)$ denote the loss (e.g., cross-entropy), and write
+$\Delta f_M=f(x;\theta\odot(1+M))-f(x;\theta)$. Expanding $\ell$ to
+second order in $f$ around $f(x;\theta)$:
 \begin{align}
-    \ell\bigl(f(x; \theta \odot (1+M)), y\bigr) &= \ell\bigl(f(x;\theta), y\bigr) 
-    + \nabla_f \ell \cdot \bigl[f(x; \theta \odot (1+M)) - f(x;\theta)\bigr] \nonumber \\
-    &\quad + \frac{1}{2}\bigl[f(x; \theta \odot (1+M)) - f(x;\theta)\bigr]^{\top} \nabla_f^2 \ell \, \bigl[f(x; \theta \odot (1+M)) - f(x;\theta)\bigr] + \mathcal{O}(\|M\|^3).
+    \ell\bigl(f(x; \theta \odot (1+M)), y\bigr)
+    &= \ell\bigl(f(x;\theta), y\bigr)
+    + \nabla_f \ell \cdot \Delta f_M \nonumber \\
+    &\quad + \frac{1}{2}\Delta f_M^{\top} \nabla_f^2 \ell \, \Delta f_M
+    + \mathcal{O}(\|M\|^3).
     \label{eq:taylor-loss}
 \end{align}
 
 Taking expectations over $M$ and using $\mathbb{E}[M_i] = 0$, the first-order term vanishes:
-\begin{equation}
-    \mathbb{E}_M\bigl[\ell(f(x; \theta \odot (1+M)), y)\bigr] = \ell(f(x;\theta), y) + \frac{1}{2}\mathbb{E}_M\Bigl[\Bigl(\sum_i M_i \theta_i \frac{\partial f}{\partial \theta_i}\Bigr)^{\top} \nabla_f^2 \ell \, \Bigl(\sum_j M_j \theta_j \frac{\partial f}{\partial \theta_j}\Bigr)\Bigr] + \mathcal{O}(\mathbb{E}[\|M\|^3]).
+\begin{align}
+    \mathbb{E}_M\bigl[\ell(f(x; \theta \odot (1+M)), y)\bigr]
+    &= \ell(f(x;\theta), y) \nonumber \\
+    &\quad + \frac{1}{2}\mathbb{E}_M\Biggl[
+    \Bigl(\sum_i M_i \theta_i \frac{\partial f}{\partial \theta_i}\Bigr)^{\top}
+    \nabla_f^2 \ell
+    \Bigl(\sum_j M_j \theta_j \frac{\partial f}{\partial \theta_j}\Bigr)
+    \Biggr] \nonumber \\
+    &\quad + \mathcal{O}(\mathbb{E}[\|M\|^3]).
     \label{eq:expected-loss-second-order}
-\end{equation}
+\end{align}
 
 For diagonal covariance $\Sigma_M = \sigma_{\text{D2D}}^2 I$, the cross-terms $i \neq j$ vanish in expectation, yielding:
 \begin{equation}

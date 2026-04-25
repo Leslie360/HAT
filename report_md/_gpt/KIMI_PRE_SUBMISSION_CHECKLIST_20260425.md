@@ -1,58 +1,61 @@
-# Pre-Submission Checklist — Round-5 Post-Stage-2 State
-**Date**: 2026-04-25
-**Target**: Nature Electronics manuscript + Supplementary
-**Canonical commit**: `9cdbe77`
+# Pre-Submission Checklist — Updated 2026-04-25 22:10 CST
 
-## Code (Standing)
+## LaTeX Compile Status
+- [x] `main.tex` compiles with BibTeX: RC 0, zero warnings after multi-pass.
+- [x] `supplementary_main.tex` compiles after multi-pass: RC 0, zero warnings.
+- [x] Zero undefined references in main and supplementary builds.
+- [x] Zero duplicate bib entries observed in current BibTeX pass.
+- [x] `tcolorbox` and theorem environments load correctly.
+- [x] All 23 `\includegraphics{...}` references resolve to existing figure files.
 
-- [x] `analog_layers.py`: first-order `(...)^(NL-1)`, no multiplier ✅ `9cdbe77`
-- [x] `analog_layers.py`: second-order `-0.5 * (nl-1) * (...)^(nl-2)` ✅ `9cdbe77`
-- [x] `analog_layers.py`: NL-guard for `1 < NL < 2` ✅
-- [x] `analog_layers.py`: AMP decorators `@custom_fwd` / `@custom_bwd` ✅
-- [x] Test suite green: `test_analog_layers.py` (79) + `test_dual_bug_fix.py` (7) + `test_adc_perinstance_calibration.py` (1) + `test_groupwise_nl_wrapper.py` (9) = 96/96 ✅
-- [x] All experiments run on `9cdbe77` or later ✅
-- [ ] `COMPILE_PRECHECK.md` adopted as pre-compile workflow ⏳
+## Round-7 Phase Status
+- [x] Phase 1 Theory Deepening: `S_theory_ensemble_hat.tex` expanded and integrated.
+- [x] Phase 2 Codex Empirical Mechanism: E1-E5 complete; JSONs, figures, and master report landed.
+- [x] Phase 3 Writing Polish: Discussion restructure, design rules, reproducibility note, and supplementary wiring landed.
+- [x] Phase 4 Defense/Tooling: defense materials and `S_tooling_comparison.tex` landed.
+- [x] Phase 5 blockers from Codex/Gemini P0/P1 review cleared.
 
-## Paper — Numbers & Zone Discipline
+## Empirical Mechanism Integration
+- [x] `S_mechanism_empirical.tex` integrated.
+- [x] E2 alpha protocol matches JSON: `0,0.5,1,1.5,2,2.5,3`.
+- [x] E2 caption uses three fresh masks, matching JSON.
+- [x] E1 limitation uses fixed batch 32 and 4.73e6 analog parameters.
+- [x] Severe-NL Hessian values described as absolute top eigenvalues, not undefined ratios.
+- [x] Discussion mechanism wording is D2D-direction robustness, not global Hessian flatness.
 
-- [x] `05_results.tex`: Table 1 Stage-2 per-instance numbers (81.89/80.37/80.64/80.67/80.37/81.04) ✅
-- [x] `05_results.tex`: Zero zone-3B language (no 30%, 32%, ceiling) ✅
-- [x] `05_results.tex`: ADC wording = "hook diagnostic" ✅
-- [x] `chapter_5_mitigation.tex`: Stage-2 synced to 05_results.tex ✅
-- [x] Cover letter v6: `[STAGE2_ADC_ENSEMBLE_HEADLINE]` resolved ✅
-- [x] Ch7: `[PENDING_STAGE2_ADC_NUMBERS]` removed ✅
-- [x] Supplementary: `tab:adc-nonideality` 81.87 confirmed as correct context (ADC gain ±5%) ✅
-- [ ] `03_methodology.tex`: `eq:hat-ensemble` label added (Round-5 integration)
-- [ ] `03_methodology.tex`: `subsec:methodology-nl` label added (Round-5 integration)
+## M-Series / Stage-2 Number Audit
+- [x] Table 1 uses per-instance Stage-2 ADC-on numbers.
+- [x] M1-M9 fresh-eval JSONs exist in `report_md/_gpt/json_gpt/`.
+- [x] Main text reports three-seed M-series summary: Standard 81.20%, Ensemble 80.54%, Proportional 80.83%.
+- [x] ADC-on wording remains diagnostic-only, not deployment-fidelity.
 
-## Paper — Theory (Phase 1)
+## Submission-Language Hygiene
+- [x] Broad grep clean across canonical `.tex` for internal audit terms: `post-fix`, `pre-fix`, `bug-immune`, `Zone`, `3A/3B/3C`, `multi-agent`, `audit trail`, `invalidated`, `implementation artifact`.
+- [x] Cover letter uses neutral source-data provenance language.
+- [x] Supplementary historical ablation is framed as earlier diagnostic evidence, not current headline evidence.
+- [x] No `TODO`, `FIXME`, `PENDING`, `USERNAME/REPO_NAME`, or stale root-level test commands in canonical `.tex`.
 
-- [ ] §S.7 Higher-order corrections (~600 words)
-- [ ] §S.8 PAC-Bayes generalization bound (~1200 words)
-- [ ] §S.9 Flat minima / SAM connection (~900 words)
-- [ ] §S.10 Limitations (~300 words)
-- [ ] 6 new bib entries (Roberts 2022, Dziugaite 2017, Pérez-Ortiz 2021, Foret 2021, Keskar 2017, Andriushchenko 2022)
-- [ ] `06_discussion.tex` theory paragraph drafted as `.kimi_draft`
+## Reproducibility / Code
+- [x] `S_reproducibility.tex` test commands use `tests/test_*.py` paths after workspace cleanup.
+- [x] `S_reproducibility.tex` describes the canonical 10x5 fresh-instance protocol and ADC hook diagnostic.
+- [ ] Release URL / archive policy still needs final human decision: anonymous reviewer archive vs public GitHub URL.
+- [ ] Confirm whether `9cdbe77` remains the canonical reproducibility commit, or whether a later cleanup/release commit should be tagged for submission.
+- [ ] Final release bundle / Zenodo DOI placeholder still needs packaging after user approval.
 
-## Paper — Compilation
+## User-Supplied Metadata Still Needed
+- [ ] Final author list and affiliations.
+- [ ] Funding details.
+- [ ] Acknowledgments wording.
+- [ ] Competing interests statement confirmation.
+- [ ] Reviewer/editor suggestion list if submitting to Nature Electronics.
 
-- [x] `latexmk` produces `main.pdf` (19 pages, 460 KB) ✅
-- [ ] Compile warnings = 0 (currently 4 undefined refs, Round-5 scope)
-- [ ] Figure QA: all figures referenced, no orphans
+## Remaining Technical Warnings
+- [x] Main manuscript: zero warnings after latest Codex table-width fix.
+- [x] Supplementary: zero warnings after latest Codex formula/path/title/float cleanup.
 
-## Pending Triggers
-
-- [ ] 8×40GB cross-arch results integration (T1 trigger)
-- [ ] Measured-D2D Supp Note S-HW population (T3 trigger)
-- [ ] Hostile-review v2 pass (Round-7)
-- [ ] Final `pdflatex` compile + figure QA pass
-- [ ] Zenodo bundle preparation
-- [ ] Reviewer + editor suggestion list
-- [ ] PhD defense clearance for submission gate
-
-## Removed / Stale
-
-- [x] ~~K4R as canonical baseline~~ ❌ REMOVED (superseded by post-fix M-series)
-- [x] ~~86.37% tagged `[INVALID]`~~ ❌ REMOVED (now zone 3A bug-immune, unchanged)
-- [x] ~~`ab56c2d` canonical commit~~ ❌ REMOVED (superseded by `9cdbe77`)
-- [x] ~~Pre-Branch-A narrative~~ ❌ REMOVED
+## Next Actions
+1. Claude/Kimi can proceed with Phase-5 integration/read-through without prior P0/P1 blockers.
+2. Decide release URL and final reproducibility commit/tag.
+3. Fill user metadata and acknowledgments.
+4. Prepare source-data/release bundle and reviewer-accessible archive.
+5. Run Gemini hostile review v2 on the final integrated submission package.

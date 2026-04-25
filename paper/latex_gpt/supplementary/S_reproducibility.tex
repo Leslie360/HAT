@@ -11,9 +11,9 @@ This note provides a complete command-level recipe for reproducing the three hea
 \begin{enumerate}[leftmargin=1.2em]
     \item Clone the repository at the canonical commit:
     \begin{verbatim}
-    git clone https://github.com/USERNAME/REPO_NAME.git
+    git clone https://github.com/ANONYMOUS/REPOSITORY.git
     cd compute_vit
-    git checkout 9cdbe77
+    git checkout 9cdbe77  # canonical reproducibility commit
     \end{verbatim}
     
     \item Create the conda environment:
@@ -33,16 +33,16 @@ This note provides a complete command-level recipe for reproducing the three hea
 
 \subsection*{S-R.2 Verification suite}
 
-Run the post-fix unit-test suite to confirm the codebase is in the expected state:
+Run the unit-test suite to confirm the codebase is in the expected state:
 
 \begin{verbatim}
-python test_dual_bug_fix.py
+python tests/test_dual_bug_fix.py
 # Expected: 7/7 tests passed
 
-python test_groupwise_nl_wrapper.py
+python tests/test_groupwise_nl_wrapper.py
 # Expected: 9/9 tests passed
 
-python test_adc_perinstance_calibration.py
+python tests/test_adc_perinstance_calibration.py
 # Expected: 1/1 test passed
 \end{verbatim}
 
@@ -63,7 +63,8 @@ python train_tinyvit_ensemble.py \
 
 \textbf{Expected wall-clock:} $\sim$10--12 hours on RTX~5070~Ti.  
 \textbf{Expected best test accuracy:} $\sim$91\% (single seed, training-set accuracy).  
-\textbf{Output:} \texttt{checkpoints/V4\_hybrid\_standard\_noise\_hat\_best.pt}.
+\textbf{Output:} \texttt{checkpoints/}\\
+\texttt{V4\_hybrid\_standard\_noise\_hat\_best.pt}.
 
 \textit{Note:} The training script uses automatic mixed precision (AMP) by default. Set \texttt{--amp False} only for debugging; AMP does not materially affect the final accuracy for this model size.
 
@@ -98,7 +99,7 @@ python scripts/_gpt/eval_fresh_instances_adc_ablation.py \
 \end{verbatim}
 
 \textbf{Expected wall-clock:} $\sim$30 minutes.  
-\textbf{Expected:} ADC-on fresh-instance mean within $0.5$~pp of the ADC-off result from S-R.4, consistent with the iso-accuracy analysis in Section~\ref{subsec:iso-accuracy}.
+\textbf{Expected:} ADC-on fresh-instance mean within $0.5$~pp of the ADC-off result from S-R.4, consistent with the iso-accuracy analysis in the main text (Section~4.2).
 
 \subsection*{S-R.6 Non-determinism note}
 

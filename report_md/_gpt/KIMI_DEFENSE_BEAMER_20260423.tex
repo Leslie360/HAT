@@ -1,0 +1,416 @@
+% DEPRECATED 2026-04-24 — based on bug-contaminated data; see commit 9cdbe77 audit.
+
+\PassOptionsToPackage{demo}{graphicx}
+\documentclass[aspectratio=169,11pt]{beamer}
+
+% Theme and colors
+\usetheme{Madrid}
+\usecolortheme{seahorse}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{footline}[frame number]
+
+% Packages
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc}
+
+% Macros
+\newcommand{\dataset}[1]{\textsc{#1}}
+\newcommand{\commit}[1]{\texttt{#1}}
+% [INVALID] and [PENDING] preserved literally as required
+
+
+
+% Document metadata
+\title[Hardware-Aware Training for CIM]{Hardware-Aware Training for Organic Optoelectronic Compute-in-Memory}
+\subtitle{Branch A Canonical Results}
+\author{[Your Name]}
+\institute{{[Department]} \\ {[University]}}
+\date{\today}
+
+\begin{document}
+
+% ============================
+% Title frame
+% ============================
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\note{
+  Welcome the committee and state the central question directly: how do we run Vision Transformers on analog CIM arrays when every multiply-accumulate is threatened by noise, drift, and variability? Introduce the organic optoelectronic platform---wafer-scale, low-temperature, flexible---but fundamentally different from conventional RRAM or PCM in its noise statistics and retention dynamics.
+}
+
+% ============================
+% Outline / Table of Contents
+% ============================
+\begin{frame}{Outline}
+  \tableofcontents
+\end{frame}
+
+\note{
+  Roadmap of the defense: motivation, architecture, simulation framework, training methodology, Branch A semantics, results with strict bookkeeping, robustness extensions, limitations, and conclusions.
+}
+
+% ============================
+% Slide 1: Introduction / Title Content
+% ============================
+\section{Introduction}
+\begin{frame}
+  \frametitle{Analog Compute-in-Memory for Vision Transformers with Organic Optoelectronic Devices}
+  \begin{itemize}
+    \item \textbf{Candidate:} [Name], [Department], [University]
+    \item \textbf{Committee:} [Member 1], [Member 2], [Member 3]
+    \item \textbf{Thesis Statement:} Vision Transformers can be deployed on noisy analog compute-in-memory (CIM) arrays with deployment-grade accuracy through structured hardware-aware training and a first-order behavioral surrogate matched to organic device physics.
+    \item \textbf{Central Question:} How do we run Vision Transformers on analog CIM when noise, drift, and device variability threaten every multiply-accumulate operation?
+  \end{itemize}
+  \vfill
+  \begin{figure}
+    \centering
+    \includegraphics[width=0.35\textwidth]{placeholder}
+    \caption*{Clean institutional template with thesis title and a small schematic of a differential-pair crossbar array (visual suggestion).}
+  \end{figure}
+\end{frame}
+
+\note{
+  Welcome the committee and state the central question directly: how do we run Vision Transformers on analog CIM arrays when every multiply-accumulate is threatened by noise, drift, and variability? Introduce the organic optoelectronic platform---wafer-scale, low-temperature, flexible---but fundamentally different from conventional RRAM or PCM in its noise statistics and retention dynamics.
+}
+
+% ============================
+% Slide 2: Motivation
+% ============================
+\section{Motivation}
+\begin{frame}
+  \frametitle{Motivation: Why Analog CIM for Vision Transformers?}
+  \begin{itemize}
+    \item \textbf{The energy wall is real:} Data movement between memory and compute dominates AI inference energy, and digital CMOS cannot scale inference energy for ViTs at the edge; analog CIM offers 10--100$\times$ theoretical savings by performing matrix-vector products in-place via Kirchhoff-current accumulation.
+    \item \textbf{Vision Transformers are the accuracy frontier:} Tiny-ViT-5M reaches \textbf{97.48\%} on \dataset{CIFAR-10} in digital FP32, but the model is memory-bound and attention-heavy, making it a natural target for weight-stationary acceleration.
+    \item \textbf{Organic optoelectronics enable new substrates:} These devices allow wafer-scale, low-temperature, flexible-substrate fabrication with inherent photosensitivity---opening pathways for sensor-compute fusion that inorganic RRAM cannot match.
+    \item \textbf{The catch:} Heavy-tailed noise, asymmetric conductance response, and slow retention dynamics break the deterministic assumptions of digital training; a systematic simulation framework is needed to evaluate \emph{before} tape-out.
+    \item \textbf{The analog ceiling:} Even with perfect analog arrays, dynamic attention (QK$^\top$, softmax, AV) remains digital, creating a hard lower bound on system latency and energy.
+  \end{itemize}
+  \vfill
+  \textbf{Key Numbers:}
+  \begin{itemize}
+    \item Tiny-ViT-5M FP32 baseline: \textbf{97.48\%} (digital, \dataset{CIFAR-10})
+    \item $\sim$\textbf{87.7\%} of parameters mapped to analog crossbars; $\sim$\textbf{57.9\%} of total energy still consumed by digital attention and control
+    \item Pre-Branch-A analog energy ratio claims: [INVALID]
+  \end{itemize}
+  \begin{figure}
+    \centering
+    \includegraphics[width=0.5\textwidth]{placeholder}
+    \caption*{Split-panel: von Neumann bottleneck (left) vs. hybrid analog/digital CIM stack (right) with ``analog ceiling'' dashed red line.}
+  \end{figure}
+\end{frame}
+
+\note{
+  Start with the familiar energy wall---everyone in the room has seen the DRAM-access vs. MAC-cost bar charts. Then pivot to urgency: digital CMOS cannot scale inference for ViTs at the edge. Analog CIM is promising but not plug-and-play. Organic devices differ fundamentally from RRAM/PCM in noise statistics: they exhibit heavy-tailed variability, sub-linear photoresponse, and double-exponential retention drift. We need a simulation framework to rank risks before fabrication.
+}
+
+% ============================
+% Slide 3: System Architecture
+% ============================
+\section{System Architecture}
+\begin{frame}
+  \frametitle{System Architecture: Hybrid Analog/Digital Stack}
+  \begin{itemize}
+    \item \textbf{Dense linear operators $\rightarrow$ analog:} Patch-embedding convolutions, Q/K/V projection matrices, attention output projection, and feed-forward (MLP) layers are mapped to differential-pair crossbar arrays because they exhibit high weight-stationary utilization.
+    \item \textbf{Control-heavy operators $\rightarrow$ digital:} Softmax, LayerNorm, GELU, positional encoding, residual connections, class token, MBConv blocks, and the dynamic QK$^\top$ and AV products remain on the digital coprocessor.
+    \item \textbf{Target backbone:} Tiny-ViT-5M (4-layer encoder + MLP head, 224$\times$224 \dataset{CIFAR-10} input) --- the smallest pretrained ViT that still exhibits attention-driven sensitivity to analog non-idealities.
+    \item \textbf{Utilization logic:} Depthwise convolutions and dynamic attention products have poor output-unit utilization or require input-dependent matrices that cannot be pre-programmed into non-volatile arrays.
+    \item \textbf{The split follows established heterogeneous CIM practice} (Lin et al., Kim et al., recent accelerators), but is applied here to an organic optoelectronic device stack for the first time.
+  \end{itemize}
+  \vfill
+  \textbf{Key Numbers:}
+  \begin{itemize}
+    \item \textbf{4,730,016} parameters mapped to analog; \textbf{662,748} parameters remain digital
+    \item Analog-mapped parameter ratio: \textbf{87.7\%}
+    \item Array count under 128$\times$128 tiling: \textbf{812 arrays}, \textbf{13,303,808} individual devices
+    \item Stage breakdown: Patch embedding (8 arrays), Stage 1 (48), Stage 2 (384), Stage 3 (372)
+  \end{itemize}
+  \begin{figure}
+    \centering
+    \includegraphics[width=0.45\textwidth]{placeholder}
+    \caption*{Architecture diagram of Tiny-ViT-5M with color-coded blocks: green for analog-mapped layers, blue for digital layers. Zoom-in inset of one transformer block.}
+  \end{figure}
+\end{frame}
+
+\note{
+  Present the target architecture. We study a minimal viable ViT that still exhibits core transformer behaviors---attention, MLP, layer norm---but fits in simulation. The analog/digital split is not arbitrary: it follows array utilization. Dense projections flatten into large matrix tiles; dynamic attention kernels cannot be pre-programmed. This creates what we call the ``analog ceiling'': even perfect analog arrays cannot eliminate the digital attention burden.
+}
+
+% ============================
+% Slide 4: Analog Crossbar Simulation
+% ============================
+\section{Simulation Framework}
+\begin{frame}
+  \frametitle{Analog Crossbar Simulation: From PyTorch Weights to Noisy Conductances}
+  \begin{itemize}
+    \item \textbf{Custom \texttt{AnalogLinear} layer:} A PyTorch \texttt{nn.Module} wrapping the CrossSim simulator core; the same model trains digitally and evaluates on analog without code rewriting.
+    \item \textbf{Forward pass pipeline:} Weight $\rightarrow$ differential conductance pair ($G^+$, $G^-$) $\rightarrow$ quantization to \texttt{n\_states} discrete levels via STE $\rightarrow$ D2D mismatch injection $\rightarrow$ C2C noise resampling $\rightarrow$ ADC conversion $\rightarrow$ digital scale recovery.
+    \item \textbf{Differential-pair encoding:} Positive and negative branches suppress common-mode noise; 16 conductance levels (4-bit, \texttt{n\_states} = 16) form the canonical programming resolution.
+    \item \textbf{Profile-driven substitution:} All device physics enter through a JSON parameter bundle ($\sigma_\text{D2D}$, $\sigma_\text{C2C}$, \texttt{n\_states}, $G_\text{min}$, $G_\text{max}$, retention, photoresponse); swapping the profile changes the technology without changing the code.
+    \item \textbf{Scale recovery:} The analog output is rescaled by the original digital weight norm, which empirically became necessary for Tiny-ViT to prevent activation-range collapse---a sensitivity not seen in ResNet-18 or ConvNeXt.
+  \end{itemize}
+  \vfill
+  \textbf{Key Numbers:}
+  \begin{itemize}
+    \item 4-bit differential mapping: \textbf{n\_states = 16} (canonical programming resolution)
+    \item Optimistic regime: ($\sigma_\text{C2C}$, $\sigma_\text{D2D}$) = \textbf{(1\%, 3\%)}
+    \item Standard regime: \textbf{(5\%, 10\%)} --- main deployment target
+    \item Pessimistic regime: \textbf{(10\%, 20\%)} --- survival stress testing
+  \end{itemize}
+  \begin{figure}
+    \centering
+    \includegraphics[width=0.55\textwidth]{placeholder}
+    \caption*{Flowchart: W $\rightarrow$ $G^+$/$G^-$ $\rightarrow$ STEQuantize $\rightarrow$ $+\varepsilon_\text{D2D}$ $+\varepsilon_\text{C2C}$ $\rightarrow$ MAC $\rightarrow$ ADC $\rightarrow$ $\widehat{W}_\text{eff}$. Sidebar shows JSON profile structure.}
+  \end{figure}
+\end{frame}
+
+\note{
+  Explain how we bridge PyTorch training and realistic analog inference. The same code trains digitally and evaluates on analog; no model rewriting. The profile interface is the key extensibility mechanism: literature priors and measured device statistics enter through the same JSON bundle. This means a new semiconductor requires only a new profile, not new code.
+}
+
+% ============================
+% Slide 5: Hardware-Aware Training
+% ============================
+\section{Hardware-Aware Training}
+\begin{frame}
+  \frametitle{Hardware-Aware Training (HAT): Learning Under Noise}
+  \begin{itemize}
+    \item \textbf{HAT injects physical non-idealities into the forward path} while back-propagating through conductance quantization via the straight-through estimator (STE), making optimization feasible despite piecewise-constant conductance states.
+    \item \textbf{Standard HAT:} Fixes one D2D mismatch field $M_0$ for the entire training run; the model learns to \emph{compensate} for a specific spatial perturbation pattern rather than becoming noise-invariant.
+    \item \textbf{Ensemble HAT:} Resamples $M^{(e)} \sim p(M)$ at each epoch (block-stationary training), forcing the optimizer to minimize expected loss under the full manufacturing distribution rather than a single realization.
+    \item \textbf{Fresh-instance transfer evaluation:} After training, the checkpoint is evaluated on 10 unseen hardware instances $\times$ 5 Monte Carlo passes each, separating same-instance robustness from true deployment generalization.
+    \item \textbf{The critical distinction:} Same-instance robustness and fresh-instance robustness are fundamentally different evaluation targets---standard HAT excels at the former but fails catastrophically at the latter.
+  \end{itemize}
+  \vfill
+  \textbf{Key Numbers:}
+  \begin{itemize}
+    \item Standard HAT source-domain accuracy (same-instance, V4): $\sim$\textbf{91.6\%} [INVALID]\ pre-Branch-A --- awaiting K4R re-anchor
+    \item Standard HAT fresh-instance collapse: $\sim$\textbf{10.0\%} [INVALID]\ pre-Branch-A --- deterministic single-class attractor
+    \item Ensemble HAT fresh-instance: $\sim$\textbf{86.4\%} [INVALID]\ pre-Branch-A --- wrong second-order signs; K4R will re-establish
+    \item \textbf{K4R (canonical Branch A):} [PENDING]\ --- training completed; fresh-eval (10$\times$5 instances) queued
+  \end{itemize}
+  \begin{figure}
+    \centering
+    \includegraphics[width=0.5\textwidth]{placeholder}
+    \caption*{Conceptual figure: Standard HAT (one fixed D2D mask) vs. Ensemble HAT (new mask each epoch). Right panel: fresh-instance accuracy bars with pre-Branch-A numbers stamped red [INVALID].}
+  \end{figure}
+\end{frame}
+
+\note{
+  Introduce HAT as the training methodology, but immediately frame the critical design choice: resampling cadence. Standard HAT fixes one mismatch map for the entire run. The model learns to decode that specific spatial pattern as an implicit feature---essentially memorizing it. Ensemble HAT resamples at each epoch, giving the optimizer stability within an epoch and distributional breadth across epochs. All pre-Branch-A ensemble numbers are invalidated by the second-order sign bug; K4R will re-establish the canonical baseline under Branch A semantics.
+}
+
+% ============================
+% Slide 6: Branch A Semantics
+% ============================
+\section{Branch A Semantics}
+\begin{frame}
+  \frametitle{Branch A Semantics: No-Multiplier STE and Sign-Corrected Second-Order}
+  \begin{itemize}
+    \item \textbf{\texttt{group=all} uniform-NL (mainline):} All analog-mapped layers share the same nonlinearity parameters; this is the canonical configuration for all deployment claims. The \texttt{group=mlp} variant is \textbf{diagnostic-only}---it isolates the MLP path for mechanistic study but should not be used for system-level claims.
+    \item \textbf{Domain randomization:} Epoch-level D2D resampling acts as structured augmentation matched to the deployment distribution, not i.i.d. pixel noise; the spatial correlation structure of mismatch matters.
+    \item \textbf{No-multiplier first-order STE (Equation S2):} \texttt{torch.pow(ratio, nl-1)} --- this is an \textbf{intentional design}, not a coding bug. The absence of an explicit NL prefactor is a behavioral proxy for position-dependent update difficulty, not the strict derivative of $f(G) = G^\text{NL}$.
+    \item \textbf{Second-order brake correction:} Negative signs ($-0.5$) for both LTP and LTD act as \textbf{curvature braking}, not acceleration. The positive signs used in pre-Branch-A commits allowed the optimizer to exploit fragile minima in the severe-NL landscape.
+    \item \textbf{Physical grounding:} The NL parameters modulate gradient scaling according to conductance position: potentiation weakens near $G_\text{max}$, depression weakens near $G_\text{min}$. This is an optimizer-side abstraction, not a pulse-faithful write simulator.
+  \end{itemize}
+  \vfill
+  \textbf{Key Numbers:}
+  \begin{itemize}
+    \item NL$_\text{LTP}$ = \textbf{1.0}, $|$NL$_\text{LTD}|$ = \textbf{1.0} for ideal symmetric write (canonical mainline)
+    \item NL = \textbf{2.0} for severe-NL diagnostic regime (boundary of first-order approximation)
+    \item V4 canonical ($\sim$97\%) survives at NL=1 because the STE surrogate reduces to identity
+    \item Pre-Branch-A K2 severe-NL mean \textbf{38.95\%}: [INVALID]\ --- wrong second-order signs
+  \end{itemize}
+  \begin{figure}
+    \centering
+    \includegraphics[width=0.5\textwidth]{placeholder}
+    \caption*{Equation panel: first-order STE (no multiplier) and second-order correction with negative sign. Green for LTP, red for LTD. Inset: loss-landscape curvature ``brake'' arrow.}
+  \end{figure}
+\end{frame}
+
+\note{
+  This is the Branch A semantics slide. Be prepared to defend the no-multiplier form: it is an intentional behavioral proxy ratified by the user, not a coding error. The second-order negative signs act as a brake on curvature, preventing the optimizer from entering narrow ravines that are mathematically valid under the surrogate but physically unstable under fresh D2D. The \texttt{group=all} mainline is canonical; \texttt{group=mlp} is purely diagnostic---it tells us \emph{where} failure localizes, but it is not a deployment configuration.
+}
+
+% ============================
+% Slide 7: Results
+% ============================
+\section{Results}
+\begin{frame}
+  \frametitle{Results: Locked Numbers, Invalidated Claims, and Pending Re-Anchor}
+  \begin{itemize}
+    \item \textbf{V4 canonical (NL=1 default, no-noise or standard uniform noise):} $\sim$\textbf{97\%} on \dataset{CIFAR-10} --- likely valid because the NL=1 default renders the no-multiplier STE semantics bug a no-op (the surrogate becomes identity, so sign errors in higher-order terms do not propagate).
+    \item \textbf{Standard HAT fresh-instance collapse:} All claims of $\sim$10\% collapse on fresh D2D under standard HAT are [INVALID]\ --- pre-\commit{ab56c2d}, wrong second-order signs; the qualitative phenomenon may replicate but the exact numerical value is void.
+    \item \textbf{Ensemble HAT fresh-instance:} All claims of $\sim$86\% fresh-instance accuracy under Ensemble HAT are [INVALID]\ --- pre-\commit{ab56c2d}; K4R will provide the first canonical measurement.
+    \item \textbf{Severe-NL (K2, N=30):} All claims of bimodal distributions, 38.95\% mean, and MLP-path localization are [INVALID]\ --- pre-\commit{ab56c2d}, wrong second-order signs.
+    \item \textbf{K4R (canonical Branch A):} [PENDING]\ --- this is the first experiment run on commit \commit{ab56c2d} with corrected first-order (no-multiplier) and second-order (negative-sign) semantics; fresh-eval queued.
+  \end{itemize}
+  \vfill
+  \textbf{Key Numbers:}
+  \begin{itemize}
+    \item V4 canonical $\sim$97\% \textcolor{green!60!black}{\checkmark} (likely valid)
+    \item All Ensemble HAT / K2 / K3 / K4 (alpha sweep) numbers: \textcolor{red}{\texttimes}\ [INVALID]\ until K4R completes
+    \item K4R fresh-instance mean and standard deviation: [PENDING]
+  \end{itemize}
+  \begin{figure}
+    \centering
+    \includegraphics[width=0.6\textwidth]{placeholder}
+    \caption*{Traffic-light table: three columns (Experiment, Pre-Branch-A Status, Branch A Status). Green row for V4 ($\sim$97\%). Red rows for all other experiments labeled [INVALID]. One yellow row for K4R labeled [PENDING].}
+  \end{figure}
+\end{frame}
+
+\note{
+  This is the honesty slide. State clearly that previous headline results---86.37\%, 38.95\%, the bimodal K2 distribution---were produced with incorrect second-order signs and are invalid under Branch A. The V4 baseline survives because NL=1 makes the STE surrogate identity, so sign errors in higher-order terms cannot propagate. K4R is the first live canonical experiment. The committee should treat all pre-Branch-A numbers as historical artifacts, not evidence.
+}
+
+% ============================
+% Slide 8: Robustness & Physical Realism
+% ============================
+\section{Robustness}
+\begin{frame}
+  \frametitle{Robustness \& Physical Realism: Validated at Extremes, Awaiting Re-Anchor}
+  \begin{itemize}
+    \item \textbf{Sanity-check validation at extremes:} Zero noise $\rightarrow$ digital accuracy (97.48\%); maximum noise $\rightarrow$ random guess (10.0\%). The framework behaves correctly at both boundaries, confirming that the analog layer implementation is not silently broken.
+    \item \textbf{Correlated D2D, retention drift, heavy-tailed noise, temperature placeholders, and IR-drop scalars} are all modeled within the same profile interface, though their canonical numerical outputs await the K4R re-anchor.
+    \item \textbf{OPECT zero-shot transfer:} Substituting Zhang 2025 parameters ($\sigma_\text{D2D}$ = 3\%, $\sigma_\text{C2C}$ = 2\%, 34 states, $G_\text{max}/G_\text{min}$ = 47.3) into the JSON profile changes accuracy without retraining, demonstrating profile-driven extensibility.
+    \item \textbf{Inverse-gamma photoresponse front-end:} $P_\text{in} = X^{(1/\gamma_\text{phys})}$ restores linearity for sub-linear organic phototransistor response, but also amplifies shot-noise variance---constituting a task-dependent trade-off, not a free improvement.
+    \item \textbf{First-order behavioral scope:} The framework is physics-agnostic at the code level; it is a risk-ranking tool, not a chip-predictive SPICE emulator.
+  \end{itemize}
+  \vfill
+  \textbf{Key Numbers:}
+  \begin{itemize}
+    \item OPECT profile zero-shot transfer result: [PENDING]\ pending K4R re-anchor (pre-Branch-A 88.53\% is [INVALID])
+    \item Zhang 2026 OPECT: $G_\text{max}/G_\text{min}$ = \textbf{47.3}, \texttt{n\_states} = \textbf{34}, $\sigma_\text{D2D}$ = \textbf{3\%}, $\sigma_\text{C2C}$ = \textbf{2\%}
+    \item Canonical retention: $\tau_1$ = \textbf{140 ms}, $\tau_2$ = \textbf{610 ms}, $A_0$ = \textbf{0.6}
+    \item Energy reduction estimate (first-order): \textbf{11.45$\times$} vs. FP32 digital baseline \textbf{[VALID as estimate, not measured silicon]}
+  \end{itemize}
+  \begin{figure}
+    \centering
+    \includegraphics[width=0.55\textwidth]{placeholder}
+    \caption*{Multi-panel: top-left zero-shot transfer bars (OPECT vs. canonical); top-right inverse-gamma compensation curves; bottom retention decay curve (fast drop to 1~s, then plateau near 79\%). Label bars with [PENDING]\ or [INVALID]\ as appropriate.}
+  \end{figure}
+\end{frame}
+
+\note{
+  Emphasize that the framework is physics-agnostic at the code level; only the JSON profile changes. The physical realism extensions---correlated D2D, retention, heavy tails---are built in but their canonical numerical outputs await K4R. The inverse-gamma compensation is a design trade-off: it linearizes signal but amplifies shot noise. We treat the 11.45$\times$ energy figure as a first-order estimate, not a silicon claim.
+}
+
+% ============================
+% Slide 9: Limitations & Future Work
+% ============================
+\section{Limitations}
+\begin{frame}
+  \frametitle{Limitations \& Future Work}
+  \begin{itemize}
+    \item \textbf{Dataset scale:} \dataset{CIFAR-10} only; \dataset{CIFAR-100} and Flowers-102 ablations confirm complexity scaling but ImageNet validation is future work. The framework's purpose is to rank failure modes, not chase SOTA.
+    \item \textbf{Architecture scale:} 4-layer Tiny-ViT; full-scale ViT-Base needs validation, though the failure-mode ranking (ADC cliff, instance overfitting, NL boundary) is expected to be architecture-transferable.
+    \item \textbf{Simulator fidelity:} First-order behavioral surrogate, not SPICE; no hardware-in-the-loop yet. A full SPICE simulation of 13.3 million devices would require weeks per forward pass.
+    \item \textbf{STE semantics:} The no-multiplier form is an intentional proxy, but physical calibration against pulsed write data is still needed. The NL=2.0 severe-NL boundary is an approximation limit, not a proven material impossibility.
+    \item \textbf{Yield and defects:} Parametric variation only; hard defects and stuck-at faults are not modeled because organic crossbar yield statistics at 128$\times$128 scale are not yet available in the literature.
+  \end{itemize}
+  \begin{figure}
+    \centering
+    \includegraphics[width=0.6\textwidth]{placeholder}
+    \caption*{Roadmap figure: horizontal timeline with three stages. Stage 1 (Current): literature profiles, first-order surrogate, \dataset{CIFAR-10}. Stage 2 (Near-term): measured profiles, hardware-in-the-loop, correlated D2D. Stage 3 (Long-term): ImageNet, SPICE-coupled spatial fields, defect modeling. Dashed arrows indicate uncertainty.}
+  \end{figure}
+\end{frame}
+
+\note{
+  Be honest about boundaries. A strong defense acknowledges limitations. The first-order surrogate trades physical fidelity for gradient-path flexibility and computational tractability---essential for sweeping hundreds of training runs. Hardware-in-the-loop is the highest-priority next step; until then, all claims are simulation-ranking claims, not silicon predictions.
+}
+
+% ============================
+% Slide 10: Conclusion
+% ============================
+\section{Conclusion}
+\begin{frame}
+  \frametitle{Conclusion: Framework, Semantics, and Canonical Status}
+  \begin{itemize}
+    \item \textbf{Framework contribution:} The first end-to-end PyTorch-to-analog-CIM framework for Vision Transformers with organic device-profile integration, enabling rapid ablation of analog non-idealities without model rewriting.
+    \item \textbf{Methodology contribution:} A structured HAT taxonomy (cadence $\times$ noise profile) that enables rigorous attribution of accuracy loss to physical causes---distinguishing same-instance compensation from true deployment invariance.
+    \item \textbf{Branch A semantics:} No-multiplier first-order STE + sign-corrected second-order brake + \texttt{group=all} uniform-NL mainline. These are ratified, intentional design choices, not bugs to be fixed.
+    \item \textbf{Current canonical status:} V4 baseline $\sim$97\% is \textbf{likely valid} (NL=1 no-op); all fresh-instance and severe-NL claims are \textbf{scrubbed} pending K4R re-anchor.
+    \item \textbf{Message to the community:} Wait for K4R fresh-eval before citing any new canonical numbers. The framework is ready for use; the numerical claims are undergoing re-validation.
+  \end{itemize}
+  \vfill
+  \textbf{Key Numbers:}
+  \begin{itemize}
+    \item V4 canonical $\sim$97\% \textcolor{green!60!black}{\checkmark} \textbf{(likely valid)}
+    \item K4R fresh-instance mean $\pm$ std: [PENDING]
+  \end{itemize}
+  \begin{figure}
+    \centering
+    \includegraphics[width=0.4\textwidth]{placeholder}
+    \caption*{Three-message summary: wrench icon for framework, shield for semantics, hourglass for pending results.}
+  \end{figure}
+\end{frame}
+
+\note{
+  Summarize in three messages. First, the framework enables rapid ablation of analog non-idealities through profile substitution. Second, the Branch A semantics are ratified and intentional---the no-multiplier form and negative second-order signs are design choices, not errors. Third, the community should wait for K4R fresh-eval before citing any new canonical numbers. The science is sound; the bookkeeping is conservative.
+}
+
+% ============================
+% Appendix
+% ============================
+\appendix
+\section{Appendix}
+
+% ============================
+% Appendix Slide A1
+% ============================
+\begin{frame}
+  \frametitle{Appendix: Branch A Provenance Chain}
+  \begin{itemize}
+    \item \textbf{Commit \commit{ab56c2d}:} \texttt{fix(analog\_layers): Branch A --- no-multiplier first-order, sign-corrected second-order} --- this is the canonical commit from which all future experiments branch.
+    \item \textbf{First-order STE:} \texttt{torch.pow(ratio, nl-1)} --- no NL multiplier; matches paper Equation S2 intentionally. The form is a behavioral proxy for position-dependent update difficulty.
+    \item \textbf{Second-order signs:} Negative ($-0.5$) for both LTP and LTD --- \textbf{brake}, not accelerator. Pre-Branch-A positive signs allowed the optimizer to exploit fragile curvature minima.
+    \item \textbf{Commit history:} \commit{0ff3b2f} (multiplier added) $\rightarrow$ \commit{c3dbeb3} (user-ratified multiplier, now reverted) $\rightarrow$ \commit{ab56c2d} (Branch A ratification).
+    \item \textbf{Invalidated experiments:} J1d, K2, K3, K4 alpha=0.00/0.25/0.50, all parity probes, first K4R attempt --- all used wrong second-order signs and are [INVALID]\ under Branch A.
+  \end{itemize}
+  \begin{figure}
+    \centering
+    \includegraphics[width=0.55\textwidth]{placeholder}
+    \caption*{Git history diagram: horizontal timeline with commits as nodes. Gray = pre-Branch-A (invalidated), green = \commit{ab56c2d} (canonical). Red [INVALID]\ banner over gray nodes.}
+  \end{figure}
+\end{frame}
+
+\note{
+  Walk the committee through the provenance chain. The no-multiplier form is not a bug fix; it is a reversion to the intentionally designed behavioral proxy. The second-order negative signs were derived by Gemini and ratified by the user. All experiments before \commit{ab56c2d} used positive signs and are invalid. This is strict bookkeeping, not a scientific reversal.
+}
+
+% ============================
+% Appendix Slide A2
+% ============================
+\begin{frame}
+  \frametitle{Appendix: Why Pre-Branch-A Numbers Died --- The Mechanism}
+  \begin{itemize}
+    \item \textbf{Root cause:} Second-order signs were positive (accelerator) instead of negative (brake) in all pre-\commit{ab56c2d} experiments.
+    \item \textbf{Effect on optimization:} The positive sign amplified curvature in the wrong direction, allowing the optimizer to find minima that were mathematically valid under the surrogate but physically unstable under fresh D2D realizations.
+    \item \textbf{Signature of failure:} The K2 bimodal distribution---some instances $>$50\%, others $\sim$10\%---is the classic signature of fragile-minima overfitting. The optimizer stumbled into narrow survival basins by chance.
+    \item \textbf{Fix:} Sign-corrected second-order acts as a brake, preventing the optimizer from entering narrow ravines in the severe-NL loss landscape. This makes training more conservative but generalizes better.
+    \item \textbf{Consequence:} All pre-Branch-A source-domain accuracy looked high, but fresh-instance transfer was structurally compromised. The old results were not ``wrong'' in isolation; they were optimized for the wrong objective.
+  \end{itemize}
+  \vfill
+  \textbf{Key Numbers:}
+  \begin{itemize}
+    \item Old K2 mean \textbf{38.95\%} (bimodal: some $>$50\%, some $\sim$10\%): [INVALID]
+    \item Old K4 alpha-sweep claims: [INVALID]
+    \item K4R will be the first valid severe-NL fresh-instance measurement: [PENDING]
+  \end{itemize}
+  \begin{figure}
+    \centering
+    \includegraphics[width=0.5\textwidth]{placeholder}
+    \caption*{Conceptual loss-landscape plot: 2D contour with two basins. Left (pre-Branch-A): optimizer zooms into narrow ravine ``fragile minimum'' ($\sim$50\% lucky, $\sim$10\% unlucky). Right (Branch A): brake sign keeps optimizer in broad basin.}
+  \end{figure}
+\end{frame}
+
+\note{
+  Explain the technical mechanism. The positive second-order sign amplified curvature, letting the optimizer find minima that were valid under the surrogate but unstable under fresh D2D. The K2 bimodal distribution---some instances above 50\%, others at chance---is the smoking gun. The negative sign corrects this by braking curvature. This is why all old numbers had to be scrubbed: they were optimized for an objective that did not match deployment physics.
+}
+
+\end{document}

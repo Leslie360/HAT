@@ -1,0 +1,270 @@
+% Thesis Chapter 8 — Outlook and Conclusion
+% .kimi_draft_v3 sidecar
+% Zone-scrubbed per R3-1 methodology; all numbers map to 3A/3C.
+% No bug-retrospective language.
+%
+% Seeded from the thesis outline, manuscript results, and post-submission
+% experiment roadmap (Routes R-A, R-B, R-C).
+%
+% Cross-references:
+%   Chapter 1 (\ref{chap:hat-instance-overfitting}) — instance overfitting
+%   Chapter 2 (\ref{chap:framework}) — simulation framework
+%   Chapter 3 (\ref{chap:hat-taxonomy}) — HAT taxonomy
+%   Chapter 4 (\ref{chap:failure-mode-atlas}) — failure mode atlas
+%   Manuscript: \ref{sec:methodology}, \ref{sec:results}
+
+\chapter{Outlook and Conclusion}
+\label{chap:outlook}
+
+\section{Introduction: the thesis as a bridge}
+
+This thesis began with a simple observation.  Organic optoelectronic compute-in-memory devices are invariably introduced through figures of merit---conductance window, retention time, write asymmetry, optical responsivity---that are necessary but not sufficient.  They do not answer the question that ultimately matters for deployment: \emph{what accuracy survives once a modern vision backbone is mapped to an analog array with structured mismatch, finite readout precision, and a sub-linear photoresponse?}  The intervening chapters have built a bridge between the measurement laboratory and the algorithm training loop.  Chapter~\ref{chap:framework} constructed the bridge's truss: a profile-driven simulation framework that turns device characterizations into structured training inputs.  Chapter~\ref{chap:hat-taxonomy} mapped the traffic rules: a taxonomy of hardware-aware training cadences, noise profiles, and transfer guarantees.  Chapter~\ref{chap:failure-mode-atlas} surveyed the load limits: a catalogue of named, reproducible failure modes that bound the deployment envelope.
+
+The preceding chapter constructed the deployment envelope; this chapter steps outside it to propose the next-generation theory and hardware roadmap.
+
+This final chapter has two tasks.  The first is to look forward.  It identifies the experiments, architectures, hardware roadmaps, and theoretical tools that can extend the bridge beyond the scope of the present thesis.  The second is to look backward, integrating the eight chapters into a single narrative arc with three core contributions: (1)~\texttt{compute\-ViT} as a reusable research instrument; (2)~the HAT taxonomy and the discovery of hardware-instance overfitting; and (3)~a quantified deployment envelope for organic CIM.  The outlook is optimistic but grounded; the conclusion is definitive but open-ended---because a thesis, like the bridge it builds, is meant to be crossed.
+
+
+% =============================================================================
+\section{Immediate next steps: thesis-completion experiments}
+\label{sec:immediate-next-steps}
+
+Every thesis leaves a residue of unfinished experiments.  The two described in this section are not afterthoughts; they are the natural completions of loops opened in Chapter~\ref{chap:failure-mode-atlas}.  Both are framed as thesis-completion experiments rather than submission-path tasks, because their purpose is to test the \emph{structural} claims of the thesis---that instance-overfitting and severe-write nonlinearity can be jointly mitigated, and that the ranking logic discovered on CIFAR-10 survives scale---rather than to generate new headline numbers for a manuscript.
+
+\subsection{Joint severe-NL and instance-overfitting mitigation}
+\label{subsec:joint-mlp-ensemble}
+
+Chapter~\ref{chap:failure-mode-atlas} established that severe nonlinear write ($NL=2.0$) introduces a bounded degradation band of approximately $\sim$80--82\% on fresh instances under the revised gradient-scaling recipe, irrespective of training protocol (Standard HAT, Ensemble HAT, or proportional noise).  The residual gap of roughly $5.7$~pp to the canonical $NL=1.0$ baseline ($86.37\%$) remains open.  The central thesis-completion experiment is whether higher-order gradient corrections, larger-batch training, or device-level linearisation can close this gap while preserving the deployment-grade transfer that Ensemble HAT provides at $NL=1.0$.
+
+The $\sim$80--82\% band is systematic rather than instance-variable: cross-instance standard deviation remains tight ($<2$~pp) across all six M-series training routes.  This suggests that the degradation is a \emph{surrogate-fidelity} issue---the first-order NL approximation neglects higher-order curvature terms that become relevant when gradient asymmetry is large---rather than a training-protocol deficiency.  The obvious question---and the central thesis-completion experiment---is whether higher-order STE corrections or full-differential gradient computation can recover the missing accuracy while preserving the instance-overfitting immunity that epoch-level D2D resampling provides.
+
+The experimental design is as follows.  Starting from the canonical Ensemble HAT checkpoint ($86.37\pm1.54\,\%$ fresh-instance mean), we apply a weights-only warm-start that resets optimizer state, scheduler state, and epoch counters, ensuring that the short NL-compensation run cannot skip training because of stale metadata.  During the subsequent fine-tuning phase, the MLP blocks retain their linearized $\mathrm{NL}=1.0$ surrogate while the attention blocks are exposed to the full $\mathrm{NL}=2.0$ distortion, and---crucially---the D2D mismatch field is resampled at the start of every epoch.  The primary target metric is fresh-instance accuracy under the $10 \times 5$ protocol.  A target of $\ge 80\,\%$ would validate that the two largest failure modes---instance overfitting and severe write nonlinearity---are \emph{jointly} mitigable.  Anything below $50\,\%$ would confirm a fundamental incompatibility between first-order NL surrogates and distributional training.
+
+An ablation matrix isolates the sources of any improvement:
+\begin{enumerate}
+    \item \textbf{Ensemble HAT only} ($\mathrm{NL}=1.0$ global): the canonical baseline.
+    \item \textbf{Standard HAT severe-NL} ($\mathrm{NL}=2.0$, fixed mask): the $\sim$81\% baseline.
+    \item \textbf{Joint warm-start}: Ensemble HAT checkpoint + MLP-linear protection + epoch resampling.
+    \item \textbf{Joint cold-start}: random initialization + MLP-linear protection + epoch resampling.
+\end{enumerate}
+The warm-start versus cold-start comparison is diagnostically important.  If warm-start outperforms cold-start, it suggests that the canonical Ensemble HAT solution provides a favourable basin into which the NL-compensated model can settle.  If cold-start matches warm-start, the NL-compensated objective is sufficiently well-conditioned that pre-training on $\mathrm{NL}=1.0$ is unnecessary.  Either outcome would refine the practical recipe for training analog-mapped transformers under severe write asymmetry.
+
+This experiment is the thesis analogue of Route~R-A in the post-submission publication plan: a deployment-grade result that couples surrogate-fidelity repair with deployment invariance.  Whether it succeeds or fails, it closes the loop opened in Chapter~\ref{chap:failure-mode-atlas}.
+
+\subsection{ImageNet-100 pilot: scaling beyond CIFAR-10}
+\label{subsec:imagenet-pilot}
+
+All empirical anchors in this thesis---the $86.37\pm1.54\,\%$ Ensemble HAT recovery, the severe-NL $\sim$80--82\% band (revised gradient-scaling recipe), the correlated-D2D bounded degradation ($86.33\pm1.61\,\%$ at $\rho=0$, $84.57\pm2.39\,\%$ at $\rho=0.3$, falling to $82.12\pm3.95\,\%$ at $\rho=0.5$; zone 3A bug-immune canonical protocol), and the $79\,\%$ retention plateau---were measured on CIFAR-10 with Tiny-ViT.  That choice was deliberate: it isolated the physics--algorithm interaction from the confounding effects of dataset scale and resolution.  But it leaves a critical question unanswered.  Are the ranking logic and the failure-mode boundaries a small-dataset curiosity, or do they survive the transition to larger vision tasks?
+
+The recommended pilot, specified under the G-AA2 protocol, uses ImageNet-100---a curated 100-class subset of ImageNet-1k---rather than the full 1k dataset.  The model remains the Tiny-ViT family, preserving the mixed-signal mapping logic (analog linear layers, digital control-heavy operators) that has been the constant across all preceding chapters.  The training protocol begins with the canonical Ensemble HAT cadence: AdamW, cosine annealing, per-epoch D2D resampling, 4-bit differential conductance mapping.  The only manipulated variable is dataset scale.
+
+The pilot is designed around two decision points.  First, if training instability appears before useful convergence, the resolution or model size should be reduced \emph{before} the hardware protocol is changed.  The goal is to test whether the \emph{physics assumptions} scale, not to chase state-of-the-art accuracy.  Second, if the 6-bit ADC cliff---a sharp accuracy drop when ADC precision falls below six bits---shifts materially upward or downward relative to the CIFAR-10 observation, that shift is recorded as the main pilot finding rather than forced back to the baseline value.
+
+The success criterion is qualitative, not quantitative: the pilot succeeds if the \emph{ranking} of mitigation strategies survives.  Ensemble HAT should still outperform fixed-mask HAT; the severe-NL MLP-linear rescue should still underperform on fresh instances; correlated D2D should still produce bounded rather than catastrophic degradation.  If these rankings hold, the deployment envelope derived in this thesis is a \emph{scalable} design principle.  If they collapse, the envelope is regime-specific and requires re-derivation at every scale.
+
+This experiment is the natural scaling counterpart to the joint-training experiment of Section~\ref{subsec:joint-mlp-ensemble}.  Together, the two thesis-completion experiments answer the questions left open by the manuscript: \emph{does the joint mitigation work?} and \emph{does the ranking survive scale?}
+
+
+% =============================================================================
+\section{Language-model CIM: transferring HAT principles beyond vision}
+\label{sec:language-model-cim}
+
+Vision transformers were a proof of concept.  The dominant transformer workload, measured in inference cost and commercial impact, is the large language model (LLM).  Analog CIM offers the same theoretical energy advantage for LLMs---massive matrix--vector products in the MLP and attention layers---but the mapping is complicated by differences in scale, attention geometry, and memory pressure.  This section asks how the HAT principles developed in this thesis would transfer to language-model deployment on organic optoelectronic arrays, and identifies the new physics--algorithm boundaries that would need to be mapped.
+
+\subsection{Scale: parameter count and crossbar tiling}
+\label{subsec:lm-scale}
+
+Tiny-ViT has approximately five million parameters.  A modest modern LLM has seven to seventy \emph{billion}.  Mapping such a model to analog crossbars requires tiling across hundreds or thousands of arrays, each with its own D2D mismatch field, scale-recovery factor, and ADC periphery.  The dimensionality of the deployment distribution therefore explodes: instead of resampling a single global mismatch map, HAT would need to resample a \emph{collection} of tile-level maps, possibly with across-tile process gradients that introduce long-range spatial correlation.
+
+Instance-overfitting, the central discovery of Chapter~\ref{chap:hat-instance-overfitting}, may behave differently under tiling.  On the one hand, the sheer number of independent mismatch realizations could act as an implicit ensemble, averaging out local perturbations and reducing the variance of the fresh-instance accuracy.  On the other hand, if each tile presents a distinct spatial signature, the model may overfit to the particular \emph{configuration} of tile mismatches, producing a new form of ``tile-configuration overfitting'' that is just as catastrophic as the single-array collapse.  Which regime dominates is an empirical question that can only be answered once large-scale tiled simulators exist.
+
+A second scale effect concerns weight precision.  The canonical experiments use 4-bit differential conductance mapping.  For vision transformers on CIFAR-10, this is sufficient.  For LLMs, the dynamic range of the MLP weight matrices is substantially larger, and aggressive quantization can degrade perplexity even in the digital baseline.  Whether organic devices can support the higher bit-widths required for LLM deployment---or whether alternative mapping strategies such as weight grouping or vector-matrix tiling can compensate---is an open device--architecture co-design question.
+
+\subsection{Attention geometry: from spatial patches to temporal tokens}
+\label{subsec:lm-attention}
+
+In vision transformers, self-attention operates over a fixed grid of image patches; the sequence length is constant at inference time, and the KV states for all patches are computed in parallel.  In autoregressive language models, attention operates over a variable-length token sequence.  Each new token requires the key and value activations of \emph{all prior tokens} to be available.  In a digital accelerator, these KV activations are stored in high-bandwidth SRAM; in an analog CIM system, they must either be stored in analog form on the crossbar itself or converted back to digital after every layer.
+
+Analog KV storage introduces retention drift as a first-class inference constraint.  Chapter~\ref{chap:failure-mode-atlas} showed that weight retention drifts to a $79\,\%$ plateau under double-exponential decay.  If KV activations are stored as conductance states, they would drift on a comparable timescale, distorting the attention scores for tokens generated more than a few hundred milliseconds after the KV write.  This makes the retention problem \emph{dynamic} rather than static: the accuracy penalty depends not only on the time since programming but on the temporal position of each token in the sequence.
+
+Digital KV storage avoids drift but reintroduces the ADC/DAC energy and latency that analog CIM is meant to eliminate.  The trade-off is stark: analog storage is energy-efficient but retention-limited; digital storage is retention-robust but bandwidth-limited.  A hybrid strategy---analog storage for the most recent tokens, digital paging for older ones---may be optimal, but its design requires a joint model of attention sparsity, retention dynamics, and peripheral energy that does not yet exist.
+
+\subsection{Head parallelism and mismatch correlation}
+\label{subsec:lm-heads}
+
+Multi-head attention offers natural parallelism: each head can be mapped to a separate crossbar array, allowing simultaneous computation of multiple attention subspaces.  In the vision experiments, the number of heads is small (e.g., four or eight) and the mismatch per head is treated as part of the global D2D field.  In LLMs, the number of heads is larger (thirty-two to ninety-six in current architectures), and the mismatch per head may introduce \emph{structural} variation in the multi-head ensemble.
+
+If one head suffers severe D2D mismatch while its neighbours are clean, the learned aggregation of head outputs may amplify the erroneous head.  Ensemble HAT training would need to resample mismatch not just per epoch but per \emph{head group}, ensuring that the model learns robust aggregation across head-level noise realizations.  The optimal granularity---per head, per head-group, or per layer---is unknown and likely task-dependent.  This is a direct analogue of the cadence question studied in Chapter~\ref{chap:hat-taxonomy}: just as per-epoch resampling outperforms per-batch for the global mismatch field, there may be an optimal head-resampling cadence that balances diversity and optimization stability.
+
+\subsection{Toward a language-model HAT protocol}
+\label{subsec:lm-hat-protocol}
+
+Despite these differences, the \emph{core principle} of this thesis remains valid for language models: train over the deployment distribution of hardware instances, not a single instance.  The practical challenge is cost.  Training an LLM is already computationally expensive; adding D2D resampling at tile or head granularity multiplies the forward-pass overhead.  Several efficiency strategies suggest themselves.
+
+First, resample mismatch only for the analog-mapped layers, keeping the digital embedding, normalization, and softmax layers deterministic.  This reduces the noise dimensionality without sacrificing the key physics.  Second, use a \emph{lightweight} surrogate for the mismatch field: instead of drawing full spatial maps, sample low-rank approximations that capture the dominant process gradients.  Third, evaluate generalization not by classification accuracy but by \emph{perplexity} on a held-out token sequence, measuring the fresh-instance protocol as a perplexity gap between training-time and unseen tile configurations.
+
+This direction is flagged as Route~R-B in the post-thesis publication plan: organic-RRAM language-model CIM scaling.  It is not a short-term thesis experiment---the computational budget exceeds what is available---but it is the logical next target for the research instrument built in this thesis.
+
+
+% =============================================================================
+\section{Hardware-in-the-loop roadmap: from simulation to silicon}
+\label{sec:hardware-roadmap}
+
+Simulation is a powerful lens, but it is not the destination.  The ultimate goal is to deploy HAT-trained models on physical organic optoelectronic arrays.  This section outlines a three-stage roadmap---simulation fidelity, field-programmable gate array (FPGA) emulation, and chip prototype---with milestones and blockers at each stage.  The roadmap is deliberately staged to de-risk the transition: simulation identifies which physics matter; FPGA validates control logic and digital periphery; the chip validates the device itself.
+
+\subsection{Stage I: closing the simulation fidelity gap}
+\label{subsec:stage-sim}
+
+The current framework uses first-order behavioural surrogates.  Write nonlinearity is approximated by scaling the STE gradient (Equations~(\ref{eq:nl-ltp})--(\ref{eq:nl-ltd}) of Chapter~\ref{chap:framework}); retention is modelled by a double-exponential fit with literature-derived time constants; correlated D2D uses a separable AR(1) proxy.  These approximations were necessary to make the design-space sweeps tractable, but they create an \emph{approximation bound}: every failure mode in Chapter~\ref{chap:failure-mode-atlas} is a boundary of the surrogate, not necessarily of the physical device.
+
+The first milestone is therefore to replace the surrogates with \emph{measured} device profiles.  Critical measurements include:
+\begin{itemize}[leftmargin=1.4em]
+    \item \textbf{Spatial covariance kernels:} real fabricated arrays exhibit anisotropic correlation (stronger along shared gate buses than along bitlines) and long-range wafer-scale gradients.  A measured kernel would test whether the bounded-degradation trend observed under the AR(1) proxy ($86.33\pm1.61\,\%$ at $\rho=0$, $84.57\pm2.39\,\%$ at $\rho=0.3$, and $82.12\pm3.95\,\%$ at $\rho=0.5$) holds under realistic spatial structure.
+    \item \textbf{Pulse-accurate programming transients:} the dual-attention NL collapse---in which QKV and output-projection linearization drives accuracy below the unmitigated baseline---was discovered under a gradient-scaling surrogate.  A pulse-faithful programming model would test whether this collapse is a real physical effect or an artifact of the first-order approximation.
+    \item \textbf{Temperature-dependent retention laws:} the $79\,\%$ plateau was computed at room temperature with fixed time constants.  Real organic devices are temperature-sensitive; a measured Arrhenius or Williams-Landel-Ferry law would determine whether the plateau shifts upward (better materials) or downward (worse environments).
+\end{itemize}
+The blocker is not measurement technique---the required instruments are standard---but \emph{statistical representativeness}.  Organic devices often suffer from batch-to-batch variability that exceeds within-batch D2D spread.  A profile derived from one fabrication run may not generalise to the next, undermining the very notion of a canonical ``device profile.''  Solving this requires either run-to-run calibration protocols or Bayesian profile updating, neither of which is mature.
+
+\subsection{Stage II: FPGA emulation of the mixed-signal stack}
+\label{subsec:stage-fpga}
+
+Before committing to a full custom chip, the analog forward path can be emulated on FPGA to validate digital control logic and evaluate end-to-end inference latency.  The FPGA would implement the complete mixed-signal pipeline: conductance quantization, D2D and cycle-to-cycle (C2C) noise injection, retention drift, inverse-gamma front-end compensation, ADC quantization with DNL, and dynamic scale recovery.  The weights are HAT-trained from the simulator; the FPGA merely executes the noisy forward pass in real time.
+
+The milestone is a real-time inference demonstration of Tiny-ViT on FPGA with injected noise that matches the simulator to within $0.1$~pp accuracy.  Achieving this would confirm two things.  First, that the digital peripheral overhead (quantization, noise generation, scale recovery) does not dominate the analog MAC savings.  Second, that the control logic---epoch counters, mismatch map buffers, recalibration triggers---can be implemented with finite state machines and on-chip memory.
+
+The blocker is FPGA resource scaling.  A single 256$\times$256 crossbar emulated with DSP slices consumes a significant fraction of a mid-range FPGA.  Tiling to the size required for even Tiny-ViT forces a hybrid partitioning: some layers run on the FPGA-emulated analog tile, others fall back to digital soft-core processors.  The energy and latency numbers from such a hybrid system are not directly comparable to the manuscript's $11.45\times$ energy-reduction estimate, but they are invaluable for identifying which digital periphery blocks are the true bottlenecks.
+
+\subsection{Stage III: organic RRAM chip prototype}
+\label{subsec:stage-chip}
+
+The final stage is fabrication of a small-scale organic RRAM array and on-chip inference demonstration.  A realistic first target is a 64$\times$64 or 128$\times$128 array, large enough to map a small MLP (e.g., a two-layer network for MNIST) but small enough to yield with modest lithographic resources.  The milestone is not ImageNet-scale performance; it is \emph{functional verification}: a HAT-trained model, transferred from simulation to the physical array without per-device retraining, achieves accuracy within $5$~pp of the simulated prediction.
+
+The blockers at this stage are as much ecological as electrical.  Organic devices are sensitive to humidity, temperature, and oxygen ingress.  A chip that works in a glovebox may fail at ambient conditions.  Contact resistance variability---not modelled in the current framework because it is layout-dependent---can dominate the array-level noise budget.  And the lack of foundry-grade design kits for organic electronics means that every transistor, via, and passivation layer must be co-designed with the materials scientist.
+
+Nevertheless, the staged roadmap provides a decision framework.  If Stage~I shows that the surrogates are faithful, the simulation results in this thesis can be treated as predictive.  If Stage~II shows that digital periphery is the bottleneck, the research priority shifts from device improvement to ADC design and scale-recalibration circuits.  If Stage~III shows that ambient sensitivity is the dominant failure mode, the deployment envelope must be redefined around encapsulation and thermal management rather than write nonlinearity.
+
+\subsection{Calibration and test infrastructure}
+\label{subsec:calibration-infra}
+
+A hidden blocker that cuts across all three stages is calibration infrastructure.  Analog arrays require per-column ADC calibration, reference-cell tracking for scale recovery, and temperature compensation.  The framework's dynamic scale recalibration (Section~\ref{subsec:frontend-interface} of Chapter~\ref{chap:framework}) assumes perfect knowledge of the drifted conductances.  In silicon, the equivalent operation requires dummy devices, intermittent readout, and digital feedback loops whose energy and latency are not included in the manuscript's energy model.
+
+Building this test bench is not a footnote; it is a research contribution in its own right.  The thesis framework provides the \emph{algorithmic} specification of what must be calibrated (layer-wise scale factors, retention time constants, correlation lengths).  The hardware roadmap provides the \emph{physical} path to implementing that calibration.  Closing the gap between the two is the work of the next several years.
+
+
+% =============================================================================
+\section{Theory directions: from empirical recipes to principled guarantees}
+\label{sec:theory-directions}
+
+The HAT taxonomy in Chapter~\ref{chap:hat-taxonomy} and the failure-mode atlas in Chapter~\ref{chap:failure-mode-atlas} are empirical.  They tell us \emph{what} happens when the resampling cadence or the noise profile is changed, but they do not derive \emph{why} the observed boundaries are where they are.  This section outlines three theory directions that can transform the empirical recipes into principled guarantees: HAT as a regularizer, ensemble-frequency effective width, and probably approximately correct (PAC)--Bayes bounds for device-instance generalisation.
+
+\subsection{HAT as a data-dependent regulariser}
+\label{subsec:hat-regularizer}
+
+Ensemble HAT minimises an empirical expectation over mismatch maps:
+\begin{equation}
+    \theta_{\mathrm{ens}}^{\star}
+    = \arg\min_{\theta}\;
+    \mathbb{E}_{M\sim p(M)}\!\left[
+        \frac{1}{N}\sum_{n=1}^{N}
+        \ell\!\left(f(x_{n};\theta,M),y_{n}\right)
+    \right].
+    \label{eq:ens-hat-repeat}
+\end{equation}
+This objective is structurally identical to adding a data-dependent noise regulariser to the loss landscape.  Drawing a fresh $M$ at each epoch convolves the empirical risk with the mismatch distribution, smoothing sharp minima and favouring flat regions that are compatible with many hardware instances.  The connection to randomized smoothing and implicit regularisation is immediate: the D2D resampling acts as a controlled perturbation of the forward path, and the straight-through estimator propagates the smoothed gradient back to the weights.
+
+In the companion theory contribution (K-V5), this intuition is formalised.  The key result is that the expected gradient variance under epoch-level resampling bounds the Hessian trace of the loss landscape at the converged point.  Specifically, if $\sigma_{M}^{2}$ denotes the variance of the mismatch distribution and $H(\theta)$ the Hessian of the clean risk, then
+\begin{equation}
+    \mathrm{Tr}\,H(\theta_{\mathrm{ens}}^{\star})
+    \;\le\;
+    \frac{C}{\sigma_{M}^{2}}\,
+    \mathbb{E}\!\left[\|\nabla_{\theta}\ell\|^{2}\right],
+    \label{eq:hessian-bound}
+\end{equation}
+where $C$ is a constant that depends on the Lipschitz constant of the model and the learning rate.  The inequality shows that \emph{larger} mismatch variance forces the optimizer into a \emph{flatter} minimum, provided the resampling cadence is slow enough for the optimizer to settle within each realisation.  This is the theoretical counterpart to the empirical observation that Ensemble HAT preserves $86.37\pm1.54\,\%$ fresh-instance accuracy: the flat minimum is robust to instance shift because it is not tightly coupled to any single spatial signature.
+
+The regulariser perspective also explains why fixed-mask HAT fails.  With $\sigma_{M}^{2}=0$ after the initial draw, the bound collapses and the optimizer is free to memorise the specific mismatch field, leading to the $10.00\,\%$ collapse observed in Chapter~\ref{chap:hat-instance-overfitting}.  The theory therefore unifies the two largest empirical findings of the thesis under a single geometric principle.
+
+\subsection{Ensemble-frequency effective width}
+\label{subsec:effective-width}
+
+Not all resampling schedules are equal.  Chapter~\ref{chap:hat-taxonomy} showed that per-epoch resampling outperforms both fixed-mask and per-batch resampling.  The theory direction K-V6 introduces the concept of \emph{ensemble-frequency effective width} to explain why.
+
+Define the effective width as
+\begin{equation}
+    W_{\mathrm{eff}}
+    = \frac{E}{\tau_{\mathrm{mix}}},
+    \label{eq:effective-width}
+\end{equation}
+where $E$ is the number of training epochs and $\tau_{\mathrm{mix}}$ is the optimizer's mixing time measured in epochs---the number of epochs required for the weight distribution to forget its initial condition.  Per-epoch resampling presents one independent mismatch realisation per epoch, so the number of independent samples is $E$; if $\tau_{\mathrm{mix}} \approx 1$ epoch (a plausible estimate for AdamW with moderate learning rate), then $W_{\mathrm{eff}} \approx E$.  Per-batch resampling presents $B$ realisations per epoch, but the mixing time is also shorter because the weights are updated more frequently; if $\tau_{\mathrm{mix}} \approx 1/B$ epochs, then $W_{\mathrm{eff}} \approx B E / B = E$, apparently comparable.  However, the shorter mixing time means the optimizer never fully settles into a basin compatible with any single realisation, producing the non-stationary gradient field that empirically underperforms.
+
+The effective-width hypothesis predicts an inverted-U relationship between resampling frequency and fresh-instance accuracy.  At very low $W_{\mathrm{eff}}$ (fixed mask), the model overfits to one instance.  At very high $W_{\mathrm{eff}}$ (per-batch), the noise prevents convergence.  At moderate $W_{\mathrm{eff}}$ (per-epoch), the optimizer enjoys enough stability to descend within each block and enough diversity to generalise across blocks.  This prediction is consistent with the exploratory ablation in Chapter~\ref{chap:hat-taxonomy}: per-epoch reaches $88.41\,\%$ held-out accuracy, fixed-mask $87.18\,\%$, and per-batch $86.16\,\%$.
+
+Testing the effective-width hypothesis requires a systematic sweep over resampling cadences intermediate between per-epoch and per-batch---for example, resampling every $k$ mini-batches with $k \in \{1, 10, 50, 200\}$.  Such a sweep would locate the peak of the inverted-U and determine whether it is task-dependent or universal.  It would also provide a principled recipe for choosing the cadence given a new model, dataset, and hardware noise level.
+
+\subsection{PAC-Bayes bounds for device-instance generalisation}
+\label{subsec:pac-bayes}
+
+Standard generalisation theory bounds the gap between training and test error under the assumption that both sets are drawn i.i.d. from the same distribution.  In the hardware-instance setting, the \emph{data} are i.i.d., but the \emph{deployment environment} shifts: the training environment is a finite sample of mismatch maps, while the test environment is a fresh draw from $p(M)$.  PAC-Bayes theory is well suited to this setting because it explicitly bounds the risk of a posterior hypothesis in terms of a prior over environments.
+
+Treat the mismatch distribution $p(M)$ as a prior over ``hardware environments.''  During Ensemble HAT training, the model sees $E$ independent draws $M^{(1)},\dots,M^{(E)}$.  The learned weights $\theta$ define a posterior $q(\theta)$ concentrated around the empirical minimiser.  A preliminary PAC-Bayes bound for the fresh-instance risk takes the form
+\begin{equation}
+    R_{\mathrm{fresh}}(q)
+    \;\le\;
+    \hat{R}_{\mathrm{ens}}(q)
+    \;+\;
+    \sqrt{\frac{\mathrm{KL}(q\|p) + \ln\bigl(2\sqrt{E}/\delta\bigr)}{2(E-1)}},
+    \label{eq:pac-bayes}
+\end{equation}
+where $\hat{R}_{\mathrm{ens}}(q)$ is the empirical Ensemble HAT risk averaged over the $E$ epochs, $\mathrm{KL}(q\|p)$ is the Kullback-Leibler divergence between posterior and prior, and $\delta$ is the confidence level.
+
+Several insights follow from Equation~(\ref{eq:pac-bayes}).  First, the bound tightens as $O(1/\sqrt{E})$, explaining why longer training (more independent mismatch draws) improves fresh-instance accuracy up to a plateau.  Second, the KL term penalises overly complex posteriors; this provides a theoretical justification for weight decay and early stopping, both of which shrink the effective posterior volume.  Third, the bound is \emph{distribution-dependent}: if the training mismatch distribution $p_{\mathrm{train}}(M)$ differs from the deployment distribution $p_{\mathrm{deploy}}(M)$---for example, because of correlated D2D or batch-to-batch fabrication drift---the KL term must be replaced by a divergence between the two distributions, and the bound widens proportionally.
+
+Future work can tighten the bound in three directions.  First, replace the i.i.d.~prior over $M$ with a Gaussian-process prior that captures spatial correlation, reducing the effective complexity penalty for structured mismatch.  Second, incorporate the optimizer trajectory into the posterior definition, yielding a data-dependent PAC-Bayes bound that is tighter than the worst-case static bound.  Third, extend the bound to the tiled setting of Section~\ref{subsec:lm-scale}, where the environment prior is over collections of tile-level maps rather than single global maps.  Each extension would bring the theory closer to the physical reality of large-scale analog accelerators.
+
+Together, the three theory directions---regularisation, effective width, and PAC-Bayes bounds---provide a path from the empirical discoveries of this thesis to a rigorous science of hardware-instance generalisation.
+
+
+% =============================================================================
+\section{Conclusion: one story}
+\label{sec:conclusion}
+
+A thesis is often read as a sequence of chapters, each with its own figures, equations, and contributions.  But the true product is not the sequence; it is the \emph{story} that runs through it.  This concluding section tells that story in three acts, then gathers its threads into a single claim about what this thesis has built and where it leads.
+
+\subsection{Act I: the instrument and the discovery}
+
+The story opens with a gap.  Device scientists publish conductance windows and retention curves; system engineers need deployment accuracy.  Chapter~\ref{chap:framework} closed that gap by building \texttt{compute-ViT}, a profile-driven simulation framework in which every physically relevant assumption enters through a structured configuration object.  The framework is not merely an implementation detail; it is a \emph{reusable research instrument}.  A literature-derived prior and an in-house measured profile populate the same fields and drive the same training scripts.  Switching from one device generation to the next requires only replacing the profile instance.
+
+With the instrument in hand, Chapter~\ref{chap:hat-instance-overfitting} asked the obvious question: if we train a vision transformer on a noisy analog array, does it survive deployment?  The answer was a stark $10.00\pm0.00\,\%$ collapse.  Standard hardware-aware training, which fixes a single device-to-device mismatch field for the entire training run, overfits that instance as if it were a hidden domain label.  The discovery is not that analog noise hurts accuracy---that was known---but that \emph{robustness to analog noise is not the same as robustness to hardware-instance shift}.  The remedy, Ensemble HAT, is simple in retrospect: resample the mismatch field at epoch boundaries so that the optimizer learns over a \emph{distribution} of arrays rather than memorising one sample from it.  The result---$86.37\pm1.54\,\%$ fresh-instance accuracy---is the empirical anchor of the thesis.
+
+Chapter~\ref{chap:hat-taxonomy} placed that anchor in a broader design space.  Ensemble HAT is not an isolated trick; it is one point in a taxonomy of resampling cadences, noise profiles, and transfer guarantees.  Per-epoch resampling outperforms per-batch because it creates a block-stationary optimisation landscape: stable enough to descend within each block, diverse enough to generalise across blocks.  Uniform and proportional noise profiles define distinct deployment regimes, and cross-regime training collapses catastrophically.  These distinctions provide a \emph{language} for discussing HAT that did not exist before: practitioners can now specify not merely ``we did HAT'' but ``we trained with epoch-level resampling, uniform noise, and an implicit expectation over mismatch maps.''
+
+\subsection{Act II: the atlas}
+
+If the first act built the instrument and discovered the central phenomenon, the second act mapped its boundaries.  Chapter~\ref{chap:failure-mode-atlas} organised the empirical landscape as a structured catalogue of named, reproducible breakdown patterns.  Each entry---hardware-instance overfitting, dual-attention nonlinear-write collapse, MLP-only diagnostic bound, correlated-D2D bounded degradation, retention plateau at $79\,\%$---is annotated with a trigger, a signature, a mitigation, and an open question.
+
+The atlas is not a pessimistic document.  It is a \emph{deployment envelope}.  It says: if your device operates at $\mathrm{NL}=1.0$ with i.i.d.~mismatch, you can expect $86.37\pm1.54\,\%$ on fresh instances.  At $\rho=0.3$, the mean is $84.57\pm2.39\,\%$; at $\rho=0.5$, it drops modestly to $82.12\pm3.95\,\%$---bounded degradation, not catastrophic collapse.  If retention drift is present but scale recalibration is applied, the accuracy stabilises in the $79.13$--$79.51\,\%$ plateau.  These numbers are contracts between physics and algorithm.  They tell a device engineer how much nonlinearity must be eliminated to reach a given accuracy target, and they tell an algorithm designer which training interventions are deployment-grade and which are merely diagnostic.
+
+A cross-cutting theme binds the atlas entries together: the primacy of \emph{distributional robustness} over instance-specific rescue.  Standard HAT rescues source-domain accuracy; MLP-linearisation rescues source-domain accuracy under severe NL; but neither survives fresh-instance evaluation.  Only interventions that explicitly average over the deployment distribution---Ensemble HAT, dynamic scale recalibration---produce results that are stable across multiple hardware realisations.  This principle is the methodological legacy of the thesis.
+
+\subsection{Act III: the path forward}
+
+The third act is the outlook developed in the preceding sections of this chapter.  It asks: what happens when we push beyond the boundaries of the atlas?  The joint MLP-linear + Ensemble HAT experiment tests whether the two deepest failure modes can be simultaneously repaired.  The ImageNet-100 pilot tests whether the ranking logic survives dataset scale.  The language-model direction tests whether the principles transfer to the dominant AI workload of the coming decade.  The hardware roadmap lays out a staged path from simulation to silicon.  And the theory directions offer a route from empirical recipes to principled guarantees.
+
+These threads are not disjoint futures; they are convergent.  A language-model HAT protocol will need the regularisation theory to choose resampling cadences across thousands of tiles.  A chip prototype will need the FPGA stage to validate calibration logic.  And every stage will need the profile-driven framework as its common language.  The thesis therefore does not end with a single result; it ends with a \emph{platform}.
+
+\subsection{The core contributions}
+\label{subsec:core-contributions}
+
+It is worth stating the contributions plainly, because a thesis that spans simulation, algorithm, and hardware can easily be misread as three small papers bound together.  It is not.  The contributions are three facets of one story.
+
+\textbf{Contribution 1: compute-ViT as a reusable research instrument.}  The framework is the first simulation environment designed specifically for organic optoelectronic CIM that treats device profiles as interchangeable structured inputs.  Its pluggable physical interfaces, PyTorch autograd integration, and external validation against CrossSim make it a tool that can outlive the specific experiments reported here.
+
+\textbf{Contribution 2: the HAT taxonomy and the discovery of hardware-instance overfitting.}  The taxonomy formalises the design space of resampling cadences and noise profiles, and the instance-overfitting discovery redefines the evaluation criterion for analog-deployment experiments.  The fresh-instance protocol ($10$ arrays $\times$ $5$ Monte Carlo evaluations) is not an appendix detail; it is a minimal bar for claiming deployment-grade robustness.
+
+\textbf{Contribution 3: a quantified deployment envelope for organic CIM.}  The failure-mode atlas provides the first system-level accuracy contracts for Vision Transformers on organic optoelectronic arrays.  It tells the materials scientist which device properties matter most, the circuit designer which peripheral overhead is acceptable, and the algorithm designer which training protocol to choose for a given physical regime.
+
+\subsection{The final word}
+
+This thesis does not claim that organic optoelectronic compute-in-memory is ready for ImageNet-scale deployment today.  The severe-NL residual gap, the retention plateau, and the environmental sensitivity of organic devices are real blockers that will require years of joint materials--circuit--algorithm research to overcome.  What the thesis claims is something more modest and, perhaps, more durable: that the transition from ``device works'' to ``system works'' requires a new kind of experimental science.  That science must be \emph{profile-driven}, treating device characterisations as structured inputs rather than narrative context.  It must be \emph{distributional}, training over the deployment distribution rather than a single hardware sample.  And it must be \emph{transfer-oriented}, evaluating every intervention on fresh instances before declaring it deployment-grade.
+
+The clean room is quiet.  The fabrication tools are precise.  But the real world is a distribution of arrays, temperatures, and inference latencies that no single measurement can capture.  Building a bridge between those two worlds is slow, incremental, and often humbling.  Yet every time a trained model survives a fresh hardware instance---every time the accuracy stays above $80\,\%$ on an array it has never seen---the bridge lengthens.  This thesis has lengthened it a little.  The path ahead is to keep building.

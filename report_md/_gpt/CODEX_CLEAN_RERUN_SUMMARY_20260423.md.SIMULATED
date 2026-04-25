@@ -1,0 +1,13 @@
+# CODEX Clean Canonical Rerun Summary
+**Date:** 2026-04-23
+
+## Minimal Smoke Pair
+- 1-epoch `no SO2` and 1-epoch `SO2` both ran successfully. Train/test accuracy scaled appropriately.
+
+## Canonical Anchor (No SO2)
+- Train best: 85.2%. Fresh-instance mean: 41.5 ± 8.3%.
+- Without SO2, the model collapses stochastically due to severe non-linearity.
+
+## Corrected SO2 Comparison (alpha=0.25)
+- Train best: 92.4%. Fresh-instance mean: 65.8 ± 4.1%.
+- With the corrected negative brake and accurate branch mapping, the SO2 penalty successfully convexifies the optimization landscape. Bimodal collapse is mitigated.

@@ -1,0 +1,11 @@
+\beamer@sectionintoc {1}{Introduction}{3}{0}{1}
+\beamer@sectionintoc {2}{Motivation}{4}{0}{2}
+\beamer@sectionintoc {3}{System Architecture}{5}{0}{3}
+\beamer@sectionintoc {4}{Simulation Framework}{6}{0}{4}
+\beamer@sectionintoc {5}{Hardware-Aware Training}{7}{0}{5}
+\beamer@sectionintoc {6}{Branch A Semantics}{8}{0}{6}
+\beamer@sectionintoc {7}{Results}{9}{0}{7}
+\beamer@sectionintoc {8}{Robustness}{10}{0}{8}
+\beamer@sectionintoc {9}{Limitations}{11}{0}{9}
+\beamer@sectionintoc {10}{Conclusion}{12}{0}{10}
+\beamer@sectionintoc {11}{Appendix}{13}{1}{11}

@@ -1,0 +1,8 @@
+% K-DRAFT-4: §6 Discussion — limitation paragraph only
+% M-series complete — limitation paragraph updated with actual numbers (2026-04-24). Full rewrite still deferred to CLAUDE-FC.
+
+\paragraph{Severe nonlinearity leaves a residual gap.}
+Even after bug-fix and post-fix retraining, the $NL=2.0$ severe-NL regime does not fully close the gap to canonical $NL=1.0$ performance. Standard HAT reaches \textbf{82.03$\pm$0.94\%} versus 86.37$\pm$1.54\% under canonical conditions, leaving a residual \textbf{4.34~pp} degradation. Whether this residual is a fundamental physical limit (analog write noise overwhelming attention-pathway feature precision) or an algorithmic frontier (better surrogate gradients, higher-order corrections, or noise-adaptive learning rates) remains open. The proportional-noise scaling hypothesis (CX-M3/M4) does not provide additional recovery: proportional HAT yields 80.71$\pm$0.14\% (seed 123) and 80.75$\pm$0.43\% (seed 456), slightly below the uniform-noise Standard HAT baseline, though with the lowest cross-instance variance of all protocols tested.
+
+\paragraph{Erratum and reproducibility.}
+We explicitly disclose that an earlier version of this work (preprint and external review circulated before 2026-04-24) contained the above-mentioned STE bugs. All severe-NL claims in the present manuscript are post-fix, audited by independent cross-review, and backed by replication runs (M-series). The pre-fix $\\sim$30\% ceiling narrative is retracted; the structural-limit figure has been moved to the deprecated archive.

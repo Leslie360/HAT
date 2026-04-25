@@ -1,0 +1,10 @@
+\section*{Supplementary Note S-Theory: Ensemble HAT as Implicit Regularization against Device Mismatch}
+\label{supp:theory-ensemble-hat}
+
+\subsection*{S.1 Setup and notation}
+
+We consider an analog crossbar array with differential-pair conductance mapping. Let $\theta \in \mathbb{R}^d$ denote the digital weights (network parameters) to be programmed onto the array, and let $M \in \mathbb{R}^d$ denote the per-device fractional device-to-device (D2D) mismatch map. The programmed conductance pair for weight $\theta_i$ is perturbed multiplicatively:
+\begin{equation}
+    \tilde{\theta}_i = \theta_i \bigl(1 + M_i\bigr) + \xi_i^{\text{C2C}},
+    \label{eq:weight-perturbation}
+\end{equation}

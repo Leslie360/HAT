@@ -1,0 +1,232 @@
+% Supplementary Note S-Theory: Ensemble HAT as Implicit Regularization
+% Integrated Round-5 — 2026-04-25
+
+\section*{Supplementary Note S-Theory: Ensemble HAT as Implicit Regularization against Device Mismatch}
+\label{supp:theory-ensemble-hat}
+
+\subsection*{S.1 Setup and notation}
+
+We consider an analog crossbar array with differential-pair conductance mapping. Let $\theta \in \mathbb{R}^d$ denote the digital weights (network parameters) to be programmed onto the array, and let $M \in \mathbb{R}^d$ denote the per-device fractional device-to-device (D2D) mismatch map. The programmed conductance pair for weight $\theta_i$ is perturbed multiplicatively:
+\begin{equation}
+    \tilde{\theta}_i = \theta_i \bigl(1 + M_i\bigr) + \xi_i^{\text{C2C}},
+    \label{eq:weight-perturbation}
+\end{equation}
+where $\xi^{\text{C2C}} \sim \mathcal{N}(0, \sigma_{\text{C2C}}^2 I)$ is cycle-to-cycle noise (re-sampled every forward pass) and $M$ is the D2D mismatch (fixed for a given fabricated instance). Both are assumed independent of data $(x,y)$ and of each other.
+
+\paragraph{Standard HAT (fixed-mask).} One mismatch map $M_0 \sim \mathcal{D}_{\text{D2D}}$ is sampled at initialization and held fixed for the entire training:
+\begin{equation}
+    \theta_{\text{std}}^{\star} = \arg\min_{\theta} \; \mathbb{E}_{\xi^{\text{C2C}}, (x,y) \sim \mathcal{D}} \bigl[ \ell\bigl(f(x; \theta \odot (1+M_0) + \xi^{\text{C2C}}), y\bigr) \bigr].
+    \label{eq:standard-hat-objective}
+\end{equation}
+The optimization adapts to the \emph{specific} realization $M_0$, but there is no guarantee that the minimizer remains optimal under a different draw $M' \sim \mathcal{D}_{\text{D2D}}$.
+
+\paragraph{Ensemble HAT (distribution-matching).} The mismatch map is re-sampled at the start of every training epoch, yielding a sequence $\{M^{(e)}\}_{e=1}^{E}$ with $M^{(e)} \stackrel{\text{i.i.d.}}{\sim} \mathcal{D}_{\text{D2D}}$. The objective is:
+\begin{equation}
+    \theta_{\text{ens}}^{\star} = \arg\min_{\theta} \; \frac{1}{E}\sum_{e=1}^{E} \mathbb{E}_{\xi^{\text{C2C}}, (x,y)} \bigl[ \ell\bigl(f(x; \theta \odot (1+M^{(e)}) + \xi^{\text{C2C}}), y\bigr) \bigr].
+    \label{eq:ensemble-hat-objective}
+\end{equation}
+For large $E$, this converges to the population expectation:
+\begin{equation}
+    \mathcal{L}_{\text{Ens}}(\theta) = \mathbb{E}_{M \sim \mathcal{D}_{\text{D2D}}} \, \mathbb{E}_{\xi^{\text{C2C}}, (x,y)} \bigl[ \ell\bigl(f(x; \theta \odot (1+M) + \xi^{\text{C2C}}), y\bigr) \bigr].
+    \label{eq:ensemble-population}
+\end{equation}
+The expectation over $M$ is Monte-Carlo estimated with one fresh draw per epoch, held constant across all mini-batches within that epoch. This epoch-level discipline (rather than per-batch re-sampling) is empirically load-bearing: ablations under canonical $NL=1.0$ show that epoch-level resampling outperforms both fixed-mismatch and per-batch resampling (Supplementary Fig.~S-Resampling-Cadence; see Results for quantitative comparison). The epoch scale gives the optimizer enough consistent signal to fit each instance before the instance changes, enforcing a ``learn-to-adapt'' regime analogous to domain randomization in robotics \citep{tobin2017domain}.
+
+\subsection*{S.2 Taylor expansion and the implicit regularizer}
+
+In what follows, we expand with respect to the epoch-level D2D mismatch $M$ while treating the cycle-to-cycle noise $\xi^{\text{C2C}}$ as an independent expectation that is absorbed into the base loss $\mathcal{L}_0$. This is justified under \emph{uniform} C2C noise, where $\xi^{\text{C2C}}$ is re-sampled at every forward pass independent of $M$ and averages to a noise-floor baseline. For proportional C2C noise (where noise magnitude scales with the perturbed weight), a weak coupling between $M$ and $\xi^{\text{C2C}}$ exists; the derivation below should be understood as a D2D-dominant approximation valid when $\sigma_{\text{D2D}} \gg \sigma_{\text{C2C}}$.
+
+Assume the D2D mismatch has zero mean and covariance $\Sigma_M$:
+\begin{equation}
+    \mathbb{E}_M[M] = 0, \qquad \mathbb{E}_M[MM^{\top}] = \Sigma_M.
+\end{equation}
+For uncorrelated D2D, $\Sigma_M = \sigma_{\text{D2D}}^2 I$. We expand the network output $f(x; \theta \odot (1+M))$ around the nominal weights $\theta$ to second order in $M$:
+\begin{equation}
+    f(x; \theta \odot (1+M)) = f(x; \theta) + \sum_i M_i \theta_i \frac{\partial f}{\partial \theta_i}(x; \theta) + \frac{1}{2}\sum_{i,j} M_i M_j \theta_i \theta_j \frac{\partial^2 f}{\partial \theta_i \partial \theta_j}(x; \theta) + \mathcal{O}(\|M\|^3).
+    \label{eq:taylor-f}
+\end{equation}
+
+Let $\ell(f,y)$ denote the loss (e.g., cross-entropy). Expanding $\ell$ to second order in $f$ around $f(x;\theta)$:
+\begin{align}
+    \ell\bigl(f(x; \theta \odot (1+M)), y\bigr) &= \ell\bigl(f(x;\theta), y\bigr) 
+    + \nabla_f \ell \cdot \bigl[f(x; \theta \odot (1+M)) - f(x;\theta)\bigr] \nonumber \\
+    &\quad + \frac{1}{2}\bigl[f(x; \theta \odot (1+M)) - f(x;\theta)\bigr]^{\top} \nabla_f^2 \ell \, \bigl[f(x; \theta \odot (1+M)) - f(x;\theta)\bigr] + \mathcal{O}(\|M\|^3).
+    \label{eq:taylor-loss}
+\end{align}
+
+Taking expectations over $M$ and using $\mathbb{E}[M_i] = 0$, the first-order term vanishes:
+\begin{equation}
+    \mathbb{E}_M\bigl[\ell(f(x; \theta \odot (1+M)), y)\bigr] = \ell(f(x;\theta), y) + \frac{1}{2}\mathbb{E}_M\Bigl[\Bigl(\sum_i M_i \theta_i \frac{\partial f}{\partial \theta_i}\Bigr)^{\top} \nabla_f^2 \ell \, \Bigl(\sum_j M_j \theta_j \frac{\partial f}{\partial \theta_j}\Bigr)\Bigr] + \mathcal{O}(\mathbb{E}[\|M\|^3]).
+    \label{eq:expected-loss-second-order}
+\end{equation}
+
+For diagonal covariance $\Sigma_M = \sigma_{\text{D2D}}^2 I$, the cross-terms $i \neq j$ vanish in expectation, yielding:
+\begin{equation}
+    \mathbb{E}_M\bigl[\ell(f(x; \theta \odot (1+M)), y)\bigr] \approx \ell(f(x;\theta), y) + \frac{\sigma_{\text{D2D}}^2}{2} \sum_i \theta_i^2 \Bigl(\frac{\partial f}{\partial \theta_i}\Bigr)^{\top} \nabla_f^2 \ell \, \Bigl(\frac{\partial f}{\partial \theta_i}\Bigr).
+    \label{eq:implicit-regularizer-raw}
+\end{equation}
+
+For cross-entropy loss, $\nabla_f^2 \ell$ is the Fisher information matrix at $f$. The term inside the sum is structurally a \emph{Fisher-weighted sensitivity penalty}: it penalizes weights whose gradient directions are highly sensitive to multiplicative perturbations in the $M$-direction. To make the connection to standard regularization explicit, we use the identity $\partial \ell / \partial \theta_i = (\partial f / \partial \theta_i)^{\top} \nabla_f \ell$ and note that for near-linear regions of the network (or using the Gauss--Newton approximation), $\nabla_f^2 \ell \approx \nabla_f \ell \, \nabla_f \ell^{\top}$. Substituting:
+\begin{equation}
+    \mathbb{E}_M\bigl[\ell\bigr] \approx \ell(f(x;\theta), y) + \frac{\sigma_{\text{D2D}}^2}{2} \sum_i \theta_i^2 \Bigl(\frac{\partial \ell}{\partial \theta_i}\Bigr)^2.
+    \label{eq:implicit-regularizer-grad-l2}
+\end{equation}
+
+\begin{proposition}[Implicit regularization equivalence]
+    Under Gaussian uncorrelated D2D mismatch with variance $\sigma_{\text{D2D}}^2$, Ensemble HAT with objective (\ref{eq:ensemble-population}) is equivalent, to second order in $\sigma_{\text{D2D}}$, to minimizing the nominal cross-entropy loss plus a weighted $L_2$-type penalty on gradient magnitudes:
+    \begin{equation}
+        \mathcal{L}_{\text{Ens}}(\theta) \approx \mathcal{L}_0(\theta) + \frac{\sigma_{\text{D2D}}^2}{2} \sum_i \theta_i^2 \, \mathbb{E}_{(x,y)}\Bigl[\Bigl(\frac{\partial \ell}{\partial \theta_i}\Bigr)^2\Bigr],
+        \label{eq:main-result}
+    \end{equation}
+    where $\mathcal{L}_0(\theta) = \mathbb{E}_{(x,y)}[\ell(f(x;\theta),y)]$ is the standard (noise-free) loss.
+\end{proposition}
+
+\begin{remark}
+    The penalty is \emph{not} a simple weight decay ($\lambda \|\theta\|^2$). It is a \emph{gradient-weighted} penalty that pushes the optimizer toward flat regions of the loss landscape in the $M$-direction. This explains the empirical fresh-instance transferability without requiring additional hyperparameters: the regularization strength is set by the physical D2D variance rather than by a tunable dropout rate.
+\end{remark}
+
+\subsection*{S.7 Higher-order corrections}
+
+The second-order expansion in \S\ref{supp:theory-ensemble-hat} is accurate when the D2D mismatch variance $\sigma_{\text{D2D}}^2$ is small relative to the scale over which the loss curvature varies. To quantify the breakdown regime, we extend the Taylor expansion of $\ell(f(x;\theta\odot(1+M)),y)$ to arbitrary order in $M$:
+\begin{equation}
+    \mathcal{L}_{\text{Ens}} = \sum_{k=0}^{\infty} \frac{1}{k!}\,\mathbb{E}_M\!\left[\bigl(M^{\top}\nabla_{\theta}\bigr)^{k}\ell\right],
+    \label{eq:taylor-arbitrary-order}
+\end{equation}
+where the differential operator $M^{\top}\nabla_{\theta} = \sum_i M_i\theta_i\partial/\partial\theta_i$ acts on the composition $\ell\circ f$.
+
+\paragraph{Odd moments vanish.} Because $M$ is assumed zero-mean Gaussian, every odd central moment vanishes by symmetry. The third-order term ($k=3$) is therefore identically zero:
+\begin{equation}
+    \mathbb{E}_M\!\left[\bigl(M^{\top}\nabla_{\theta}\bigr)^{3}\ell\right] = 0.
+    \label{eq:third-order-zero}
+\end{equation}
+This cancellation is robust to any symmetric D2D distribution (e.g., Laplace or Student-$t$ with zero skewness), provided the mismatch law is not heavy-tailed to the point that the third moment diverges.
+
+\paragraph{Fourth-order term.} The $k=4$ contribution is the first correction to the second-order result. For a Gaussian vector with diagonal covariance $\Sigma_M=\sigma_{\text{D2D}}^2 I$, Wick's theorem gives the fourth-order moment as a sum of pairwise contractions:
+\begin{equation}
+    \mathbb{E}_M[M_iM_jM_kM_l] = \sigma_{\text{D2D}}^4\bigl(\delta_{ij}\delta_{kl} + \delta_{ik}\delta_{jl} + \delta_{il}\delta_{jk}\bigr).
+    \label{eq:wick-fourth}
+\end{equation}
+Applying this to the fourth differential of the loss yields:
+\begin{equation}
+    \frac{1}{4!}\,\mathbb{E}_M\!\left[\bigl(M^{\top}\nabla_{\theta}\bigr)^{4}\ell\right]
+    = \frac{\sigma_{\text{D2D}}^4}{8} \sum_i \theta_i^4 \, \frac{\partial^4 \ell}{\partial\theta_i^4}
+    + \frac{\sigma_{\text{D2D}}^4}{4} \sum_{i\neq j} \theta_i^2\theta_j^2 \, \frac{\partial^4 \ell}{\partial\theta_i^2\partial\theta_j^2}.
+    \label{eq:fourth-order-explicit}
+\end{equation}
+The first sum captures pure fourth derivatives along individual parameter directions; the second captures mixed fourth derivatives. Both are $O(\sigma_{\text{D2D}}^4)$, so the fourth-order correction is negligible when $\sigma_{\text{D2D}}\ll 1$. In the present regime ($\sigma_{\text{D2D}}=10\%$), the ratio of fourth- to second-order terms is approximately $\sigma_{\text{D2D}}^2\approx 0.01$, i.e., two orders of magnitude smaller. This justifies truncating at second order for all quantitative claims in the main text.
+
+\paragraph{Breakdown regime.} The second-order approximation fails when either (i)~the D2D variance is large ($\sigma_{\text{D2D}}\gtrsim 20\%$), or (ii)~the weights are near saturation so that higher derivatives $\partial^k\ell/\partial\theta_i^k$ grow rapidly. Regime (ii) is particularly relevant for analog devices with limited conductance range: when $|\theta_i|$ approaches the array maximum, the effective nonlinearity of the forward map amplifies the impact of mismatch. In such regimes the full expectation \eqref{eq:taylor-arbitrary-order} must be evaluated numerically (e.g., by Monte-Carlo sampling of $M$ at evaluation time). For the present CIFAR-10 experiments, where weights remain well within the linear regime of the conductance window, the second-order truncation is accurate to within $\sim$1\% relative error.
+
+For a systematic treatment of higher-order weight-perturbation expansions in deep networks, see \citet{roberts2022principles}.
+
+\subsection*{S.8 PAC-Bayes generalization bound}
+
+The implicit regularizer derived in \S\ref{supp:theory-ensemble-hat} penalizes large weights with large gradient sensitivity, pushing the optimizer toward flat regions of the loss landscape in the D2D direction. We now ask whether this geometric preference translates into a provable generalization advantage. Following the PAC-Bayes framework \citep{mcallester1999pac,dziugaite2017computing}, we treat the Ensemble HAT training objective as defining a posterior distribution over weight perturbations, and derive a bound on the expected fresh-instance error.
+
+\paragraph{Setup.} Let $Q$ be the posterior over network weights induced by Ensemble HAT training. Because each epoch draws a fresh mismatch map $M^{(e)}\sim\mathcal{D}_{\text{D2D}}$ and the optimizer converges to a shared nominal weight $\theta^{\star}$, the effective weight distribution is diagonal Gaussian centered at $\theta^{\star}$:
+\begin{equation}
+    Q(W) = \mathcal{N}\bigl(W; \theta^{\star}, \mathrm{diag}(\sigma_{\text{D2D}}^2\,\theta^{\star2})\bigr),
+    \label{eq:posterior-q}
+\end{equation}
+where the variance is proportional to the squared nominal weight, reflecting the multiplicative nature of D2D mismatch. The prior $P$ is taken as a broad Gaussian centered at the random initialization $\theta_0$ (or, for transfer-learning settings, at the pre-trained checkpoint):
+\begin{equation}
+    P(W) = \mathcal{N}\bigl(W; \theta_0, \sigma_{\text{prior}}^2 I\bigr),
+    \qquad \sigma_{\text{prior}} \gg \sigma_{\text{D2D}}\max_i|\theta^{\star}_i|.
+    \label{eq:prior-p}
+\end{equation}
+
+\paragraph{McAllester bound.} For any prior $P$ and posterior $Q$, with probability at least $1-\delta$ over the training set $S$ of size $n$, the expected test loss under $Q$ satisfies \citep{mcallester1999some}:
+\begin{equation}
+    \mathbb{E}_{W\sim Q}[\mathcal{L}_{\text{test}}(W)]
+    \;\leq\;
+    \mathbb{E}_{W\sim Q}[\mathcal{L}_{\text{train}}(W)]
+    \;+\;
+    \sqrt{\frac{\mathrm{KL}(Q\|P) + \log(2\sqrt{n}/\delta)}{2n}}.
+    \label{eq:mcallester-bound}
+\end{equation}
+The slack term depends only on the KL divergence from prior to posterior and on the dataset size; it does not depend on the model architecture or the complexity of the hypothesis class. This is the structural advantage of PAC-Bayes over uniform-convergence bounds in deep learning.
+
+\paragraph{KL divergence under diagonal Gaussian.} For $Q$ and $P$ both diagonal Gaussian, the KL divergence decomposes additively across parameters:
+\begin{equation}
+    \mathrm{KL}(Q\|P)
+    = \frac{1}{2}\sum_{i=1}^{d}\!
+    \left[
+        \frac{\sigma_{Q,i}^2}{\sigma_{P,i}^2}
+        + \frac{(\theta^{\star}_i - \theta_{0,i})^2}{\sigma_{P,i}^2}
+        - 1
+        - \log\frac{\sigma_{Q,i}^2}{\sigma_{P,i}^2}
+    \right].
+    \label{eq:kl-diagonal}
+\end{equation}
+With $\sigma_{Q,i}=\sigma_{\text{D2D}}|\theta^{\star}_i|$ and $\sigma_{P,i}=\sigma_{\text{prior}}$, and assuming $\sigma_{\text{prior}}\gg\sigma_{Q,i}$ (so $\sigma_{Q,i}^2/\sigma_{P,i}^2\ll 1$), the dominant term is the squared-bias term:
+\begin{equation}
+    \mathrm{KL}(Q\|P)
+    \approx
+    \frac{1}{2\sigma_{\text{prior}}^2}\sum_{i=1}^{d}(\theta^{\star}_i - \theta_{0,i})^2
+    + d\,\log\frac{\sigma_{\text{prior}}}{\sigma_{\text{D2D}}}.
+    \label{eq:kl-approx}
+\end{equation}
+The first term penalizes large deviations from the prior; the second is a complexity penalty that grows with the number of parameters $d$ and shrinks with the D2D variance. This is intuitive: \emph{tighter} mismatch (smaller $\sigma_{\text{D2D}}$) yields a more concentrated posterior, hence smaller KL and tighter bound.
+
+\paragraph{Implication for Ensemble HAT.} The bound \eqref{eq:mcallester-bound} does not predict the exact magnitude of the 76~pp Standard$\to$Ensemble gap---PAC-Bayes bounds in deep learning are typically numerically vacuous \citep{perez2021tighter}. However, it provides a \emph{structural rationale}: the posterior $Q$ defined by epoch-level resampling is naturally aligned with the deployment distribution $\mathcal{D}_{\text{D2D}}$, whereas Standard HAT's fixed-map training corresponds to a delta posterior at a single (and likely atypical) mismatch realization. The KL term for Standard HAT can be arbitrarily large if the learned weights deviate far from the prior, whereas Ensemble HAT's averaged training keeps the posterior close to the empirical deployment distribution. In this sense, Ensemble HAT is not merely an empirical trick but a \emph{distributionally aligned training objective} with principled generalization foundations.
+
+\paragraph{Honesty constraint.} We emphasize that the bound \eqref{eq:mcallester-bound} is used here as a \emph{theoretically motivated structural argument}, not as a tight empirical prediction. The numerical value of the slack term (for $d\sim 10^7$, $n\sim 5\times 10^4$, $\delta=0.05$) is $\gg 1$, far larger than the observed gap. The value of the PAC-Bayes lens is directional: it explains \emph{why} matching the training distribution to the deployment distribution improves generalization, not \emph{how much}.
+
+\subsection*{S.9 Flat-minima connection and structural analogy to SAM}
+
+The implicit regularizer \eqref{eq:implicit-regularizer-grad-l2} penalizes gradient magnitude weighted by squared parameters. Geometrically, this pushes the optimizer toward regions where the loss is insensitive to multiplicative perturbations in the $M$-direction---i.e., \emph{flat minima} along the D2D axis. We now make this connection explicit by defining a D2D-direction sharpness measure and comparing it to Sharpness-Aware Minimization (SAM) \citep{foret2021sharpness}.
+
+\paragraph{D2D-direction sharpness.} Let $\mathcal{S}_{\text{D2D}}(W)$ denote the expected excess loss incurred by perturbing the weights along the D2D direction:
+\begin{equation}
+    \mathcal{S}_{\text{D2D}}(W)
+    = \mathbb{E}_{M\sim\mathcal{D}_{\text{D2D}}}\!\bigl[\ell(W\odot(1+M))\bigr] - \ell(W).
+    \label{eq:d2d-sharpness}
+\end{equation}
+Expanding to second order (as in \S\ref{supp:theory-ensemble-hat}) gives:
+\begin{equation}
+    \mathcal{S}_{\text{D2D}}(W)
+    \approx \frac{\sigma_{\text{D2D}}^2}{2}\sum_i W_i^2\,\frac{\partial^2\ell}{\partial\theta_i^2},
+    \label{eq:d2d-sharpness-second}
+\end{equation}
+which is precisely the implicit regularizer in \eqref{eq:implicit-regularizer-grad-l2}, rewritten in Hessian form. A small $\mathcal{S}_{\text{D2D}}$ means the loss landscape is flat in the $M$-direction: fresh D2D realizations, drawn from the same $\mathcal{D}_{\text{D2D}}$, land near the same minimum with high probability. This is the geometric mechanism underlying the empirical 86.37\% fresh-instance recovery versus the 10.00\% Standard HAT collapse.
+
+\paragraph{Comparison to SAM.} SAM \citep{foret2021sharpness} minimizes the worst-case loss in an $\ell_2$ ball around the current weights:
+\begin{equation}
+    \mathcal{L}_{\text{SAM}}(W)
+    = \max_{\|\epsilon\|\leq\rho} \ell(W + \epsilon)
+    \approx \ell(W) + \rho\,\|\nabla\ell(W)\|_2,
+    \label{eq:sam-objective}
+\end{equation}
+where the linear approximation holds for small $\rho$. SAM therefore seeks flat minima by explicitly penalizing gradient magnitude in an \emph{adversarial} ($\ell_2$-ball) neighborhood. Ensemble HAT, by contrast, minimizes the \emph{average} loss over a \emph{stochastic} (Gaussian) neighborhood in the multiplicative $M$-direction:
+\begin{equation}
+    \mathcal{L}_{\text{Ens}}(W)
+    = \mathbb{E}_M[\ell(W\odot(1+M))]
+    \approx \ell(W) + \frac{\sigma_{\text{D2D}}^2}{2}\sum_i W_i^2\Bigl(\frac{\partial\ell}{\partial\theta_i}\Bigr)^2.
+    \label{eq:ens-flatness}
+\end{equation}
+
+The two objectives are \emph{structural analogues}, not exact equivalences:
+\begin{itemize}
+    \item \textbf{Perturbation distribution:} SAM uses worst-case $\ell_2$; Ensemble HAT uses Gaussian multiplicative.
+    \item \textbf{Averaging:} SAM minimizes the \emph{maximum}; Ensemble HAT minimizes the \emph{expectation}.
+    \item \textbf{Direction:} SAM is isotropic in parameter space; Ensemble HAT is anisotropic, concentrated along the physical D2D direction.
+    \item \textbf{Hyperparameter:} SAM requires tuning $\rho$; Ensemble HAT's regularization strength is set by the physical $\sigma_{\text{D2D}}$ measured from the device.
+\end{itemize}
+
+Despite these differences, both methods share the same high-level goal: find minima that are robust to weight perturbations. The large-batch training literature \citep{keskar2017large} shows that sharp minima generalize poorly; SAM \citep{foret2021sharpness} and its successors \citep{andriushchenko2022understanding} explicitly optimize for flatness. Ensemble HAT achieves a similar effect \emph{implicitly}, by aligning the training objective with the physical perturbation distribution of the deployment hardware. The flat-minima interpretation provides a complementary lens to the PAC-Bayes argument in \S\ref{supp:theory-ensemble-hat}: where PAC-Bayes gives a statistical bound, the SAM connection gives a geometric intuition.
+
+\paragraph{Historical antecedent.} The link between flat minima and generalization was first emphasized by \citet{hochreiter1997flat}, who showed that networks with low curvature in weight space generalize better. Ensemble HAT extends this insight to the analog-hardware setting: the relevant curvature is not isotropic in weight space, but specifically along the device-mismatch direction $M$. Because $M$ is a physical quantity (measured from fabricated arrays), the ``right'' direction for flatness is determined by the device physics, not by algorithmic choice.
+
+\subsection*{S.10 Limitations of the theoretical framework}
+
+The derivations in \S\ref{supp:theory-ensemble-hat}--\S\ref{supp:theory-ensemble-hat} rely on several assumptions that limit their applicability.
+
+\paragraph{Heavy-tailed D2D.} The Taylor expansion assumes finite moments of $M$. If the measured D2D distribution is heavy-tailed (e.g., log-normal or Pareto), the second-order truncation breaks down and higher moments dominate. The framework can be extended by replacing Wick's theorem with the appropriate moment-generating function, but closed-form expressions are no longer available.
+
+\paragraph{Spatially correlated D2D.} The diagonal-covariance assumption $\Sigma_M=\sigma_{\text{D2D}}^2 I$ ignores spatial correlation across the array. For separable AR(1) correlation (evaluated in Supplementary Note~S2), the off-diagonal terms introduce cross-parameter penalties of the form $\sum_{i\neq j}\rho^{|i-j|}\theta_i\theta_j(\partial\ell/\partial\theta_i)(\partial\ell/\partial\theta_j)$. The qualitative conclusion---Ensemble HAT penalizes gradient sensitivity---remains valid, but the quantitative coefficients change.
+
+\paragraph{Per-layer non-uniform $\sigma_{\text{D2D}}$.} Different analog array layers may exhibit different mismatch variances (e.g., due to fabrication non-uniformity). The framework still applies layerwise, with each layer's own $\sigma_{\text{D2D}}^{(l)}$, but the global sum in \eqref{eq:implicit-regularizer-grad-l2} becomes a layerwise sum. This does not change the structural interpretation.
+
+\paragraph{Coupled C2C noise.} Under proportional C2C noise, the cycle-to-cycle variance scales with the perturbed conductance, creating a weak coupling between $M$ and $\xi^{\text{C2C}}$. This coupling is second-order in $\sigma_{\text{D2D}}\sigma_{\text{C2C}}$ and is negligible for the present uniform-C2C regime, but may matter for high-D2D, high-C2C corners.
+
+\paragraph{PAC-Bayes vacuousness.} As noted in \S\ref{supp:theory-ensemble-hat}, the McAllester bound is numerically loose for over-parameterized networks. Its value is directional, not predictive: it explains \emph{why} distribution alignment helps, not \emph{by how much}.

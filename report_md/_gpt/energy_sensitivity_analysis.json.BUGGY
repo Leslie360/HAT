@@ -1,0 +1,163 @@
+{
+  "experiment": "Energy Model Sensitivity Analysis",
+  "date": "2026-04-23T14:08:00.796677",
+  "baseline": {
+    "E_ADC_8b": 2.5e-14,
+    "E_DAC_8b": 3e-14,
+    "E_cell": 1e-13,
+    "E_digital": 1e-12,
+    "n_arrays": 100,
+    "n_conversions": 1000
+  },
+  "baseline_speedup": 0.015384615384615382,
+  "sensitivity_results": {
+    "E_ADC_8b": [
+      {
+        "multiplier": 0.5,
+        "energy_pJ": 52.5,
+        "speedup": 0.019047619047619046
+      },
+      {
+        "multiplier": 0.75,
+        "energy_pJ": 58.75000000000001,
+        "speedup": 0.017021276595744678
+      },
+      {
+        "multiplier": 1.0,
+        "energy_pJ": 65.00000000000001,
+        "speedup": 0.015384615384615382
+      },
+      {
+        "multiplier": 1.5,
+        "energy_pJ": 77.5,
+        "speedup": 0.012903225806451611
+      },
+      {
+        "multiplier": 2.0,
+        "energy_pJ": 90.00000000000001,
+        "speedup": 0.01111111111111111
+      },
+      {
+        "multiplier": 5.0,
+        "energy_pJ": 165.0,
+        "speedup": 0.006060606060606061
+      },
+      {
+        "multiplier": 10.0,
+        "energy_pJ": 290.00000000000006,
+        "speedup": 0.003448275862068965
+      }
+    ],
+    "E_DAC_8b": [
+      {
+        "multiplier": 0.5,
+        "energy_pJ": 50.00000000000001,
+        "speedup": 0.019999999999999997
+      },
+      {
+        "multiplier": 0.75,
+        "energy_pJ": 57.50000000000001,
+        "speedup": 0.017391304347826084
+      },
+      {
+        "multiplier": 1.0,
+        "energy_pJ": 65.00000000000001,
+        "speedup": 0.015384615384615382
+      },
+      {
+        "multiplier": 1.5,
+        "energy_pJ": 80.00000000000001,
+        "speedup": 0.012499999999999999
+      },
+      {
+        "multiplier": 2.0,
+        "energy_pJ": 95.00000000000001,
+        "speedup": 0.010526315789473684
+      },
+      {
+        "multiplier": 5.0,
+        "energy_pJ": 184.99999999999997,
+        "speedup": 0.005405405405405406
+      },
+      {
+        "multiplier": 10.0,
+        "energy_pJ": 335.00000000000006,
+        "speedup": 0.0029850746268656712
+      }
+    ],
+    "E_cell": [
+      {
+        "multiplier": 0.5,
+        "energy_pJ": 60.0,
+        "speedup": 0.016666666666666666
+      },
+      {
+        "multiplier": 0.75,
+        "energy_pJ": 62.50000000000001,
+        "speedup": 0.016
+      },
+      {
+        "multiplier": 1.0,
+        "energy_pJ": 65.00000000000001,
+        "speedup": 0.015384615384615382
+      },
+      {
+        "multiplier": 1.5,
+        "energy_pJ": 70.0,
+        "speedup": 0.014285714285714285
+      },
+      {
+        "multiplier": 2.0,
+        "energy_pJ": 75.0,
+        "speedup": 0.013333333333333332
+      },
+      {
+        "multiplier": 5.0,
+        "energy_pJ": 105.0,
+        "speedup": 0.009523809523809523
+      },
+      {
+        "multiplier": 10.0,
+        "energy_pJ": 155.0,
+        "speedup": 0.006451612903225806
+      }
+    ],
+    "combined": [
+      {
+        "multiplier": 0.5,
+        "energy_pJ": 32.50000000000001,
+        "speedup": 0.030769230769230764
+      },
+      {
+        "multiplier": 0.75,
+        "energy_pJ": 48.75,
+        "speedup": 0.020512820512820513
+      },
+      {
+        "multiplier": 1.0,
+        "energy_pJ": 65.00000000000001,
+        "speedup": 0.015384615384615382
+      },
+      {
+        "multiplier": 2.0,
+        "energy_pJ": 130.00000000000003,
+        "speedup": 0.007692307692307691
+      },
+      {
+        "multiplier": 5.0,
+        "energy_pJ": 324.99999999999994,
+        "speedup": 0.0030769230769230774
+      },
+      {
+        "multiplier": 10.0,
+        "energy_pJ": 649.9999999999999,
+        "speedup": 0.0015384615384615387
+      }
+    ]
+  },
+  "recommendation": {
+    "current_claim": "11.45\u00d7 lower than FP32",
+    "conservative_claim": "0.0\u00d7 (2\u00d7 parameters)",
+    "recommended_wording": "up to 0.0\u00d7 under first-order analytical assumptions"
+  }
+}

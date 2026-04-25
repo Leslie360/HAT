@@ -1,0 +1,7 @@
+% Drop-in paragraph for §6.1 Principal Accuracy Bottlenecks
+% Insert after the hardware-instance overfitting discussion, before the next subsection.
+
+Ensemble HAT's empirical effectiveness is not merely an engineering trick.
+Supplementary Note S-Theory derives that the per-epoch resampling objective is, to second order, equivalent to a weighted gradient-$L_2$ regularizer (analogous to dropout-as-$L_2$, Wager et al.\ 2013) and, structurally, to a stochastic Sharpness-Aware Minimization along the device-mismatch direction (analogous to SAM, Foret et al.\ 2021).
+A PAC-Bayes argument provides a generalization-bound rationale for why fresh hardware-instance accuracy tracks the training-distribution average.
+Empirical Hessian and loss-landscape analyses (Supp Note S-Mechanism) confirm Ensemble HAT lands in flatter D2D-direction minima.

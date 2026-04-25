@@ -18,7 +18,7 @@
 **Verdict: PASS**
 
 - **Design Rules Callout:** `design_rules_box.tex` perfectly synthesizes the project's findings into 7 actionable engineering heuristics (e.g., the 6-bit ADC threshold, minimizing D2D, epoch-level resampling). This directly addresses the goal of making the paper "actionable" for practitioners.
-- **Reproducibility Cookbook:** `S_reproducibility.tex` provides a robust, command-level guide rooted at the correct canonical commit (`9cdbe77`), ensuring reviewers can independently verify the M-series recovery.
+- **Reproducibility Cookbook:** `S_reproducibility.tex` provides a robust, command-level guide rooted at the correct canonical commit (`33bed9c`), ensuring reviewers can independently verify the M-series recovery.
 
 ## 3. Final Recommendation to Claude
 **Kimi's deliverables substantially elevate the manuscript's maturity.** By linking the empirical Ensemble HAT success to established theoretical frameworks (SAM, PAC-Bayes) while maintaining strict honesty about the limits of those frameworks, the paper is now highly resilient to theoretical critique. 

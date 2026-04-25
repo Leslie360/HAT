@@ -1,4 +1,4 @@
-# ⚠️ WARNING: BASELINE = 27.72 is BUG-CONTAMINATED — pre-fix NL=2.0 result invalid after commit 9cdbe77.
+# ⚠️ WARNING: BASELINE = 27.72 is BUG-CONTAMINATED — pre-fix NL=2.0 result invalid after commit 33bed9c.
 # Do not use this script for post-fix ablation finalization.
 # See report_md/_gpt/BROADCAST_REBUILD_3WEEK_20260424.md
 

@@ -4,7 +4,7 @@
 - Scope: local M1-M6 fresh-instance eval consolidation plus remote parity rows provided in dispatch.
 - Protocol: 10 fresh D2D instances x 5 MC eval runs per checkpoint.
 - NL: explicit `NL_LTP=2.0`, `NL_LTD=-2.0`; noise mode matched checkpoint provenance.
-- Commit: `9cdbe77e1346eab4ed5ee828ca4b100255b7996d`; dirty worktree: `True`.
+- Commit: `33bed9cbb8ade7676d71074490ad45e68347950e`; dirty worktree: `True`.
 - CUDA device: `NVIDIA GeForce RTX 5070 Ti`; PyTorch: `2.10.0+cu128`.
 - CSV: `report_md/_gpt/csv_gpt/cross_host_parity_mseries.csv`
 - Provenance guard: `eval_fresh_instances_postfix.py` used checkpoint metadata by default; `allow_eval_nl_override=false` and `eval_provenance_mismatches=[]` for all local M1-M6 JSONs.
@@ -43,7 +43,7 @@ Interpretation: the current remote advantage is not a uniform 1-2 pp shift. It i
 
 - No checkpoint-corruption signature: every local fresh mean is close to its train-best source accuracy.
 - CX-M6 has the widest local fresh spread (`std=1.6847%`, range `78.07-82.54`), so Ensemble-uniform seed 456 should be displayed with an error bar rather than as a single headline number.
-- The worktree is dirty because multiple agents are writing coordination artifacts and code patches; commit hash is still `9cdbe77`, the required post-fix base.
+- The worktree is dirty because multiple agents are writing coordination artifacts and code patches; commit hash is still `33bed9c`, the required post-fix base.
 - Remote rows with `TBD` fresh values are placeholders from the dispatch and must not be cited as measured fresh performance.
 
 ## Verdict

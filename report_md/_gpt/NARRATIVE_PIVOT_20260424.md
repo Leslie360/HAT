@@ -74,7 +74,7 @@ All NL=1.0 results. The bug's `pow(ratio, NL-1)` reduces to 1 when NL=1, making 
 
 ### 3B. INVALIDATED — deleted from paper, moved to archive
 
-Any number or claim relying on NL≠1.0 produced before commit 9cdbe77.
+Any number or claim relying on NL≠1.0 produced before commit 33bed9c.
 
 | Old result | Old number | Action |
 |:--|:--|:--|
@@ -88,9 +88,9 @@ Any number or claim relying on NL≠1.0 produced before commit 9cdbe77.
 
 **Scrubbing status:** Kimi contamination map covers 72 memos + 5 .tex files + 6 scripts + 6 JSON files. Already done. Re-verify before each draft.
 
-### 3C. POST-FIX VERIFIED — included with full provenance (commit 9cdbe77)
+### 3C. POST-FIX VERIFIED — included with full provenance (commit 33bed9c)
 
-Everything at NL=2.0 from commit 9cdbe77 onward.
+Everything at NL=2.0 from commit 33bed9c onward.
 
 | Result | Number | Source | Figure |
 |:--|:--|:--|:--|
@@ -100,7 +100,7 @@ Everything at NL=2.0 from commit 9cdbe77 onward.
 | Local fresh-eval CX-M1..M6 | pending CX-FRESH-EVAL-MSERIES | — | parity table |
 | [PENDING] Ensemble HAT @ measured-D2D | — | awaiting PhD real data | scenario 3 cell |
 
-**Provenance required in every post-fix table**: commit hash 9cdbe77, batch size, seed, NL=±2.0 explicit.
+**Provenance required in every post-fix table**: commit hash 33bed9c, batch size, seed, NL=±2.0 explicit.
 
 ---
 

@@ -54,14 +54,14 @@ def test_first_order_no_multiplier():
 
 def test_second_order_branch_matches_first_order():
     """
-    TERTIARY BUG FIX VERIFICATION (commit 9cdbe77).
+    TERTIARY BUG FIX VERIFICATION (commit 33bed9c).
     
     The second-order correction must map gradients to the SAME physical
     direction as the first-order term:
       - grad_output >= 0  -> LTD (weight decrease) -> ltd_corr
       - grad_output < 0   -> LTP (weight increase) -> ltp_corr
     
-    49cacef fixed first-order but left second-order inverted.
+    2bf59db30183edccd838c169e89c1539d1a4f907 fixed first-order but left second-order inverted.
     """
     with open("analog_layers.py") as f:
         src = f.read()

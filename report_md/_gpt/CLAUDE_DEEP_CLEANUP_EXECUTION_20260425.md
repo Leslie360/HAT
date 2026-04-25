@@ -84,7 +84,7 @@ git add eval_fresh_instances_postfix.py test_dual_bug_fix.py test_groupwise_nl_w
 git commit -m "feat: add post-fix verification suite + eval scripts to version control"
 ```
 
-**Effect:** Adds 5 critical post-fix files to tracked set. These are referenced in our test discipline (commit 9cdbe77 verification).
+**Effect:** Adds 5 critical post-fix files to tracked set. These are referenced in our test discipline (commit 33bed9c verification).
 
 **Risk:** Verify no secrets/credentials. Spot-checked: pure code, no secrets.
 

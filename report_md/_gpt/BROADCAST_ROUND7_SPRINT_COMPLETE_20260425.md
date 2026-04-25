@@ -123,12 +123,12 @@ The dispatch §3 said "if Ensemble HAT has 2-5× larger top-1 eigenvalue: ESCALA
 ## 5. Git commits (6 local, all on master)
 
 ```
-271f4cd feat(round-7): full proactive sprint deliverables (theory + empirical + writing + defense)
-cbb5db0 chore: workspace deep organization (cleanup pass 3)
-3d88abd chore: archive old broadcasts (>5 days) into archive/ subdirs by date period
-0a41270 chore: stage prior physical deletions and Round-3/4 fixes
-9a5c248 feat: add post-fix verification suite + fresh-eval scripts
-7a77f40 chore: untrack data/ per .gitignore (preserves local files)
+18e9140 feat(round-7): full proactive sprint deliverables (theory + empirical + writing + defense)
+2974326 chore: workspace deep organization (cleanup pass 3)
+4e78d3e chore: archive old broadcasts (>5 days) into archive/ subdirs by date period
+40a088a chore: stage prior physical deletions and Round-3/4 fixes
+313bcfb feat: add post-fix verification suite + fresh-eval scripts
+3fe156c chore: untrack data/ per .gitignore (preserves local files)
 ```
 
 Each is well-described, atomic, reversible.

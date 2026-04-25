@@ -83,7 +83,7 @@ find paper/ -name "*.tex" -exec grep -Hn \
 
 **Master grep** (Codex expanded pattern + `05_results.tex`):
 ```bash
-rg -n "9cdbe77|27\.72|30\.53|32\.12|32\.60|38\.95|87\.79|18\.72|18\.86|87\.49|..." \
+rg -n "33bed9c|27\.72|30\.53|32\.12|32\.60|38\.95|87\.79|18\.72|18\.86|87\.49|..." \
   paper/thesis/*.tex.kimi_draft_v3 \
   paper/thesis_cn/*.tex.kimi_draft_v3 \
   paper/latex_gpt/sections/*.tex \
@@ -93,7 +93,7 @@ rg -n "9cdbe77|27\.72|30\.53|32\.12|32\.60|38\.95|87\.79|18\.72|18\.86|87\.49|..
 
 Only matches:
 - `supplementary.tex` rows (b)–(f): explicitly footnoted `$^\dagger$` / `$^\ddagger$`
-- `01_introduction.tex.kimi_draft_v3:15`: "post-`9cdbe77` retraining recovers to ~80--82%, **falsifying** the earlier ceiling claim" — safe contrast narrative
+- `01_introduction.tex.kimi_draft_v3:15`: "post-`33bed9c` retraining recovers to ~80--82%, **falsifying** the earlier ceiling claim" — safe contrast narrative
 
 ---
 

@@ -9,7 +9,7 @@ The scope claim is correct at the code/math level:
 
 - The STE branch-swap bug is a no-op at canonical `NL_LTP=1.0 / NL_LTD=-1.0`.
 - Canonical paper results whose training used default `NL=1.0/-1.0` are bug-immune with respect to this specific STE branch mapping bug.
-- Severe-NL experiments using `NL=2.0/-2.0` or second-order STE are contaminated unless rerun after commit `9cdbe77`.
+- Severe-NL experiments using `NL=2.0/-2.0` or second-order STE are contaminated unless rerun after commit `33bed9c`.
 
 Current live paper text still contains contaminated severe-NL / structural-ceiling paragraphs in `paper/latex_gpt/sections/05_results.tex` and `paper/latex_gpt/sections/06_discussion.tex`. Per Rule B, Codex did not edit those live files; Kimi should draft replacements and Claude integrates later.
 

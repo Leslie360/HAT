@@ -2,7 +2,7 @@
 
 **Date:** 2026-04-25  
 **Branch:** Paper Equation S2 no-multiplier form  
-**Git HEAD:** 9cdbe77 (dual bug fix)
+**Git HEAD:** 33bed9c (dual bug fix)
 
 ## ✅ ALL TASKS COMPLETE
 

@@ -290,7 +290,7 @@ def main():
         "",
         "- No checkpoint-corruption signature: every local fresh mean is close to its train-best source accuracy.",
         "- CX-M6 has the widest local fresh spread (`std=1.6847%`, range `78.07-82.54`), so Ensemble-uniform seed 456 should be displayed with an error bar rather than as a single headline number.",
-        "- The worktree is dirty because multiple agents are writing coordination artifacts and code patches; commit hash is still `9cdbe77`, the required post-fix base.",
+        "- The worktree is dirty because multiple agents are writing coordination artifacts and code patches; commit hash is still `33bed9c`, the required post-fix base.",
         "- Remote rows with `TBD` fresh values are placeholders from the dispatch and must not be cited as measured fresh performance.",
         "",
         "## Verdict",

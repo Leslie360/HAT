@@ -39,7 +39,7 @@
 - [x] `S_reproducibility.tex` test commands use `tests/test_*.py` paths after workspace cleanup.
 - [x] `S_reproducibility.tex` describes the canonical 10x5 fresh-instance protocol and ADC hook diagnostic.
 - [ ] Release URL / archive policy still needs final human decision: anonymous reviewer archive vs public GitHub URL.
-- [ ] Confirm whether `9cdbe77` remains the canonical reproducibility commit, or whether a later cleanup/release commit should be tagged for submission.
+- [ ] Confirm whether `33bed9c` remains the canonical reproducibility commit, or whether a later cleanup/release commit should be tagged for submission.
 - [ ] Final release bundle / Zenodo DOI placeholder still needs packaging after user approval.
 
 ## User-Supplied Metadata Still Needed

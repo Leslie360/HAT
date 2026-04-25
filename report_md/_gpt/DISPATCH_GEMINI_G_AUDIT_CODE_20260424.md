@@ -1,4 +1,4 @@
-# DISPATCH GEMINI G-AUDIT-CODE — Independent Code Audit at Commit 9cdbe77
+# DISPATCH GEMINI G-AUDIT-CODE — Independent Code Audit at Commit 33bed9c
 **Date:** 2026-04-24
 **Issued by:** Claude
 **Assignee:** Gemini (ERROR-FINDING MODE ONLY per BROADCAST_REBUILD_3WEEK)
@@ -10,7 +10,7 @@
 
 ## 1. Objective
 
-Perform an **independent static audit** of the two core analog layer files at commit `9cdbe77` (the post-fix code). Goal: hunt for a **third bug** or any remaining latent correctness issue before we commit to the post-fix narrative across the whole paper. This is the **final bug-insurance layer**.
+Perform an **independent static audit** of the two core analog layer files at commit `33bed9c` (the post-fix code). Goal: hunt for a **third bug** or any remaining latent correctness issue before we commit to the post-fix narrative across the whole paper. This is the **final bug-insurance layer**.
 
 You are NOT designing experiments, writing theory, or editing papers. You are auditing code. Three things: correctness, edge cases, numerical stability.
 
@@ -18,7 +18,7 @@ You are NOT designing experiments, writing theory, or editing papers. You are au
 
 ## 2. Files in scope
 
-Audit these at commit `9cdbe77`:
+Audit these at commit `33bed9c`:
 
 1. `analog_layers.py` — MLP-path analog CIM primitive with STE
 2. `analog_layers_ensemble.py` — Ensemble HAT wrapper with per-epoch D2D resampling
@@ -31,7 +31,7 @@ Audit these at commit `9cdbe77`:
 
 ### 3.1 LTP/LTD branch consistency under all NL values
 
-The known bug 1 was LTP/LTD branch swap. Verify at commit 9cdbe77:
+The known bug 1 was LTP/LTD branch swap. Verify at commit 33bed9c:
 - Under `grad_output >= 0` (LTP branch): conductance increase formula uses `(1 - g_norm)^(1/NL_LTP)` scaling. Confirm `NL_LTP > 0` assumed and handled.
 - Under `grad_output < 0` (LTD branch): conductance decrease formula uses `g_norm^(1/|NL_LTD|)` scaling. Confirm `NL_LTD` sign convention (should be negative) is handled consistently.
 - At `NL_LTP = 1.0, NL_LTD = -1.0` (canonical): both branches should reduce to linear STE. Verify this both analytically and via small symbolic test.
@@ -99,7 +99,7 @@ Produce `GEMINI_G_AUDIT_CODE_20260424.md` with the following structure:
 
 ```markdown
 # Gemini G-AUDIT-CODE Report
-Commit audited: 9cdbe77
+Commit audited: 33bed9c
 Auditor: Gemini
 Date: <YYYY-MM-DD>
 

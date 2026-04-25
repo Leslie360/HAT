@@ -35,7 +35,7 @@ All trained at NL=±2.0, batch=64, local GPU.
 
 ## 3. Fresh-eval protocol (match remote methodology)
 
-Use `scripts/eval_fresh_instances_postfix.py` (at commit 9cdbe77) with:
+Use `scripts/eval_fresh_instances_postfix.py` (at commit 33bed9c) with:
 
 - `--num-instances 10`
 - `--mc-runs 5`
@@ -118,7 +118,7 @@ State whether the ~1-2pp remote advantage is consistent across HAT types (hypoth
 - **Match remote methodology exactly**: 10 instances × 5 MC, explicit NL flags.
 - **Save logs**: tee to `logs/_gpt/cx_m{N}_fresheval_<ts>.log` (per auto-memory feedback_save_logs.md).
 - **Don't run concurrent with any other GPU job**: per auto-memory feedback_gpu_busy.md.
-- **Document commit hash**: verify repo at `9cdbe77` before eval starts; record in JSON outputs.
+- **Document commit hash**: verify repo at `33bed9c` before eval starts; record in JSON outputs.
 
 ---
 

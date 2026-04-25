@@ -14,7 +14,7 @@ Despite the "Zero bug-retrospective language" claim in the Round-3 closure, Kimi
 - **Cover Letter v6 (`cover_letter_v6.tex.kimi_draft_v3`):**
   - Line 28: `...where post-fix hardware-aware training...`
   - Line 36: `...localising it to a now-resolved software artifact.`
-  - Line 40: `...independent code audit (commit 9cdbe77) identified and corrected two implementation issues...`
+  - Line 40: `...independent code audit (commit 33bed9c) identified and corrected two implementation issues...`
   - Line 53: `...under audited post-fix training`
 - **EN Thesis Ch 1 (`chapter_1_hat_instance_overfitting.tex.kimi_draft_v3`):**
   - Line 113: `...post-fix hardware-aware training recovers to the ~80--82% band...`

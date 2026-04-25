@@ -54,20 +54,20 @@ User picks; I recommend below.
 
 | Candidate | Params | Why | Why not |
 |:--|--:|:--|:--|
-| **TinyLlama 1.1B** ⭐ recommended | 1.1B | Established baseline, fits comfortably on local 24GB GPU, decoder-only, clean attention | Smaller than "real" LLM |
+| **Pythia 410M** ⭐ recommended | 1.1B | Established baseline, fits comfortably on local 16GB GPU, decoder-only, clean attention | Smaller than "real" LLM |
 | Pythia 410M / 1B / 1.4B | 0.4-1.4B | Open weights, good documented baselines, simpler architecture | Less attention to KV-cache optimization |
 | GPT-2 small (124M) | 0.124B | Tiny, fits anywhere, fast iteration | Too small to be representative of "LLM deployment" |
 | LLaMA-2 7B | 7B | Real LLM scale | Doesn't fit on local; needs 8×40GB |
 | Mistral 7B | 7B | Modern attention (sliding window, GQA) | Same memory problem |
 
-**My recommendation: TinyLlama 1.1B for W1+W2, then upgrade to LLaMA-2 7B for W3+ on 8×40GB if/when remote returns.**
+**My recommendation: Pythia 410M for W1+W2, then upgrade to LLaMA-2 7B for W3+ on 8×40GB if/when remote returns.**
 
 Rationale:
 - Local GPU compatibility (need to keep running)
 - Established benchmark numbers (perplexity on WikiText, GSM8K, MMLU)
 - Decoder-only with KV-cache (correct architectural target)
 - 22 layers × hidden 2048 — enough to test multi-layer KV-cache analog mapping
-- TinyLlama-Chat exists for instruction-following metrics
+- Pythia-Chat exists for instruction-following metrics
 - Architecture similar enough to Llama-2/Mistral that scaling story is credible
 
 ---
@@ -75,7 +75,7 @@ Rationale:
 ## 4. Phase W0 deliverables (Day 1-3)
 
 ### 4.1 Testbed decision lock
-- Pick + justify (TinyLlama 1.1B unless user signals otherwise)
+- Pick + justify (Pythia 410M unless user signals otherwise)
 - Document acceptance criteria (e.g., "preliminary success = Ensemble HAT recovers > 90% of baseline perplexity on attention-only-analog config under canonical 5%C2C/10%D2D/4-bit/NL=1.0")
 
 ### 4.2 Architectural mapping spec
@@ -101,7 +101,7 @@ Rationale:
   - **NEW**: KV-cache analog wrapper (stored K/V as conductance, read with D2D+C2C noise per access)
 - Write `train_llm_hybrid.py` (analogous to `train_tinyvit_ensemble.py`)
 - Write `eval_llm_kv_cache.py` for perplexity + long-context eval
-- Smoke test: TinyLlama loads, hybrid conversion runs, no NaN forward pass
+- Smoke test: Pythia loads, hybrid conversion runs, no NaN forward pass
 
 ### 5.2 Kimi paper-2 outline
 - Adapt KIMI-THEORY-1/2 derivation to attention path
@@ -115,7 +115,7 @@ Rationale:
 ## 6. Phase W2 deliverables (Day 15-28)
 
 ### 6.1 Codex experimentation
-- Baseline TinyLlama fresh perplexity (FP32, no analog)
+- Baseline Pythia fresh perplexity (FP32, no analog)
 - Apply hybrid analog conversion to QKV (no KV-cache analog yet)
 - Standard HAT vs Ensemble HAT, fresh-instance eval (10 instances × 5 MC, similar to paper-1)
 - Add KV-cache analog and re-run
@@ -196,7 +196,7 @@ User asked which of the previously-discussed directions are suitable. Here's the
 
 ## 12. Escalation triggers (for Round-8)
 
-- **W0 testbed pick blocked** (e.g., TinyLlama license issue): user signal needed for alternative
+- **W0 testbed pick blocked** (e.g., Pythia license issue): user signal needed for alternative
 - **W1 KV-cache analog wrapper has unsolvable issue** (e.g., gradient flow through cached tensor breaks): ESCALATE; possibly requires different architectural approach
 - **W2 results show framework does NOT extend to attention** (Standard HAT collapses similarly to paper-1, but Ensemble HAT does NOT recover): MAJOR ESCALATION; paper-1 §5.9 preview claim wrong; reopen NARRATIVE_PIVOT
 - **W2 results show framework extends in surprising new way** (e.g., new failure mode unique to KV-cache): GOOD NEWS; paper-2 narrative gains depth
@@ -211,7 +211,7 @@ Week 1 (today → 2026-05-02):
   Kimi:  W0 mapping spec + paper-2 outline draft
   
 Week 2 (2026-05-03 → 2026-05-09):
-  Codex: W1 finish (smoke test passing on TinyLlama hybrid)
+  Codex: W1 finish (smoke test passing on Pythia hybrid)
   Kimi:  Paper-2 theory adaptation
   [Possible 8×40GB return mid-week — Track B activates]
   
@@ -229,4 +229,4 @@ Week 4 (2026-05-17 → 2026-05-23):
 
 ## 14. One-line
 
-Work 2 KV-cache experimental program launches Round-8 in two-track discipline: Codex + Kimi build infrastructure + theory + first results over 4 weeks on TinyLlama 1.1B local testbed; paper-1 standby capacity reserved for trigger response; Work 2 cannot cannibalize paper-1 finish-line.
+Work 2 KV-cache experimental program launches Round-8 in two-track discipline: Codex + Kimi build infrastructure + theory + first results over 4 weeks on Pythia 410M local testbed; paper-1 standby capacity reserved for trigger response; Work 2 cannot cannibalize paper-1 finish-line.

@@ -172,7 +172,7 @@ def test_ste_gradient():
 
 def test_nonlinear_update_scaling():
     print("\n== Test 5b: Nonlinear update scaling ==")
-    # Post-9cdbe77: grad<0 triggers LTP branch (potentiation / weight increase).
+    # Post-33bed9c: grad<0 triggers LTP branch (potentiation / weight increase).
     x_ltp = torch.tensor([2.0, 9.0], requires_grad=True)
     y_ltp = ste_quantize(x_ltp, n_levels=16, x_min=1.0, x_max=10.0, nl_ltp=3.0, nl_ltd=-1.0)
     (-y_ltp.sum()).backward()
@@ -180,7 +180,7 @@ def test_nonlinear_update_scaling():
           abs(x_ltp.grad[0].item()) > abs(x_ltp.grad[1].item()),
           f"grad={x_ltp.grad.tolist()}")
 
-    # Post-9cdbe77: grad>=0 triggers LTD branch (depression / weight decrease).
+    # Post-33bed9c: grad>=0 triggers LTD branch (depression / weight decrease).
     x_ltd = torch.tensor([2.0, 9.0], requires_grad=True)
     y_ltd = ste_quantize(x_ltd, n_levels=16, x_min=1.0, x_max=10.0, nl_ltp=1.0, nl_ltd=-3.0)
     y_ltd.sum().backward()

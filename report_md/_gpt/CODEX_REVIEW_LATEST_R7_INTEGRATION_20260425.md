@@ -85,10 +85,10 @@ The note says:
 
 ```bash
 git clone https://github.com/USERNAME/REPO_NAME.git
-git checkout 9cdbe77
+git checkout 33bed9c
 ```
 
-This is not submission-ready. It should either use the real release/archive URL or an explicit anonymous-review placeholder that matches the submission package. Also verify whether `9cdbe77` is still the intended canonical reproducibility commit after Claude's cleanup commits and later Round-7 manuscript/script additions.
+This is not submission-ready. It should either use the real release/archive URL or an explicit anonymous-review placeholder that matches the submission package. Also verify whether `33bed9c` is still the intended canonical reproducibility commit after Claude's cleanup commits and later Round-7 manuscript/script additions.
 
 ### P2-1: Kimi comprehensive review is now stale after later fixes
 

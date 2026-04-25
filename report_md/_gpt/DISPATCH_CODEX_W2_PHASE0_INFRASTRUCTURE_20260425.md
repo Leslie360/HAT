@@ -11,24 +11,24 @@
 
 ## 0. Mission
 
-Build the analog CIM infrastructure for transformer attention path + KV-cache, validated end-to-end on TinyLlama 1.1B local testbed. This is Phase W0 (testbed lock + scope freeze) + Phase W1 (analog wrapper code + smoke test) of Work 2.
+Build the analog CIM infrastructure for transformer attention path + KV-cache, validated end-to-end on Pythia 410M local testbed. This is Phase W0 (testbed lock + scope freeze) + Phase W1 (analog wrapper code + smoke test) of Work 2.
 
 ---
 
 ## 1. Phase W0 — Testbed pick + architectural scope (Days 1-3)
 
-### 1.1 Testbed lock — TinyLlama 1.1B (Claude recommended)
+### 1.1 Testbed lock — Pythia 410M (Claude recommended)
 
-**Default**: `TinyLlama/TinyLlama-1.1B-Chat-v1.0` (HuggingFace).
+**Default**: `EleutherAI/pythia-410m-deduped` (HuggingFace).
 
 Why:
-- 1.1B params fit on local 24GB GPU with AMP (2.2GB FP16 weights + activation)
-- 22 layers × 32 heads × 2048 hidden dim → realistic decoder-only architecture
+- 410M params fit comfortably on 16GB local GPU (~5GB peak training)
+- 24 layers × 16 heads × 1024 hidden dim → realistic decoder-only architecture
 - Pre-trained weights publicly available (Apache 2.0 license)
 - Established baseline numbers (perplexity, MMLU) for comparison
 - Architecture similar to LLaMA-2 family → scaling story credible
 
-If TinyLlama proves problematic (license, weights, or unexpected blocker), fallback to `EleutherAI/pythia-1b-deduped`.
+If Pythia proves problematic (license, weights, or unexpected blocker), fallback to `EleutherAI/pythia-160m-deduped`.
 
 ### 1.2 Architectural mapping spec
 
@@ -109,7 +109,7 @@ Time budget: 3 days (writing + decision; minimal compute).
 - Wires `AnalogKVCache` into attention path
 
 `paper2/src/train_llm_hybrid.py` (analogous to `train_tinyvit_ensemble.py`):
-- Loads TinyLlama, applies hybrid conversion
+- Loads Pythia, applies hybrid conversion
 - Standard HAT and Ensemble HAT training options
 - Per-epoch D2D resampling for Ensemble HAT (same discipline as paper-1)
 
@@ -122,12 +122,12 @@ Time budget: 3 days (writing + decision; minimal compute).
 
 Required to pass before W1 closes:
 - `tests/test_w2_analog_kv_cache.py` — D2D mask is consistent across reads, C2C is fresh
-- `tests/test_w2_llm_hybrid_conversion.py` — TinyLlama loads, conversion runs, no NaN forward pass
-- `tests/test_w2_perplexity_baseline.py` — TinyLlama FP32 perplexity on WikiText-103 sample matches published baseline (within 5%)
+- `tests/test_w2_llm_hybrid_conversion.py` — Pythia loads, conversion runs, no NaN forward pass
+- `tests/test_w2_perplexity_baseline.py` — Pythia FP32 perplexity on WikiText-103 sample matches published baseline (within 5%)
 
 ### 2.3 Training infrastructure smoke
 
-- TinyLlama hybrid training for 100 steps (not full epoch) on a small WikiText-103 slice
+- Pythia hybrid training for 100 steps (not full epoch) on a small WikiText-103 slice
 - Verify loss decreases
 - Verify D2D buffers resample per "epoch" (whatever epoch means in LLM finetune context — say, per 1000-step block)
 
@@ -143,7 +143,7 @@ Required to pass before W1 closes:
 ## 3. Phase W2 (Days 15-28) — preview
 
 After W1 closes (smoke tests green), Phase W2 fires (separate dispatch when W1 lands):
-- Standard HAT vs Ensemble HAT training on TinyLlama
+- Standard HAT vs Ensemble HAT training on Pythia
 - Fresh-instance eval (10 instances × 5 MC) on attention path
 - Compare degradation patterns to paper-1 MLP-path findings
 - First Work 2 results table for paper-2 results.tex
@@ -208,7 +208,7 @@ All status reports append to `report_md/_gpt/AGENT_SYNC_gpt.md`.
 ## 6. Success criteria
 
 - W0 testbed locked, mapping spec written, benchmarks chosen, no surprises
-- W1 infrastructure code passes 3 smoke tests, training loss decreases, GPU memory under 24GB
+- W1 infrastructure code passes 3 smoke tests, training loss decreases, GPU memory under 14GB (5GB headroom on 16GB)
 - Sets up W2 for first real numbers within 4 weeks total
 
 ---

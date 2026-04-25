@@ -52,7 +52,7 @@
 ## Expanded Grep Gate Result
 
 ```bash
-rg -n "9cdbe77|27\.72|30\.53|32\.12|32\.60|38\.95|87\.79|18\.72|18\.86|87\.49|case-mlp-linear|case-all-linear|case-joint-hat|structural ceiling|structural limit|structural barrier|ceiling is not the roof|deployment-fidelity|ADC-on headline|-0\.10" \
+rg -n "33bed9c|27\.72|30\.53|32\.12|32\.60|38\.95|87\.79|18\.72|18\.86|87\.49|case-mlp-linear|case-all-linear|case-joint-hat|structural ceiling|structural limit|structural barrier|ceiling is not the roof|deployment-fidelity|ADC-on headline|-0\.10" \
   paper/thesis/*.tex.kimi_draft_v3 \
   paper/thesis_cn/*.tex.kimi_draft_v3 \
   paper/latex_gpt/sections/01_introduction.tex \

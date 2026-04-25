@@ -7,8 +7,8 @@ PYTHON_BIN="/home/qiaosir/miniconda3/envs/LLM/bin/python"
 
 cd "$REPO_DIR"
 
-git log --oneline -1 | grep -q "49cacef" || {
-    echo "ERROR: Not on canonical commit 49cacef"
+git log --oneline -1 | grep -q "2bf59db30183edccd838c169e89c1539d1a4f907" || {
+    echo "ERROR: Not on canonical commit 2bf59db30183edccd838c169e89c1539d1a4f907"
     exit 1
 }
 

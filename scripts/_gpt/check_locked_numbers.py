@@ -1,4 +1,4 @@
-# ⚠️ WARNING: H6 (expected=27.72) is BUG-CONTAMINATED — pre-fix NL=2.0 result invalid after commit 9cdbe77.
+# ⚠️ WARNING: H6 (expected=27.72) is BUG-CONTAMINATED — pre-fix NL=2.0 result invalid after commit 33bed9c.
 # Do not use this script to verify severe-NL numbers. Bug-immune numbers (H3-H5, H7-H8) remain valid.
 # See report_md/_gpt/BROADCAST_REBUILD_3WEEK_20260424.md
 

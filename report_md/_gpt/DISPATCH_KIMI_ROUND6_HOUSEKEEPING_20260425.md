@@ -30,7 +30,7 @@ This is the **repository front door** — first thing any visitor sees. Inconsis
    ```
 
 ### Constraints
-- No bug-retrospective language ("post-fix", "9cdbe77", "software artifact")
+- No bug-retrospective language ("post-fix", "33bed9c", "software artifact")
 - Use "hook diagnostic" not "deployment-fidelity" for ADC numbers
 - Match §5.7 wording style (neutral protocol terms)
 

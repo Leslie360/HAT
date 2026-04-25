@@ -29,7 +29,7 @@
 - `eval_measured_profile.py`, `eval_resnet18_checkpoints.py`
 
 **Core libraries (11):**
-- `analog_layers.py` ← post-bug-fix (commit 9cdbe77 + NL guard + AMP decorators)
+- `analog_layers.py` ← post-bug-fix (commit 33bed9c + NL guard + AMP decorators)
 - `analog_layers_ensemble.py` ← Ensemble HAT primitives
 - `inference_analysis_utils.py` ← ADC hook + range calibration
 - `amp_utils.py`, `device_profile_utils.py`

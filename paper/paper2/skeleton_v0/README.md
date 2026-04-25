@@ -1,4 +1,4 @@
-<!-- ⚠️ WARNING: This Work 2 document contains bug-contaminated severe-NL numbers (27.72%, 30.53%, etc.) from pre-fix code. Fixed at commit 9cdbe77. Do not cite as evidence. See BROADCAST_REBUILD_3WEEK_20260424.md. Work 2 is deferred until paper-1 submitted per broadcast §7.5. -->\n
+<!-- ⚠️ WARNING: This Work 2 document contains bug-contaminated severe-NL numbers (27.72%, 30.53%, etc.) from pre-fix code. Fixed at commit 33bed9c. Do not cite as evidence. See BROADCAST_REBUILD_3WEEK_20260424.md. Work 2 is deferred until paper-1 submitted per broadcast §7.5. -->\n
 # Paper-2 Skeleton v0 — Structural Limits of First-Order Surrogate Training for Organic Optoelectronic CIM
 
 **Date:** 2026-04-20  

@@ -2,7 +2,7 @@
 
 ## 1. Provenance
 
-- Eval commit: `9cdbe77e1346eab4ed5ee828ca4b100255b7996d`
+- Eval commit: `33bed9cbb8ade7676d71074490ad45e68347950e`
 - Eval-stack code SHA256: `d287dc4422a5b5bee810381731dfb43fdf51e2a275ea50a0b32ab630864f9642`
 - Dirty worktree at eval time: `True`
 - CUDA device: `NVIDIA GeForce RTX 5070 Ti`

@@ -1,7 +1,7 @@
 # PhD Defense Q&A Preparation
 
 **Date:** 2026-04-25  
-**Based on:** Canonical post-fix results (commit 9cdbe77, dual bug fix)
+**Based on:** Canonical post-fix results (commit 33bed9c, dual bug fix)
 
 ---
 

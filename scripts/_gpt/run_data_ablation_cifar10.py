@@ -9,7 +9,7 @@ Safety guards:
   1. Refuses to run until the R1 fresh-instance gate JSON exists and reports a
      fresh-instance mean above the requested threshold.
   2. Refuses to run if the working-tree ``analog_layers.py`` does not match the
-     clean post-bugfix snapshot from commit ``49cacef``.
+     clean post-bugfix snapshot from commit ``2bf59db30183edccd838c169e89c1539d1a4f907``.
 
 Use ``--dry-run`` to emit the planned commands without launching training.
 Use ``--self-check`` to run lightweight pure-Python sanity checks.
@@ -37,7 +37,7 @@ DEFAULT_R1_GATE_JSON = ROOT / "report_md" / "_gpt" / "json_gpt" / "r1_clean_anch
 DEFAULT_JSON_DIR = ROOT / "report_md" / "_gpt" / "json_gpt"
 DEFAULT_LOG_DIR = ROOT / "logs" / "_gpt"
 DEFAULT_SAVE_ROOT = ROOT / "checkpoints" / "_gpt" / "data_ablation_cifar10"
-EXPECTED_ANALOG_COMMIT = "49cacef"
+EXPECTED_ANALOG_COMMIT = "2bf59db30183edccd838c169e89c1539d1a4f907"
 R1_FRESH_THRESHOLD = 70.0
 
 FRACTION_CHOICES = (0.1, 0.25, 0.5, 1.0)

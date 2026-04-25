@@ -21,7 +21,7 @@ Per `BROADCAST_GEMINI_ROUND5_COMPLETE_20260425.md`, Gemini moved sidecars into c
 Cross-check (live verification just now):
 - `paper/latex_gpt/sections/05_results.tex` line 87: `M1 & Standard (V3) & Uniform & 123 & 81.89` ✅ Stage-2 number is in canonical
 - `paper/latex_gpt/sections/05_results.tex` line 81: caption explicitly says "per-instance range recalibration on each fresh hardware realization" ✅
-- Grep for `post-fix|9cdbe77|software artifact|27.72|30.53|32.12` across canonical `.tex` + `cover_letter.tex`: **zero matches** ✅
+- Grep for `post-fix|33bed9c|software artifact|27.72|30.53|32.12` across canonical `.tex` + `cover_letter.tex`: **zero matches** ✅
 - `main.tex` per Gemini: compiles successfully
 
 **Ruling: Accept Gemini's integration as Round-5 closure.** Reasoning:

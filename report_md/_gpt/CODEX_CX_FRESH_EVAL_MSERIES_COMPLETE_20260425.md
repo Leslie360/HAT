@@ -1,7 +1,7 @@
 # M-Series Fresh Eval Complete Report
 
 **Date:** 2026-04-25  
-**Git HEAD:** 9cdbe77 (dual bug fix)  
+**Git HEAD:** 33bed9c (dual bug fix)  
 **Evaluator:** eval_fresh_instances_postfix.py  
 **Hardware:** NVIDIA GeForce RTX 5070 Ti (16GB)
 

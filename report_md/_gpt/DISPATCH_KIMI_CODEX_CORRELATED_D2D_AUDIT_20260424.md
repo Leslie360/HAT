@@ -32,7 +32,7 @@ Target file: `fresh_instance_eval_v4_ensemble_correlated_d2d.json` (referenced i
 Check:
 - File exists? Path? Size? Last modified?
 - Git blame on the script that produced it
-- Commit hash at generation time (is it pre or post commit 9cdbe77 dual-bug fix?)
+- Commit hash at generation time (is it pre or post commit 33bed9c dual-bug fix?)
 - Eval protocol: NL_LTP, NL_LTD, noise_mode, sigma_d2d, sigma_c2c, num_instances, mc_runs
 
 ### 2.2 Zone classification
@@ -45,7 +45,7 @@ Based on §2.1 findings, classify as zone 3A / 3B / 3C:
 ### 2.3 Reproduction (if needed)
 
 If §2.2 classification is zone 3B or "verify needed":
-- Rerun `fresh_instance_eval_v4_ensemble_correlated_d2d.json` at current commit 9cdbe77 + NL=1.0 canonical + AR(1) at ρ=0, 0.3, 0.5
+- Rerun `fresh_instance_eval_v4_ensemble_correlated_d2d.json` at current commit 33bed9c + NL=1.0 canonical + AR(1) at ρ=0, 0.3, 0.5
 - ~1-2 GPU-h total
 - Confirm numbers reproduce within 2σ of existing
 - If major drift, flag to Claude

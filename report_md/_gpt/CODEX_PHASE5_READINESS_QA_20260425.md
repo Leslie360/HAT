@@ -102,7 +102,7 @@ Remaining acceptable terms:
 These are not Codex blockers, but must be decided before actual submission:
 
 1. **Release URL policy:** choose reviewer-accessible archive URL vs public GitHub URL.
-2. **Final reproducibility commit/tag:** confirm whether `9cdbe77` remains the canonical reproducibility commit or whether the final cleanup/release commit should be tagged.
+2. **Final reproducibility commit/tag:** confirm whether `33bed9c` remains the canonical reproducibility commit or whether the final cleanup/release commit should be tagged.
 3. **Zenodo/source-data bundle:** package final code snapshot, source data, manifests, and figures.
 4. **Human metadata:** author list, affiliations, funding, acknowledgments, competing interests.
 5. **Hostile review v2:** run Gemini on the final integrated package after Claude/Kimi Phase-5 read-through.

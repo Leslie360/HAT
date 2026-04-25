@@ -2,7 +2,7 @@
 **Date:** 2026-04-24
 **Issued by:** Claude (Architect)
 **Target:** New 8×40GB GPU server (persistent)
-**Trigger:** User has access to a new server; code at GitHub `remote-exploration` branch post commit `c727a43` (dual-bug fix merged from main commit `9cdbe77`).
+**Trigger:** User has access to a new server; code at GitHub `remote-exploration` branch post commit `c727a43` (dual-bug fix merged from main commit `33bed9c`).
 **Replaces:** REMOTE_DISPATCH_A100_POSTFIX_20260424.md (A100 retired)
 
 ---
@@ -78,7 +78,7 @@ Start from ImageNet-1K pretrained weights (timm has these — `timm.create_model
 ## 4. Code you need (all on GitHub `remote-exploration` branch)
 
 You already have from previous handoff:
-- `analog_layers.py` — MLP path analog CIM primitive (9cdbe77 fixed, LTP/LTD branch + second-order correction)
+- `analog_layers.py` — MLP path analog CIM primitive (33bed9c fixed, LTP/LTD branch + second-order correction)
 - `analog_layers_ensemble.py` — Ensemble HAT wrapper with per-epoch D2D resampling
 - `train_tinyvit.py` — reference training script (uses timm + analog layers, has `build_model`, `train_one_epoch`, `evaluate` helpers)
 - `train_tinyvit_ensemble.py` — Ensemble HAT variant
@@ -150,7 +150,7 @@ Before running the 18-config matrix:
 ### Gate A — Code provenance
 ```bash
 git rev-parse HEAD                      # expect commit at or after c727a43 
-                                        # (contains 9cdbe77 dual-bug fix)
+                                        # (contains 33bed9c dual-bug fix)
 python test_dual_bug_fix.py             # must pass 5/5
 python test_groupwise_nl_wrapper.py     # must pass 8/8
 ```

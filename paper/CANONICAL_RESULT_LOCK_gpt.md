@@ -2,7 +2,7 @@
 
 **Task 35 (27.72 ± 0.82% severe-NL) is bug-contaminated and INVALID.**
 
-The `analog_layers.py` STE backward pass contained two bugs affecting all NL≠1.0 training. Fixed at commit `9cdbe77`. Post-fix Standard HAT @ NL=2.0 reaches ~82% (CX-M1 replication pending).
+The `analog_layers.py` STE backward pass contained two bugs affecting all NL≠1.0 training. Fixed at commit `33bed9c`. Post-fix Standard HAT @ NL=2.0 reaches ~82% (CX-M1 replication pending).
 
 Do not cite Task 35 as evidence. See `report_md/_gpt/BROADCAST_REBUILD_3WEEK_20260424.md` for full audit.
 

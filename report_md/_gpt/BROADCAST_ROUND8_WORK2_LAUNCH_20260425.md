@@ -12,7 +12,7 @@
 User directive: paper-1 data locked + continue with new work + asked whether to push Work 2 experiments.
 
 **Decision: YES start Work 2 NOW** in two-track discipline:
-- **Track A (Work 2 main, NEW)**: Codex builds KV-cache analog infrastructure on TinyLlama 1.1B local testbed; Kimi drafts paper-2 outline + theory adaptation. 2-track 4-week launch (W0+W1+W2).
+- **Track A (Work 2 main, NEW)**: Codex builds KV-cache analog infrastructure on Pythia 410M local testbed; Kimi drafts paper-2 outline + theory adaptation. 2-track 4-week launch (W0+W1+W2).
 - **Track B (paper-1 standby, unchanged)**: All paper-1 trigger response capacity reserved. Paper-1 finish-line readiness comes first if 8×40GB return / PhD data / submit-now signals fire.
 
 ---
@@ -44,11 +44,11 @@ What does NOT change: paper-1 narrative, venue, gates, all 12 frozen decisions i
 
 ---
 
-## 3. Testbed: TinyLlama 1.1B
+## 3. Testbed: Pythia 410M
 
 Default pick (user can override):
-- **Model**: `TinyLlama/TinyLlama-1.1B-Chat-v1.0` (HuggingFace, Apache 2.0)
-- **Why**: 22 layers × 32 heads × 2048 hidden, fits local 24GB GPU with AMP, established baselines, decoder-only KV-cache architecture, scaling to LLaMA-2/Mistral credible
+- **Model**: `EleutherAI/pythia-410m-deduped` (HuggingFace, Apache 2.0; fits 16GB local with ~5GB peak training)
+- **Why**: 24 layers × 16 heads × 1024 hidden, fits local 16GB GPU with AMP, established baselines, decoder-only KV-cache architecture, scaling to LLaMA-2/Mistral credible
 - **Fallback**: `EleutherAI/pythia-1b-deduped`
 
 ---
@@ -175,7 +175,7 @@ Week 1 (today → 2026-05-02):
   Kimi:  W0 mapping spec + paper-2 outline draft
   
 Week 2 (2026-05-03 → 2026-05-09):
-  Codex: W1 finish (smoke tests passing on TinyLlama hybrid)
+  Codex: W1 finish (smoke tests passing on Pythia hybrid)
   Kimi:  Paper-2 theory adaptation
   [Possible 8×40GB return mid-week → Track B activates]
   
@@ -208,4 +208,4 @@ Earlier attempt to push 6 paper-1 cleanup commits to `Leslie360/HAT.git master` 
 
 ## 15. One-line
 
-"Round-7 paper-1 sprint closed; Round-8 Work 2 KV-cache experimental launch starts in two-track discipline; Codex builds infrastructure on TinyLlama 1.1B local while Kimi drafts paper-2 + theory; paper-1 finish-line readiness preserved as Track B priority."
+"Round-7 paper-1 sprint closed; Round-8 Work 2 KV-cache experimental launch starts in two-track discipline; Codex builds infrastructure on Pythia 410M local while Kimi drafts paper-2 + theory; paper-1 finish-line readiness preserved as Track B priority."

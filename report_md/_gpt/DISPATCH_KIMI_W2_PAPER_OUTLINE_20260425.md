@@ -72,7 +72,7 @@ Draft `paper2/` directory with paper-2 structure mirroring paper-1.
 - `01_introduction.tex.kimi_draft` — KV-cache problem + paper-1 reference + Work 2 contribution claim
 - `02_related_work.tex.kimi_draft` — analog CIM literature + LLM compression literature + KV-cache compression literature
 - `03_methodology.tex.kimi_draft` — analog mapping + KV-cache analog wrapper + Ensemble HAT for attention
-- `04_experimental_setup.tex.kimi_draft` — TinyLlama testbed + WikiText-103 + benchmarks + sliding-window decode
+- `04_experimental_setup.tex.kimi_draft` — Pythia testbed + WikiText-103 + benchmarks + sliding-window decode
 - `05_results.tex.kimi_draft` — placeholder pending W2 results
 - `06_discussion.tex.kimi_draft` — placeholder
 - `07_conclusion.tex.kimi_draft` — placeholder

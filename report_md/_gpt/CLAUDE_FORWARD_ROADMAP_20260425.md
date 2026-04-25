@@ -14,7 +14,7 @@
 - **Current phase:** Round-4 active (post-cross-review closure, Stage-2 ADC re-eval gate open)
 - **Active remote:** 8×40GB GPU server running cross-arch ViT-Small/DeiT-Small on TinyImageNet (18-config matrix)
 - **Active agents:** Kimi (text/theory), Codex (GPU/code), Gemini (error-find standby)
-- **Active bug-fix commit:** `9cdbe77` (dual-bug fix) + `analog_layers.py` NL-guard + AMP decorator patches
+- **Active bug-fix commit:** `33bed9c` (dual-bug fix) + `analog_layers.py` NL-guard + AMP decorator patches
 
 ---
 

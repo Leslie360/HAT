@@ -13,7 +13,7 @@ This note provides a complete command-level recipe for reproducing the three hea
     \begin{verbatim}
     git clone https://github.com/ANONYMOUS/REPOSITORY.git
     cd compute_vit
-    git checkout 9cdbe77  # canonical reproducibility commit
+    git checkout 33bed9c  # canonical reproducibility commit
     \end{verbatim}
     
     \item Create the conda environment:
@@ -46,7 +46,7 @@ python tests/test_adc_perinstance_calibration.py
 # Expected: 1/1 test passed
 \end{verbatim}
 
-If any test fails, verify that the repository is checked out at commit \texttt{9cdbe77} and that the conda environment matches \texttt{environment.yml}.
+If any test fails, verify that the repository is checked out at commit \texttt{33bed9c} and that the conda environment matches \texttt{environment.yml}.
 
 \subsection*{S-R.3 Canonical Ensemble HAT training}
 

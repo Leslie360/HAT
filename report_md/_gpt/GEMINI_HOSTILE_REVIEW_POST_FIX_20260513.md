@@ -39,7 +39,7 @@
 
 ### Attack 3: "Why should we trust the cross-host remote validation?"
 **Reviewer:** "You mention remote A100 validation, but how do we know the remote node didn't just run the same buggy code?"
-**Response Path:** Detail the preflight gates (R-M0). The remote node explicitly verified the git commit hash (`9cdbe77`), the exact bug-fix lines in `analog_layers.py`, and ran isolated unit tests before launching the replication queue.
+**Response Path:** Detail the preflight gates (R-M0). The remote node explicitly verified the git commit hash (`33bed9c`), the exact bug-fix lines in `analog_layers.py`, and ran isolated unit tests before launching the replication queue.
 
 ### Attack 4: "This paper is premature; you should have rewritten the whole thing."
 **Reviewer:** "Given the severity of the erratum, patched paragraphs are not enough. The paper should be rejected and resubmitted as a completely new study."

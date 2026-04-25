@@ -27911,3 +27911,35 @@ Independent review correctly flagged that previous W2 smoke logs did not provide
 
 **@User** — Option 3 launched. Substantial 1-week sprint. I'll surface escalations and final submission-ready signal. Override anytime.
 
+
+---
+
+### [Claude] 2026-04-25 23:30 CST — R9+R10 PICKUP SIGNAL ISSUED + SHELLS CLEANED
+
+**Action:** Final consolidation — single pickup signal broadcast for all agents to start R9+R10 work.
+
+**File:** `BROADCAST_R9_R10_PICKUP_SIGNAL_20260425.md` — explicit @-mention per agent + priority order + dispatch file pointers + cold-start file order.
+
+**Shell cleanup:**
+- All background processes terminated cleanly (gc/repack/push/clone/BFG)
+- `pgrep` confirms zero residual session processes
+- `/tmp` reclaimed 17GB (backup + clone)
+- `.git/` stable at 693MB (was 17GB pre-BFG)
+- `__pycache__/` regenerated from runs cleaned
+- Active Monitor tasks: 0
+- TaskList: empty
+
+**Git state:**
+- Local HEAD: `844b0f7d` (R10 dispatches)
+- Origin master: `844b0f7d`
+- In sync ✅
+
+**Agents standby state:**
+- @Codex: priority R10A → R10D → R10E → R9B → W2 P2 (50%/20%/30% bandwidth)
+- @Kimi: R10I (1h NOW) → R10F+C+H+G+B-text → R9A length surgery (Day 6+)
+- @Gemini: standby Days 1-5; substantive audit Days 6-7; G-HOSTILE-V2 after all close
+
+**Submission timeline:** ~10 days to submission-ready, pending PhD defense gate.
+
+**Claude:** monitoring AGENT_SYNC + escalation triggers. Available for any escalation immediately.
+

@@ -5,7 +5,7 @@
 \subsection{Baseline Digital Performance}
 \label{subsec:baseline-digital}
 
-Digital FP32 baselines are 95.46\% (ResNet-18), 90.74\% (ConvNeXt-Tiny), and 98.06\% (Tiny-ViT-5M) on CIFAR-10, with corresponding CIFAR-100 values of 78.64\%, 64.12\%, and 86.94\% as listed in the Supplementary Information. All accuracy values reported for noisy and HAT deployments are best-checkpoint results unless otherwise stated. ConvNeXt probes analog adaptation from random initialization, whereas Tiny-ViT probes foundation-model deployment.
+Digital FP32 baselines are 95.46\% (ResNet-18), 90.74\% (ConvNeXt-Tiny), and 98.06\% (Tiny-ViT-5M) on CIFAR-10, with corresponding CIFAR-100 values of 78.64\%, 64.12\%, and 86.94\%. All accuracy values reported for noisy and HAT deployments are best-checkpoint results unless otherwise stated. ConvNeXt probes analog adaptation from random initialization, whereas Tiny-ViT probes foundation-model deployment.
 
 \subsection{Quantization and Noise Resilience}
 \label{subsec:quantization-noise}
@@ -26,7 +26,7 @@ Quantization alone introduces only a modest penalty in 4-bit hybrid models. The 
     \label{fig:hat-recovery}
 \end{figure}
 
-Deployment fragility increases with task complexity (Figs.~\ref{fig:accuracy-comparison}--\ref{fig:hat-recovery}). On CIFAR-100, HAT improves Tiny-ViT from 44.06\% to 65.48\% and ConvNeXt from 23.86\% to 60.54\%. Flowers-102 shows limited recovery (Supplementary Table~\SuppTableFlowers), but the zero-noise hybrid control reaches 91.30\%, confirming that failure is driven by noise-data interaction rather than hybrid deployment alone.
+Deployment fragility increases with task complexity (Figs.~\ref{fig:accuracy-comparison}--\ref{fig:hat-recovery}). On CIFAR-100, HAT improves Tiny-ViT from 44.06\% to 65.48\% and ConvNeXt from 23.86\% to 60.54\%.
 
 An extended ADC sweep confirms the same 6-bit threshold on ConvNeXt-Tiny (Supplementary Fig.~\SuppFigNoiseSweep). The iso-accuracy contour analysis (Section~\ref{subsec:iso-accuracy}) shows that this cliff is largely independent of device variability, producing a consistent $\sim$7~pp transition across all tested $\sigma_{\mathrm{D2D}}$ levels.
 
@@ -43,7 +43,7 @@ Fresh-instance evaluation reveals that standard fixed-mask HAT (V4) collapses to
 \subsection{Physical Front-end Compensation}
 \label{subsec:frontend-compensation}
 
-The organic phototransistor front end exhibits a sublinear photoresponse $I_{\text{photo}} \propto P^{\gamma_{\text{phys}}}$ that we compensate with an inverse-gamma preprocessor $P_{\text{in}} = X^{1/\gamma_{\text{phys}}}$ (Eq.~\ref{eq:inverse-gamma}). A systematic $\gamma_{\text{phys}}$ scan in the Supplementary Information shows that compensation restores \textbf{+5.8~pp} at $\gamma_{\text{phys}}=2.0$ (89.85\% vs.\ 84.04\%, single-seed deterministic evaluation), but amplifies shot-noise variance for $\gamma_{\text{phys}} < 1$. The trade-off is captured analytically in Supplementary Figs.~\SuppFigFrontend--\SuppFigSnr.
+The organic phototransistor front end exhibits a sublinear photoresponse $I_{\text{photo}} \propto P^{\gamma_{\text{phys}}}$ that we compensate with an inverse-gamma preprocessor $P_{\text{in}} = X^{1/\gamma_{\text{phys}}}$ (Eq.~\ref{eq:inverse-gamma}). Compensation restores \textbf{+5.8~pp} at $\gamma_{\text{phys}}=2.0$ (89.85\% vs.\ 84.04\%, single-seed deterministic evaluation), but amplifies shot-noise variance for $\gamma_{\text{phys}} < 1$. The full $\gamma_{\text{phys}}$ scan and the analytical trade-off are shown in Supplementary Figs.~\SuppFigFrontend--\SuppFigSnr.
 
 \subsection{Iso-Accuracy Operating Envelope}
 \label{subsec:iso-accuracy}

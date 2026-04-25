@@ -63,7 +63,7 @@ Because Vincze et al.\ \citep{vincze2025dualplasticity} is currently available a
     \item \textbf{Nonlinear Write Asymmetry ($NL$)}: While the canonical profile uses symmetric writes ($NL=1.0$), the physical profile derived from the literature indicates moderate write nonlinearity corresponding to $NL_{LTP} = 2.0$ and $NL_{LTD} = -2.0$, which we evaluate directly in our severe stress tests.
 \end{itemize}
 
-By explicitly defining these parameters in the configuration files, the simulation framework allows any reader to reproduce our exact device assumptions without requiring access to the original materials manuscript.
+Parameter definitions are provided in Table~\ref{tab:provenance}.
 
 \subsection{Proxy Estimate Sensitivity Analysis}
 \label{subsec:proxy-sensitivity}
@@ -137,12 +137,4 @@ The accuracy difference stays below 0.1 percentage points across all tested time
 \subsection{Automated Profile Fitting Pipeline}
 \label{subsec:auto-fitting}
 
-To reduce manual profile tuning in future measured-device studies, we implemented an automated fitting utility (\path{profile_auto_fitter_gpt.py}). It ingests four raw-data categories:
-\begin{enumerate}
-    \item \textbf{Pulsed Programming Curves}: Fits the conductance range ($G_{\min}, G_{\max}$) and nonlinearity coefficients ($NL_{LTP}, NL_{LTD}$) using a behavioral exponential model.
-    \item \textbf{Cycle-to-Cycle (C2C) Statistics}: Extracts the $\sigma_{\text{C2C}}$ noise parameter from repeated write-verify measurements at identical target states.
-    \item \textbf{Device-to-Device (D2D) Mismatch}: Calculates the $\sigma_{\text{D2D}}$ parameter from conductance distributions across multiple physical devices in an array.
-    \item \textbf{Retention Decay}: Fits the double-exponential decay constants ($\tau_1, \tau_2, A_0$) from long-term conductance-vs-time measurements.
-\end{enumerate}
-
-The output is a standardized JSON device profile that can be injected directly into the PyTorch inference and HAT loops. In the current paper, this utility is included as supporting infrastructure for follow-on calibration workflows rather than as a core source of the reported headline results. A detailed calibration protocol is provided in Supplementary Note~S-HW.
+Device parameters can be extracted from measured pulsed-programming, cycle-to-cycle, device-to-device, and retention data via regression (Supplementary Methods).

@@ -59,3 +59,49 @@ Report: `report_md/_gpt/CODEX_PHASE5_READINESS_QA_20260425.md`.
 Current status: main and supplementary LaTeX builds are RC 0 with zero warnings after multi-pass. Figure refs: 23 found, 0 missing. Canonical `.tex` internal-language grep is clean. Pre-submission checklist refreshed.
 
 Codex recommends moving to Claude/Kimi Phase-5 read-through/integration. Remaining items are release URL, final commit/tag, Zenodo/source-data package, user metadata, and Gemini hostile review v2.
+
+---
+
+### [Codex] 2026-04-25 — W2 W0 complete
+
+W0 deliverables are written under `paper2/` and summarized in `report_md/_gpt/BROADCAST_CODEX_W2_W0_COMPLETE_20260425.md`.
+
+Key lock: `EleutherAI/pythia-410m-deduped`; persistent analog KV-cache is the Work 2 signature. Pythia-specific correction: use GPT-NeoX module language (`query_key_value`, `dense_h_to_4h`, `dense_4h_to_h`), not LLaMA `gate/up/down` wording.
+
+---
+
+### [Codex] 2026-04-25 — W2 W1 scaffold landed
+
+W1 scaffold is in `paper2/src/` plus `tests/test_w2_*.py`. Syntax compile passes; current Codex-shell tests report `3 passed, 4 skipped` because that shell lacks PyTorch. Standalone runtime smoke passed in `/home/qiaosir/miniconda3/envs/LLM/bin/python`; no W2 numerical result exists yet.
+
+---
+
+### [Codex] 2026-04-25 — W2 W1 runtime smoke complete
+
+Pythia 410M loads and runs on local GPU. High-precision no-noise hybrid forward drift is negligible; 100-step last-block training smoke decreases loss. Direct 4-bit and canonical-noise all-module paths are destructive/unstable in smoke, so W2 should use staged adaptation rather than starting with fully noisy all-module training. Full AnalogKVCache-to-Pythia attention integration remains open.
+
+---
+
+### 2026-04-25 22:25 CST - Codex to Claude/Kimi/Gemini/Remote
+
+Parallel task complete. Reference authenticity audit and LLM smoke report are now written:
+
+- `report_md/_gpt/CODEX_PARALLEL_LLM_AND_BIB_AUDIT_20260425.md`
+- `report_md/_gpt/BROADCAST_CODEX_PARALLEL_LLM_REF_AUDIT_20260425.md`
+- `report_md/_gpt/refs_gpt_validation_20260425.json`
+
+Key outcomes: bibliography has 0 unresolved DOI/arXiv/URL entries and 0 DOI-title mismatch flags; main and supplementary compile RC 0. LLM Pythia 410M no-noise analog last-block control is stable, but noisy all-wrapped last-block smoke remains unsafe. Proposed W2 direction remains staged submodule probing plus KV-cache-specific D2D/C2C isolation.
+
+---
+
+### 2026-04-25 22:24 CST - Codex to Claude/Kimi/Gemini/Remote
+
+W2 scoped noise probe report is written: `report_md/_gpt/CODEX_W2_SCOPED_NOISE_PROBE_REPORT_20260425.md`.
+
+Route recommendation: attention-output analogization first; QKV and MLP need lower-noise threshold calibration; do not headline full noisy all-module Pythia. Next six GPU jobs are already launched to fill the control gaps.
+
+---
+
+### 2026-04-25 22:27 CST - Codex protocol correction
+
+Goodall's independent review identified real protocol weaknesses in first W2 smoke logs. Codex patched the training script and launched a corrected trusted matrix. See `report_md/_gpt/BROADCAST_CODEX_W2_PROTOCOL_CORRECTION_20260425.md`.

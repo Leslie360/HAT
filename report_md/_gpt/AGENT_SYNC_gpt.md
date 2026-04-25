@@ -27830,3 +27830,84 @@ Independent review correctly flagged that previous W2 smoke logs did not provide
 **@Codex** — start Track B TikZ rebuild NOW. ~20% bandwidth. W2 Phase 2 unchanged on local GPU.
 **@Gemini** — STAND BY for Track C audits days 4-6. After all 3 close, G-HOSTILE-V2 fires.
 
+
+### [Gemini] 2026-04-25 23:58 CST — Round-9 Stand-By Acknowledged
+**Action:** Read `BROADCAST_ROUND9_HARDENING_20260425.md` and `DISPATCH_KIMI_GEMINI_R9C_DEFENSE_20260425.md`.
+**Status:** **STAND BY** for Track C.
+- Acknowledged that Round-9 is launched with three parallel tracks.
+- I understand my task is to perform the hostile-reviewer-perspective audit on the 5 defense paragraphs (Track C) once Kimi inserts them.
+- Track C is gated behind Track A (Kimi's length surgery). 
+**@Mentions:** @Claude — Round-9 orders received and understood. @Kimi — I am standing by for your Track C insertions. Take your time with the Track A length surgery.
+
+---
+
+### [Claude] 2026-04-25 23:00 CST — ROUND-10 SUBSTANTIVE COMPLETION (Option 3) DISPATCHED
+
+**User decision:** "Option 3, 派发任务" — close every substantive gap before submission, not in revision
+
+**11 reviewer-attack vectors → 10 sub-tracks → 4 dispatches:**
+
+| # | Concern | Sub-track | Owner |
+|:--|:--|:--|:--|
+| A1 | 86.37% single-seed | R10A multi-seed canonical (3 seeds) | Codex |
+| A2 | 10% mechanism unexplained | R10B class-distribution analysis | Codex |
+| A3 | OPECT distribution missing | R10C OPECT statistical chars | Kimi+Codex |
+| B1 | Compute parity | R10 footnote | Kimi |
+| B3 | ±0.47% suspicious tight | folded into R10A 3-seed | — |
+| C1 | Tobin/AIHWKit novelty contrast | R10G novelty paragraph | Kimi |
+| C2 | "1.5 scenarios not 3" | R10I reframing | Kimi |
+| D1 | Framework framing thin | R10F freshness audit | Kimi |
+| D2 | AIHWKit baseline absent | R10E head-to-head | Codex |
+| D3 | Energy ε provenance | R10H provenance table | Kimi |
+| E3 | 5pp gap evidence | R10D intermediate NL sweep | Codex |
+
+**Files:**
+- `CLAUDE_ROUND10_SUBSTANTIVE_COMPLETION_PLAN_20260425.md`
+- `DISPATCH_CODEX_R10_EXPERIMENTS_20260425.md` (R10A+B+D+E)
+- `DISPATCH_KIMI_R10_CHARACTERIZATION_20260425.md` (R10C+F+H)
+- `DISPATCH_KIMI_R10_FRAMING_20260425.md` (R10G+I+B-text)
+- `BROADCAST_ROUND10_LAUNCH_20260425.md` + R10J venue strategy memo
+
+**R10J venue verdict:** stay Nat Electronics primary, Adv Sci as immediate fallback after rejection, Nat Comm Eng tertiary. R10 makes Nat Electronics outcome possible (without R10 it's hopeless).
+
+**Resource matrix (R10 vs R9 vs R8 vs 8×40GB):**
+- Codex: 50% R10 + 20% R9B + 30% R8 W2 P2; priority ABSOLUTE R10A>R10D>R10E>R9B>W2
+- Kimi: 50% R10 + 30% R9 + 20% R8 paper-2 outline
+- Gemini: standby Days 1-5, audit Days 6-7
+- Local GPU: 50% R10A+D+E, 50% R8 W2 P2; 8×40GB independent
+
+**R9 + R10 integration:**
+- R10 adds ~+400-500 words; R9A length-surgery target 5,500 → 5,900 (still Nat Elec envelope)
+- R9A starts AFTER R10 finishes (so we don't cut things R10 will re-add)
+- R9B TikZ parallel-friendly (CPU only)
+- R9C-D2 supersedes by R10D evidence
+
+**Submission timeline:**
+- Now → +5 days: R9+R10 parallel
+- +5 → +7 days: integration + Gemini hostile-v2
+- +7 → +10 days: final read-through + cover letter polish
+- +10 days: submission-ready (pending PhD defense gate)
+
+**Acceptance criteria** (all 11 concerns must close):
+- R10A multi-seed mean ± std published
+- R10B class distribution figure + paragraph
+- R10C OPECT QQ + AD test
+- R10D NL sweep figure
+- R10E AIHWKit head-to-head numbers
+- R10F freshness audit clean (or new prior art cited)
+- R10G novelty contrast paragraph
+- R10H ε provenance table
+- R10I scenarios reframed everywhere
+- Manuscript compiles RC 0
+- Gemini hostile-v2 ≤ 2 unaddressed concerns
+
+**Escalation triggers documented per dispatch.** R10A any seed < 80% = MAJOR escalation; R10E AIHWKit beats us = honest reframe.
+
+**@Codex** — start R10A NOW (highest priority, replace single-seed headline). Use existing canonical Ensemble HAT recipe; 2 new seeds + fresh-evals. Plus R10B 4h analysis can run in parallel. Full priority order in dispatch.
+
+**@Kimi** — start R10I (1h) + R10F (1d) + R10C (1d) Days 1-3. R10G novelty contrast Days 2-3 (placeholder for AIHWKit number). R10B-text after Codex R10B lands. THEN R9A length surgery Days 6-10.
+
+**@Gemini** — STAND BY Days 1-5. Days 6-7 substantive audit. After R9+R10 all close: G-HOSTILE-V2 final reviewer simulation.
+
+**@User** — Option 3 launched. Substantial 1-week sprint. I'll surface escalations and final submission-ready signal. Override anytime.
+

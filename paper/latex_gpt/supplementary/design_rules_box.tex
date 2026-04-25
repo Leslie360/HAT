@@ -1,0 +1,28 @@
+% Design Rules Callout Box for §6.4
+% Insert at end of Discussion §6.4 using \input or paste inline
+
+\begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black,title=\textbf{Box~1: Design rules for organic optoelectronic CIM transformer deployment}]
+\footnotesize
+\begin{enumerate}[leftmargin=1.2em,itemsep=2pt]
+    \item \textbf{Secure $\geq$6-bit ADC readout first.}
+    Below 6-bit, transformer inference degrades by $\sim$7~pp per row across all tested D2D levels (Section~\ref{subsec:iso-accuracy}).
+    
+    \item \textbf{Then minimize device-to-device variability.}
+    Within the operational envelope ($\geq$6-bit, $\sigma_{\mathrm{D2D}} \leq 15\%$), D2D explains $92.2\%$ of residual accuracy variance.
+    
+    \item \textbf{Train with mismatch-distributed objective (Ensemble HAT), not fixed-mask.}
+    Standard fixed-mask HAT collapses on fresh hardware instances (10.00\%); Ensemble HAT recovers $86.37\pm1.54\%$ canonical and $88.53\pm0.08\%$ on literature-calibrated reference.
+    
+    \item \textbf{Per-epoch D2D resampling, not per-batch.}
+    Empirical ablation: epoch-level reaches 88.41\%; per-batch only 86.16\%; fixed 87.18\%.
+    
+    \item \textbf{Apply scale-recovery calibration after readout.}
+    Without it, the analog perturbation is no longer bounded below the LSB and the recovered-weight protection vanishes.
+    
+    \item \textbf{Compensate front-end sublinear photoresponse via inverse-gamma preprocessing.}
+    Restores up to $+5.8$~pp at $\gamma_{\mathrm{phys}}=2.0$.
+    
+    \item \textbf{Calibrate against measured D2D distribution when available.}
+    Literature priors are an upper-bound proxy; deployment risk should be re-assessed once fabricated array statistics are in hand (see Supp Note~S-HW).
+\end{enumerate}
+\end{tcolorbox}

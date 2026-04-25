@@ -27096,3 +27096,97 @@ User reply needed: "git approve all" or "git approve 2A/2B/2C" to fire.
 **@Claude:** Phase 2 is underway. I will escalate if E1 shows Ensemble sharper than Standard or if E4 top sensitivity is attention-dominated.
 **@Kimi:** Use no mechanism claims from these jobs until JSON + master report land.
 **@Gemini:** Standby; no action unless escalation or final cross-review request.
+
+---
+
+### [Claude] 2026-04-25 12:10 CST — DEEP CLEANUP PART 2: ARCHIVE + GIT COMMITS
+
+**User authorization:** "同意你的操作 + 一周之前的旧广播可以清理"
+
+**Executed in two passes:**
+
+**Pass 1 — Git commits (3 commits as designed):**
+- `7a77f40 chore: untrack data/ per .gitignore` (8206 image files removed from index, preserved on disk)
+- `9a5c248 feat: add post-fix verification suite` (5 files: test_dual_bug_fix.py, test_groupwise_nl_wrapper.py, test_adc_perinstance_calibration.py, eval_fresh_instances_postfix.py, debug_math_consistency.py)
+- `0a41270 chore: stage prior physical deletions + Round-3/4 fixes` (459MB stale checkpoints + docs/ + generate scripts staged for removal)
+
+**Pass 2 — Archive policy (1 commit):**
+- `3d88abd chore: archive old broadcasts into archive/ subdirs by date period`
+
+**Archive structure created (7 new subdirs + READMEs, ~370 files moved):**
+- `archive/2026_04_20_round_p2/` (57 files) — Round-P2 deliverables
+- `archive/2026_04_21_22_round_q_pre_bug/` (65 files) — Round-Q pre-bug-fix
+- `archive/2026_04_23_loop_closure_invalidated/` (94 files) — invalidated narrative
+- `archive/2026_04_24_round_2_3_4_iterations/` (81 files) — cross-review chain
+- `archive/cx_j_series_pre_bug_fix/` (33 files) — pre-bug-fix experiments
+- `archive/orphan_pre_round_p/` (13 files) — stale documentation
+- `archive/round_4_5_audit_archive/` (15 files, relocated from compute_vit/ root)
+
+Each subdir has README explaining period + status. Pre-existing archive subdirs (broadcasts_rounds_a_to_o, dispatches_pre_round_k, etc.) untouched.
+
+**State diff:**
+| Metric | Before | After |
+|:--|--:|--:|
+| `_gpt/` active .md files | ~390 | 65 |
+| `compute_vit/` root .md | 19 | 6 |
+| `compute_vit/` root files | 173 | 136 |
+| `compute_vit/` root .py | 124 | 100 |
+| `git status --short` entries | 526 | 0 |
+| Disk reclaimed | — | ~471MB (459MB checkpoints + 12MB log archive) |
+
+**INDEX.md rewritten** with lean structure: critical / live coordination / broadcasts / rulings / dispatches / evidence reports / Gemini outputs / archive map / forbidden / file-management doctrine.
+
+**File-management doctrine added** (now in INDEX §"🧹 File-management doctrine"):
+- `.bak`/`.ORIGINAL`/`.SIMULATED` → `tmp/`, never project root
+- Root broadcasts → `report_md/_gpt/`, never `compute_vit/` root
+- Old broadcasts (>5 days) → archive subdir by date period
+- Stale checkpoints with explicit naming → safe delete
+- Canonical checkpoints → NEVER delete without grep-first
+- INDEX maintenance: keep <100 active files
+
+**Protected (NEVER deleted/moved):**
+- `checkpoints/_ensemble/` (canonical 86.37%/88.53%/AR(1) source)
+- `checkpoints/{C,R}{1..8}/V*` baselines
+- `paper/`, `paper_orchestra_input/`, `release_artifacts/`
+- All Round-7 sprint dispatches
+- All load-bearing evidence reports
+
+**Sprint compatibility:** Round-7 sprint files (Phase 1-4 dispatches + master plan + broadcast) all in active dir, untouched. Codex Phase 2 still has access to `_ensemble/` checkpoint for Hessian/CKA work.
+
+**@Mentions:**
+- @User — git ops complete (4 commits ahead of origin); cleanup complete; project pristine
+- @Kimi @Codex @Gemini — work area clean; all dispatches / evidence reports remain in active dir per INDEX
+
+
+---
+
+### [Codex] 2026-04-25 12:01 CST — Empirical Mechanism Runner Corrected And Restarted
+
+**Correction before first JSON landing:** Initial E2 alpha semantics were too clean-mask centered: zeroing checkpoint D2D made canonical Standard HAT alpha=0 collapse to chance, which is not the intended source-to-fresh mismatch landscape. I stopped that run before any JSON/report landed.
+
+**Fix applied in analysis script only:** E2 now uses `d2d(alpha)=checkpoint_source_d2d + alpha*(fresh_d2d - checkpoint_source_d2d)`, so alpha=0 is the trained source instance and alpha=1 is a fresh instance. E3 now also preserves checkpoint-loaded fixed D2D buffers with C2C disabled, so M-series CKA reflects source-domain severe-NL representations rather than zero-D2D clean representations.
+
+**Restarted tmux:** `codex_empirical_20260425_120112`.
+
+**Current logs:**
+- `logs/_gpt/empirical_E2_20260425_120112.log`
+- `logs/_gpt/empirical_E3_20260425_120112.log`
+- `logs/_gpt/empirical_E4_20260425_120112.log`
+- `logs/_gpt/empirical_E5_20260425_120112.log`
+- queued: `logs/_gpt/empirical_E1_20260425_120112.log`
+
+No canonical model-code edits. No new training.
+
+---
+
+### [Codex] 2026-04-25 12:04 CST — E3 CKA Landed; E2 Semantics Verified
+
+**E3 output landed:** `report_md/_gpt/json_gpt/cka_mseries.json`; figure `paper/figures/figS_cka_mseries.{png,pdf}`.
+
+**E3 result:** aggregate off-diagonal CKA = `0.4550` across 42 common analog layers.
+
+**Interpretation:** This is below Claude's `>0.8` convergence threshold and near/under the `<0.5` divergent-route threshold. Paper-safe wording should not say all M-series routes converge to the same internal representation. Better wording: severe-NL post-fix routes reach similar source accuracies through partially distinct representations; the CKA heatmap is an honest diagnostic.
+
+**E2 sanity check after correction:** canonical Standard alpha=0 now evaluates at `94.67%` instead of chance, confirming that source-to-fresh D2D interpolation is the correct protocol for this checkpoint family.
+
+**Still running:** E2, E4, E5. E1 Hessian queued after they complete.

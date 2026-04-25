@@ -207,6 +207,11 @@ def save_json(path: Path, data: dict) -> None:
 
 def configure_model_from_run(bundle, run_id: str) -> None:
     cfg = RUNS[run_id]
+    ckpt_cfg = checkpoint_exp_cfg(run_id)
+    for attr in ("sigma_c2c", "sigma_d2d", "noise_enabled", "hat_training"):
+        value = ckpt_cfg.get(attr)
+        if value is not None and hasattr(bundle.exp_cfg, attr):
+            setattr(bundle.exp_cfg, attr, value)
     if cfg.get("nl_ltp") is not None:
         bundle.exp_cfg.nl_ltp = float(cfg["nl_ltp"])
     if cfg.get("nl_ltd") is not None:
@@ -217,6 +222,12 @@ def configure_model_from_run(bundle, run_id: str) -> None:
         module.config.NL_LTP = float(bundle.exp_cfg.nl_ltp)
         module.config.NL_LTD = float(bundle.exp_cfg.nl_ltd)
         module.config.noise_mode = str(bundle.exp_cfg.noise_mode)
+
+
+def checkpoint_exp_cfg(run_id: str) -> dict:
+    ckpt = ROOT / RUNS[run_id]["checkpoint"]
+    data = torch.load(ckpt, map_location="cpu", weights_only=False)
+    return dict(data.get("exp_cfg") or {})
 
 
 def load_run(run_id: str, device: str, batch_size: int, num_workers: int, amp: bool):
@@ -255,10 +266,31 @@ def enable_fixed_d2d(bundle, sigma: float, noise_mode: str) -> None:
         module.config.retention_enabled = False
 
 
+def enable_loaded_d2d(bundle, noise_mode: str) -> None:
+    """Use checkpoint-loaded fixed D2D buffers, but disable stochastic C2C."""
+    sigma = float(getattr(bundle.exp_cfg, "sigma_d2d", 0.1) or 0.1)
+    for _, module in iter_analog_modules(bundle.model):
+        module.config.noise_enabled = True
+        module.config.sigma_c2c = 0.0
+        module.config.sigma_d2d = sigma
+        module.config.noise_mode = noise_mode
+        module.config.retention_enabled = False
+
+
+def capture_d2d_masks(bundle) -> Dict[str, torch.Tensor]:
+    return {name: module.d2d_noise.detach().clone() for name, module in iter_analog_modules(bundle.model)}
+
+
 def set_d2d_from_base(bundle, base_masks: Dict[str, torch.Tensor], alpha: float) -> None:
     with torch.no_grad():
         for name, module in iter_analog_modules(bundle.model):
             module.d2d_noise.copy_(base_masks[name] * alpha)
+
+
+def set_d2d_source_to_fresh(bundle, source_masks: Dict[str, torch.Tensor], fresh_masks: Dict[str, torch.Tensor], alpha: float) -> None:
+    with torch.no_grad():
+        for name, module in iter_analog_modules(bundle.model):
+            module.d2d_noise.copy_(source_masks[name] + alpha * (fresh_masks[name] - source_masks[name]))
 
 
 def sample_base_d2d_masks(bundle, sigma: float, seed: int) -> Dict[str, torch.Tensor]:
@@ -421,7 +453,7 @@ def job_cka(args) -> dict:
     provenance = {}
     for run_id in run_ids:
         bundle = load_run(run_id, args.device, args.batch_size, args.num_workers, amp=True)
-        clean_noise(bundle)
+        enable_loaded_d2d(bundle, RUNS[run_id]["noise_mode"])
         acts = collect_activations(bundle)
         all_acts[run_id] = acts
         provenance[run_id] = checkpoint_provenance(run_id)
@@ -517,13 +549,14 @@ def job_d2d(args) -> dict:
     for run_id in run_ids:
         bundle = load_run(run_id, args.device, args.batch_size, args.num_workers, amp=True)
         configure_model_from_run(bundle, run_id)
-        enable_fixed_d2d(bundle, sigma=args.sigma_d2d, noise_mode=RUNS[run_id]["noise_mode"])
+        enable_loaded_d2d(bundle, RUNS[run_id]["noise_mode"])
+        source_masks = capture_d2d_masks(bundle)
         provenance[run_id] = checkpoint_provenance(run_id)
         per_alpha_values: Dict[float, List[Tuple[float, float]]] = {alpha: [] for alpha in alphas}
         for mask_idx in range(args.masks):
-            base = sample_base_d2d_masks(bundle, args.sigma_d2d, args.seed + 1000 * mask_idx)
+            fresh = sample_base_d2d_masks(bundle, args.sigma_d2d, args.seed + 1000 * mask_idx)
             for alpha in alphas:
-                set_d2d_from_base(bundle, base, alpha)
+                set_d2d_source_to_fresh(bundle, source_masks, fresh, alpha)
                 loss, acc, n = eval_manual(bundle, max_batches=args.max_batches)
                 per_alpha_values[alpha].append((loss, acc))
                 raw.append({"run_id": run_id, "mask_idx": mask_idx, "alpha": alpha, "test_loss": loss, "test_acc": acc, "samples": n})
@@ -545,7 +578,7 @@ def job_d2d(args) -> dict:
             torch.cuda.empty_cache()
     result = {
         "job": "E2_D2D_LOSS_LANDSCAPE",
-        "method": "Manual fixed D2D buffers sampled at sigma_d2d, scaled by alpha; custom eval loop avoids train_tinyvit.evaluate noise reset",
+        "method": "Source-to-fresh fixed-D2D interpolation: d2d(alpha)=checkpoint_source_d2d + alpha*(fresh_d2d - checkpoint_source_d2d); custom eval loop avoids train_tinyvit.evaluate noise reset",
         "sigma_d2d": args.sigma_d2d,
         "alphas": alphas,
         "masks": args.masks,

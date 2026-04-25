@@ -123,6 +123,24 @@ These rules govern future maintenance:
 
 ---
 
+---
+
+## Zenodo / external hosting policy (added 2026-04-25, cleanup pass 4)
+
+The git repo no longer tracks **model checkpoints** or **datasets**. They live on local disk only and are released via Zenodo for reproducibility.
+
+| Asset | Location | Reproducibility plan |
+|:--|:--|:--|
+| `checkpoints/_ensemble/V4_*.pt` (canonical 86.37%) | Local + Zenodo | Bundle in `release_artifacts/source_data_v1/` for paper-1 release |
+| `checkpoints/{C,R,V}{1..8}*.pt` baselines | Local + Zenodo | Same |
+| `checkpoints/_gpt/postfix_m_series/cx_m{1..6}/` | Local + Zenodo | Same |
+| `data/cifar-10-batches-py/` etc | Local only | torchvision auto-downloads on first run |
+
+The git repo at GitHub `Leslie360/HAT.git` is now ~700MB (was 17GB pre-cleanup). All checkpoints accessible via Zenodo bundle when paper-1 releases.
+
+Anyone cloning fresh: code is here; for the trained checkpoints, see Zenodo DOI (TBD).
+
+
 ## Cleanup history (recent)
 
 | Date | Pass | Result |

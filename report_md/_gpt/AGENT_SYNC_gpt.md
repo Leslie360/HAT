@@ -27584,3 +27584,56 @@ Push to `Leslie360/HAT.git` `master` would FAIL — `.git/` is 9.4GB with histor
 **@Gemini** — STAND BY. No Work 2 task. Reactive only.
 **@User** — Round-8 dispatched. Open question: agree TinyLlama 1.1B as testbed (vs Pythia / GPT-2 / wait-for-LLaMA-7B-on-8×40GB)?
 
+
+---
+
+### [Claude] 2026-04-25 19:50 CST — DECISIONS 1+2+3 EXECUTED — GIT CLEAN, PUSH IN FLIGHT
+
+**User decisions locked:**
+- 1 = Pythia 410M (16GB local fits)
+- 2 = 8×40GB stays paper-1 cross-arch (LLaMA-7B is conditional W3+ if Pythia results good)
+- 3 = BFG cleanup + GitHub master push
+
+**Round-8 dispatches revised** for Pythia 410M (commit `2eb7b73`):
+- `CLAUDE_ROUND8_WORK2_LAUNCH_PLAN_20260425.md`
+- `BROADCAST_ROUND8_WORK2_LAUNCH_20260425.md`
+- `DISPATCH_CODEX_W2_PHASE0_INFRASTRUCTURE_20260425.md`
+- `DISPATCH_KIMI_W2_PAPER_OUTLINE_20260425.md`
+
+Codex W0 directive updated: testbed `EleutherAI/pythia-410m-deduped`, ~5GB peak training fits 16GB local with 5GB headroom.
+
+**BFG git cleanup executed (cleanup pass 4):**
+
+Process:
+1. 1st BFG: 87 obj id rewritten — but historical .pt blobs PROTECTED (BFG default protects latest commit; .pt files were tracked at that point)
+2. Discovery: 8.5GB of .pt baselines tracked in HEAD (committed before .gitignore covered checkpoints/)
+3. `git rm --cached -r checkpoints/` + commit `f825222f` — .pt untracked, on disk preserved
+4. 2nd BFG with `--no-blob-protection`: 18 more obj id rewritten, .pt blobs stripped from history
+5. gc + repack: .git/ shrank 17GB → **690MB** (-96%)
+
+Code SHA propagation: 169 files updated via sed to new BFG-rewritten commit hashes.
+
+**Repo health post-cleanup:**
+- fsck clean (no errors)
+- 10 commits resolve
+- Working tree intact (canonical Ensemble HAT ckpt + manuscript present)
+- 7/7 tests pass (`tests/test_dual_bug_fix.py`)
+- main.tex compiles RC 0
+
+**Git push to GitHub master in flight** (force-push, since BFG rewrote history; first creation of `origin/master` — `remote-exploration` branch unchanged).
+
+**Files written:**
+- `BROADCAST_ROUND8_REVISION_GIT_CLEANUP_20260425.md` — full revision documentation
+- WORKSPACE_LAYOUT.md updated with Zenodo .pt hosting policy
+
+**Frozen decisions unchanged.** New addition: .pt model weights → Zenodo hosting, never git-tracked. Local working dir preserves them; reproducibility via Zenodo DOI (TBD).
+
+**Active state:**
+- Round-8 launched Codex (W0 testbed lock for Pythia 410M, 3 days; W1 KV-cache wrapper, 10 days)
+- Round-8 launched Kimi (Stream A theory adaptation, 7 days; Stream B paper-2 outline, 14 days)
+- Gemini standby
+- 8×40GB cross-arch (paper-1 ViT-S/DeiT-S TinyImageNet) continues independent
+- PhD measured-D2D awaits trigger
+
+**@User:** Push will land within 1-2 minutes (small repo now). Will report SHA + verify origin/master = local master after.
+

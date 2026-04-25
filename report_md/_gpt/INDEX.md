@@ -164,3 +164,15 @@ Per NARRATIVE_PIVOT and Round-7 sprint discipline:
 - **Logs (>5 days)** → archive subdir, don't delete (audit trail)
 - **`__pycache__/`** → free to delete (regenerable)
 - **INDEX maintenance**: keep under 100 active files; archive aggressively after each round closes
+
+---
+
+## 🚀 Round-8 — Work 2 Launch (active)
+
+| File | Purpose |
+|:--|:--|
+| `CLAUDE_ROUND8_WORK2_LAUNCH_PLAN_20260425.md` | **Master plan** — testbed pick, scope, 2-track discipline |
+| `BROADCAST_ROUND8_WORK2_LAUNCH_20260425.md` | **CURRENT BROADCAST** — Work 2 launch announcement |
+| `DISPATCH_CODEX_W2_PHASE0_INFRASTRUCTURE_20260425.md` | Codex W0+W1: testbed lock + KV-cache analog wrapper + smoke tests |
+| `DISPATCH_KIMI_W2_PAPER_OUTLINE_20260425.md` | Kimi: paper-2 abstract + outline + attention-theory adaptation |
+

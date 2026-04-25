@@ -27532,3 +27532,55 @@ Push to `Leslie360/HAT.git` `master` would FAIL — `.git/` is 9.4GB with histor
 **@Kimi @Codex @Gemini:** stand down with thanks. Next activity is reactive when triggers fire.
 **@User:** 6 open signals in BROADCAST §11 awaiting your decision. Most can wait.
 
+
+---
+
+### [Claude] 2026-04-25 23:00 CST — ROUND-8 WORK 2 LAUNCH (KV-cache)
+
+**Trigger:** User directive "继续推进新工作 + 现在做 work2 实验的推进吗?"
+
+**Decision:** YES start Work 2 NOW in two-track discipline.
+
+**Rationale:**
+- Paper-1 data locked, submission months away
+- Local GPU idle; 8×40GB on independent track
+- Sitting on idle GPU during PhD-graduation wait wastes buffer
+- KV-cache hot 2025-2026 LLM problem; competitive timing matters
+- Two papers stronger than one
+
+**Work 2 staged scope (Round-8):**
+- W0 (3 days): testbed pick (TinyLlama 1.1B recommended), mapping spec, benchmark suite
+- W1 (10 days): KV-cache analog wrapper code + 3 smoke tests on `paper2/src/`
+- W2 (14 days): baseline + Standard HAT + Ensemble HAT first attention-path results
+- W3+ deferred to Round-9
+
+**Architectural mapping (Work 2 signature):**
+- W_q/W_k/W_v/W_o + MLP analog (mirrors paper-1)
+- **KV-cache stored as analog conductance with D2D persistent + C2C fresh-per-read** (THE Work 2 novelty)
+- Attention softmax + RMSNorm + rotary digital
+
+**Two-track discipline (HARD RULE):**
+- Track A (Work 2 main): Codex builds infrastructure; Kimi drafts paper-2
+- Track B (paper-1 standby): paper-1 trigger response (8×40GB return, PhD data, submit-now signal) ALWAYS preempts Work 2
+- Resources: ~70% local GPU + ~80% Codex / 50% Kimi for Work 2; rest reserved
+
+**Dispatches:**
+- `DISPATCH_CODEX_W2_PHASE0_INFRASTRUCTURE_20260425.md` (W0+W1, 2 weeks)
+- `DISPATCH_KIMI_W2_PAPER_OUTLINE_20260425.md` (theory adaptation + paper-2 outline, 2 weeks)
+- `BROADCAST_ROUND8_WORK2_LAUNCH_20260425.md` (master broadcast)
+
+**Triage of other directions discussed:**
+- ✅ Work 2 KV-cache → START
+- ✅ Cross-arch → ALREADY RUNNING on 8×40GB
+- ⏳ Measured-D2D → GATED on PhD
+- ❌ Theory v3, SPICE energy, cross-dataset, BFG GitHub rewrite → DEFER
+
+**Frozen decisions unchanged.** NARRATIVE_PIVOT §8 revised: Work 2 timing now "infrastructure now" instead of "after paper-1 submitted".
+
+**Git push status:** earlier `git push origin master` confirmed REJECTED (2GB pack limit; historical 445MB blobs). Main repo stays local; public mirror via handoff repo. Work 2 code in `paper2/` will need its own lightweight export path when ready.
+
+**@Codex** — Phase W0 starts now (testbed lock + 3 spec docs, ~3 days, ~0 GPU). Two-track discipline mandatory. PAUSE for paper-1 triggers.
+**@Kimi** — Stream A (theory adaptation, 7 days) + Stream B (paper-2 outline, 14 days) parallel. Don't write fake numbers.
+**@Gemini** — STAND BY. No Work 2 task. Reactive only.
+**@User** — Round-8 dispatched. Open question: agree TinyLlama 1.1B as testbed (vs Pythia / GPT-2 / wait-for-LLaMA-7B-on-8×40GB)?
+

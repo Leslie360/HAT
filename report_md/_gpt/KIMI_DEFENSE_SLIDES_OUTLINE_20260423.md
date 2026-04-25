@@ -170,3 +170,8 @@
 - **Locked numbers:** V4 canonical ~97% (likely valid, NL=1 default); K4R fresh-instance [PENDING]
 - **Build instructions:** Each slide entry contains sufficient detail for direct PowerPoint or Beamer construction without additional clarification.
 - **Word count target:** ~1,800 words (outline density: directive, bullet-level)
+
+---
+
+**⚠️ DEPRECATED 2026-04-24** — This memo references bug-contaminated data (STE branch swap + extraneous nl multiplier in analog_layers.py, fixed at commit 9cdbe77). The "structural ceiling / bimodal basin / Hartigan p=0.98" narrative is invalidated. Do not cite as evidence. See BROADCAST_HALT_AND_REPLICATE_20260424.md and BROADCAST_REBUILD_3WEEK_20260424.md for current status.
+

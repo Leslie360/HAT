@@ -13,9 +13,9 @@
 | Result | Value | Notes |
 |:---|:---|:---|
 | **Ensemble HAT** | **86.37 ± 1.54%** | Tiny-ViT-5M on CIFAR-10 with epoch-level D2D resampling |
-| Severe-NL ceiling | 30.53% | Accuracy collapse under extreme photoresponse nonlinearity |
-| Correlated D2D | — | Spatially correlated device-to-device variation degrades ensemble margins |
-| Retention drift | — | Time-dependent photoresponse decay shifts analog weights |
+| Severe-NL recovery | ~81% | Recovery under NL=2.0 using audited gradient-scaling recipe |
+| Correlated D2D | 82.1-84.6% | Robustness against spatially correlated device variation |
+| Retention drift | ~79% | Accuracy plateau after scale-recalibration recovery |
 
 See [`CHECKPOINT_INVENTORY_20260418.md`](CHECKPOINT_INVENTORY_20260418.md) for model weights and provenance.
 

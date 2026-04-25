@@ -2,7 +2,7 @@
 
 - Model: `tiny_vit_5m_224`
 - Dataset target: `cifar10`
-- Reference experiment for dry-run: `V4` / `V4_hybrid_standard_noise_hat_groupwise_nl_comp`
+- Reference experiment for dry-run: `V4` / `V4_hybrid_standard_noise_hat`
 - Scope: static dry-run only, no training launched
 
 ## Summary

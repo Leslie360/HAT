@@ -1124,7 +1124,7 @@ def convert_to_hybrid(model: nn.Module,
                 in_features=module.in_features,
                 out_features=module.out_features,
                 bias=module.bias is not None,
-                config=config,
+                config=copy.copy(config),
             )
             analog_layer.weight.data.copy_(module.weight.data)
             if module.bias is not None and analog_layer.bias is not None:
@@ -1145,7 +1145,7 @@ def convert_to_hybrid(model: nn.Module,
                 dilation=module.dilation,
                 groups=module.groups,
                 bias=module.bias is not None,
-                config=config,
+                config=copy.copy(config),
             )
             analog_layer.weight.data.copy_(module.weight.data)
             if module.bias is not None and analog_layer.bias is not None:
@@ -1217,7 +1217,7 @@ def convert_resnet_to_analog(model: nn.Module,
                 dilation=module.dilation,
                 groups=module.groups,
                 bias=module.bias is not None,
-                config=config,
+                config=copy.copy(config),
             )
             analog_conv.weight.data.copy_(module.weight.data)
             if module.bias is not None and analog_conv.bias is not None:
@@ -1239,7 +1239,7 @@ def convert_resnet_to_analog(model: nn.Module,
                 in_features=module.in_features,
                 out_features=module.out_features,
                 bias=module.bias is not None,
-                config=config,
+                config=copy.copy(config),
             )
             analog_linear.weight.data.copy_(module.weight.data)
             if module.bias is not None and analog_linear.bias is not None:

@@ -4,6 +4,16 @@
 **Authoritative scope:** local surviving logs / JSON / source code only  
 **Purpose:** answer the remote question about why local `J1d` reached `41.53 ± 8.87%` fresh-instance while remote early runs are near chance.
 
+## 0. Historical note
+
+This report reconstructs the **historical canonical local J1d run**.
+
+After the 2026-04-22 local source audit, the local wrapper semantics were corrected:
+- `delta_g_eff < 0` now means auto-fill
+- `delta_g_eff = 0.0` now means literal zero
+
+So the `--delta-g-eff 0.0` command shown below is a record of the historical run, not the recommended semantics for future reruns.
+
 ## 1. Canonical local J1d facts
 
 These are locally verified, not inferred:

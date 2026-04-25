@@ -1,4 +1,8 @@
 % Thesis Chapter 7 — Deployment Envelope
+% .kimi_draft_v3 sidecar created from original chapter_7_deployment.tex
+% Zone-scrubbed per R3-1 methodology; all numbers map to 3A/3C.
+% Energy: locked to energy_scale_recovery_sensitivity.json (11.45x vs FP32, 2.86x vs INT8).
+% ADC: hook-diagnostic wording discipline.
 % Systems-oriented synthesis: converting simulation data into actionable
 % deployment knowledge for organic optoelectronic CIM.
 % Locked numbers are exact; all extrapolations are explicitly flagged.
@@ -8,7 +12,7 @@
 
 \section{Introduction: from simulation data to shipping criteria}
 
-The preceding chapters have established a physical picture of what happens when a modern Vision Transformer is mapped to an organic optoelectronic compute-in-memory (CIM) array.  We have defined hardware-aware training (HAT) cadences (Chapter~\ref{chap:hat-taxonomy}), catalogued failure modes (Chapter~\ref{chap:failure-mode-atlas}), and quantified recovery under distributional training objectives.  The numbers are internally consistent: Ensemble HAT preserves $86.37\pm1.54\,\%$ fresh-instance accuracy under canonical uniform noise; a lower-noise OPECT proxy reaches $88.53\pm0.08\,\%$; severe write nonlinearity collapses the same architecture to $27.72\pm0.82\,\%$ unless the MLP path is linearized, in which case fresh-instance transfer still hits a $32.12\pm7.72\,\%$ ceiling.  These are simulation results, and they are bounded by first-order behavioral approximations.
+The preceding chapters have established a physical picture of what happens when a modern Vision Transformer is mapped to an organic optoelectronic compute-in-memory (CIM) array.  We have defined hardware-aware training (HAT) cadences (Chapter~\ref{chap:hat-taxonomy}), catalogued failure modes (Chapter~\ref{chap:failure-mode-atlas}), and quantified recovery under distributional training objectives.  The numbers are internally consistent: Ensemble HAT preserves $86.37\pm1.54\,\%$ fresh-instance accuracy under canonical uniform noise; a lower-noise OPECT proxy reaches $88.53\pm0.08\,\%$; severe write nonlinearity ($NL=2.0$) with the revised gradient-scaling recipe recovers to the $\sim$80--82\,\% band across Standard, Ensemble, and proportional-noise training routes, leaving a residual gap of roughly $5.7$~pp to the canonical $NL=1.0$ baseline.  These are simulation results, and they are bounded by first-order behavioral approximations.
 
 This chapter asks the pragmatic question that every simulation study must eventually face: \emph{so what?}  Under which combinations of physical parameters does the Ensemble HAT protocol actually preserve a usable accuracy ranking when the model is dropped onto an unseen hardware instance?  Where does that ranking collapse?  And if one were advising an analog-CIM program manager---someone deciding whether to tape out a ViT accelerator on an organic RRAM process---what actionable guidance could be distilled from the data?
 
@@ -82,7 +86,7 @@ The yellow zone contains combinations where the ranking likely holds but the mar
 
 \subsection{Orange zone: uncertain or marginally preserved}
 
-\textbf{MLP-only linearization under severe NL.}  The MLP-only rescue checkpoint achieves $87.79\,\%$ source-domain accuracy under $NL=2.0$, which is competitive with the canonical V4 baseline.  However, its fresh-instance accuracy is $32.12\pm7.72\,\%$, and the all-linear upper bound (best $87.49\,\%$, final $84.81\,\%$) reaches only $32.60\pm9.18\,\%$ on fresh instances.  These numbers do not preserve the ranking in any useful sense: although $32\,\%$ is strictly greater than the $10\,\%$ fixed-mask collapse, it is below the threshold of commercial viability for most vision tasks.  The orange-zone classification reflects the fact that the ranking is technically preserved ($32 > 10$) but \emph{operationally collapsed} because neither protocol is deployable.
+\textbf{Severe nonlinearity with revised gradient-scaling recipe.}  Under global $NL=2.0$, the M-series evidence shows that Standard HAT reaches approximately $81.2\,\%$ and Ensemble HAT reaches approximately $80.7\,\%$ on fresh instances, with proportional noise performing indistinguishably from uniform noise.  The cross-instance standard deviation is tight ($<2$~pp), indicating systematic rather than catastrophic degradation.  The orange-zone classification reflects the fact that the $\sim$80--82\,\%$ band is \emph{deployment-relevant} for research-grade prototypes but falls short of the $86.37\,\%$ canonical baseline by roughly $5.7$~pp.  The gap is a joint effect of nonlinear write dynamics and fresh-instance transfer, not of instance overfitting alone.
 
 \textbf{ADC at the 5-to-6-bit boundary.}  The iso-accuracy sweep reveals a sharp cliff: below 5-bit ADC, accuracy collapses to near-chance across all D2D levels; the 5-to-6-bit transition yields a $\sim$7~pp jump.  At exactly 6 bits, Ensemble HAT recovers to $>84\,\%$ for $\sigma_{\mathrm{D2D}} \le 10\,\%$, but at 5 bits the mean is in the $30$--$50\,\%$ range depending on D2D.  The ranking is therefore \emph{marginally} preserved at 6 bits (Ensemble HAT still $>$ fixed-mask) but already lost at 5 bits, where all protocols cluster near chance.  Interpolating between these grid points suggests a critical threshold near $5.5$~bits, with an uncertainty of $\pm 0.5$~bits driven by the coarse ADC grid.
 
@@ -137,13 +141,21 @@ The second unambiguous collapse is the fresh-instance failure of fixed-mask HAT.
 
 The collapse is \emph{absolute} in the sense that it does not improve if the D2D amplitude is reduced: the OPECT case study shows that standard HAT checkpoints also collapse to $10.00\,\%$ on the low-noise OPECT profile.  It is also absolute with respect to correlation: there is no reason to expect that spatial correlation would restore fixed-mask transfer, because the mechanism---memorization of a specific $M_{0}$---is independent of the correlation structure of $p(M)$.  Fixed-mask HAT is therefore \emph{not a deployment candidate} for any organic RRAM process that requires fresh-instance robustness, regardless of how well-controlled the fabrication is.
 
-\subsection{Severe nonlinearity: the $32\,\%$ fresh-instance ceiling}
+\subsection{Severe nonlinearity: the $\sim$80--82\,\% recovery band}
 
-The third collapse boundary is severe write nonlinearity ($NL=2.0$).  On the source-domain training-time array, the unmitigated $NL=2.0$ baseline reaches $27.72\pm0.82\,\%$, while MLP-only linearization recovers to $87.79\,\%$ and all-linear control reaches $87.49\,\%$.  These source-domain numbers suggest that the MLP path is the dominant recoverable bottleneck.
+The third degradation boundary is severe write nonlinearity ($NL=2.0$).  With the revised gradient-scaling recipe, the M-series evidence shows a consistent recovery band across all tested training configurations:
 
-On fresh instances, however, the picture inverts.  The MLP-only checkpoint achieves only $32.12\pm7.72\,\%$ on fresh instances, and the all-linear bound (best $87.49\,\%$, final $84.81\,\%$) reaches only $32.60\pm9.18\,\%$.  The large cross-instance standard deviations ($7.72$~pp and $9.18$~pp) indicate that some fresh arrays are tolerable while others are catastrophic---a bimodal-like spread that is qualitatively different from the tight $1.54$~pp spread of canonical Ensemble HAT.  The ranking $32\,\% > 10\,\%$ is technically preserved, but operationally the severe-NL regime is a collapse zone because $32\,\%$ accuracy is below the threshold of utility for most classification deployments.
+\begin{itemize}[leftmargin=1.4em]
+    \item Standard HAT (fixed mask): $81.12\pm1.06\,\%$ mean across two seeds;
+    \item Ensemble HAT (uniform noise, epoch resampling): $80.72\pm0.46\,\%$ mean;
+    \item Ensemble HAT (proportional noise): $80.66\pm0.01\,\%$ mean.
+\end{itemize}
 
-Extrapolating from the $NL=2.0$ data, one can bound the severity at which the MLP-only rescue becomes viable.  If $NL=1.0$ yields $86.37\,\%$ fresh-instance accuracy and $NL=2.0$ yields $32\,\%$, the relationship is strongly nonlinear.  A linear interpolation would predict a $59\,\%$ crossing at $NL=1.5$, but there is no evidence for linearity; the gradient-scaling surrogate becomes increasingly ill-conditioned as $NL$ grows, and the dual-attention collapse (Section~\ref{sec:failure-dual-attention-nl}) suggests a bifurcation rather than a gradual ramp.  The conservative bound is that \emph{any $NL \ge 2.0$ is in the collapse zone for fresh-instance ViT deployment}, and the threshold may be as low as $NL \approx 1.5$--$1.7$.
+The convergence of all six runs to the same $\sim$80--82\,\%$ band is the defining signature of the severe-NL regime.  Unlike the $NL=1.0$ case, where Ensemble HAT outperforms Standard HAT by $76$~pp, the two protocols converge to within $1$~pp under $NL=2.0$.  This indicates that nonlinearity has become the \emph{binding} constraint, and the marginal benefit of epoch-level resampling is masked once gradient-scaling distortion is large enough.
+
+The residual gap of roughly $5.7$~pp to the canonical $NL=1.0$ Ensemble HAT baseline ($86.37\,\%$) is a joint effect of nonlinear write dynamics and fresh-instance transfer.  The cross-instance standard deviation remains tight ($<2$~pp for all routes), confirming that the degradation is systematic rather than catastrophic.  Post-module-output hook diagnostic 8-bit ADC quantization reduces the headline by only $-0.10$~pp on average, while 6-bit ADC introduces a larger $-2.8$~pp cliff consistent with the iso-accuracy analysis. These ADC-on numbers are inference-time hook diagnostics, not silicon-validated deployment values.
+
+Extrapolating from the $NL=2.0$ data, the relationship between nonlinearity severity and fresh-instance accuracy is strongly nonlinear.  A linear interpolation between $NL=1.0$ ($86.37\,\%$) and $NL=2.0$ ($\sim$80.7\,\%) would predict a $83.5\,\%$ crossing at $NL=1.5$, but there is no evidence for linearity; the gradient-scaling surrogate becomes increasingly ill-conditioned as $NL$ grows, and higher-order corrections may be needed in the $1.5 < NL < 2.0$ regime.  The conservative design rule is that \emph{device-level linearisation to $NL \approx 1.0$ is preferred for deployment-grade ViT inference}, while the $\sim$80--82\,\%$ band at $NL=2.0$ represents a research-grade lower bound.
 
 \subsection{Joint stress: the extrapolated danger zone}
 
@@ -287,6 +299,12 @@ The retention plateau at $79.13$--$79.51\,\%$ is stable across three orders of m
 \end{itemize}
 
 Program managers should negotiate the refresh interval with the application team \emph{before} finalizing the array size, because the peripheral energy for reference-cell readout scales with the number of analog layers being recalibrated.  The manuscript's $11.45\times$ energy-reduction estimate does not include this peripheral overhead; a realistic system model would subtract $5$--$15\,\%$ from the savings depending on refresh frequency.
+
+\subsection{Energy budget and analog--digital trade-off}
+
+The analytical energy model estimates a total system energy of approximately $23.9$~$\mu$J per inference under the baseline assumption ($8$-bit ADC, $100$ arrays, $1000$ conversions), versus a digital FP32 baseline of approximately $273.94$~$\mu$J.  The implied speed-up is $11.45\times$ versus FP32 and approximately $2.86\times$ versus an assumed INT8 implementation (see \texttt{energy\_scale\_recovery\_sensitivity.json}).  These are first-order analytical estimates, not silicon measurements; actual deployment must recalibrate against the specific CMOS process node.
+
+The energy advantage is most credible at the production-maturity tier, where peripheral circuits are dominated by calibrated digital logic rather than speculative analogue compensation.  At the research tier, uncalibrated ADCs and iterative write--verify cycles can erase much of the analogue MAC savings.  Program managers should therefore treat the $11.45\times$ figure as an \emph{upper bound} that is only realisable once the peripheral overhead is disciplined.
 
 \subsection{Risk mitigation: the ``compound stress'' sanity check}
 

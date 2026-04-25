@@ -60,7 +60,9 @@ A 63-point joint sweep over $\sigma_{\mathrm{D2D}} \in \{1,3,5,8,10,15,20\}\%$ a
 \subsection{Nonlinear Writing and Hardware-Aware Training}
 \label{subsec:nl-hat-stress}
 
-Proportional-noise HAT recovers Tiny-ViT to 97.37$\pm$0.05\%, whereas the baseline severe-nonlinearity configuration ($NL=2.0$) recovers only 27.72$\pm$0.82\% under the present gradient-scaling recipe. Ensemble HAT (Figure~\ref{fig:ensemble-hat-concept}; formally defined in Section~\ref{sec:methodology}, Eq.~\ref{eq:hat-ensemble}) preserves 86.37$\pm$1.54\% across 10 fresh arrays, overwhelming standard HAT (one-sample $t$-test against the chance-level baseline, $n=10$ fresh arrays per arm, $p<10^{-15}$). An exploratory single-run training-ablation cadence scan (Supplementary Fig.~\SuppFigZeroShot) shows epoch-level resampling reaches 88.41\% (50-epoch training ablation), versus 87.18\% (fixed) and 86.16\% (per-batch), confirming that structured epoch-level resampling rather than per-batch perturbation is the load-bearing schedule choice.
+Proportional-noise HAT recovers Tiny-ViT to 97.37$\pm$0.05\% when training and evaluation physics are aligned. This robustness is strongly regime-specific: the same checkpoint falls to 10.38$\pm$0.44\% when evaluated under the original uniform-noise semantics. For ConvNeXt-Tiny, proportional-noise HAT reaches 91.98\% with 91.91$\pm$0.08\% Monte Carlo performance in the best single run.
+
+Ensemble HAT (Figure~\ref{fig:ensemble-hat-concept}; formally defined in Section~\ref{sec:methodology}, Eq.~\ref{eq:hat-ensemble}) preserves 86.37$\pm$1.54\% across 10 fresh arrays under canonical uniform noise ($NL=1.0$), overwhelming standard HAT (one-sample $t$-test against the chance-level baseline, $n=10$ fresh arrays per arm, $p<10^{-15}$). An exploratory single-run training-ablation cadence scan (Supplementary Fig.~\SuppFigZeroShot) shows epoch-level resampling reaches 88.41\% (50-epoch training ablation), versus 87.18\% (fixed) and 86.16\% (per-batch), confirming that structured epoch-level resampling rather than per-batch perturbation is the load-bearing schedule choice.
 
 \begin{figure}[t]
     \centering
@@ -71,9 +73,30 @@ Proportional-noise HAT recovers Tiny-ViT to 97.37$\pm$0.05\%, whereas the baseli
 
 The full accuracy matrix is provided in the Supplementary Information. Tiny-ViT demonstrates superior baseline accuracy and significant recovery under HAT, especially on complex tasks, though it remains sensitive to nonlinear write dynamics.
 
-To test whether the ceiling is structural, we trained a joint MLP-linear + Ensemble HAT model under $NL=2.0$. The checkpoint reaches 91.36\% on the source training instance, but fresh-instance evaluation across 10 arrays yields only \textbf{30.53$\pm$7.07\%}. This falsifies the hypothesis that coupling severe-NL compensation with distributional resampling breaks the severe-NL ceiling; the $\sim$30\% barrier persists.
+\paragraph{Severe-NL retraining after gradient-scaling correction.}
+Retraining under severe write non-linearity ($NL=2.0$) was repeated with a revised gradient-scaling recipe (Section~\ref{subsec:methodology-nl}). Table~\ref{tab:severe-nl-recovery} summarizes the local M-series results; remote batch-512 results (83.64\% Standard, 84.80\% Proportional) are provided in the Supplementary Information. All packets use true $NL_{\text{LTP}}=2.0$ and $NL_{\text{LTD}}=-2.0$ in both training and evaluation; the training forward path employs a differentiable ADC surrogate (no per-layer quantizers), while post-module-output hook diagnostic quantization is injected via inference-time hooks calibrated per-instance on each fresh noisy hardware realization (\S\ref{subsec:iso-accuracy}). These ADC-on numbers are inference-time hook diagnostics, not silicon-validated deployment values.
 
-The convergence of three independent mitigations (MLP-only, all-linear, joint) on the same $\sim$30\% fresh-instance ceiling under $NL=2.0$ suggests that severe write nonlinearity introduces a generalization barrier in the attention pathway that training-recipe modifications cannot overcome within the first-order surrogate regime.
+\begin{table}[htbp]
+\centering
+\caption{Severe Nonlinear Writing Recovery (M-Series). All models trained and evaluated with true $NL_{\text{LTP}}=2.0$ and $NL_{\text{LTD}}=-2.0$. Headline numbers are post-module-output hook diagnostic 8-bit ADC quantization with per-instance range recalibration on each fresh hardware realization (ADC-on); ADC-off training-surrogate baselines differ by approximately $-0.10$~pp on average (see text). Remote batch-512 results ($83.64$\% Standard, $84.80$\% Proportional) are provided in the Supplementary Information. The ADC-on values are diagnostic-only and should not be treated as deployment-fidelity until physical ADC boundary is implemented.}
+\label{tab:severe-nl-recovery}
+\begin{tabular}{clccccc}
+\toprule
+\textbf{Task} & \textbf{HAT Variant} & \textbf{Noise} & \textbf{Seed} & \textbf{ADC-on 8-bit (\%)} & \textbf{Std (\%)} & \textbf{ADC-off baseline (\%)} \\
+\midrule
+M1 & Standard (V3) & Uniform & 123 & 81.89 & 1.02 & 82.03 \\
+M5 & Standard (V3) & Uniform & 456 & 80.37 & 0.08 & 80.47 \\
+M2 & Ensemble (V4) & Uniform & 123 & 80.37 & 0.59 & 80.45 \\
+M6 & Ensemble (V4) & Uniform & 456 & 81.04 & 1.73 & 81.18 \\
+M3 & Ensemble (V4) & Proportional & 123 & 80.64 & 0.13 & 80.71 \\
+M4 & Ensemble (V4) & Proportional & 456 & 80.67 & 0.41 & 80.75 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Four observations emerge from the M-series evidence. First, \textbf{all true-NL2 routes recover to the same $\sim$80--82\% band}, irrespective of noise law or D2D resampling strategy. Second, \textbf{Standard and Ensemble HAT do not separate within seed variance} (Standard uniform $81.12\%$ vs Ensemble uniform $80.72\%$). Third, \textbf{proportional noise offers no special advantage under $NL=2.0$} ($80.66\%$ vs uniform $80.72\%$). Fourth, \textbf{post-module-output hook diagnostic 8-bit ADC quantization does not materially alter the headline} ($-0.10$~pp on average), while a 6-bit spot-check reveals a larger $-2.8$~pp cliff, consistent with \S\ref{subsec:iso-accuracy}. These ADC-on numbers are inference-time hook diagnostics, not silicon-validated deployment values.
+
+With the revised gradient-scaling recipe, severe-NL retraining recovers to the $\sim$80--82\% band, leaving a residual gap of roughly 15~pp to the digital baseline that is a joint effect of non-linear write dynamics and fresh-instance transfer, not of transfer alone.
 
 \subsection{Case Study: Zero-Shot Transfer to a Literature-Calibrated Device}
 \label{subsec:case-study}

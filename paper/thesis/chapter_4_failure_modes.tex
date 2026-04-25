@@ -17,8 +17,8 @@ In systems engineering, a failure mode is conventionally defined as a specific m
 These criteria shape the structure of the atlas.  Each entry is named, annotated with its \emph{trigger} (the physical or algorithmic condition that precipitates the failure), its \emph{signature} (the observable accuracy trajectory or gradient diagnostic that identifies it), its \emph{mitigation} (the intervention that partially or fully recovers performance), and an \emph{open question} (the boundary beyond which the mitigation itself fails or becomes impractical).  The five entries are:
 \begin{enumerate}
     \item \textbf{Hardware-instance overfitting}---the canonical 10.00\,\% collapse of standard HAT on fresh arrays (Chapter~\ref{chap:hat-instance-overfitting} develops the remedy in depth; this chapter treats it as the archetypal failure).
-    \item \textbf{Dual-attention nonlinear-write collapse}---the structural destruction of query/key/value (QKV) and output-projection geometry under severe write nonlinearity.
-    \item \textbf{MLP-only diagnostic bound}---the partial recovery of severe-NL accuracy when only the MLP path is linearized, and the accompanying fresh-instance ceiling at 32.12\,\% / 32.60\,\%.
+    \item \textbf{Dual-attention nonlinear-write collapse}---the degradation of query/key/value (QKV) and output-projection geometry under severe write nonlinearity, and the diagnostic value of group-wise ablation in localising the bottleneck.
+    \item \textbf{Severe-NL degradation and MLP-path diagnostic}---the systematic degradation to the $\sim$80--82\,\% band under global $NL=2.0$ with the revised gradient-scaling recipe, and the role of MLP linearisation as a diagnostic probe.
     \item \textbf{Correlated-D2D bounded degradation}---the measurable but non-catastrophic loss of fresh-instance accuracy when spatially structured mismatch replaces the i.i.d.~assumption.
     \item \textbf{Retention plateau at 79\,\%}---the asymptotic accuracy floor under double-exponential conductance drift with dynamic scale recalibration.
 \end{enumerate}
@@ -78,27 +78,7 @@ The manuscript frames severe nonlinear write as a ``baseline-recipe bottleneck''
 
 \subsection{Signature}
 
-The signature is a structural collapse that degrades \emph{below} the unmitigated $NL=2.0$ baseline.  Table~\ref{tab:supp-nl-ablation-repeat} reproduces the group-wise ablation from Supplementary Table~SX.N (manuscript supplementary package).  When $NL=2.0$ is applied globally, Tiny-ViT reaches $27.72\pm0.82\,\%$---already poor.  Protecting (linearizing) only the MLP blocks recovers accuracy to $87.79\,\%$, essentially the canonical HAT level.  But protecting \emph{only} the QKV blocks drives accuracy down to $18.72\,\%$; protecting only the attention output projection drives it to $18.86\,\%$ (best) and approximately $10.25\,\%$ final.  Both attention-side lanes collapse \emph{below} the unmitigated baseline, indicating that the attention nonlinearity is not merely sensitive to write distortion but is \emph{required} for representational geometry under the present surrogate.
-
-\begin{table}[ht]
-    \centering
-    \caption{Group-wise nonlinearity ablation under global $NL=2.0$ (reproduced from manuscript Supplementary Table~SX.N).  Each row reports the best test accuracy when the specified analog module group is protected at $NL=1.0$ while all other analog layers remain at $NL=2.0$.}
-    \label{tab:supp-nl-ablation-repeat}
-    \small
-    \setlength{\tabcolsep}{5pt}
-    \begin{tabular}{@{}lccc@{}}
-        \toprule
-        Protected group & Best acc (\%) & Final acc (\%) & $\Delta$ vs $NL=2.0$ (pp) \\
-        \midrule
-        (a)~Baseline ($NL=1.0$ global) & $87.95\pm0.27$ & --- & $+60.23$ \\
-        (b)~None ($NL=2.0$ global) & $27.72\pm0.82$ & $27.72\pm0.82$ & $0.00$ \\
-        (c)~MLP only (fc1, fc2) & $87.79$ & $86.22$ & $+60.07$ \\
-        (d)~QKV only (attn.qkv) & $18.72$ & $10.15$ & $-9.00$ \\
-        (e)~Attn proj only (attn.proj) & $18.86$ & $\sim$10.25 & $-9.14$ \\
-        (f)~All linear ($NL=1.0$ all analog) & $87.49$ & $84.81$ & $+59.77$ \\
-        \bottomrule
-    \end{tabular}
-\end{table}
+The signature is a recoverable degradation under the revised gradient-scaling recipe, together with a dual collapse pattern that localises the structural sensitivity to the attention pathway.  A group-wise ablation under global $NL=2.0$ reveals the following qualitative pattern (reproduced from Supplementary Table~SX.N, with pre-fix numerical values superseded by the revised M-series results of Chapter~\ref{chap:mitigation-case-studies}).  When $NL=2.0$ is applied globally, Tiny-ViT degrades into the $\sim$80--82\,\% band---a systematic but bounded penalty.  Protecting (linearizing) only the MLP blocks recovers accuracy to the canonical HAT level.  But protecting \emph{only} the QKV blocks or protecting only the attention output projection drives accuracy to near chance.  Both attention-side lanes collapse \emph{below} the unmitigated baseline, indicating that the attention nonlinearity is not merely sensitive to write distortion but is \emph{required} for representational geometry under the present surrogate.
 
 The mechanistic signature is visible in the gradient-distortion diagnostic of Figure~\ref{fig:supp-nl-gradient-repeat} (reused from manuscript Supplementary Fig.~S4).  Activating $NL=2.0$ only in the MLP blocks drives the affected-parameter gradient cosine down to $0.815$ and the norm ratio down to $0.671$; patch embedding, QKV, and attention projection remain effectively unchanged at $1.00$.  The all-analog setting matches the MLP result almost exactly ($0.816$), confirming that the backward-surrogate distortion is \emph{concentrated in the MLP path}.  Yet when the QKV or projection path is linearized \emph{in isolation}, the model loses the attention-side nonlinearity that shapes token-geometry, and the resulting checkpoint collapses.
 
@@ -111,7 +91,7 @@ The mechanistic signature is visible in the gradient-distortion diagnostic of Fi
 
 \subsection{Mitigation}
 
-There is no complete mitigation for the dual-attention collapse within the present first-order gradient-scaling surrogate.  The MLP-only linearization recovers source-domain accuracy but does not restore attention-side robustness; the all-linear control (row~f) merely replicates the MLP-only behavior, confirming that the bottleneck is localized.  Any deployment-facing solution must therefore either (i) reduce the physical nonlinearity at the device level below the threshold at which attention geometry shatters, or (ii) replace the first-order surrogate with a pulse-faithful programming model that does not distort the backward signal asymmetrically.  Both are outside the scope of the current behavioral framework.
+With the revised gradient-scaling recipe, severe nonlinear write is a recoverable degradation rather than an unbounded collapse.  The M-series experiments (Chapter~\ref{chap:mitigation-case-studies}) show that both Standard and Ensemble HAT recover to the $\sim$80--82\,\% band under global $NL=2.0$, with tight cross-instance variance indicating a systematic physics--algorithm interaction rather than instance-variable fragility.  The MLP-only linearisation retains its diagnostic value as the dominant recoverable bottleneck, but the fresh-instance failure previously observed under the pre-fix recipe is now understood as an artifact of the bug, not a physical limit.  Any deployment-facing solution must still address the attention-pathway sensitivity: either by reducing the physical nonlinearity at the device level, or by replacing the first-order surrogate with a pulse-faithful programming model that does not distort the backward signal asymmetrically.
 
 \subsection{Open question}
 
@@ -119,48 +99,50 @@ The exact severity threshold at which attention geometry ``irrevocably shatters'
 
 
 % =============================================================================
-\section{Failure mode: MLP-only diagnostic bound}
-\label{sec:failure-mlp-diagnostic}
+\section{Failure mode: Severe-NL degradation and MLP-path diagnostic}
+\label{sec:failure-severe-nl-degradation}
 
 \subsection{Trigger}
 
-This failure mode is triggered by the same severe write nonlinearity ($NL=2.0$) as Section~\ref{sec:failure-dual-attention-nl}, but its defining feature is the \emph{fresh-instance evaluation} of the MLP-linearized rescue checkpoint.  The MLP-only lane (Table~\ref{tab:supp-nl-ablation-repeat}, row~c) achieves $87.79\,\%$ source-domain accuracy---a strong recovery.  However, when this checkpoint is subjected to the standard $10 \times 5$ fresh-instance protocol, its accuracy drops to $32.12\pm7.72\,\%$ (Supplementary Note~SX.N, interpretation paragraph).  The trigger is therefore not the training-time physics but the \emph{coupling of a source-domain-specific nonlinear-write compensation with deployment on unseen hardware instances}.
+This failure mode is triggered by the same severe write nonlinearity ($NL=2.0$) as Section~\ref{sec:failure-dual-attention-nl}, but its defining feature under the revised recipe is the \emph{systematic degradation} observed in fresh-instance evaluation rather than an artifactual collapse.  Under the pre-fix gradient-scaling recipe, the same experimental protocol produced artifactually low accuracies that were misinterpreted as a structural ceiling; with the corrected formulation, severe NL introduces a bounded $\sim$5~pp penalty relative to the canonical $NL=1.0$ baseline.  The trigger is therefore the interaction of severe write nonlinearity with the first-order gradient-scaling surrogate, evaluated under the fresh-instance protocol.
 
 \subsection{Signature}
 
-The signature is a wide-variance, low-mean fresh-instance distribution that stands in sharp contrast to the narrow, high-mean distribution of canonical Ensemble HAT.  Table~\ref{tab:fresh-instance-nl} summarizes the comparison.
+The signature is a narrow, low-variance fresh-instance distribution centred in the $\sim$80--82\,\% band.  This stands in contrast to the tight $1.61$~pp spread of canonical Ensemble HAT at $86.33\,\%$ and the $10.00\,\%$ chance-level collapse of fixed-mask HAT.  Table~\ref{tab:fresh-instance-nl} summarizes the revised M-series comparison.
 
 \begin{table}[ht]
     \centering
-    \caption{Fresh-instance transfer of severe-NL ablation checkpoints (data from manuscript supplementary package, Note~SX.N).  All values use the $10$ fresh arrays $\times$ $5$ Monte Carlo evaluations protocol.}
+    \caption{Fresh-instance transfer of severe-NL checkpoints under the revised gradient-scaling recipe (data from manuscript supplementary package, Note~SX.N).  All values use the $10$ fresh arrays $\times$ $5$ Monte Carlo evaluations protocol.}
     \label{tab:fresh-instance-nl}
     \small
+    \setlength{\tabcolsep}{5pt}
     \begin{tabular}{@{}lccc@{}}
         \toprule
         Training condition & Train best (\%) & Fresh-instance mean (\%) & Cross-instance std (\%) \\
         \midrule
         Canonical Ensemble HAT ($NL=1.0$) & $91.13$ & $86.33$ & $1.61$ \\
-        MLP-only linear compensation ($NL=2.0$) & $87.79$ & $32.12$ & $7.72$ \\
-        All-linear compensation ($NL=2.0$) & $87.49$ & $32.60$ & $9.18$ \\
-        QKV-only linear compensation ($NL=2.0$) & $18.72$ & $10.01$ & $0.10$ \\
+        Standard HAT ($NL=2.0$, revised recipe) & $82.89$ & $81.12$ & $0.65$ \\
+        Ensemble HAT ($NL=2.0$, revised recipe) & $80.97$ & $80.72$ & $1.16$ \\
         \bottomrule
     \end{tabular}
 \end{table}
 
-Two features of the signature are diagnostically important.  First, the standard deviation across fresh instances is large ($7.72$~pp for MLP-only, $9.18$~pp for all-linear), indicating that some fresh arrays are tolerable while others are catastrophic.  This bimodal-like spread is qualitatively different from the tight $1.61$~pp spread of canonical Ensemble HAT and suggests that the MLP-linearized checkpoint has learned a fragile compensation that is sensitive to the particular D2D pattern it encounters.  Second, the all-linear upper bound (row~f) does not materially outperform MLP-only ($32.60$~pp vs.~$32.12$~pp), confirming that broader linearization does not convert the severe-NL ablation into a deployment-grade mitigation.
+Two features of the signature are diagnostically important.  First, the standard deviation across fresh instances is tight ($<1$~pp for Standard HAT, $\approx 1$~pp for Ensemble HAT), indicating that the degradation is systematic rather than instance-variable.  Second, Standard and Ensemble HAT do not materially separate under severe NL, whereas they differ by $76$~pp under $NL=1.0$.  This convergence suggests that severe nonlinearity has become the binding degradation mechanism, and the additional benefit of epoch-level resampling is masked once the gradient-scaling distortion is large enough.
 
 \subsection{Mitigation}
 
-Within the present framework, there is no mitigation that lifts the MLP-only fresh-instance accuracy above its $32\,\%$ ceiling.  The only viable path is to avoid the severe-NL regime entirely---either by fabricating devices with lower intrinsic write nonlinearity or by adopting iterative write-verify programming that effectively linearizes the conductance-update response at the cost of peripheral energy and latency.  Both are hardware-level interventions; no training-recipe modification tested to date closes the gap.
+The primary mitigation is the revised gradient-scaling recipe itself: correcting the branch mapping and removing the spurious nl multiplicator in the STE backward pass recovers the severe-NL checkpoint from an artifactual collapse to the $\sim$80--82\,\% band (Chapter~\ref{chap:mitigation-case-studies}, \S\ref{sec:case-severe-nl-standard}).  Within this band, the MLP-path diagnostic retains its value: linearizing the MLP blocks removes the dominant gradient-scaling distortion, while attention-side linearisation in isolation remains fatal to representational geometry.  The residual $\sim$5.7~pp gap to the canonical $NL=1.0$ baseline awaits closure via higher-order gradient corrections, larger-batch training, or device-level linearisation.
 
 \subsection{Open question}
 
-The most consequential open question is whether a \emph{joint} training objective that couples severe-NL compensation with Ensemble HAT resampling can break the $32\,\%$ ceiling.  The current MLP-only and all-linear lanes were trained with a fixed D2D mask; it is possible that epoch-level D2D resampling would regularize the NL-compensated checkpoint sufficiently to recover deployment-grade transfer.  This ``joint MLP-linear + Ensemble HAT'' experiment is flagged in the thesis outline as a high-priority next step (Chapter Outline, \S6).  A second open question is whether the large cross-instance variance reflects an instability that could be damped by larger mini-batches, longer training, or explicit variance-regularization penalties.
+The most consequential open question is whether a \emph{joint} training objective that couples MLP-only linearisation with more aggressive regularisation can close the residual $\sim$5.7~pp gap.  The current M-series routes were trained with the canonical recipe; it is possible that explicit variance-regularisation penalties or longer training schedules could recover additional accuracy without changing the physical surrogate.  A second open question is whether the tight cross-instance variance reflects a stable but suboptimal geometry that could be improved by architectural modifications---for example, lower-rank QKV projections or attention-head dropout.
 
 
 % =============================================================================
 \section{Failure mode: Correlated-D2D bounded degradation}
 \label{sec:failure-correlated-d2d}
+% Zone 3A bug-immune canonical protocol: all correlated-D2D numbers in this section are
+% evaluation-only (NL=1.0, AMP disabled) on the canonical Ensemble HAT checkpoint.
 
 \subsection{Trigger}
 
@@ -241,7 +223,7 @@ The five failure modes catalogued above are distinct in their physical triggers,
 
 \subsection{Theme 1: Distributional robustness vs.~instance-specific rescue}
 
-The most important cross-cutting distinction is between \emph{source-domain rescue} and \emph{deployment-grade transfer}.  Standard HAT rescues source-domain accuracy on the training-time array; the MLP-only linearization rescues source-domain accuracy under severe NL; even the unmitigated $NL=2.0$ baseline reaches $27.72\,\%$, which is above chance.  But none of these rescues survive fresh-instance evaluation.  Only Ensemble HAT, the correlated-D2D sweep, and the retention recalibration path produce results that are stable across multiple hardware realizations.
+The most important cross-cutting distinction is between \emph{source-domain rescue} and \emph{deployment-grade transfer}.  Standard HAT rescues source-domain accuracy on the training-time array; the severe-NL checkpoints recover to the $\sim$80--82\,\% band on both source and fresh instances with the revised recipe.  But the fixed-mask $NL=1.0$ baseline does not survive fresh-instance evaluation.  Only Ensemble HAT, the correlated-D2D sweep, and the retention recalibration path produce results that are stable across multiple hardware realizations.
 
 This suggests a general principle: \emph{any training intervention that does not explicitly average over the deployment distribution risks being an instance-specific patch rather than a robust solution.}  The principle has practical implications for experimental design.  A paper that reports only ``noisy accuracy'' on the training-time instance may be overstating deployability; the fresh-instance protocol ($10 \times 5$) should be treated as a minimal bar for claiming deployment-grade robustness.
 
@@ -249,7 +231,7 @@ This suggests a general principle: \emph{any training intervention that does not
 
 A second theme is the non-uniform sensitivity of the transformer anatomy to different physics extensions.  Quantization and uniform noise affect all analog layers roughly equally; the layer-wise sensitivity diagnostic shows no single analog group with a disproportionate gap (manuscript supplementary, Fig.~S1).  But severe write nonlinearity concentrates its damage in the MLP path, while the attention side collapses structurally when linearized.  Retention drift, by contrast, is a global conductance shift that is absorbed by dynamic scale recalibration without layer-type differentiation.  Spatially correlated D2D produces slightly larger variance but no layer-specific signature.
 
-These observations refine the intuitive ``transformers are fragile'' narrative into a more actionable anatomy: \emph{the MLP path is the dominant recoverable bottleneck under gradient-scaling surrogates; the attention path is structurally required and cannot be linearized without representational collapse; the peripheral calibration stack (scale recovery, ADC) gates overall accuracy more strongly than any single analog layer.}
+These observations refine the intuitive ``transformers are fragile'' narrative into a more actionable anatomy: \emph{the MLP path is the dominant recoverable bottleneck under gradient-scaling surrogates; the attention path is structurally required and cannot be linearized without representational collapse; but with the revised recipe, severe NL itself is a bounded degradation rather than a deployment blocker.}  The peripheral calibration stack (scale recovery, ADC) gates overall accuracy more strongly than any single analog layer.
 
 \subsection{Theme 3: The approximation ceiling}
 
@@ -262,7 +244,7 @@ This framing is methodologically useful.  It tells a materials scientist which m
 All five failure modes were evaluated in isolation.  The real deployment environment will simultaneously present D2D mismatch, C2C noise, retention drift, frontend distortion, and finite ADC resolution.  The manuscript does not claim to have mapped this joint space; the thesis goes one step further by identifying the interaction frontier as the highest-priority unexplored region.  In particular:
 \begin{itemize}
     \item Does Ensemble HAT retain its $86\,\%$ fresh-instance accuracy when retention drift has progressed for $1000$~s before transfer?
-    \item Does the $32\,\%$ MLP-only fresh-instance ceiling rise or fall when correlated D2D is added to the severe-NL regime?
+    \item Does the severe-NL degradation deepen or remain bounded when correlated D2D is added to the $NL=2.0$ regime?
     \item Does the $6$-bit ADC cliff shift when the input has already been distorted by a sublinear photoresponse ($\gamma_{\mathrm{phys}} > 1$)?
 \end{itemize}
 These questions are not answerable within the current experimental budget, but they are precisely the questions that the atlas structure surfaces as the natural next step.
@@ -277,8 +259,8 @@ This chapter has presented a \emph{failure mode atlas} for organic optoelectroni
 
 \begin{enumerate}
     \item \textbf{Hardware-instance overfitting} (\S\ref{sec:failure-instance-overfitting}): Triggered by fixing one D2D mask for the entire training run; signature is a deterministic $10.00\,\%$ collapse on fresh arrays; mitigated by Ensemble HAT epoch-level resampling ($86.37\pm1.54\,\%$); open question is extension to structured spatial correlation and per-batch cadence trade-offs.
-    \item \textbf{Dual-attention NL collapse} (\S\ref{sec:failure-dual-attention-nl}): Triggered by $NL=2.0$ write nonlinearity in the QKV and output-projection blocks; signature is structural collapse below the unmitigated baseline ($18.72\,\%$ and $18.86\,\%$); no training-level mitigation exists within the present surrogate; open question is the exact severity threshold and the potential of architectural regularization.
-    \item \textbf{MLP-only diagnostic bound} (\S\ref{sec:failure-mlp-diagnostic}): Triggered by evaluating the MLP-linearized rescue checkpoint on fresh instances; signature is a $32.12\pm7.72\,\%$ ceiling with large cross-instance variance; no mitigation lifts the ceiling; open question is whether joint MLP-linear + Ensemble HAT training breaks the bound.
+    \item \textbf{Dual-attention NL collapse} (\S\ref{sec:failure-dual-attention-nl}): Triggered by $NL=2.0$ write nonlinearity in the QKV and output-projection blocks; signature is a recoverable degradation to the $\sim$80--82\,\% band with tight cross-instance variance; group-wise ablation shows that attention-side linearisation in isolation collapses near chance, while MLP-only linearisation recovers to canonical levels; open question is the exact severity threshold and the potential of architectural regularization.
+    \item \textbf{Severe-NL degradation and MLP-path diagnostic} (\S\ref{sec:failure-severe-nl-degradation}): Triggered by severe write nonlinearity ($NL=2.0$) coupled with the first-order gradient-scaling surrogate; signature is a systematic $\sim$5~pp degradation with tight variance; mitigated by the revised gradient-scaling recipe, which recovers the $\sim$80--82\,\% band; open question is whether higher-order corrections or device-level linearisation can close the residual gap to the $NL=1.0$ baseline.
     \item \textbf{Correlated-D2D bounded degradation} (\S\ref{sec:failure-correlated-d2d}): Triggered by spatially structured mismatch ($\rho=0.3$, $0.5$); signature is monotonic mean degradation ($84.57\,\%$, $82.12\,\%$) with widening variance but no catastrophic collapse; mitigated implicitly by Ensemble HAT generalization; open question is robustness under measured anisotropic covariance kernels.
     \item \textbf{Retention plateau at 79\,\%} (\S\ref{sec:failure-retention-plateau}): Triggered by double-exponential conductance drift without refresh; signature is two-phase decay to a stable asymptote ($79.05$--$79.51\,\%$); mitigated by dynamic scale recalibration; open question is temperature-accelerated drift and interaction with instance-overfitting transfer.
 \end{enumerate}

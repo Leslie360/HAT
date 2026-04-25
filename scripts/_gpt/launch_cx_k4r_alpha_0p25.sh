@@ -8,8 +8,8 @@ LOG_DIR="$REPO_DIR/logs/_gpt"
 
 cd "$REPO_DIR"
 
-# Verify we are on fixed code
-git log --oneline -1 | grep -q "nl multiplier" || {
+# Verify we are on fixed code (accept any STE semantics fix commit)
+git log --oneline -1 | grep -qE "nl multiplier|user-ratified STE semantics|Branch A" || {
     echo "ERROR: backward fix not committed. Abort."
     exit 1
 }

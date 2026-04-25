@@ -30,12 +30,13 @@ Hardware-aware training (HAT) keeps forward perturbations active during optimiza
     \theta_{\mathrm{std}}^{\star}=\arg\min_{\theta}\frac{1}{N}\sum_{n=1}^{N}\ell\!\left(f(x_{n};\theta,M_{0}),y_{n}\right),
 \label{eq:hat-standard}
 \end{equation}
-whereas Ensemble HAT resamples $M^{(e)}\sim p(M)$ at each epoch,
+\paragraph{Ensemble HAT as distribution matching.}
+Whereas Standard HAT fixes one D2D mismatch realization $M_0$ (Eq.~\ref{eq:hat-standard}), Ensemble HAT treats the mismatch map as a random variable resampled each epoch:
 \begin{equation}
-    \theta_{\mathrm{ens}}^{\star}=\arg\min_{\theta}\;\mathbb{E}_{M\sim p(M)}\!\left[\frac{1}{N}\sum_{n=1}^{N}\ell\!\left(f(x_{n};\theta,M),y_{n}\right)\right].
-\label{eq:hat-ensemble}
+    \theta_{\text{ens}}^{\star} = \arg\min_{\theta}\;\mathbb{E}_{M\sim\mathcal{D}_{\text{D2D}}}\Bigl[\frac{1}{N}\sum_{n=1}^{N}\ell\bigl(f(x_n;\theta,M),y_n\bigr)\Bigr],
+    \label{eq:hat-ensemble-distribution}
 \end{equation}
-The expectation is Monte Carlo--estimated with one freshly sampled mismatch map per training epoch, held constant across all mini-batches within that epoch.
+where the expectation is Monte-Carlo estimated with one fresh draw $M^{(e)}\sim\mathcal{D}_{\text{D2D}}$ held constant across all mini-batches in epoch $e$. A second-order Taylor expansion of Eq.~\ref{eq:hat-ensemble-distribution} in the mismatch amplitude (Supplementary Note S-Theory) reveals that Ensemble HAT introduces an \emph{implicit regularizer} proportional to $\sigma_{\text{D2D}}^2\sum_i \theta_i^2(\partial\ell/\partial\theta_i)^2$ --- a Fisher-weighted gradient-squared penalty that pushes the optimizer toward flat regions of the loss landscape in the $M$-direction. This mechanistic interpretation explains the empirical fresh-instance transferability without requiring additional hyperparameters: the regularization strength is set by the physical D2D variance rather than by a tunable dropout rate. The epoch-level resampling discipline (as opposed to per-batch) is load-bearing: it gives the optimizer enough consistent signal to fit each instance before resampling, enforcing a ``learn-to-adapt'' regime analogous to domain randomization \citep{tobin2017domain}.
 Fresh-instance transfer evaluates on unseen draws $M'\sim p(M)$:
 \begin{equation}
     \mathrm{Acc}_{\mathrm{fresh}}=\mathbb{E}_{M'\sim p(M)}\!\left[\mathrm{Acc}\!\left(f(\cdot;\theta_{\mathrm{ens}}^{\star},M')\right)\right].

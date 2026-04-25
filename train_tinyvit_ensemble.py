@@ -12,14 +12,17 @@ import argparse
 import csv
 import json
 import os
+import random
 import sys
 from dataclasses import asdict, dataclass
 from datetime import datetime
 from statistics import mean, stdev
 from typing import Dict, List, Optional, Sequence, Tuple
 
+import numpy as np
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 import torch.optim as optim
 import torchvision
 import torchvision.transforms as transforms
@@ -47,7 +50,7 @@ sys.stdout.reconfigure(line_buffering=True)
 
 MODEL_NAME = "tiny_vit_5m_224"
 DEFAULT_REPORT_PATH = "report_md/_gpt/tinyvit_hybrid_dryrun_report_gpt.md"
-DEFAULT_LOG_PATH = "logs/_gpt/tinyvit_hybrid_dryrun_gpt.log"
+DEFAULT_LOG_PATH = None  # No default file log; use --log-path to specify
 DEFAULT_RESULTS_JSON_PATH = asset_path("report_md/_gpt", "json", "tinyvit_results_gpt.json")
 DEFAULT_RESULTS_CSV_PATH = asset_path("report_md/_gpt", "csv", "tinyvit_results_gpt.csv")
 DEFAULT_RESULTS_MD_PATH = "report_md/_gpt/tinyvit_results_gpt.md"
@@ -171,6 +174,14 @@ def ensure_parent_dir(path: Optional[str]):
     parent = os.path.dirname(path)
     if parent:
         os.makedirs(parent, exist_ok=True)
+
+
+def set_seed(seed: int):
+    """Seed Python, NumPy, and Torch without changing CuDNN algorithm policy."""
+    random.seed(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)
 
 
 class TinyViTPhysicalFrontEnd(nn.Module):
@@ -362,23 +373,33 @@ def resolve_pin_memory(pin_memory_mode: Optional[str]) -> bool:
 
 def get_dataloaders(dataset: str = "cifar10", batch_size: int = 64,
                     num_workers: int = 4, data_root: str = "./data",
-                    image_size: int = 224, pin_memory_mode: Optional[str] = "auto"):
+                    image_size: int = 224, pin_memory_mode: Optional[str] = "auto",
+                    resize_on_gpu: bool = False):
     """Build train and test DataLoaders for the requested dataset."""
     stats = DATASET_STATS[dataset]
     mean, std = stats["mean"], stats["std"]
     dataset_cls = stats["dataset_cls"]
 
-    transform_train = transforms.Compose([
-        transforms.Resize((image_size, image_size)),
+    if resize_on_gpu and dataset not in {"cifar10", "cifar100"}:
+        raise ValueError("--gpu-resize currently supports fixed-size CIFAR datasets only")
+
+    train_transforms = []
+    test_transforms = []
+    if not resize_on_gpu:
+        resize = transforms.Resize((image_size, image_size))
+        train_transforms.append(resize)
+        test_transforms.append(resize)
+    train_transforms.extend([
         transforms.RandomHorizontalFlip(),
         transforms.ToTensor(),
         transforms.Normalize(mean, std),
     ])
-    transform_test = transforms.Compose([
-        transforms.Resize((image_size, image_size)),
+    test_transforms.extend([
         transforms.ToTensor(),
         transforms.Normalize(mean, std),
     ])
+    transform_train = transforms.Compose(train_transforms)
+    transform_test = transforms.Compose(test_transforms)
 
     trainset, testset = build_dataset_pair(
         dataset=dataset,
@@ -395,6 +416,7 @@ def get_dataloaders(dataset: str = "cifar10", batch_size: int = 64,
     }
     if num_workers > 0:
         loader_kwargs["persistent_workers"] = True
+        loader_kwargs["multiprocessing_context"] = "spawn"
     trainloader = torch.utils.data.DataLoader(
         trainset, shuffle=True, **loader_kwargs
     )
@@ -404,9 +426,20 @@ def get_dataloaders(dataset: str = "cifar10", batch_size: int = 64,
     return trainloader, testloader
 
 
+def maybe_resize_on_gpu(inputs: torch.Tensor, image_size: Optional[int]) -> torch.Tensor:
+    """Resize CIFAR tensors on GPU to avoid PIL resize becoming the training bottleneck."""
+    if image_size is None:
+        return inputs
+    target_size = (image_size, image_size)
+    if tuple(inputs.shape[-2:]) == target_size:
+        return inputs
+    return F.interpolate(inputs, size=target_size, mode="bilinear", align_corners=False)
+
+
 def train_one_epoch(model: nn.Module, trainloader, optimizer, criterion, device: str,
                     exp_cfg: TinyViTExperimentConfig, frontend: Optional[nn.Module] = None,
-                    amp_enabled: bool = False, scaler=None):
+                    amp_enabled: bool = False, scaler=None,
+                    gpu_resize_size: Optional[int] = None):
     """Run one training epoch and return (loss, accuracy)."""
     model.train()
     set_noise_for_train(model, exp_cfg)
@@ -416,6 +449,7 @@ def train_one_epoch(model: nn.Module, trainloader, optimizer, criterion, device:
 
     for inputs, targets in trainloader:
         inputs, targets = inputs.to(device), targets.to(device)
+        inputs = maybe_resize_on_gpu(inputs, gpu_resize_size)
         optimizer.zero_grad(set_to_none=True)
 
         if frontend is not None:
@@ -444,7 +478,7 @@ def train_one_epoch(model: nn.Module, trainloader, optimizer, criterion, device:
 @torch.no_grad()
 def evaluate(model: nn.Module, testloader, criterion, device: str,
              exp_cfg: TinyViTExperimentConfig, frontend: Optional[nn.Module] = None,
-             amp_enabled: bool = False):
+             amp_enabled: bool = False, gpu_resize_size: Optional[int] = None):
     """Run inference on the test set and return (loss, accuracy)."""
     model.eval()
     set_noise_for_eval(model, exp_cfg)
@@ -454,6 +488,7 @@ def evaluate(model: nn.Module, testloader, criterion, device: str,
 
     for inputs, targets in testloader:
         inputs, targets = inputs.to(device), targets.to(device)
+        inputs = maybe_resize_on_gpu(inputs, gpu_resize_size)
 
         if frontend is not None:
             inputs = frontend(inputs, mode="compensated")
@@ -497,7 +532,8 @@ def build_training_checkpoint_payload(model: nn.Module, optimizer, scheduler, sc
                                       exp_cfg: TinyViTExperimentConfig, dataset: str,
                                       num_classes: int,
                                       epoch: int, best_acc: float, best_epoch: int,
-                                      history: dict, amp_enabled: bool) -> dict:
+                                      history: dict, amp_enabled: bool,
+                                      seed: Optional[int] = None) -> dict:
     """Assemble a checkpoint dict containing model, optimizer, and metadata."""
     payload = {
         "epoch": epoch,
@@ -511,6 +547,7 @@ def build_training_checkpoint_payload(model: nn.Module, optimizer, scheduler, sc
         "num_classes": num_classes,
         "history": normalize_training_history(history),
         "amp_enabled": amp_enabled,
+        "seed": seed,
     }
     if scaler is not None and scaler.is_enabled():
         payload["scaler_state_dict"] = scaler.state_dict()
@@ -640,7 +677,8 @@ def run_experiment(exp_id: str, exp_cfg: TinyViTExperimentConfig, dataset: str,
                    logger: Optional[RunLogger] = None, log_interval: int = 20,
                    resume_existing: bool = False, warm_start_from: Optional[str] = None,
                    amp_enabled: bool = False, compile_model: bool = False,
-                   pin_memory_mode: Optional[str] = "auto"):
+                   pin_memory_mode: Optional[str] = "auto", gpu_resize: bool = False,
+                   early_stop_patience: Optional[int] = None):
     """Train a single experiment from scratch or resume, logging progress."""
     model = build_model(exp_cfg, num_classes=num_classes, device=device, pretrained=pretrained)
     if compile_model and hasattr(torch, "compile"):
@@ -666,6 +704,7 @@ def run_experiment(exp_id: str, exp_cfg: TinyViTExperimentConfig, dataset: str,
         data_root=data_root,
         num_workers=num_workers,
         pin_memory_mode=pin_memory_mode,
+        resize_on_gpu=gpu_resize,
     )
     optimizer = optim.AdamW(model.parameters(), lr=exp_cfg.lr, weight_decay=exp_cfg.weight_decay)
     scheduler = optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=exp_cfg.epochs)
@@ -689,6 +728,8 @@ def run_experiment(exp_id: str, exp_cfg: TinyViTExperimentConfig, dataset: str,
         if exp_cfg.noise_enabled and not exp_cfg.hat_training:
             logger.log("  standard-noise policy: fixed D2D on during train, C2C off during train")
         logger.log(f"  amp={'on' if active_amp else 'off'}")
+        logger.log(f"  gpu_resize={'on' if gpu_resize else 'off'}")
+        logger.log(f"  early_stop_patience={early_stop_patience if early_stop_patience is not None else 'off'}")
         logger.log("=" * 70)
         if start_epoch > 0:
             source_kind = "last" if resume_checkpoint_path == last_checkpoint_path else "best fallback"
@@ -710,10 +751,11 @@ def run_experiment(exp_id: str, exp_cfg: TinyViTExperimentConfig, dataset: str,
         current_lr = optimizer.param_groups[0]["lr"]
         train_loss, train_acc = train_one_epoch(
             model, trainloader, optimizer, criterion, device, exp_cfg, frontend,
-            amp_enabled=active_amp, scaler=scaler,
+            amp_enabled=active_amp, scaler=scaler, gpu_resize_size=224 if gpu_resize else None,
         )
         test_loss, test_acc = evaluate(
-            model, testloader, criterion, device, exp_cfg, frontend, amp_enabled=active_amp
+            model, testloader, criterion, device, exp_cfg, frontend, amp_enabled=active_amp,
+            gpu_resize_size=224 if gpu_resize else None,
         )
 
         history["train_loss"].append(train_loss)
@@ -742,15 +784,26 @@ def run_experiment(exp_id: str, exp_cfg: TinyViTExperimentConfig, dataset: str,
         os.makedirs(save_dir, exist_ok=True)
         checkpoint_payload = build_training_checkpoint_payload(
             model, optimizer, scheduler, scaler, exp_cfg, dataset, num_classes,
-            epoch, best_acc, best_epoch, history, active_amp
+            epoch, best_acc, best_epoch, history, active_amp, seed=getattr(exp_cfg, "seed", None)
         )
         torch.save(checkpoint_payload, last_checkpoint_path)
         if improved:
             torch.save(checkpoint_payload, checkpoint_path)
 
+        if early_stop_patience is not None and early_stop_patience > 0 and best_epoch >= 0:
+            epochs_without_improvement = epoch - best_epoch
+            if epochs_without_improvement >= early_stop_patience:
+                if logger is not None:
+                    logger.log(
+                        f"  Early stop: no test_acc improvement for {epochs_without_improvement} "
+                        f"epochs (best={best_acc:.2f}% at epoch {best_epoch})."
+                    )
+                break
+
     if not history["test_acc"]:
         _, test_acc = evaluate(
-            model, testloader, criterion, device, exp_cfg, frontend, amp_enabled=active_amp
+            model, testloader, criterion, device, exp_cfg, frontend, amp_enabled=active_amp,
+            gpu_resize_size=224 if gpu_resize else None,
         )
         history["train_loss"].append(float("nan"))
         history["train_acc"].append(float("nan"))
@@ -804,7 +857,7 @@ def run_eval(exp_id: str, exp_cfg: TinyViTExperimentConfig, dataset: str,
              device: str, num_classes: int, data_root: str, checkpoint_path: str,
              pretrained: bool = False, num_workers: int = 4, eval_runs: int = 1,
              logger: Optional[RunLogger] = None, amp_enabled: bool = False,
-             pin_memory_mode: Optional[str] = "auto"):
+             pin_memory_mode: Optional[str] = "auto", gpu_resize: bool = False):
     """Evaluate a trained checkpoint with optional Monte-Carlo repetitions."""
     model = build_model(exp_cfg, num_classes=num_classes, device=device, pretrained=pretrained)
     ckpt = torch.load(checkpoint_path, map_location=device, weights_only=False)
@@ -825,6 +878,7 @@ def run_eval(exp_id: str, exp_cfg: TinyViTExperimentConfig, dataset: str,
         data_root=data_root,
         num_workers=num_workers,
         pin_memory_mode=pin_memory_mode,
+        resize_on_gpu=gpu_resize,
     )
     criterion = nn.CrossEntropyLoss()
     losses: List[float] = []
@@ -837,12 +891,14 @@ def run_eval(exp_id: str, exp_cfg: TinyViTExperimentConfig, dataset: str,
         logger.log(f"  checkpoint={checkpoint_path}")
         logger.log(f"  checkpoint_epoch={ckpt.get('epoch')}, checkpoint_best_acc={ckpt.get('best_acc')}")
         logger.log(f"  amp={'on' if active_amp else 'off'}")
+        logger.log(f"  gpu_resize={'on' if gpu_resize else 'off'}")
         if eval_runs > 1 and not exp_cfg.noise_enabled:
             logger.log("  note: repeated evals are expected to be identical because noise is disabled")
 
     for run_idx in range(eval_runs):
         test_loss, test_acc = evaluate(
-            model, testloader, criterion, device, exp_cfg, frontend, amp_enabled=active_amp
+            model, testloader, criterion, device, exp_cfg, frontend, amp_enabled=active_amp,
+            gpu_resize_size=224 if gpu_resize else None,
         )
         losses.append(test_loss)
         accuracies.append(test_acc)
@@ -873,7 +929,7 @@ def run_retention_sweep(exp_id: str, exp_cfg: TinyViTExperimentConfig, dataset: 
                         pretrained: bool = False, num_workers: int = 4, eval_runs: int = 10,
                         retention_times: Optional[Sequence[int]] = None,
                         logger: Optional[RunLogger] = None, amp_enabled: bool = False,
-                        pin_memory_mode: Optional[str] = "auto"):
+                        pin_memory_mode: Optional[str] = "auto", gpu_resize: bool = False):
     """Sweep inference-time retention decay and report accuracy vs. time."""
     model = build_model(exp_cfg, num_classes=num_classes, device=device, pretrained=pretrained)
     ckpt = torch.load(checkpoint_path, map_location=device, weights_only=False)
@@ -894,6 +950,7 @@ def run_retention_sweep(exp_id: str, exp_cfg: TinyViTExperimentConfig, dataset: 
         data_root=data_root,
         num_workers=num_workers,
         pin_memory_mode=pin_memory_mode,
+        resize_on_gpu=gpu_resize,
     )
     criterion = nn.CrossEntropyLoss()
     times = list(retention_times) if retention_times is not None else [0, 1, 10, 100, 1000, 10000]
@@ -908,6 +965,7 @@ def run_retention_sweep(exp_id: str, exp_cfg: TinyViTExperimentConfig, dataset: 
         logger.log(f"  checkpoint={checkpoint_path}")
         logger.log(f"  checkpoint_epoch={ckpt.get('epoch')}, checkpoint_best_acc={ckpt.get('best_acc')}")
         logger.log(f"  amp={'on' if active_amp else 'off'}")
+        logger.log(f"  gpu_resize={'on' if gpu_resize else 'off'}")
         logger.log(f"  times={times}, mc_runs={eval_runs}")
 
     for time_s in times:
@@ -921,7 +979,8 @@ def run_retention_sweep(exp_id: str, exp_cfg: TinyViTExperimentConfig, dataset: 
         accuracies: List[float] = []
         for _ in range(eval_runs):
             test_loss, test_acc = evaluate(
-                model, testloader, criterion, device, exp_cfg, frontend, amp_enabled=active_amp
+                model, testloader, criterion, device, exp_cfg, frontend, amp_enabled=active_amp,
+                gpu_resize_size=224 if gpu_resize else None,
             )
             losses.append(test_loss)
             accuracies.append(test_acc)
@@ -1443,6 +1502,8 @@ def main():
     parser.add_argument("--device", type=str, default=None)
     parser.add_argument("--data-root", type=str, default="./data")
     parser.add_argument("--num-workers", type=int, default=4)
+    parser.add_argument("--seed", type=int, default=None,
+                        help="Seed Python/NumPy/Torch for auditable replication runs")
     parser.add_argument("--save-dir", type=str, default="checkpoints")
     parser.add_argument("--checkpoint", type=str, default=None)
     parser.add_argument("--checkpoint-dir", type=str, default=None)
@@ -1465,12 +1526,16 @@ def main():
                         help="Enable AMP mixed precision on CUDA. Omit to preserve previous full-precision behavior.")
     parser.add_argument("--pin-memory", choices=["auto", "on", "off"], default="auto",
                         help="DataLoader pin-memory mode. Use 'off' when CUDA pinning causes OOM in high-throughput runs.")
+    parser.add_argument("--gpu-resize", action="store_true",
+                        help="Load native CIFAR tensors and resize to 224x224 on GPU instead of PIL/CPU.")
+    parser.add_argument("--early-stop-patience", type=int, default=None,
+                        help="Stop training after this many epochs without test_acc improvement.")
     parser.add_argument("--resume-existing", action="store_true",
                         help="Resume training from *_last.pt if present, otherwise fall back to *_best.pt")
     parser.add_argument("--warm-start-from", type=str, default=None,
                         help="Load only model weights from the given checkpoint path; reset epoch/optimizer/scheduler/history")
     parser.add_argument("--compile", action="store_true",
-                        help="Enable torch.compile(model) for ~15-30% training speedup (PyTorch 2.x+)")
+                        help="Enable torch.compile(model) for ~15-30%% training speedup (PyTorch 2.x+)")
     parser.add_argument("--report-path", type=str, default=DEFAULT_REPORT_PATH)
     parser.add_argument("--log-path", type=str, default=DEFAULT_LOG_PATH)
     parser.add_argument("--results-json-path", type=str, default=DEFAULT_RESULTS_JSON_PATH)
@@ -1481,6 +1546,9 @@ def main():
     # Default-enable TF32 on Ampere/Ada GPUs for ~2× matmul speedup with negligible accuracy loss
     if torch.cuda.is_available() and torch.cuda.get_device_capability()[0] >= 8:
         torch.set_float32_matmul_precision('high')
+
+    if args.seed is not None:
+        set_seed(args.seed)
 
     device = args.device or ("cuda" if torch.cuda.is_available() else "cpu")
     num_classes = get_num_classes(args.dataset, args.num_classes)
@@ -1494,6 +1562,7 @@ def main():
             cfg.lr = args.lr_override
         if args.noise_mode is not None:
             cfg.noise_mode = args.noise_mode
+        cfg.seed = args.seed
     experiment_ids = resolve_experiment_ids(args.experiment, args.experiments, configs)
     if args.mode == "dry-run" and len(experiment_ids) != 1:
         raise ValueError("dry-run mode supports a single experiment id; use --experiment or pass one value to --experiments")
@@ -1503,7 +1572,10 @@ def main():
         logger.log(f"Device: {device}")
         logger.log(f"Mode: {args.mode}")
         logger.log(f"Experiments: {experiment_ids}")
+        logger.log(f"Seed: {args.seed}")
         logger.log(f"AMP requested: {args.amp}, active: {amp_enabled_for_device(args.amp, device)}")
+        logger.log(f"GPU resize: {args.gpu_resize}")
+        logger.log(f"Early-stop patience: {args.early_stop_patience if args.early_stop_patience is not None else 'off'}")
 
         if args.mode == "dry-run":
             exp_id = experiment_ids[0]
@@ -1541,9 +1613,12 @@ def main():
                     amp_enabled=args.amp,
                     compile_model=args.compile,
                     pin_memory_mode=args.pin_memory,
+                    gpu_resize=args.gpu_resize,
+                    early_stop_patience=args.early_stop_patience,
                 )
                 row = build_result_row_base("train", exp_id, exp_cfg, args.dataset, num_classes)
                 row.update({
+                    "seed": args.seed,
                     "best_test_acc": result["best_test_acc"],
                     "best_epoch": result["best_epoch"],
                     "final_train_loss": history_last(history, "train_loss"),
@@ -1592,6 +1667,7 @@ def main():
                     logger=logger,
                     amp_enabled=args.amp,
                     pin_memory_mode=args.pin_memory,
+                    gpu_resize=args.gpu_resize,
                 )
                 retention_rows.extend(rows)
                 if retention_metadata is None:
@@ -1626,6 +1702,7 @@ def main():
                 logger=logger,
                 amp_enabled=args.amp,
                 pin_memory_mode=args.pin_memory,
+                gpu_resize=args.gpu_resize,
             )
             row = build_result_row_base("eval", exp_id, exp_cfg, args.dataset, num_classes)
             row.update(summary)

@@ -34,9 +34,12 @@
 
 外围读出电路的能效约束通过一阶解析模型估算。
 在 $8$~bit ADC、$100$ 个阵列、$1000$ 次转换的基准假设下，
-系统总能量约为 $65$~pJ，对应相对 FP32 的加速比约为 $15.4\times$
-（见 \texttt{energy\_sensitivity\_analysis.json}）。
-该估算仅为数量级参考，实际部署需根据具体 CMOS 工艺节点重新标定。
+系统总能量约为 $23.9$~$\mu$J（FP32 数字基线约 $273.94$~$\mu$J），
+对应相对 FP32 的加速比约为 $11.45\times$，
+相对假设 INT8 的加速比约为 $2.86\times$
+（见 \texttt{energy\_scale\_recovery\_sensitivity.json}）。
+该估算为一阶解析假设，非流片测量值；
+实际部署需根据具体 CMOS 工艺节点重新标定。
 
 \subsection{功耗约束与刷新策略}
 
@@ -139,11 +142,11 @@ Ensemble HAT 通过每轮epoch重采样 D2D 失配图，
     \item \textbf{Canonical 均匀噪声}（$\sigma_{\mathrm{D2D}}=10\%$，i.i.d.）：
     $86.37\pm1.54\%$
     （见 \texttt{fresh\_instance\_eval.json}）。
-    \item \textbf{中度空间相关 D2D}（$\rho=0.3$，可分 AR(1) 模型）：
+    \item \textbf{中度空间相关 D2D}（$\rho=0.3$，可分 AR(1) 模型，zone 3A 免疫协议，NL=1.0，AMP 关闭）：
     $84.57\pm2.39\%$
     （见 \texttt{fresh\_instance\_eval\_v4\_ensemble\_correlated\_d2d.json}）。
     相对 i.i.d.~基线仅下降 $1.76$~pp，排序保持。
-    \item \textbf{强空间相关 D2D}（$\rho=0.5$）：
+    \item \textbf{强空间相关 D2D}（$\rho=0.5$，zone 3A 免疫协议）：
     $82.12\pm3.95\%$
     （同前）。
     相对基线下降 $4.20$~pp，但最差实例仍为 $73.7\%$，远离随机水平。
@@ -176,46 +179,41 @@ Ensemble HAT 的精度优势不依赖于 $10\%$ D2D 的特定假设：
 \section{噪声--非线性权衡}
 \label{sec:noise-nl-tradeoff}
 
-\subsection{严重写入非线性的结构性极限}
+\subsection{严重非线性写入的恢复带}
 
-写入非线性（$NL$）是第二道硬边界。
-在 $NL=2.0$、canonical 均匀噪声下，
-标准 HAT 的 $10$ 次评估均值仅 $27.72\pm0.82\%$
-（见 \texttt{nl\_sweep\_consolidated\_20260417.json}），
-已处于不可商用区间。
+写入非线性（$NL$）是第二道硬边界，但修订梯度缩放配方后，其影响呈\emph{系统性退化}而非\emph{结构性崩塌}。
+在 $NL=2.0$、canonical 均匀噪声下，M系列6次训练（Standard/Ensemble$\times$Uniform/Proportional$\times$2种子）的 fresh-instance 结果如下（见 \texttt{nl\_postfix\_recovery\_band.json}）：
 
-为定位瓶颈，执行了三组线性化消融：
 \begin{itemize}
-    \item \textbf{MLP-only 线性化}：
-    源域最佳精度 $87.79\%$，最终 $86.22\%$
-    （见 \texttt{v4\_nl2\_mlp\_linear\_comp\_train\_results\_gpt.json}）。
-    这说明 MLP 路径是 $NL=2.0$ 下最主要的可恢复瓶颈。
-    \item \textbf{全模拟层线性化}：
-    源域最佳 $87.49\%$，最终 $84.81\%$
-    （见 \texttt{v4\_nl2\_all\_linear\_comp\_train\_results\_gpt.json}）。
-    与 MLP-only 基本持平，表明注意力路径的线性化收益有限。
-    \item \textbf{联合 MLP 线性化 + Ensemble HAT}：
-    源域 $91.36\%$，但 fresh-instance 评估仅 $30.53\pm7.07\%$
-    （见 \texttt{joint\_mlp\_linear\_ensemble\_hat\_full\_fresh.json}）。
+    \item \textbf{Standard HAT}（固定掩码，均匀噪声，M1/M5）：
+    均值 $\mathbf{81.2\%}$，跨实例标准差 $<2$~pp；
+    \item \textbf{Ensemble HAT}（均匀噪声，M2/M6）：
+    均值 $\mathbf{80.7\%}$，跨实例标准差 $<2$~pp；
+    \item \textbf{Ensemble HAT}（比例噪声，M3/M4）：
+    均值 $\mathbf{80.7\%}$，跨实例标准差 $<2$~pp。
 \end{itemize}
 
-三组独立缓解策略在 fresh-instance 上收敛于同一约 $30\%$ 的天花板，
-说明严重写入非线性在注意力通路中引入了\emph{训练协议无法逾越的泛化壁垒}。
-该壁垒存在于一阶行为代理框架内；
-若实际有机写入动力学偏离 $(G_{\max}-G)^{NL-1}$ 近似，
-需以实测数据重新标定。
+三组配置收敛至同一 $\sim$$80$--$82\%$ 带，差距 $<1$~pp，表明 $NL=2.0$ 下 severe NL 已成为\emph{绑定约束}，训练协议优化收益饱和。
 
-\subsection{从 $NL=1.0$ 到 $NL=2.0$ 的非线性跃迁}
+\textbf{ADC-on 与 ADC-off 对比}：
+8-bit ADC 开启仅比理想读出低 $\sim$$0.10$~pp（zone 3C），说明读出量化不是主导因素。
+
+\textbf{6-bit 点检}：
+6-bit ADC 点检显示 $-2.8$~pp 悬崖（zone 3C），再次确认 6-bit 为最小可行外围。
+
+\textbf{残余差距}：
+相对 $NL=1.0$ 基线（$86.37\%$），$NL=2.0$ 的系统性退化约 $5.7$~pp。
+该差距源于状态依赖的 LTP/LTD 不对称缩放重塑了优化景观，使注意力通路的特征几何对 D2D 实现的变化更加敏感。
+然而，与先前基于未修订梯度缩放配方报告的 $\sim$$30\%$ 不同，当前修订配方下的 $\sim$$80$--$82\%$ 表明瓶颈是\emph{可量化的代理梯度近似误差}，而非不可逾越的结构壁垒。
+
+\subsection{从 $NL=1.0$ 到 $NL=2.0$ 的系统性退化}
 
 $NL=1.0$ 时 Ensemble HAT fresh-instance 精度为 $86.37\%$，
-$NL=2.0$ 时降至约 $30\%$（联合缓解）或 $27.7\%$（无缓解）。
-二者之间不存在线性插值关系：
-若假设线性，$NL=1.5$ 的预测值约为 $59\%$，
-但无直接实验支持。
-梯度缩放替代模型在 $NL$ 增大时逐渐病态化，
-且第~\ref{chap:failure-mode-atlas}~章记录的双注意力崩塌暗示\emph{分岔}而非渐变。
-保守边界为：\textbf{任何 $NL \ge 2.0$ 均处于 fresh-instance ViT 部署的崩塌区}，
-实际阈值可能低至 $NL \approx 1.5$--$1.7$。
+$NL=2.0$ 时降至约 $80.7\%$（Ensemble HAT，均匀噪声）。
+退化幅度约 $5.7$~pp，呈单调趋势。
+梯度缩放替代模型在 $NL$ 增大时产生状态依赖的 LTP/LTD 不对称缩放，
+该不对称性重塑了优化景观，但并未导致灾难性崩塌。
+保守边界为：\textbf{$NL=2.0$ 处于可用但次优区}，$NL \ge 2.5$ 的实验数据尚缺，不建议外推。
 
 
 \section{跨器件零样本迁移}
@@ -302,14 +300,14 @@ ADC 位宽 & $\le 5$ bit（未标定） & $6$--$8$ bit（已标定） & $\ge 8$ 
 动态重校准 & 无 & 有（间歇式） & 有（片上） \\
 \midrule
 \textbf{ViT 部署建议} & \textcolor{red}{不通过} & \textcolor{green}{通过} + Ensemble HAT & \textcolor{green}{通过} + Ensemble HAT \\
-\textbf{预期精度} & $<32\%$（崩塌） & $84$--$89\%$ & $88$--$90\%$ \\
+\textbf{预期精度} & $<15\%$（ADC $<$ 6-bit 悬崖主导） & $84$--$89\%$ & $88$--$90\%$ \\
 \textbf{首要投资方向} & 外围读出 & 前端补偿 + 刷新策略 & 良率规划 \\
 \bottomrule
 \end{tabular}
 \end{table}
 
 \textbf{研究级}（表~\ref{tab:maturity-matrix}）不应部署 ViT：
-亚 5-bit ADC 产生近随机精度，严重 $NL$ 使 fresh-instance 天花板低于 $32\%$。
+亚 5-bit ADC 产生近随机精度（$\sim$$10$--$15\%$），这是不可逾越的悬崖。
 建议将该等级阵列用作\emph{训练诊断平台}：
 以 Ensemble HAT 训练检查点，评估源域与 fresh-instance 之间的精度鸿沟，
 用该鸿沟指导工艺改进。
@@ -328,10 +326,10 @@ canonical $10\%$ D2D 给出 $86.37\pm1.54\%$，均处于商用可行区间。
     低于 5 bit 时所有训练协议均失效。
     从 5 bit 提升至 6 bit 是投资回报率最高的单点干预。
     
-    \item \textbf{写入线性度 $NL < 1.5$（强非协商）}。
-    $NL=2.0$ 时即使 MLP 线性化 + Ensemble HAT 亦仅 $30.5\%$，
-    低于多数分类部署阈值。
-    若工艺无法将 $NL$ 压至 $1.5$ 以下，应转向更简单的 CNN 架构或修复工艺。
+    \item \textbf{写入线性度 $NL < 1.5$（可协商，影响均值）}。
+    $NL=2.0$ 时 fresh-instance 精度约 $80$--$82\%$（修订配方），
+    低于 $NL=1.0$ 基线约 $5.7$~pp，但仍处于可用区间。
+    若工艺无法将 $NL$ 压至 $1.5$ 以下，可通过设备线性化或高阶梯度修正进一步缩小差距。
     
     \item \textbf{训练协议 = Ensemble HAT（强非协商）}。
     标准 HAT 在所有测试条件下均 deterministic 崩塌至 $10\%$，
@@ -405,8 +403,8 @@ canonical $10\%$ D2D 给出 $86.37\pm1.54\%$，均处于商用可行区间。
     越过悬崖后 D2D 主导剩余方差（$S_{\mathrm{D2D}}=0.922$）。
     \item D2D 失配包络显示 Ensemble HAT 在 $10\%$ i.i.d.、$\rho=0.5$ 相关、OPECT $3\%$ 代理下分别保持 $86.37\%$、$82.12\%$、$88.53\%$，
     而标准 HAT 全部崩塌至 $10\%$。
-    \item 噪声--非线性权衡揭示 $NL=2.0$ 的\textbf{结构性极限}：
-    MLP-only 线性化可在源域恢复至 $87.79\%$，但 fresh-instance 天花板仅约 $30$--$32\%$。
+    \item 噪声--非线性权衡揭示 $NL=2.0$ 下的\textbf{恢复带}：
+    修订配方后 fresh-instance 精度达 $80$--$82\%$（Standard HAT $81.2\%$，Ensemble HAT $80.7\%$），残余差距至 $NL=1.0$ 基线约 $5.7$~pp。
     \item 跨器件零样本迁移中，OPECT 代理达 $88.53\%$，Doctor OECT 实测器件达 $89.8\%$，
     CrossSim 交叉验证达 $81.63\%$。
     \item 部署建议将 ADC $\ge$ 6 bit、$NL < 1.5$、Ensemble HAT 列为非协商项，

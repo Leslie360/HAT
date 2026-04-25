@@ -1,3 +1,4 @@
+
 % Thesis Chapter 6: Physical-Realism Extensions
 % Scope: extensions deferred in the NC manuscript, reopened as thesis-level
 % speculative/experimental chapters.  Empirical results that exist are presented
@@ -21,7 +22,7 @@ The manuscript results are intentionally anchored to a first-order behavioral mo
 This chapter re-opens every item on that deferred list.  Its purpose is not to claim that all extensions have been solved; rather, it is to show that the thesis framework is 
 \emph{extensible}---that each deferred physics layer can be posed as a well-defined experimental protocol, that the existing results provide baselines against which to judge new physics, and that the simulator's profile-driven interface (Chapter~\ref{chap:framework}) is the natural entry point for richer device models.
 
-For reference, the four empirical baselines against which the extensions in this chapter are judged are: (i)~Ensemble HAT preserves $86.37\pm1.54\,\%$ fresh-instance accuracy under canonical uniform noise; (ii)~the canonical V4 fixed-mask checkpoint reaches $87.95\pm0.27\,\%$ source-domain accuracy but collapses to $10.00\,\%$ on fresh instances; (iii)~global severe write nonlinearity ($NL=2.0$) drives the unmitigated baseline to $27.72\pm0.82\,\%$; and (iv)~MLP-only linearization rescues source-domain accuracy to $87.79\,\%$ yet caps at $32.12\pm7.72\,\%$ on fresh instances.
+For reference, the four empirical baselines against which the extensions in this chapter are judged are: (i)~Ensemble HAT preserves $86.37\pm1.54\,\%$ fresh-instance accuracy under canonical uniform noise; (ii)~the canonical V4 fixed-mask checkpoint reaches $87.95\pm0.27\,\%$ source-domain accuracy but collapses to $10.00\,\%$ on fresh instances; (iii)~global severe write nonlinearity ($NL=2.0$) with the revised gradient-scaling recipe recovers to the $\sim$80--82\,\% band across Standard, Ensemble, and proportional-noise training routes; and (iv)~the residual gap between the $NL=2.0$ band ($\sim$80.7\,\%) and the $NL=1.0$ baseline ($86.37\,\%$) is approximately $5.7$~pp, a joint effect of nonlinear write dynamics and fresh-instance transfer.
 
 The chapter is organized around five physical-realism axes:
 \begin{enumerate}
@@ -383,7 +384,7 @@ Chapter~\ref{chap:failure-mode-atlas} catalogued five failure modes under the ca
 \begin{itemize}[leftmargin=1.4em]
     \item Hardware-instance overfitting (the $10.00\,\%$ collapse) is \emph{mitigated} by correlated D2D: the degradation is bounded rather than catastrophic.
     \item The dual-attention nonlinear-write collapse is \emph{unchanged} by the extensions in this chapter; it is a surrogate-fidelity problem, not a statistics problem.
-    \item The MLP-only diagnostic bound ($32.12\pm7.72\,\%$ fresh-instance ceiling) and the all-linear bound ($87.49\,\%$ best / $84.81\,\%$ final, $32.60\pm9.18\,\%$ fresh-instance) could both be \emph{worsened} by heavy-tailed mismatch or IR drop, because both extensions increase the variance of the effective weights beyond the Gaussian baseline that produced the $32\,\%$ ceiling.
+    \item The severe-NL recovery band ($\sim$80--82\,\%$ fresh-instance mean across all M-series routes) could be \emph{worsened} by heavy-tailed mismatch or IR drop, because both extensions increase the variance of the effective weights beyond the Gaussian baseline that produced the current band.
     \item The retention plateau ($79.13$--$79.51\,\%$) is \emph{downward-shifted} by temperature acceleration and long-horizon extrapolation.
 \end{itemize}
 

@@ -1,3 +1,5 @@
+> **⚠️ SUPERSEDED (2026-04-23):** This memo was written under the Round Q assumption that Paper-2 would be a continuation of the ViT Bimodal Basin theory (Route R-A). Claude's `CLAUDE_WORK2_DIRECTION_LOCK_20260423.md` has since explicitly re-routed Paper-2 to **LLM KV-Cache Mapping (Direction C)**. This document is retained for archival purposes but its conclusions are officially VOID. See G-HH21 through G-HH25 for the correct Paper-2 theory.
+
 # G-HH10: Paper-2 Route Final Selection
 **Date:** 2026-04-25
 **Scope:** Phase γ

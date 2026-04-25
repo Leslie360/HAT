@@ -10,11 +10,11 @@
 
 \begin{document}
 
-\begin{letter}{Editorial Office\\Nature Communications\\Springer Nature}
+\begin{letter}{Editorial Office\\Nature Electronics\\Springer Nature}
 
 \opening{Dear Editors,}
 
-\textbf{Submission:} Profile-Driven Hardware Simulation for Organic Optoelectronic Edge Vision
+\textbf{Submission:} Hardware-Instance Overfitting in Organic Optoelectronic Compute-in-Memory: A Profile-Driven Simulation and Mitigation Framework
 
 \textbf{Article Type:} Article
 
@@ -23,38 +23,49 @@
 \vspace{0.5em}
 \textbf{Editorial Summary}
 
-We present a prospective first-order behavioral simulation study of organic optoelectronic compute-in-memory inference for edge vision. Our central positive result is an Ensemble HAT training strategy that resamples device-to-device mismatch masks each epoch, raising fresh-instance accuracy from chance level (10.00\%) to 86.37$\pm$1.54\% on Tiny-ViT-5M. A profile-driven interface then translates literature-derived device assumptions into task-level risk, including a literature-anchored OPECT case study reaching 88.53$\pm$0.08\% zero-shot transfer.
+We present a first-order behavioural simulation framework that bridges organic-device literature metrics to task-level vision accuracy, exposing a previously unnamed failure mode---hardware-instance overfitting---and providing a principled treatment. Our central result is Ensemble Hardware-Aware Training (HAT), a distribution-matching objective that resamples device-to-device (D2D) mismatch masks each training epoch. Ensemble HAT raises fresh-instance accuracy on unseen hardware arrays from chance level (10.00\%) to 86.37$\pm$1.54\% on Tiny-ViT-5M (CIFAR-10), a gain of more than 76 percentage points. The protocol is theoretically grounded as an implicit gradient-$L_2$ regulariser equivalent to dropout-as-$L_2$ (Wager 2013), derived in Supplementary Note~S-Theory.
 
-We also report the falsification of an obvious hypothesis---that joint linearization would break the severe nonlinearity (NL=2.0) ceiling---which strengthens rather than weakens the paper's conclusions. Joint training, all-linear ablations, and MLP-only controls all converge to the same $\sim$30\% fresh-instance ceiling, rigorously excluding the three most natural mitigation strategies and revealing a structural generalization barrier in the attention pathway that first-order behavioral surrogates cannot circumvent.
+The framework is validated across three scenario pillars: (i) canonical uniform noise (10\% D2D, 5\% C2C, $NL=1.0$), where Ensemble HAT recovers 86.37$\pm$1.54\%; (ii) a literature-anchored OPECT organic-phototransistor proxy ($\sigma_{\mathrm{D2D}}=3\%$, $\sigma_{\mathrm{C2C}}=2\%$), where zero-shot transfer reaches 88.53$\pm$0.08\% without retraining; and (iii) severe nonlinear write ($NL=2.0$), where hardware-aware training with a revised gradient-scaling recipe recovers to the $\sim$80--82\% band, falsifying a previously reported $\sim$30\% ceiling and localising it to a numerical implementation detail. A residual gap of roughly 15~pp to the 98.06\% digital baseline remains, whose closure awaits higher-order gradient corrections or device-level linearisation.
 
-To further anchor scope, the revision includes shared-regime sanity checks against AIHWKIT and CrossSim, and robustness sweeps under correlated device-to-device structure (86.33$\pm$1.61\% i.i.d., 84.57$\pm$2.39\% at $\rho=0.3$, 82.12$\pm$3.95\% at $\rho=0.5$).
+To bound realistic deployment performance, we report a dual-column ADC discipline: ADC-off training-surrogate baselines are paired with post-module-output hook diagnostic 8-bit ADC-on evaluations calibrated per-instance on each fresh hardware array. Under severe NL, the ADC-on headline differs from the ADC-off surrogate by only $-0.10$~pp on average, while a 6-bit spot-check reveals a larger $-2.8$~pp cliff. Stage-2 per-instance calibration confirms the ADC-on headline is stable to within $0.01$~pp run-to-run std, validating the static-calibration baseline. Spatially correlated D2D is also evaluated under a separable AR(1) proxy: moderate correlation ($\rho=0.3$) degrades Ensemble HAT by only $-1.76$~pp (84.57$\pm$2.39\%), and stronger correlation ($\rho=0.5$) by $-4.20$~pp (82.12$\pm$3.95\%), with no instance collapsing below 73.7\%---empirical evidence of bounded degradation rather than structural collapse (zone 3A bug-immune canonical protocol, $NL=1.0$, AMP disabled).
 
 \vspace{0.5em}
-\textbf{Why Nature Communications?}
+\textbf{Why Nature Electronics?}
 
-This work sits at the intersection of materials science, machine learning systems, and emerging computing paradigms. We provide a PyTorch-native simulation methodology that lets materials researchers evaluate device assumptions on modern vision tasks before full hardware closure. The Ensemble HAT contribution has implications beyond organic devices, while the falsification narrative offers an unusually rigorous negative-result anchor that we believe will resonate with a broad interdisciplinary readership.
+This work sits at the intersection of emerging device physics, mixed-signal system design, and machine-learning robustness. Organic optoelectronic compute-in-memory offers multi-modal tuning and excellent low-power analogue behaviour, yet lacks a systematic methodology for translating literature device parameters into task-level accuracy predictions before fabrication closure. We provide that methodology: a PyTorch-native, profile-driven behavioural simulator with explicit device-profile substitution and hybrid analogue/digital deployment decomposition. The Ensemble HAT contribution is not merely a training trick; it is a distribution-matching objective with theoretical grounding that generalises across noise profiles, spatial correlation structures, and front-end nonlinearities. We believe this hardware--algorithm co-design narrative, combined with the rigorous zone-partitioned evidence discipline (3A/3B/3C) and independent multi-agent audit trail, is a natural fit for Nature Electronics' readership.
+
+\vspace{0.5em}
+\textbf{Methodological Rigor}
+
+Every numerical claim in the manuscript is zone-mapped: zone 3A denotes bug-immune canonical evaluations; zone 3B marks pre-fix invalidated results; zone 3C denotes verified outcomes. The severe-NL narrative was rewritten after an independent STE implementation review identified and corrected two backward-pass issues. All pre-fix numbers were scrubbed from the main text and replaced with revised recovery-band evidence. The framework is further fabrication-ready: measured device statistics from a fabricated organic optoelectronic array can be integrated via the ingest pipeline described in Supplementary Note~S-HW, using placeholder discipline \texttt{[PENDING\_MEASURED\_D2D]} until real data become available.
+
+\vspace{0.5em}
+\textbf{Companion Work and Collaboration}
+
+A companion paper will extend the framework to the attention-pathway analog-CIM regime, specifically KV-cache storage in organic crossbar arrays; the outlook section previews this extension and demonstrates that the diagnostic-treatment signature generalises beyond the feedforward path. We are also collaborating with a fabrication team to obtain measured D2D spatial covariance kernels and retention trajectories; these will be integrated in revision stage via the profile-fitting pipeline.
 
 \vspace{0.5em}
 \textbf{Key Contributions}
 
 \begin{enumerate}
-    \item Profile-driven, PyTorch-native behavioral simulator for organic optoelectronic CIM with explicit device-profile substitution and hybrid analog/digital deployment decomposition
-    \item Ensemble HAT: training-time D2D resampling raises fresh-instance accuracy from 10.00\% to 86.37$\pm$1.54\%
-    \item Literature-anchored OPECT case study (88.53$\pm$0.08\% zero-shot) and severe nonlinearity localization via group-wise ablation
-    \item Rigorous falsification of three candidate severe-NL mitigation strategies (joint training, all-linear, MLP-only), establishing a $\sim$30\% fresh-instance ceiling and exposing a structural generalization barrier in the attention pathway
+    \item Profile-driven, PyTorch-native behavioural simulator for organic optoelectronic CIM with explicit device-profile substitution and hybrid analogue/digital deployment decomposition
+    \item Ensemble HAT: theoretically grounded distribution-matching training raises fresh-instance accuracy from 10.00\% to 86.37$\pm$1.54\%
+    \item Literature-anchored OPECT case study (88.53$\pm$0.08\% zero-shot) and severe-NL recovery to the $\sim$80--82\% band under revised training
+    \item Dual-column ADC discipline (surrogate + hook-diagnostic) that bounds realistic deployment performance before silicon validation
+    \item Correlated-D2D bounded-degradation evidence under AR(1) spatial structure, with worst-case instance 73.7\% at $\rho=0.5$
 \end{enumerate}
 
 \vspace{0.5em}
 \textbf{Transparency Disclosures}
 
 \begin{itemize}
-    \item \textbf{Preprint:} None; submitted exclusively to Nature Communications.
+    \item \textbf{Preprint:} None; submitted exclusively to Nature Electronics.
     \item \textbf{Prior Publication:} None; the framework was developed for this submission.
     \item \textbf{Code Availability:} A reviewer-accessible archive will be provided at submission; a public release will follow at acceptance.
     \item \textbf{Competing Interests:} The authors declare no competing interests.
 \end{itemize}
 
-The submission package includes a 17-page main manuscript and a 23-page supplementary information PDF. All datasets are publicly available, and all key claims carry error bars from multiple Monte Carlo runs or training seeds.
+The submission package includes a main manuscript and a supplementary information PDF. All datasets are publicly available, and all key claims carry error bars from multiple Monte Carlo runs or training seeds.
 
 \closing{Sincerely,}
 

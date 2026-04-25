@@ -34,13 +34,20 @@ from analog_layers import (
 )
 from device_profile_utils import DeviceProfile
 from amp_utils import amp_enabled_for_device, autocast_context
-from train_convnext import (
-    DATASET_STATS as CONVNEXT_DATASET_STATS,
-    build_model as build_convnext_model,
-    evaluate as evaluate_convnext,
-    get_dataloaders as get_convnext_dataloaders,
-    get_experiment_configs,
-)
+try:
+    from train_convnext import (
+        DATASET_STATS as CONVNEXT_DATASET_STATS,
+        build_model as build_convnext_model,
+        evaluate as evaluate_convnext,
+        get_dataloaders as get_convnext_dataloaders,
+        get_experiment_configs,
+    )
+except ImportError:
+    CONVNEXT_DATASET_STATS = {}
+    build_convnext_model = None
+    evaluate_convnext = None
+    get_convnext_dataloaders = None
+    get_experiment_configs = None
 try:
     from train_tinyvit import (
         build_model as build_tinyvit_model,
@@ -346,6 +353,7 @@ def _resolve_tinyvit_bundle(experiment: str, dataset: str, device: str,
         batch_size=exp_cfg.batch_size,
         num_workers=num_workers,
         data_root=data_root,
+        pin_memory=False,
     )
     frontend = None
     if exp_cfg.use_physical_frontend:
@@ -377,6 +385,8 @@ def _resolve_convnext_bundle(experiment: str, dataset: str, device: str,
                              checkpoint_path: Optional[str], checkpoint_dir: str,
                              data_root: str, num_workers: int,
                              batch_size: Optional[int], amp_enabled: bool) -> ModelBundle:
+    if get_experiment_configs is None:
+        raise ImportError("ConvNeXt evaluation requires train_convnext dependencies")
     configs = get_experiment_configs()
     if experiment not in configs:
         raise ValueError(f"Unknown ConvNeXt experiment: {experiment}")
@@ -527,7 +537,12 @@ def run_mc_eval(bundle: ModelBundle, eval_runs: int, logger=None, label: Optiona
     return summary
 
 
-def calibrate_adc_ranges(bundle: ModelBundle, max_batches: int = 1) -> Dict[str, dict]:
+def calibrate_adc_ranges(
+    bundle: ModelBundle,
+    max_batches: int = 1,
+    use_current_noise: bool = False,
+    disable_c2c: bool = False,
+) -> Dict[str, dict]:
     """Record per-layer analog output min/max over a few batches for ADC range setup."""
     ranges: Dict[str, dict] = {}
     hooks = []
@@ -547,8 +562,13 @@ def calibrate_adc_ranges(bundle: ModelBundle, max_batches: int = 1) -> Dict[str,
         for name, module in iter_analog_modules(bundle.model):
             hooks.append(module.register_forward_hook(make_hook(name)))
         bundle.model.eval()
-        set_uniform_noise(bundle.model, sigma_c2c=0.0, sigma_d2d=0.0, noise_enabled=False)
-        set_uniform_retention(bundle.model, inference_time=0.0)
+        if use_current_noise:
+            if disable_c2c:
+                for _, module in iter_analog_modules(bundle.model):
+                    module.config.sigma_c2c = 0.0
+        else:
+            set_uniform_noise(bundle.model, sigma_c2c=0.0, sigma_d2d=0.0, noise_enabled=False)
+            set_uniform_retention(bundle.model, inference_time=0.0)
 
         with torch.no_grad():
             for batch_idx, (inputs, _targets) in enumerate(bundle.testloader):
@@ -573,7 +593,16 @@ def calibrate_adc_ranges(bundle: ModelBundle, max_batches: int = 1) -> Dict[str,
 
 
 class ADCQuantHookManager:
-    """Attach fixed ADC quantizers to analog layer outputs for inference-only sweeps."""
+    """Attach fixed ADC quantizers to analog layer outputs for inference-only sweeps.
+
+    Note: The hook is registered on the module's forward output. For
+    AnalogLinear this means the quantizer sees ``F.linear(..., bias)``,
+    i.e. the analog MAC current *plus* the digital bias term. In a
+    physically exact model the bias would be added after the ADC;
+    the current implementation quantizes the combined signal for
+    simplicity. This introduces a minor bias-discretization artifact
+    that should be noted when citing these numbers.
+    """
 
     def __init__(self, model: nn.Module, output_ranges: Dict[str, dict],
                  adc_bits: Optional[int], dnl_sigma: float = 0.5):

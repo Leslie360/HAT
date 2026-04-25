@@ -45,4 +45,5 @@ exec "$PYTHON_BIN" scripts/_gpt/eval_joint_fresh_instance.py \
     --device cuda \
     --data-root data \
     --num-workers 0 \
+    --json-out "$REPO_DIR/report_md/_gpt/json_gpt/cx_k4r_fresh_eval.json" \
     2>&1 | tee "$LOG"

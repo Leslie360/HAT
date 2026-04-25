@@ -7,138 +7,144 @@ OUT_DIR="${1:-$ROOT/outputs/remote_github_handoff_$STAMP}"
 PKG_DIR="$OUT_DIR/compute_vit_remote_handoff"
 MANIFEST="$PKG_DIR/HANDOFF_MANIFEST.txt"
 
+rm -rf "$PKG_DIR"
 mkdir -p "$PKG_DIR"
-: > "$MANIFEST"
 
-copy_path() {
+copy_top_level_files() {
+  find "$ROOT" -maxdepth 1 -type f \
+    \( -name '*.py' -o -name '*.sh' -o -name '*.md' -o -name '*.txt' -o -name '*.json' -o -name '*.csv' -o -name '*.yml' -o -name '*.yaml' \) \
+    ! -name '*.pdf' ! -name '*.pptx' ! -name '*.docx' ! -name '*.log' \
+    -print0 | while IFS= read -r -d '' f; do
+      cp -a "$f" "$PKG_DIR/"
+    done
+}
+
+copy_tree() {
   local rel="$1"
-  if [[ ! -e "$ROOT/$rel" ]]; then
-    echo "SKIP missing: $rel" >&2
-    return 0
-  fi
-  mkdir -p "$PKG_DIR/$(dirname "$rel")"
+  rm -rf "$PKG_DIR/$rel"
   cp -a "$ROOT/$rel" "$PKG_DIR/$rel"
-  printf '%s\n' "$rel" >> "$MANIFEST"
+  find "$PKG_DIR/$rel" -type d -name '__pycache__' -prune -exec rm -rf {} +
+  find "$PKG_DIR/$rel" -type f \( -name '*.pyc' -o -name '*.pyo' \) -delete
 }
 
-copy_many() {
-  local rel
-  for rel in "$@"; do
-    copy_path "$rel"
-  done
+copy_selected_report_payloads() {
+  rm -rf "$PKG_DIR/report_md"
+  mkdir -p "$PKG_DIR/report_md/_gpt/json_gpt" "$PKG_DIR/report_md/_gpt/csv_gpt"
+
+  find "$ROOT/report_md/_gpt" -maxdepth 1 -type f \
+    \( -name '*.md' -o -name '*.json' -o -name '*.csv' -o -name '*.txt' \) \
+    -print0 | while IFS= read -r -d '' f; do
+      cp -a "$f" "$PKG_DIR/report_md/_gpt/"
+    done
+
+  find "$ROOT/report_md/_gpt/json_gpt" -maxdepth 1 -type f -name '*.json' \
+    -print0 | while IFS= read -r -d '' f; do
+      cp -a "$f" "$PKG_DIR/report_md/_gpt/json_gpt/"
+    done
+
+  find "$ROOT/report_md/_gpt/csv_gpt" -maxdepth 1 -type f -name '*.csv' \
+    -print0 | while IFS= read -r -d '' f; do
+      cp -a "$f" "$PKG_DIR/report_md/_gpt/csv_gpt/"
+    done
 }
 
-# Root files
-copy_many \
-  "README.md" \
-  "LICENSE" \
-  "environment.yml" \
-  "requirements.txt" \
-  "requirements-optional.txt" \
-  "repo_bootstrap.py"
+copy_lightweight_paper_utils() {
+  rm -rf "$PKG_DIR/paper"
+  mkdir -p "$PKG_DIR/paper"
+  find "$ROOT/paper" -maxdepth 1 -type f -name '*.py' \
+    -print0 | while IFS= read -r -d '' f; do
+      cp -a "$f" "$PKG_DIR/paper/"
+    done
+}
 
-# Core code
-copy_many \
-  "analog_layers.py" \
-  "analog_layers_ensemble.py" \
-  "device_profile_utils.py" \
-  "inference_analysis_utils.py" \
-  "physical_noise_pipeline.py" \
-  "train_tinyvit.py" \
-  "train_tinyvit_ensemble.py" \
-  "train_convnext.py" \
-  "train_resnet18.py" \
-  "eval_measured_profile.py" \
-  "eval_imagenet_analog.py"
+copy_baseline_checkpoint() {
+  rm -rf "$PKG_DIR/checkpoints"
+  mkdir -p "$PKG_DIR/checkpoints/_ensemble"
+  cp -a "$ROOT/checkpoints/V4_hybrid_standard_noise_hat_best.pt" \
+    "$PKG_DIR/checkpoints/V4_hybrid_standard_noise_hat_best.pt"
+  cp -a "$ROOT/checkpoints/V4_hybrid_standard_noise_hat_best.pt" \
+    "$PKG_DIR/checkpoints/_ensemble/V4_hybrid_standard_noise_hat_best.pt"
+}
 
-# Remote handoff docs
-copy_many \
-  "docs/README.md" \
-  "docs/REMOTE_SERVER_GITHUB_HANDOFF.md" \
-  "report_md/_gpt/INDEX.md" \
-  "report_md/_gpt/AGENT_SYNC_gpt.md" \
-  "report_md/_gpt/GPU_REMOTE_EXPLORATION_BRIEF_20260421.md" \
-  "report_md/_gpt/GPU_EXTERNAL_TASKLIST_20260421.md" \
-  "report_md/_gpt/REMOTE_GITHUB_UPLOAD_MANIFEST_20260421.md"
+write_handoff_docs() {
+  mkdir -p "$PKG_DIR/docs"
 
-# Selected theory/context memos that help route-finding.
-copy_many \
-  "report_md/_gpt/GEMINI_STRUCTURAL_LIMIT_FORMAL_20260420.md" \
-  "report_md/_gpt/GEMINI_HIGHER_ORDER_NL_DESIGN_20260420.md" \
-  "report_md/_gpt/GEMINI_PATHWAY_DECOMPOSITION_20260420.md" \
-  "report_md/_gpt/GEMINI_FIRST_ORDER_LIMIT_20260420.md" \
-  "report_md/_gpt/GEMINI_REWRITE_DECISION_TREE_20260420.md"
-
-# Runtime scripts
-copy_many \
-  "scripts/_gpt/check_locked_numbers.py" \
-  "scripts/_gpt/run_tinyvit_groupwise_nl_comp.py" \
-  "scripts/_gpt/eval_joint_fresh_instance.py" \
-  "scripts/_gpt/eval_spatially_correlated_d2d.py" \
-  "scripts/_gpt/eval_heavy_tailed_d2d.py" \
-  "scripts/_gpt/retention_comparison_gpt.py" \
-  "scripts/run_public_smoke_test.sh"
-
-# Small prior JSONs only.
-copy_many \
-  "report_md/_gpt/json_gpt/qkv_only_linearization.json" \
-  "report_md/_gpt/json_gpt/full_attn_linearization.json" \
-  "report_md/_gpt/json_gpt/joint_mlp_linear_ensemble_hat_full_fresh.json" \
-  "report_md/_gpt/json_gpt/cx_j2_results.json" \
-  "report_md/_gpt/json_gpt/cx_j3_results.json" \
-  "report_md/_gpt/json_gpt/cx_j4_results.json" \
-  "report_md/_gpt/json_gpt/cx_j5_results.json" \
-  "report_md/_gpt/json_gpt/cx_j6_results.json" \
-  "report_md/_gpt/json_gpt/cx_j7_results.json" \
-  "report_md/_gpt/json_gpt/cx_j8_results.json"
-
-# Optional skeleton/thesis context
-copy_many \
-  "paper/paper2/skeleton_v0/README.md" \
-  "paper/paper2/skeleton_v0/01_intro.md" \
-  "paper/paper2/skeleton_v0/02_related.md" \
-  "paper/paper2/skeleton_v0/03_methods.md" \
-  "paper/paper2/skeleton_v0/04_experiments.md" \
-  "paper/thesis_cn/chapter_7_deployment.tex"
-
-cat > "$PKG_DIR/README_REMOTE_GITHUB.md" <<'EOF'
+  cat > "$PKG_DIR/README_REMOTE_GITHUB.md" <<'EOF'
 # Remote GitHub Mirror
 
-This package is a curated mirror for remote GPU exploration.
+This package is a broader execution-oriented mirror for remote GPU work.
 
 Read in this order:
-1. `docs/REMOTE_SERVER_GITHUB_HANDOFF.md`
-2. `report_md/_gpt/GPU_REMOTE_EXPLORATION_BRIEF_20260421.md`
-3. `report_md/_gpt/GPU_EXTERNAL_TASKLIST_20260421.md`
-4. `report_md/_gpt/INDEX.md`
+1. `docs/KEY_SOURCE_SYNC_20260422.md`
+2. `docs/REMOTE_SERVER_GITHUB_HANDOFF.md`
+3. `远端/INDEX.md`
+4. `report_md/_gpt/AGENT_SYNC_gpt.md`
 
-This mirror is not the full research repository. It intentionally excludes:
+This mirror is still curated. It intentionally excludes:
 - raw private data
 - bulky logs
-- most checkpoints
-- internal archives
-- manuscript rewrite targets frozen by Rule B
+- most checkpoint families
+- large manuscript binaries
 
-The remote side should return markdown summaries and short diff snippets, not large artifacts.
+Use it as the remote execution mirror, not as a full archival snapshot.
 EOF
 
-cat > "$PKG_DIR/PUSH_TO_GITHUB.md" <<'EOF'
+  cat > "$PKG_DIR/PUSH_TO_GITHUB.md" <<'EOF'
 # Push To GitHub
 
-Suggested workflow:
+SSH exact copy-paste block:
 
 ```bash
-cd compute_vit_remote_handoff
+cd /home/qiaosir/projects/compute_vit/outputs/remote_github_handoff_YYYYMMDD_HHMMSS/compute_vit_remote_handoff
 git init
-git branch -M remote-exploration
+git checkout -B remote-exploration
 git add .
 git commit -m "remote exploration handoff"
-git remote add origin https://github.com/Leslie360/HAT.git
+git remote remove origin 2>/dev/null || true
+git remote add origin git@github.com:Leslie360/HAT.git
 git push -u origin remote-exploration --force
 ```
-
-If you prefer not to touch the main repository history, create a separate temporary local clone and push this curated mirror there.
 EOF
+
+  cat > "$PKG_DIR/docs/KEY_SOURCE_SYNC_20260422.md" <<'EOF'
+# Key Source Sync 2026-04-22
+
+This remote branch now carries a broader local source mirror.
+
+Included:
+- top-level execution-relevant source/config files (`*.py`, `*.sh`, `*.md`, `*.txt`, `*.json`, `*.csv`, `*.yml`, `*.yaml`)
+- full `scripts/`
+- full `docs/`
+- full `device_profiles/`
+- full `远端/`
+- `report_md/_gpt/` top-level markdown/json/csv/txt plus `json_gpt/` and `csv_gpt/`
+- lightweight `paper/*.py`
+- one approved baseline checkpoint:
+  - `checkpoints/V4_hybrid_standard_noise_hat_best.pt`
+  - duplicate at `checkpoints/_ensemble/V4_hybrid_standard_noise_hat_best.pt`
+
+Excluded intentionally:
+- raw datasets
+- bulky logs
+- manuscript PDFs/PPTX/DOCX
+- large checkpoint families beyond the single baseline
+- `.git/`, caches, temp outputs
+
+Use this branch as the remote execution mirror. Do not assume the main local worktree is available.
+EOF
+}
+
+copy_top_level_files
+copy_tree "scripts"
+copy_tree "docs"
+copy_tree "device_profiles"
+copy_tree "远端"
+copy_selected_report_payloads
+copy_lightweight_paper_utils
+copy_baseline_checkpoint
+write_handoff_docs
+
+find "$PKG_DIR" -type f ! -path '*/.git/*' | sed "s#^$PKG_DIR/##" | sort > "$MANIFEST"
 
 echo "Created remote GitHub handoff directory:"
 echo "  $PKG_DIR"

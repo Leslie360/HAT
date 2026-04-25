@@ -293,7 +293,7 @@ def build_dataset_pair(dataset: str, data_root: str, transform_train, transform_
 
 def get_dataloaders(dataset: str = "cifar10", batch_size: int = 64, num_workers: int = 4,
                     data_root: str = "./data", data_fraction: float = 1.0,
-                    seed: Optional[int] = None):
+                    seed: Optional[int] = None, pin_memory: Optional[bool] = None):
     """Build train and test DataLoaders for the requested dataset."""
     stats = DATASET_STATS[dataset]
     transform_train = transforms.Compose([transforms.Resize((224, 224)), transforms.RandomHorizontalFlip(), transforms.ToTensor(), transforms.Normalize(stats["mean"], stats["std"])])
@@ -310,7 +310,7 @@ def get_dataloaders(dataset: str = "cifar10", batch_size: int = 64, num_workers:
     loader_kwargs = {
         "batch_size": batch_size,
         "num_workers": num_workers,
-        "pin_memory": torch.cuda.is_available(),
+        "pin_memory": torch.cuda.is_available() if pin_memory is None else pin_memory,
     }
     if num_workers > 0:
         loader_kwargs["persistent_workers"] = True

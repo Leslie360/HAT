@@ -2,7 +2,7 @@
 
 | Mode | Exp | Name | Dataset | Primary Metric | Checkpoint |
 |:-----|:----|:-----|:--------|:---------------|:-----------|
-| train | V4 | V4_hybrid_standard_noise_hat_k3_dgeff_0p05 | cifar10 | best_acc=91.52% @ epoch 72 | `/home/qiaosir/projects/compute_vit/checkpoints/_gpt/cx_k3_dgeff/k3_dgeff_0p05/V4_hybrid_standard_noise_hat_k3_dgeff_0p05_best.pt` |
+| train | V4 | V4_hybrid_standard_noise_hat | cifar10 | best_acc=91.10% @ epoch 95 | `checkpoints/_gpt/postfix_proportional/V4_hybrid_standard_noise_hat_best.pt` |
 
 ## Notes
 

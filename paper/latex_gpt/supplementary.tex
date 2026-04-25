@@ -771,7 +771,7 @@ In summary, the core conclusions regarding deployment risk ranking remain qualit
 
 \begin{table}[ht]
     \centering
-    \caption{\textbf{Group-wise nonlinearity ablation under global $NL=2.0$.} Each row reports the best and final test accuracy when the specified analog module group is protected at $NL=1.0$ while all other analog layers remain at $NL=2.0$. The baseline $NL=1.0$ row uses the canonical uniform-noise HAT configuration.}
+    \caption{\textbf{Group-wise nonlinearity ablation under global $NL=2.0$.} Each row reports the best and final test accuracy when the specified analog module group is protected at $NL=1.0$ while all other analog layers remain at $NL=2.0$. The baseline $NL=1.0$ row uses the canonical uniform-noise HAT configuration. $^\dagger$Zone~3B (pre-fix, invalidated); the revised gradient-scaling recipe recovers the unmitigated $NL=2.0$ baseline to the $\sim$80--82\% band. $^\ddagger$Pre-fix diagnostic only; these groupwise protected results were affected by the config-sharing bug and pre-fix STE semantics. They are retained solely as source-domain gradient-diagnostic evidence and must not be used to claim MLP-path localization under the revised recipe.}
     \label{tab:supp-nl-ablation}
     \small
     \setlength{\tabcolsep}{5pt}
@@ -780,21 +780,24 @@ In summary, the core conclusions regarding deployment risk ranking remain qualit
         Protected group & Best acc (\%) & Final acc (\%) & $\Delta$ vs $NL=2.0$ (pp) \\
         \midrule
         (a)~Baseline ($NL=1.0$ global) & $87.95\pm0.27$ & — & $+60.23$ \\
-        (b)~None ($NL=2.0$ global) & $27.72\pm0.82$ & $27.72\pm0.82$ & $0.00$ \\
-        (c)~MLP only (fc1, fc2) & $87.79$ & $86.22$ & $+60.07$ \\
-        (d)~QKV only (attn.qkv) & $18.72$ & $10.15$ & $-9.00$ \\
-        (e)~Attn proj only (attn.proj) & $18.86$ & $\sim$10.25 (stopped @ ep 54) & $-9.14$ \\
-        (f)~All linear ($NL=1.0$ all analog) & $87.49$ & $84.81$ & $+59.77$ \\
+        (b)~None ($NL=2.0$ global) & $27.72\pm0.82^\dagger$ & $27.72\pm0.82^\dagger$ & $0.00$ \\
+        (c)~MLP only (fc1, fc2) & $87.79^\ddagger$ & $86.22^\ddagger$ & $+60.07$ \\
+        (d)~QKV only (attn.qkv) & $18.72^\ddagger$ & $10.15^\ddagger$ & $-9.00$ \\
+        (e)~Attn proj only (attn.proj) & $18.86^\ddagger$ & $\sim$10.25 (stopped @ ep 54)$^\ddagger$ & $-9.14$ \\
+        (f)~All linear ($NL=1.0$ all analog) & $87.49^\ddagger$ & $84.81^\ddagger$ & $+59.77$ \\
         \bottomrule
     \end{tabular}
 \end{table}
 
-\textit{Interpretation.} The ablation shows that the MLP channel-mixing path is the dominant recoverable failure site under the present $NL=2.0$ surrogate: linearizing only the MLP layers recovers accuracy to within $0.16$~pp of the full-linear configuration. By contrast, both attention-side linearizations (QKV and projection) collapse structurally and degrade below even the unmitigated baseline, indicating that the attention nonlinearity is required for representational geometry under the present surrogate. However, the MLP-linearized checkpoint achieves only $32.12\pm7.72$\% fresh-instance transfer accuracy under the same 10-array protocol used for Ensemble HAT, versus $86.37\pm1.54$\% for the canonical Ensemble HAT result, confirming that this ablation is a training-diagnostic tool rather than a deployment-grade mitigation. The all-linear upper-bound control behaves similarly under fresh-instance transfer, reaching only $32.60\pm9.18$\% despite its strong in-domain recovery ($87.49\%$ best, $84.81\%$ final), so linearizing every analog block still does not restore deployment-grade transfer. These results are therefore presented as a supplementary ablation rather than a main-text contribution because the dual attention-side failure limits the generality of any single-path mitigation claim.
+\textit{Interpretation.} The ablation shows that the MLP channel-mixing path is the dominant recoverable failure site under the \emph{pre-fix} $NL=2.0$ surrogate: linearizing only the MLP layers recovers accuracy to within $0.16$~pp of the full-linear configuration. By contrast, both attention-side linearizations (QKV and projection) collapse structurally and degrade below even the unmitigated baseline, indicating that the attention nonlinearity is required for representational geometry under the pre-fix surrogate. \textbf{All groupwise protected rows (c)--(f) are pre-fix diagnostic only.} They were affected by the config-sharing bug and pre-fix STE semantics and are retained here solely as historical source-domain gradient-diagnostic evidence. Under the revised gradient-scaling recipe, fresh-instance transfer recovers to the $\sim$80--82\% band regardless of which path is protected, so the pre-fix MLP-path localization claim does \emph{not} carry over to the revised recipe. These results are therefore presented as a supplementary historical ablation rather than a main-text contribution.
 
 \paragraph{Supplementary Note~S1. Cross-framework subset-evaluation protocol.}
 Because a single noisy evaluation on the full CIFAR-10 test set would extrapolate to roughly 15~h per condition for CrossSim (5,361~s per 1,000-image run) versus $\sim$1~s per 1,000-image run for the native framework, the shared-regime sanity check was performed on a deterministic 1,000-image slice of the canonical CIFAR-10 test ordering (the first 1,000 images; no RNG seed was set). This slice yields an approximately balanced class distribution (86--112 images per class). The clean baseline was evaluated once per framework; the noise-injection settings were evaluated with three independent Monte Carlo draws. For the single-run clean baseline, the Wilson 95\% confidence intervals on the subset proportion are [83.9\%, 88.2\%] for our framework and [81.3\%, 85.9\%] for CrossSim. For the three-run noise condition, the t-distribution 95\% CIs (df = 2, $t_{0.975} = 4.303$) are [79.9\%, 83.3\%] for our framework and [59.1\%, 75.3\%] for CrossSim. The large CrossSim run-to-run spread ($\sigma_{\text{pop}} = 2.67$\%) reflects the sensitivity of its generic programming-error/read-noise mapping to the particular stochastic sample. Independently of this subset check, the canonical fresh-instance collapse of standard HAT was re-evaluated under FP32 inference with autocast disabled and remained exactly $10.00\pm0.00$\% across 10 fresh D2D instances with 5 Monte Carlo evaluations per instance, confirming that the collapsed single-class predictor is a deterministic training outcome rather than a numerical artifact (\texttt{fresh\_instance\_eval\_v4\_standard\_noamp.json}).
 
 \paragraph{Supplementary Note~S2. Correlated-D2D stress test.}
+% Zone 3A bug-immune canonical protocol: all numbers in this Note are from evaluation-only runs
+% (NL=1.0, AMP disabled) on the canonical Ensemble HAT checkpoint
+% `V4_hybrid_standard_noise_hat_best.pt`. No retraining involved.
 A full $10\times5$ fresh-instance sweep under separable AR(1)-style spatial correlation across the effective crossbar grid yields:
 \begin{itemize}
     \item \textbf{i.i.d.\ baseline} ($\rho=0$): $86.33 \pm 1.61$\% (10 fresh instances, 5 MC runs each);
@@ -809,3 +812,5 @@ Rank ordering is preserved across all tested levels, with no instance collapsing
     \caption{\textbf{Fresh-instance robustness under spatially correlated D2D mismatch.} Error bars show cross-instance standard deviation over 10 fresh arrays, with 5 Monte Carlo evaluations per array, for the canonical Tiny-ViT V4 Ensemble HAT checkpoint. The i.i.d.\ baseline reaches $86.33\pm1.61$\%, while separable AR(1)-style correlation degrades the mean to $84.57\pm2.39$\% at $\rho=0.3$ and $82.12\pm3.95$\% at $\rho=0.5$. The dashed horizontal line marks the canonical standard-HAT collapse baseline (10.00\%) to emphasize that ranking is preserved despite bounded degradation.}
     \label{fig:supp-corr-d2d}
 \end{figure}
+
+\input{supplementary/S_theory_ensemble_hat}

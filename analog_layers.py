@@ -29,6 +29,7 @@ from typing import Callable, Dict, List, Optional
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from torch.amp import custom_bwd, custom_fwd
 
 from amp_utils import autocast_disabled_context
 from tinyvit_hybrid_utils import classify_tinyvit_layer
@@ -182,6 +183,7 @@ class StraightThroughQuantize(torch.autograd.Function):
     """
 
     @staticmethod
+    @custom_fwd(device_type="cuda", cast_inputs=torch.float32)
     def forward(ctx, x: torch.Tensor, n_levels: int,
                 x_min: float, x_max: float,
                 nl_ltp: float = 1.0, nl_ltd: float = -1.0,
@@ -225,14 +227,17 @@ class StraightThroughQuantize(torch.autograd.Function):
             return x_quant * scale + x_min
 
     @staticmethod
+    @custom_bwd(device_type="cuda")
     def backward(ctx, grad_output: torch.Tensor):
         (x_clamped,) = ctx.saved_tensors
+        grad_output_fp32 = grad_output.float()
+        x_clamped_fp32 = x_clamped.float()
         x_min = ctx.x_min
         x_max = ctx.x_max
         nl_ltp = abs(ctx.nl_ltp)
         nl_ltd = abs(ctx.nl_ltd)
 
-        grad_input = grad_output
+        grad_input = grad_output_fp32
         eps = 1e-8
         conductance_span = max(x_max - x_min, eps)
 
@@ -246,18 +251,18 @@ class StraightThroughQuantize(torch.autograd.Function):
         #   NL=1.0 is identity;
         #   NL=0.0 is also treated as "no nonlinearity requested" for idealized profiles.
         if not (math.isclose(nl_ltp, 1.0, rel_tol=0.0, abs_tol=1e-8) or math.isclose(nl_ltp, 0.0, rel_tol=0.0, abs_tol=1e-8)):
-            ltp_ratio = ((x_max - x_clamped) / conductance_span).clamp_min(eps)
+            ltp_ratio = ((x_max - x_clamped_fp32) / conductance_span).clamp_min(eps)
             ltp_scale = torch.pow(ltp_ratio, nl_ltp - 1.0)
         else:
-            ltp_scale = torch.ones_like(grad_output)
+            ltp_scale = torch.ones_like(grad_output_fp32)
 
         if not (math.isclose(nl_ltd, 1.0, rel_tol=0.0, abs_tol=1e-8) or math.isclose(nl_ltd, 0.0, rel_tol=0.0, abs_tol=1e-8)):
-            ltd_ratio = ((x_clamped - x_min) / conductance_span).clamp_min(eps)
+            ltd_ratio = ((x_clamped_fp32 - x_min) / conductance_span).clamp_min(eps)
             ltd_scale = torch.pow(ltd_ratio, nl_ltd - 1.0)
         else:
-            ltd_scale = torch.ones_like(grad_output)
+            ltd_scale = torch.ones_like(grad_output_fp32)
 
-        grad_input = torch.where(grad_output >= 0, grad_output * ltd_scale, grad_output * ltp_scale)
+        grad_input = torch.where(grad_output_fp32 >= 0, grad_output_fp32 * ltd_scale, grad_output_fp32 * ltp_scale)
 
         # Second-order Taylor correction (CX-J1d)
         if getattr(ctx, 'use_second_order_ste', False) and getattr(ctx, 'delta_g_eff', 0.0) > 0.0:
@@ -269,19 +274,31 @@ class StraightThroughQuantize(torch.autograd.Function):
             #   The negative sign acts as a brake, preventing the optimizer from
             #   driving weights into the conductance bounds.
             if not (math.isclose(nl_ltp, 1.0, rel_tol=0.0, abs_tol=1e-8) or math.isclose(nl_ltp, 0.0, rel_tol=0.0, abs_tol=1e-8)):
-                ltp_corr = -0.5 * (nl_ltp - 1.0) * torch.pow(ltp_ratio.clamp_min(eps), nl_ltp - 2.0) * delta_g
+                if nl_ltp < 2.0 and not math.isclose(nl_ltp, 2.0, rel_tol=0.0, abs_tol=1e-8):
+                    # CLAUDE_DECISIONS_D1_D5_20260424 D2:
+                    # for 1 < NL < 2, exponent (NL - 2) is negative and
+                    # pow(eps, NL - 2) explodes near the conductance bounds.
+                    ltp_corr = torch.zeros_like(grad_output_fp32)
+                else:
+                    ltp_corr = -0.5 * (nl_ltp - 1.0) * torch.pow(ltp_ratio.clamp_min(eps), nl_ltp - 2.0) * delta_g
             else:
-                ltp_corr = torch.zeros_like(grad_output)
+                ltp_corr = torch.zeros_like(grad_output_fp32)
 
             if not (math.isclose(nl_ltd, 1.0, rel_tol=0.0, abs_tol=1e-8) or math.isclose(nl_ltd, 0.0, rel_tol=0.0, abs_tol=1e-8)):
-                ltd_corr = -0.5 * (nl_ltd - 1.0) * torch.pow(ltd_ratio.clamp_min(eps), nl_ltd - 2.0) * delta_g
+                if nl_ltd < 2.0 and not math.isclose(nl_ltd, 2.0, rel_tol=0.0, abs_tol=1e-8):
+                    # CLAUDE_DECISIONS_D1_D5_20260424 D2:
+                    # for 1 < NL < 2, exponent (NL - 2) is negative and
+                    # pow(eps, NL - 2) explodes near the conductance bounds.
+                    ltd_corr = torch.zeros_like(grad_output_fp32)
+                else:
+                    ltd_corr = -0.5 * (nl_ltd - 1.0) * torch.pow(ltd_ratio.clamp_min(eps), nl_ltd - 2.0) * delta_g
             else:
-                ltd_corr = torch.zeros_like(grad_output)
+                ltd_corr = torch.zeros_like(grad_output_fp32)
 
             # Map the second-order correction to the same physical update
             # direction as the first-order branch: positive gradient -> LTD,
             # negative gradient -> LTP.
-            correction = alpha * torch.where(grad_output >= 0, grad_output * ltd_corr, grad_output * ltp_corr)
+            correction = alpha * torch.where(grad_output_fp32 >= 0, grad_output_fp32 * ltd_corr, grad_output_fp32 * ltp_corr)
             grad_input = grad_input + correction
 
         # No gradient for quantizer hyperparameters.
@@ -1364,7 +1381,7 @@ def convert_to_hybrid(model: nn.Module,
     Returns:
         Modified model (in-place) with AnalogLinear / AnalogConv2d layers
     """
-    config = copy.copy(config) if config is not None else AnalogLinearConfig()
+    config = config if config is not None else AnalogLinearConfig()
     replaced_linear = 0
     replaced_conv = 0
 
@@ -1453,7 +1470,7 @@ def convert_resnet_to_analog(model: nn.Module,
     Returns:
         Modified model with AnalogConv2d/AnalogLinear layers
     """
-    config = copy.copy(config) if config is not None else AnalogLinearConfig()
+    config = config if config is not None else AnalogLinearConfig()
     replaced_conv = 0
     replaced_linear = 0
 
@@ -1522,3 +1539,23 @@ def convert_resnet_to_analog(model: nn.Module,
               f"= {replaced_conv + replaced_linear} layers")
 
     return model
+
+
+def set_analog_config_attribute(model: nn.Module, attr: str, value) -> int:
+    """Recursively set an attribute on all AnalogLinear/AnalogConv2d modules.
+
+    Because each analog layer holds its own copy of the config
+    (AnalogLinear.__init__ does ``copy.copy(config)``), modifying
+    ``model.config`` does **not** propagate to layers.  Use this helper
+    when you need a global toggle (e.g. ``noise_enabled``,
+    ``retention_enabled``).
+
+    Returns:
+        Number of modules updated.
+    """
+    updated = 0
+    for module in model.modules():
+        if isinstance(module, (AnalogLinear, AnalogConv2d)):
+            setattr(module.config, attr, value)
+            updated += 1
+    return updated

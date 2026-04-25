@@ -1,3 +1,9 @@
+> ⛔ **SUPERSEDED 2026-04-23 by `BROADCAST_ASSIGNMENT_20260423Q_SLIM.md`**
+> This 11-section version was retired for meta-work overreach. See the slim version for the active task list.
+> Retained below for history only. Do not execute tasks from this file.
+
+---
+
 # BROADCAST — Round Q 14-Day Assignment
 **Issued:** 2026-04-21 16:00 by Claude (Architect)
 **Window:** 2026-04-21 → 2026-05-05 (14 days)
@@ -268,3 +274,47 @@ Agents write a one-line status each in AGENT_SYNC under header `## Round Q Day-4
 ## 10. User-visible summary
 
 Round Q is a 14-day disambiguation-and-stabilization cycle. The J1d triple-report confusion (10:35 ceiling-broken, 10:43 Branch-A, 15:53 AMBIGUOUS) must be resolved before any paper is written. Codex re-runs J1d with 30 seeds, then sweeps δg_eff and second-order strength to decide whether the bimodality is real. Kimi finishes the overdue Wave-1 backlog (CRediT, arXiv, conference, defense CN, thesis Ch.8), writes 中文 thesis Ch.5/6/8/abstract, and drafts four branch-conditioned cover letters. Gemini synthesizes existing memos into branch-aware guidance and picks the paper-2 route after K2/K3/K4 lands. Rule B holds: no paper text changes until loop closes. Claude returns 2026-05-05 for Round R.
+
+---
+
+## 11. Work 2 direction addendum — 2026-04-23 (folded into Round Q)
+
+**Authoritative decision memo:** `CLAUDE_WORK2_DIRECTION_LOCK_20260423.md`.
+
+**Selected direction:** **C — LLM KV-cache mapping to organic optoelectronic CIM**.
+
+**Shelved with role:** A (future-work §8.1), B (future-work §8.2), D (Work 2 §3 frontend subsection, not standalone).
+
+### 11.1 Rationale (condensed)
+Organic optoelectronic CIM has a physics-level match to KV-cache: retention ~10³ s aligns with LLM decoding session length; write-once-per-prefill pattern fits low cycling endurance; optical refresh dodges the endurance cost. The other three directions can be executed on any analog substrate — only C has an organic-specific moat.
+
+### 11.2 Work 2 task injection (non-blocking)
+Added to Round Q without extending the timeline:
+
+| Agent | IDs | Deliverables |
+|:--|:--|:--|
+| Kimi | K-Z31-Z35 | Scope lock, experiment plan, paper-2 skeleton rewrite, abstract, citation merge |
+| Gemini | G-HH21-HH25 | Retention theory, quantization floor, baseline comparison, hostile review, conference fit |
+| Codex | CX-L1-L5 | TinyLlama-1.1B bring-up + KV noise / quantization / retention sweeps (≤60 GPU-h, queued after CX-K2) |
+| Claude | CLAUDE-EG | Day-4 audit (2026-04-26) of K-Z31-Z35 + G-HH21-HH25 + CX-L1 |
+
+### 11.3 Decoupling from Work 1
+- Work 1 (paper-1 + thesis Ch.3-5): Round Q GPU queue (CX-K series + J-series) continues under Rule B.
+- Work 2 (paper-2 + thesis Ch.6-7): CX-L series runs *after* CX-K2 lands. No GPU contention.
+- Rule B still applies to Work 1 frozen files. Work 2 files live in new paths: `paper/paper2/skeleton_v1/` (editable), `paper/thesis_cn/chapter_6_*.tex`, `paper/thesis_cn/chapter_7_*.tex`.
+
+### 11.4 Shelved-direction salvage
+- Direction A insights (tiling, chiplet, NoC) → thesis Ch.8 outlook paragraph + Work 2 §3 architecture-exploration subsection.
+- Direction B insights (metaplasticity, CL algorithms) → thesis Ch.8 outlook paragraph.
+- Direction D insights (photodiode nonlinearity, joint training) → Work 2 §3.x frontend subsection with citations from DIRD.
+
+### 11.5 Next visible artifact
+By 2026-04-26, the following should exist:
+- `paper/paper2/skeleton_v1/SKELETON.md` — rewritten to KV-cache
+- `paper/paper2/skeleton_v1/00_abstract.md` — KV-cache pitch
+- `report_md/_gpt/KIMI_WORK2_SCOPE_LOCK_20260423.md`
+- `report_md/_gpt/KIMI_WORK2_EXPERIMENT_PLAN_20260423.md`
+- `report_md/_gpt/GEMINI_WORK2_RETENTION_THEORY_20260423.md`
+- `report_md/_gpt/json_gpt/cx_l1_tinyllama_baseline.json` — TinyLlama-1.1B FP16 WikiText-103 perplexity
+
+Claude audits on Day 4 (CLAUDE-EG) and flags any mismatch before the Friday pulse.

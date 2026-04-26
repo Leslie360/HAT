@@ -42,42 +42,19 @@ Softmax & Digital & Non-linear transcendental function; precision-critical; reta
 
 Weights are decomposed into differential conductance pairs, quantized, perturbed by the device profile, and recovered via differential readout.
 
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.98\textwidth]{fig2_weight_mapping}
+    \caption{\textbf{Weight-to-conductance mapping pipeline.} Digital weights are quantized, mapped to differential conductance pairs, perturbed by D2D/C2C device terms, accumulated in the analog domain, digitized, and recovered with a layer-wise scale factor.}
+    \label{fig:supp-weight-mapping-pipeline}
+\end{figure}
+
 \subsubsection{Hybrid System Architecture}
 \label{subsec:supp-system-architecture}
 
 \begin{figure}[ht]
     \centering
-    \resizebox{0.98\textwidth}{!}{
-    \begin{tikzpicture}[
-        >=Latex,
-        font=\small\rmfamily\upshape,
-        node distance=6mm and 8mm,
-        stage/.style={draw=black!60, rounded corners=4pt, thick, fill=black!2, minimum height=30mm, align=center},
-        analog/.style={draw=teal!70!black, rounded corners=4pt, thick, fill=teal!8, minimum height=13mm, align=center},
-        digital/.style={draw=black!55, rounded corners=4pt, thick, fill=black!5, minimum height=11mm, align=center},
-        arrow/.style={->, thick, draw=black!65}
-    ]
-    \node[stage, minimum width=27mm] (input) {\textbf{Input}\\edge-vision image};
-    \node[stage, minimum width=34mm, right=of input, draw=teal!70!black, fill=teal!10] (front) {\textbf{Physical front end}\\photoresponse\\preprocessing};
-
-    \node[draw=black!45, dashed, rounded corners=6pt, inner sep=6pt, fit={(0,0) (0,0)}] (dummy) {};
-    \node[analog, minimum width=54mm, right=13mm of front, yshift=8mm] (analogpath) {\textbf{Analog CIM path}\\patch embedding, QKV / output, MLP};
-    \node[digital, minimum width=54mm, below=7mm of analogpath] (digitalpath) {\textbf{Digital path}\\depthwise conv, attention, softmax, LN, head};
-    \node[draw=black!45, dashed, rounded corners=6pt, inner sep=8pt, fit={(analogpath)(digitalpath)}] (backbone) {};
-    \node[font=\bfseries, fill=white, inner sep=2pt, above=1mm of backbone.north] {Hybrid backbone};
-
-    \node[stage, minimum width=38mm, right=11mm of analogpath, yshift=-8mm] (periph) {\textbf{Peripheral / calibration}\\ADC / DAC\\scale recovery};
-    \node[stage, minimum width=25mm, right=of periph] (output) {\textbf{Output}\\classifier\\prediction};
-
-    \draw[arrow] (input.east) -- (front.west);
-    \draw[arrow, draw=teal!75!black] (front.east) -- ++(6mm,0) |- (analogpath.west);
-    \draw[arrow] (front.east) -- ++(6mm,0) |- (digitalpath.west);
-    \draw[arrow, draw=teal!75!black] (analogpath.east) -- (periph.west |- analogpath.east);
-    \draw[arrow] (digitalpath.east) -- (periph.west |- digitalpath.east);
-    \draw[arrow] (periph.east) -- (output.west);
-
-    \end{tikzpicture}
-    }
+    \includegraphics[width=0.84\textwidth]{fig1_system_architecture}
     \caption{\textbf{Hybrid organic-CIM inference stack.} Dense weight-stationary operators are executed on analog crossbars, whereas dynamic attention and control-heavy operators remain in the digital path.}
     \label{fig:supp-system-architecture}
 \end{figure}
@@ -152,7 +129,7 @@ These runs are treated as physical-extension studies rather than as part of the 
         \midrule
         Tiny-ViT-5M & Standard noisy deployment (V3) & 89.54 & 44.06 \\
         Tiny-ViT-5M & Uniform-noise HAT (V4) & 91.94 & 65.48 \\
-        Tiny-ViT-5M & Front-end compensation (V6) & 95.82 $\pm$ 0.12 & - \\
+        Tiny-ViT-5M & Front-end compensation (V6) & 82.58 (single-seed) & - \\
         \bottomrule
     \end{tabular}
 \end{table}
@@ -164,21 +141,22 @@ This section consolidates parameter provenance and the sensitivity checks used t
 
 \subsubsection{Three-Seed Summary for the Canonical V4 Path}
 
-To document the reproducibility of the canonical Tiny-ViT HAT path, we report the three-seed V4 summary directly in the Supplementary Information. Each seed was evaluated with a \(10\)-run noisy Monte Carlo sweep under the canonical deployment regime, and the final cross-seed statistic is computed from the three seed means.
+To document the reproducibility of the canonical Tiny-ViT Ensemble HAT path, we report the protocol-matched three-seed fresh-instance summary directly in the Supplementary Information. Each seed was evaluated on \(10\) fresh D2D instances with \(5\) Monte Carlo passes per instance, and the final cross-seed statistic is computed from the three seed means.
 
 \begin{table}[ht]
 \centering
-\caption{Three-seed reproducibility summary for the uniform-noise HAT regime (V4).}
+\caption{Three-seed fresh-instance reproducibility summary for the uniform-noise Ensemble HAT regime (V4).}
 \label{tab:v4-three-seed-summary}
 \begin{tabular}{lcc}
 \toprule
-\textbf{Seed / Aggregate} & \textbf{Noisy MC Accuracy} & \textbf{Statistic Type} \\
+\textbf{Seed / Aggregate} & \textbf{Fresh Accuracy} & \textbf{Statistic Type} \\
 \midrule
-42 & \(87.64\pm0.48\)\% & 10-run mean \(\pm\) std \\
-123 & \(88.10\pm0.33\)\% & 10-run mean \(\pm\) std \\
-2026 & \(88.11\pm0.47\)\% & 10-run mean \(\pm\) std \\
+123 & \(86.37\pm1.54\)\% & 10 fresh instances \(\times\) 5 MC \\
+456 & \(86.12\pm0.72\)\% & 10 fresh instances \(\times\) 5 MC \\
+789 & \(85.99\pm1.94\)\% & 10 fresh instances \(\times\) 5 MC \\
 \midrule
-Cross-seed aggregate & \(\mathbf{87.95\pm0.27}\)\% & mean \(\pm\) std of seed means \\
+Cross-seed aggregate & \(\mathbf{86.16\pm0.19}\)\% & mean \(\pm\) sample std of seed means \\
+Pooled fresh instances & \(86.16\pm1.52\)\% & mean \(\pm\) sample std over 30 instance means \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -429,7 +407,7 @@ and the digital/buffer terms evaluated from operator and access counts. These co
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.96\textwidth]{fig_fresh_instance_ablation}
-    \caption{\textbf{Fresh-instance robustness and D2D-resampling ablation.} \textbf{Left:} evaluation on \(10\) unseen fixed D2D realizations. Standard HAT collapses to chance on every fresh array (10.00\%), whereas Ensemble HAT preserves \(86.37\pm1.54\%\) accuracy across the same deployment set; the difference is overwhelming under a Welch two-sample test (\(p<10^{-15}\)). \textbf{Right:} exploratory held-out-accuracy scan under different D2D-resampling cadences during training. In this 50-epoch scan, epoch-level resampling reaches 88.41\%, exceeding fixed-mask training, slower refresh schedules, and the corresponding short-run per-batch perturbation control. The panel is intended to show that cadence matters, rather than to serve as the final paper-locked estimate for every schedule.}
+    \caption{\textbf{Fresh-instance robustness and D2D-resampling ablation.} \textbf{Left:} evaluation on \(10\) unseen fixed D2D realizations for the original plotted checkpoint. Standard HAT collapses to chance on every fresh array (10.00\%), whereas Ensemble HAT preserves \(86.37\pm1.54\%\) accuracy across the same deployment set; a protocol-matched three-seed rerun gives \(86.16\pm0.19\%\) across seed-level fresh-instance means. \textbf{Right:} exploratory held-out-accuracy scan under different D2D-resampling cadences during training. In this 50-epoch scan, epoch-level resampling reaches 88.41\%, exceeding fixed-mask training, slower refresh schedules, and the corresponding short-run per-batch perturbation control. The panel is intended to show that cadence matters, rather than to serve as the final paper-locked estimate for every schedule.}
     \label{fig:supp-zero-shot-transfer}
 \end{figure}
 
@@ -740,6 +718,26 @@ In summary, the core conclusions regarding deployment risk ranking remain qualit
 
 \textit{Interpretation.} The ablation shows that the MLP channel-mixing path is the dominant recoverable failure site under the \emph{earlier} $NL=2.0$ surrogate: linearizing only the MLP layers recovers accuracy to within $0.16$~pp of the full-linear configuration. By contrast, both attention-side linearizations (QKV and projection) collapse structurally and degrade below even the unmitigated baseline, indicating that the attention nonlinearity is required for representational geometry under the earlier surrogate. \textbf{All groupwise protected rows (c)--(f) are earlier diagnostics only.} They are retained here solely as source-domain gradient-diagnostic evidence from an earlier gradient-scaling recipe. Under the revised gradient-scaling recipe, fresh-instance transfer recovers to the $\sim$80--82\% band regardless of which path is protected, so the earlier MLP-path localization claim does \emph{not} carry over to the revised recipe. These results are therefore presented as a supplementary ablation rather than a main-text contribution.
 
+\begin{table}[ht]
+    \centering
+    \caption{\textbf{Intermediate nonlinearity interpolation (R10D).} Canonical Ensemble HAT training with seed~123 and uniform noise at intermediate $NL$ values. Each row reports source-domain best accuracy and fresh-instance mean ($\pm$ std) over 10 fresh D2D arrays with 5 Monte Carlo passes per array. The $NL=1.0$ canonical value is the three-seed aggregate ($86.16\pm0.19$\%); the $NL=2.0$ value is the M-series Ensemble HAT mean ($\sim$80.54\%).}
+    \label{tab:r10d-nl-interpolation}
+    \small
+    \begin{tabular}{@{}lccc@{}}
+        \toprule
+        $NL_{\text{LTP}}$ / $NL_{\text{LTD}}$ & Source best (\%) & Fresh mean (\%) & Fresh std (\%) \\
+        \midrule
+        $1.0$ / $-1.0$ (canonical) & $91.94$ & $86.37$ & $1.54$ \\
+        $1.2$ / $-1.2$ & $83.12$ & $83.03$ & $0.22$ \\
+        $1.5$ / $-1.5$ & $82.81$ & $82.63$ & $0.10$ \\
+        $1.8$ / $-1.8$ & $82.77$ & $80.31$ & $0.40$ \\
+        $2.0$ / $-2.0$ (severe) & $\sim$81.0 & $\sim$80.54 & $\sim$0.6 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\textit{Interpretation.} The degradation from $NL=1.0$ to $NL=2.0$ is gradual: accuracy remains stable at $82.6$--$83.0$\% through $NL=1.5$, then drops by roughly $2.3$~pp between $NL=1.5$ and $NL=1.8$, before settling in the $\sim$80--82\% band at $NL=2.0$. This monotonic trend supports the main-text framing that the residual gap at severe $NL$ reflects training-recipe constraints in the strongly nonlinear regime rather than a sudden physical collapse.
+
 \paragraph{Supplementary Note~S1. Cross-framework subset-evaluation protocol.}
 Because a single noisy evaluation on the full CIFAR-10 test set would extrapolate to roughly 15~h per condition for CrossSim (5,361~s per 1,000-image run) versus $\sim$1~s per 1,000-image run for the native framework, the shared-regime sanity check was performed on a deterministic 1,000-image slice of the canonical CIFAR-10 test ordering (the first 1,000 images; no RNG seed was set). This slice yields an approximately balanced class distribution (86--112 images per class). The clean baseline was evaluated once per framework; the noise-injection settings were evaluated with three independent Monte Carlo draws. For the single-run clean baseline, the Wilson 95\% confidence intervals on the subset proportion are [83.9\%, 88.2\%] for our framework and [81.3\%, 85.9\%] for CrossSim. For the three-run noise condition, the t-distribution 95\% CIs (df = 2, $t_{0.975} = 4.303$) are [79.9\%, 83.3\%] for our framework and [59.1\%, 75.3\%] for CrossSim. The large CrossSim run-to-run spread ($\sigma_{\text{pop}} = 2.67$\%) reflects the sensitivity of its generic programming-error/read-noise mapping to the particular stochastic sample. Independently of this subset check, the canonical fresh-instance collapse of standard HAT was re-evaluated under FP32 inference with autocast disabled and remained exactly $10.00\pm0.00$\% across 10 fresh D2D instances with 5 Monte Carlo evaluations per instance, confirming that the collapsed single-class predictor is a deterministic training outcome rather than a numerical artifact (\texttt{fresh\_instance\_eval\_v4\_standard\_noamp.json}).
 
@@ -771,3 +769,15 @@ Rank ordering is preserved across all tested levels, with no instance collapsing
 \input{supplementary/S_tooling_comparison}
 
 \input{supplementary/S_reproducibility}
+
+\subsection{Class-Distribution Analysis of the Fresh-Instance Collapse Mechanism}
+\label{subsec:supp-class-distribution}
+
+Figure~\ref{fig:supp-collapse-mechanism} compares per-class prediction distributions for the canonical fixed-mask Standard HAT checkpoint and the canonical Ensemble HAT checkpoint under fresh D2D instances at $NL=1.0$.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.95\textwidth]{figS_standard_hat_collapse_mechanism}
+    \caption{\textbf{Class-distribution diagnostic of the fresh-instance collapse mechanism.} Canonical fixed-mask Standard HAT evaluated on five fresh D2D instances at $NL=1.0$ remains at $10.00\pm0.00\%$ and assigns every CIFAR-10 test image to one class (prediction entropy $\approx0$, maximum-class frequency $=100\%$). Canonical Ensemble HAT under the same protocol reaches $85.97\pm1.98\%$ with near-uniform prediction entropy ($2.28$ vs.~$\ln 10$) and maximum-class frequency $15.27\pm2.27\%$.}
+    \label{fig:supp-collapse-mechanism}
+\end{figure}

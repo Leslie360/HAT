@@ -67,8 +67,8 @@ These were the highest-risk corrections because prior entries either had wrong D
 | `beller2024organicneurons` | Corrected Nature Communications metadata and DOI | https://doi.org/10.1038/s41467-024-49668-1 |
 | `ji2025singleoectneuron` | Completed authors and URL | https://doi.org/10.1038/s41467-025-59587-4 |
 | `harikesh2024oeneurons` | Corrected Nature Electronics DOI | https://doi.org/10.1038/s41928-024-01200-5 |
-| `ando2025transfer` | Updated to IBM public record for 2025 IEDM invited work | https://research.ibm.com/publications/transfer-learning-on-edge-using-14nm-cmos-compatible-reram-array-and-analog-in-memory-training-algorithm |
-| `qiu2025m3dattention` | Added public IEDM 2025 program URL; DOI not yet public in local verification | https://iedm25.mapyourshow.com/8_0/sessions/session-details.cfm?scheduleid=357 |
+| `ando2025transfer` | Updated to IEEE IEDM DOI metadata after Hume re-audit; prior IBM-only record was incomplete | https://doi.org/10.1109/IEDM50572.2025.11353900 |
+| `qiu2025m3dattention` | Updated to IEEE IEDM DOI metadata after Hume re-audit; prior "DOI not yet public" statement was incorrect | https://doi.org/10.1109/IEDM50572.2025.11353844 |
 | `yan2025learningaware` | Added IEEE DOI and complete author list | https://doi.org/10.1109/IEDM50572.2025.11353856 |
 | `analogfm2025` | Added arXiv authors and URL | https://arxiv.org/abs/2505.09663 |
 | `roberts2022principles` | Corrected to Cambridge University Press book metadata | https://doi.org/10.1017/9781009023405 |
@@ -135,4 +135,4 @@ Interpretation:
 
 - The bibliography audit verifies metadata authenticity and citation-key integrity. It does not prove that every cited work is the best rhetorical support for each sentence.
 - The LLM numbers are smoke-test numbers only. They are not WikiText, not long-context generation, and not paper claims.
-- The `qiu2025m3dattention` entry is verified against the public IEDM 2025 program URL, but a DOI was not available from the local public sources checked today.
+- Correction on 2026-04-26: Hume found that `qiu2025m3dattention` and `ando2025transfer` both already have IEEE/Crossref DOI records. `refs_gpt.bib` has been updated accordingly; treat the older "DOI not yet public" statement as superseded.

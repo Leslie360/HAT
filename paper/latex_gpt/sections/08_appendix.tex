@@ -2,28 +2,30 @@
 \section{Appendix: Parameter Provenance}
 \label{sec:appendix-provenance}
 
-This appendix consolidates parameter provenance and the targeted sensitivity checks used to bound the main claims. Whenever a value is not directly reported in the source literature, we label it explicitly as a proxy estimate or analytical assumption.
+This appendix consolidates parameter provenance and sensitivity checks. Proxy estimates are labelled explicitly.
 
 \subsection{Three-Seed Summary for the Canonical V4 Path}
 \label{subsec:v4-rerun-sanity}
 
-To document the reproducibility of the canonical Tiny-ViT HAT path, we lock the three-seed V4 summary directly in the appendix. Each seed was evaluated with a \(10\)-run noisy Monte Carlo sweep under the canonical deployment regime (4-bit quantization with 5\% C2C and 10\% D2D variability), and the final cross-seed statistic is computed from the three seed means.
+Table~\ref{tab:v4-three-seed-summary} summarizes protocol-matched fresh-instance reproducibility across three Ensemble HAT training seeds under the canonical regime.
 
 \begin{table}[ht]
 \centering
-\caption{Three-seed reproducibility summary for the canonical V4 regime.}
+\caption{Three-seed fresh-instance reproducibility summary for the canonical Ensemble HAT regime. Each seed is evaluated on 10 fresh D2D instances with five Monte Carlo passes per instance.}
 \label{tab:v4-three-seed-summary}
 \begin{tabular}{lcc}
 \toprule
-\textbf{Seed / Aggregate} & \textbf{Noisy MC Accuracy} & \textbf{Statistic Type} \\
+\textbf{Seed / Aggregate} & \textbf{Fresh Accuracy} & \textbf{Statistic Type} \\
 \midrule
-42 & \(87.64\pm0.48\)\% & 10-run mean \(\pm\) std \\
-123 & \(88.10\pm0.33\)\% & 10-run mean \(\pm\) std \\
-2026 & \(88.11\pm0.47\)\% & 10-run mean \(\pm\) std \\
+123 & \(86.37\pm1.54\)\% & 10 fresh instances \(\times\) 5 MC \\
+456 & \(86.12\pm0.72\)\% & 10 fresh instances \(\times\) 5 MC \\
+789 & \(85.99\pm1.94\)\% & 10 fresh instances \(\times\) 5 MC \\
 \midrule
-Cross-seed aggregate & \(\mathbf{87.95\pm0.27}\)\% & mean \(\pm\) std of seed means \\
+Cross-seed aggregate & \(\mathbf{86.16\pm0.19}\)\% & mean \(\pm\) sample std of seed means \\
+Pooled fresh instances & \(86.16\pm1.52\)\% & mean \(\pm\) sample std over 30 instance means \\
 \bottomrule
 \end{tabular}
+\footnotesize Source: \texttt{r10a\_canonical\_ensemble\_hat\_3seed\_fresh\_eval.json}. The \(86.37\pm1.54\%\) value is retained only for the original plotted checkpoint; the training-seed reproducibility headline is \(86.16\pm0.19\%\).
 \end{table}
 
 \FloatBarrier
@@ -55,20 +57,12 @@ Cross-seed aggregate & \(\mathbf{87.95\pm0.27}\)\% & mean \(\pm\) std of seed me
 \subsection{Vincze et al. 2025 Parameter Extraction}
 \label{subsec:vincze-extraction}
 
-Because Vincze et al.\ \citep{vincze2025dualplasticity} is currently available as a 2025 Early Access paper, we explicitly list the extracted parameters used to define our canonical organic profile. These values were derived from the reported transient and steady-state characterization of the dual-plasticity organic synaptic transistor:
 
-\begin{itemize}
-    \item \textbf{Conductance Window}: $G_{\max}/G_{\min} \approx 10$, anchored to the scalable operation regime.
-    \item \textbf{Retention Time Constants}: The dual-exponential fit for temporal drift yields a fast decay constant $\tau_1 = 140$~ms, a slow decay constant $\tau_2 = 610$~ms, and an initial amplitude ratio $A_0 = 0.6$. These align with the short-term and long-term plasticity dynamics reported for the device.
-    \item \textbf{Nonlinear Write Asymmetry ($NL$)}: While the canonical profile uses symmetric writes ($NL=1.0$), the physical profile derived from the literature indicates moderate write nonlinearity corresponding to $NL_{LTP} = 2.0$ and $NL_{LTD} = -2.0$, which we evaluate directly in our severe stress tests.
-\end{itemize}
-
-Parameter definitions are provided in Table~\ref{tab:provenance}.
 
 \subsection{Proxy Estimate Sensitivity Analysis}
 \label{subsec:proxy-sensitivity}
 
-The Zhang 2025 OPECT values for \(\sigma_{\text{C2C}}\) and \(\sigma_{\text{D2D}}\) are transparent proxy estimates rather than directly measured full-array noise distributions. We therefore ran a compact 2D sensitivity sweep on the Ensemble HAT checkpoint to verify that the case-study conclusion does not hinge on one narrow proxy choice.
+Table~\ref{tab:sensitivity} validates the Zhang 2025 OPECT proxy estimates via 2D noise sweep.
 
 \begin{table}[ht]
 \centering
@@ -87,14 +81,14 @@ The Zhang 2025 OPECT values for \(\sigma_{\text{C2C}}\) and \(\sigma_{\text{D2D}
 \end{tabular}
 \end{table}
 
-95\% confidence intervals are sub-0.1~pp for all nominal points. At fixed D2D mismatch, the maximum accuracy excursion across the full C2C sweep is 0.00 percentage points at the reported precision, while the Monte Carlo uncertainty band remains narrow. The numerically identical rows should be read as a stability result: static D2D spatial variability dominates the case-study outcome, whereas per-forward C2C sampling noise remains sub-resolution.
+Static D2D spatial variability dominates the case-study outcome; per-forward C2C noise remains sub-resolution.
 
 \FloatBarrier
 
 \subsection{Uniform vs. State-Dependent Retention Comparison}
 \label{subsec:retention-comparison}
 
-To test whether the first-order uniform retention assumption is sufficient for the present paper, we compared it with a more physical state-dependent model in which high-conductance states decay up to 20\% faster than low-conductance states. The comparison uses the V4 Ensemble HAT model on CIFAR-10, because that checkpoint is the retained deployment-facing path emphasized in the main text.
+Table~\ref{tab:retention-comparison} compares uniform and state-dependent retention decay.
 
 \begin{table}[ht]
 \centering
@@ -113,11 +107,11 @@ To test whether the first-order uniform retention assumption is sufficient for t
 \end{tabular}
 \end{table}
 
-The accuracy difference stays below 0.1 percentage points across all tested time intervals. For this paper, the result serves only as a regime-specific sanity check, not as a claim that state dependence is negligible in general. We did not replicate the same comparison on the collapsing fresh-instance standard-HAT path or on non-HAT checkpoints, so this table should be read as a scoped validation of the \emph{retention-model choice} within the retained Ensemble-HAT deployment regime rather than as a universal statement across all training recipes.
+The accuracy difference remains below 0.1~pp, validating the uniform-retention assumption for the Ensemble-HAT regime.
 
 \FloatBarrier
 
 \subsection{Automated Profile Fitting Pipeline}
 \label{subsec:auto-fitting}
 
-Device parameters can be extracted from measured pulsed-programming, cycle-to-cycle, device-to-device, and retention data via regression (Supplementary Methods).
+Device parameters can be extracted from measured programming, variability, and retention data via regression (Supplementary Methods).

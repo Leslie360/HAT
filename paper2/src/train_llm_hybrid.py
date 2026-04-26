@@ -42,8 +42,26 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--sigma-d2d", type=float, default=0.10)
     parser.add_argument("--sigma-c2c", type=float, default=0.05)
     parser.add_argument("--train-scope", default="last_block", choices=["last_block", "analog_all", "lm_head"])
+    parser.add_argument(
+        "--eval-text-set",
+        default="train",
+        choices=["train", "heldout"],
+        help="Use the train smoke texts or a disjoint held-out smoke text set for eval",
+    )
     parser.add_argument("--resample-every", type=int, default=0, help="Resample analog D2D buffers every N steps; 0 disables")
     parser.add_argument("--eval-repeats", type=int, default=3, help="Independent eval repeats before and after training")
+    parser.add_argument(
+        "--fresh-d2d-instances",
+        type=int,
+        default=0,
+        help="After training, evaluate this many fresh D2D instances; 0 disables",
+    )
+    parser.add_argument(
+        "--fresh-d2d-repeats",
+        type=int,
+        default=3,
+        help="C2C eval repeats per fresh D2D instance when --fresh-d2d-instances > 0",
+    )
     return parser.parse_args()
 
 
@@ -82,11 +100,14 @@ def main() -> None:
         "sigma_d2d": args.sigma_d2d if args.noise_enabled else 0.0,
         "sigma_c2c": args.sigma_c2c if args.noise_enabled else 0.0,
         "train_scope": args.train_scope,
+        "eval_text_set": args.eval_text_set,
         "steps": args.steps,
         "lr": args.lr,
         "seed": args.seed,
         "resample_every": args.resample_every,
         "eval_repeats": args.eval_repeats,
+        "fresh_d2d_instances": args.fresh_d2d_instances,
+        "fresh_d2d_repeats": args.fresh_d2d_repeats,
         "max_length": args.max_length,
         "local_files_only": args.local_files_only,
     }), flush=True)
@@ -132,14 +153,24 @@ def main() -> None:
         "Hybrid-aware training should reduce sensitivity to persistent device mismatch and fresh read noise.",
         "This is a small smoke batch for infrastructure validation, not a benchmark dataset.",
     ]
+    eval_texts = texts if args.eval_text_set == "train" else [
+        "Autoregressive language models reuse cached keys and values to avoid recomputing prior tokens.",
+        "Device noise in analog memory can accumulate across long context windows and repeated reads.",
+        "A credible accelerator study needs held-out evaluation rather than only fitting a smoke batch.",
+        "Scoped analog conversion helps identify which transformer submodules are robust under noise.",
+    ]
     batch = tokenizer(texts, return_tensors="pt", padding=True, truncation=True, max_length=args.max_length)
     batch = {key: value.to(device) for key, value in batch.items()}
     labels = batch["input_ids"].clone()
     labels[batch["attention_mask"] == 0] = -100
+    eval_batch = tokenizer(eval_texts, return_tensors="pt", padding=True, truncation=True, max_length=args.max_length)
+    eval_batch = {key: value.to(device) for key, value in eval_batch.items()}
+    eval_labels = eval_batch["input_ids"].clone()
+    eval_labels[eval_batch["attention_mask"] == 0] = -100
 
     optimizer = torch.optim.SGD(trainable_params, lr=args.lr)
     losses: List[float] = []
-    eval_before = _eval_loss(model, batch, labels, repeats=args.eval_repeats)
+    eval_before = _eval_loss(model, eval_batch, eval_labels, repeats=args.eval_repeats)
     print(json.dumps({"event": "eval_before", **eval_before}), flush=True)
     model.train()
     for step in range(args.steps):
@@ -160,8 +191,18 @@ def main() -> None:
 
     peak_mem = torch.cuda.max_memory_allocated() / (1024 ** 3) if device == "cuda" else 0.0
     analog_counts = _count_analog_modules_by_kind(model) if args.hybrid else {"qkv": 0, "attention_output": 0, "mlp": 0}
-    eval_after = _eval_loss(model, batch, labels, repeats=args.eval_repeats)
+    eval_after = _eval_loss(model, eval_batch, eval_labels, repeats=args.eval_repeats)
     print(json.dumps({"event": "eval_after", **eval_after}), flush=True)
+    fresh_d2d_eval = None
+    if args.hybrid and args.fresh_d2d_instances > 0:
+        fresh_d2d_eval = _eval_fresh_d2d(
+            model,
+            eval_batch,
+            eval_labels,
+            instances=args.fresh_d2d_instances,
+            repeats=args.fresh_d2d_repeats,
+        )
+        print(json.dumps({"event": "fresh_d2d_eval", **fresh_d2d_eval}), flush=True)
     print(json.dumps({
         "event": "complete",
         "analog_scope": args.analog_scope if args.hybrid else "none",
@@ -174,6 +215,10 @@ def main() -> None:
         "eval_after_mean": eval_after["mean_loss"],
         "eval_delta": eval_after["mean_loss"] - eval_before["mean_loss"],
         "eval_decreased": eval_after["mean_loss"] < eval_before["mean_loss"],
+        "fresh_d2d_mean_loss": fresh_d2d_eval["mean_loss"] if fresh_d2d_eval else None,
+        "fresh_d2d_std_loss": fresh_d2d_eval["std_loss"] if fresh_d2d_eval else None,
+        "fresh_d2d_instances": fresh_d2d_eval["instances"] if fresh_d2d_eval else 0,
+        "fresh_d2d_repeats": fresh_d2d_eval["repeats_per_instance"] if fresh_d2d_eval else 0,
         "trainable_params": sum(param.numel() for param in trainable_params),
         "qkv_modules": analog_counts["qkv"],
         "attention_output_modules": analog_counts["attention_output"],
@@ -256,6 +301,32 @@ def _resample_analog_d2d(model: object) -> int:
             module.resample_d2d_noise()
             count += 1
     return count
+
+
+def _eval_fresh_d2d(model: object, batch: dict, labels: object, instances: int, repeats: int) -> dict:
+    losses = []
+    instance_means = []
+    for instance_idx in range(max(1, instances)):
+        resampled = _resample_analog_d2d(model)
+        result = _eval_loss(model, batch, labels, repeats=repeats)
+        instance_means.append(
+            {
+                "instance": instance_idx,
+                "mean_loss": result["mean_loss"],
+                "std_loss": result["std_loss"],
+                "resampled_modules": resampled,
+            }
+        )
+        losses.append(result["mean_loss"])
+    mean = sum(losses) / len(losses)
+    variance = sum((value - mean) ** 2 for value in losses) / len(losses)
+    return {
+        "instance_means": instance_means,
+        "mean_loss": mean,
+        "std_loss": variance ** 0.5,
+        "instances": len(losses),
+        "repeats_per_instance": max(1, repeats),
+    }
 
 
 if __name__ == "__main__":

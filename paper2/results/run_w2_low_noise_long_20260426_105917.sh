@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+set -euo pipefail
+ROOT="/home/qiaosir/projects/compute_vit"
+cd "$ROOT"
+PY="/home/qiaosir/miniconda3/envs/LLM/bin/python"
+STAMP="20260426_105917"
+mkdir -p logs/_gpt paper2/results
+export PYTHONUNBUFFERED=1
+export CUDA_VISIBLE_DEVICES=0
+export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
+run_job() {
+  local scope="$1"
+  local name="w2_long_${scope}_n005002_lb1000_seed1234_${STAMP}"
+  local log="logs/_gpt/${name}.log"
+  echo "[launch] ${name} -> ${log}"
+  (
+    timeout 5400 "$PY" -u paper2/src/train_llm_hybrid.py \
+      --model EleutherAI/pythia-410m-deduped \
+      --device cuda \
+      --dtype float32 \
+      --local-files-only \
+      --train-scope last_block \
+      --max-length 64 \
+      --steps 1000 \
+      --eval-repeats 5 \
+      --seed 1234 \
+      --hybrid \
+      --high-precision-analog \
+      --analog-scope "$scope" \
+      --noise-enabled \
+      --sigma-d2d 0.005 \
+      --sigma-c2c 0.002 \
+      --resample-every 10 \
+      --lr 5e-6 \
+      > "$log" 2>&1
+    code=$?
+    echo "$code" > "paper2/results/${name}.exit"
+    echo "[exit] ${name} ${code}"
+  ) &
+  echo "$!" > "paper2/results/${name}.pid"
+}
+run_job attention_output
+run_job qkv
+run_job mlp
+run_job all
+wait

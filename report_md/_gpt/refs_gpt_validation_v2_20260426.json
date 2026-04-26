@@ -1,0 +1,1197 @@
+{
+  "entries": 67,
+  "cited_keys": 45,
+  "missing_citations": [],
+  "uncited_entries": [
+    "analogfm2025",
+    "ando2025transfer",
+    "bettayeb2024memristorattention",
+    "fastirdrop2025",
+    "iconniv2026",
+    "kirkpatrick2017overcoming",
+    "li2022qvit",
+    "lin2023vitptq",
+    "liu2021ptqvit",
+    "mia2026trilinear",
+    "qiu2025m3dattention",
+    "rasch2023ncomms",
+    "wager2013dropout",
+    "wang2025vant",
+    "wolters2024memory",
+    "wu2025halora",
+    "wu2025neurips_train",
+    "yan2025learningaware",
+    "yoshioka2024isscc",
+    "yoshioka2025jssc",
+    "yousuf2025lea",
+    "yu2025fullstack"
+  ],
+  "bad_or_needs_attention": [],
+  "results": [
+    {
+      "key": "horowitz2014computing",
+      "type": "inproceedings",
+      "title": "Computing's Energy Problem (and what we can do about it)",
+      "year": "2014",
+      "doi": "10.1109/ISSCC.2014.6757323",
+      "url": "https://doi.org/10.1109/ISSCC.2014.6757323",
+      "eprint": null,
+      "crossref": "ok",
+      "cr_title": "1.1 Computing's energy problem (and what we can do about it)",
+      "cr_years": {
+        "print": 2014,
+        "online": null
+      },
+      "cr_volume": null,
+      "cr_issue": null,
+      "cr_page": "10-14",
+      "cr_article_number": null,
+      "title_similarity": 0.9642857142857143
+    },
+    {
+      "key": "peng2020dnnneurosim",
+      "type": "article",
+      "title": "{DNN\\allowbreak+\\allowbreak NeuroSim} V2.0: An End-to-End Benchmarking Framework for Compute-in-Memory Accelerators for On-Chip Training",
+      "year": "2021",
+      "doi": "10.1109/TCAD.2020.3043731",
+      "url": "https://doi.org/10.1109/TCAD.2020.3043731",
+      "eprint": null,
+      "crossref": "ok",
+      "cr_title": "DNN+NeuroSim V2.0: An End-to-End Benchmarking Framework for Compute-in-Memory Accelerators for On-Chip Training",
+      "cr_years": {
+        "print": 2021,
+        "online": null
+      },
+      "cr_volume": "40",
+      "cr_issue": "11",
+      "cr_page": "2306-2319",
+      "cr_article_number": null,
+      "title_similarity": 0.9090909090909091
+    },
+    {
+      "key": "lin2016physical",
+      "type": "article",
+      "title": "Physical Realization of a Supervised Learning System Built with Organic Memristive Synapses",
+      "year": "2016",
+      "doi": "10.1038/srep31932",
+      "url": "https://doi.org/10.1038/srep31932",
+      "eprint": null,
+      "crossref": "ok",
+      "cr_title": "Physical Realization of a Supervised Learning System Built with Organic Memristive Synapses",
+      "cr_years": {
+        "print": null,
+        "online": 2016
+      },
+      "cr_volume": "6",
+      "cr_issue": "1",
+      "cr_page": null,
+      "cr_article_number": "31932",
+      "title_similarity": 1.0
+    },
+    {
+      "key": "guo2024organic",
+      "type": "article",
+      "title": "An Organic Optoelectronic Synapse with Multilevel Memory Enabled by Gate Modulation",
+      "year": "2024",
+      "doi": "10.1021/acsami.3c19624",
+      "url": "https://doi.org/10.1021/acsami.3c19624",
+      "eprint": null,
+      "crossref": "ok",
+      "cr_title": "An Organic Optoelectronic Synapse with Multilevel Memory Enabled by Gate Modulation",
+      "cr_years": {
+        "print": 2024,
+        "online": 2024
+      },
+      "cr_volume": "16",
+      "cr_issue": "49",
+      "cr_page": "66948-66960",
+      "cr_article_number": null,
+      "title_similarity": 1.0
+    },
+    {
+      "key": "xu2025emerging",
+      "type": "article",
+      "title": "Emerging Artificial Synaptic Devices Based on Organic Semiconductors: Molecular Design, Structure and Applications",
+      "year": "2025",
+      "doi": "10.1021/acsami.4c17455",
+      "url": "https://doi.org/10.1021/acsami.4c17455",
+      "eprint": null,
+      "crossref": "ok",
+      "cr_title": "Emerging Artificial Synaptic Devices Based on Organic Semiconductors: Molecular Design, Structure and Applications",
+      "cr_years": {
+        "print": 2025,
+        "online": 2025
+      },
+      "cr_volume": "17",
+      "cr_issue": "3",
+      "cr_page": "4290-4315",
+      "cr_article_number": null,
+      "title_similarity": 1.0
+    },
+    {
+      "key": "vincze2025dualplasticity",
+      "type": "article",
+      "title": "Simultaneous Dual-Plasticity Organic Synaptic Transistor for Neuromorphic Computing",
+      "year": "2026",
+      "doi": "10.1002/aelm.202500515",
+      "url": "https://doi.org/10.1002/aelm.202500515",
+      "eprint": null,
+      "crossref": "ok",
+      "cr_title": "Simultaneous Dual‐Plasticity Organic Synaptic Transistor for Neuromorphic Computing",
+      "cr_years": {
+        "print": 2026,
+        "online": 2025
+      },
+      "cr_volume": "12",
+      "cr_issue": "1",
+      "cr_page": null,
+      "cr_article_number": "e00515",
+      "title_similarity": 1.0
+    },
+    {
+      "key": "zeng2023organicmemristor",
+      "type": "article",
+      "title": "Organic Memristor with Synaptic Plasticity for Neuromorphic Computing Applications",
+      "year": "2023",
+      "doi": "10.3390/nano13050803",
+      "url": "https://doi.org/10.3390/nano13050803",
+      "eprint": null,
+      "crossref": "ok",
+      "cr_title": "Organic Memristor with Synaptic Plasticity for Neuromorphic Computing Applications",
+      "cr_years": {
+        "print": null,
+        "online": 2023
+      },
+      "cr_volume": "13",
+      "cr_issue": "5",
+      "cr_page": "803",
+      "cr_article_number": null,
+      "title_similarity": 1.0
+    },
+    {
+      "key": "jung2024organicfilaments",
+      "type": "article",
+      "title": "Formation of Cluster-Structured Metallic Filaments in Organic Memristors for Wearable Neuromorphic Systems with Bio-Mimetic Synaptic Weight Distributions",
+      "year": "2024",
+      "doi": "10.1002/advs.202307494",
+      "url": "https://doi.org/10.1002/advs.202307494",
+      "eprint": null,
+      "crossref": "ok",
+      "cr_title": "Formation of Cluster‐Structured Metallic Filaments in Organic Memristors for Wearable Neuromorphic Systems with Bio‐Mimetic Synaptic Weight Distributions",
+      "cr_years": {
+        "print": 2024,
+        "online": 2023
+      },
+      "cr_volume": "11",
+      "cr_issue": "9",
+      "cr_page": null,
+      "cr_article_number": "2307494",
+      "title_similarity": 1.0
+    },
+    {
+      "key": "lammie2022memtorch",
+      "type": "article",
+      "title": "MemTorch: An open-source simulation framework for memristive deep learning systems",
+      "year": "2022",
+      "doi": "10.1016/j.neucom.2022.02.043",
+      "url": "https://doi.org/10.1016/j.neucom.2022.02.043",
+      "eprint": null,
+      "crossref": "ok",
+      "cr_title": "MemTorch: An Open-source Simulation Framework for Memristive Deep Learning Systems",
+      "cr_years": {
+        "print": 2022,
+        "online": null
+      },
+      "cr_volume": "485",
+      "cr_issue": null,
+      "cr_page": "124-133",
+      "cr_article_number": null,
+      "title_similarity": 1.0
+    },
+    {
+      "key": "wei2020voltagedifferential",
+      "type": "inproceedings",
+      "title": "A Voltage-Mode Sensing Scheme with Differential-Row Weight Mapping for Energy-Efficient {RRAM}-Based In-Memory Computing",
+      "year": "2020",
+      "doi": "10.1109/VLSITechnology18217.2020.9265066",
+      "url": "https://doi.org/10.1109/VLSITechnology18217.2020.9265066",
+      "eprint": null,
+      "crossref": "ok",
+      "cr_title": "A Voltage-Mode Sensing Scheme with Differential-Row Weight Mapping for Energy-Efficient RRAM-Based In-Memory Computing",
+      "cr_years": {
+        "print": 2020,
+        "online": null
+      },
+      "cr_volume": null,
+      "cr_issue": null,
+      "cr_page": "1-2",
+      "cr_article_number": null,
+      "title_similarity": 1.0
+    },
+    {
+      "key": "kim2024sttmram",
+      "type": "article",
+      "title": "Accuracy Improvement With Weight Mapping Strategy and Output Transformation for {STT-MRAM}-Based Computing-in-Memory",
+      "year": "2024",
+      "doi": "10.1109/JXCDC.2024.3478360",
+      "url": "https://doi.org/10.1109/JXCDC.2024.3478360",
+      "eprint": null,
+      "crossref": "ok",
+      "cr_title": "Accuracy Improvement With Weight Mapping Strategy and Output Transformation for STT-MRAM-Based Computing-in-Memory",
+      "cr_years": {
+        "print": 2024,
+        "online": null
+      },
+      "cr_volume": "10",
+      "cr_issue": null,
+      "cr_page": "75-81",
+      "cr_article_number": null,
+      "title_similarity": 1.0
+    },
+    {
+      "key": "kim2025hemlet",
+      "type": "misc",
+      "title": "{Hemlet}: A Heterogeneous Compute-in-Memory Chiplet Architecture for Vision Transformers with Group-Level Parallelism",
+      "year": "2025",
+      "doi": "10.48550/arXiv.2511.15397",
+      "url": "https://arxiv.org/abs/2511.15397",
+      "eprint": "2511.15397",
+      "arxiv": "ok"
+    },
+    {
+      "key": "lin2024hardsea",
+      "type": "article",
+      "title": "{HARDSEA}: Hybrid Analog-{ReRAM} Clustering and Digital-{SRAM} In-Memory Computing Accelerator for Dynamic Sparse Self-Attention in Transformer",
+      "year": "2024",
+      "doi": "10.1109/TVLSI.2023.3337777",
+      "url": "https://doi.org/10.1109/TVLSI.2023.3337777",
+      "eprint": null,
+      "crossref": "ok",
+      "cr_title": "HARDSEA: Hybrid Analog-ReRAM Clustering and Digital-SRAM In-Memory Computing Accelerator for Dynamic Sparse Self-Attention in Transformer",
+      "cr_years": {
+        "print": 2024,
+        "online": null
+      },
+      "cr_volume": "32",
+      "cr_issue": "2",
+      "cr_page": "269-282",
+      "cr_article_number": null,
+      "title_similarity": 1.0
+    },
+    {
+      "key": "bettayeb2024memristorattention",
+      "type": "article",
+      "title": "Efficient Memristor Accelerator for Transformer Self-Attention Functionality",
+      "year": "2024",
+      "doi": "10.1038/s41598-024-75021-z",
+      "url": "https://doi.org/10.1038/s41598-024-75021-z",
+      "eprint": null,
+      "crossref": "ok",
+      "cr_title": "Efficient memristor accelerator for transformer self-attention functionality",
+      "cr_years": {
+        "print": null,
+        "online": 2024
+      },
+      "cr_volume": "14",
+      "cr_issue": "1",
+      "cr_page": null,
+      "cr_article_number": "24173",
+      "title_similarity": 1.0
+    },
+    {
+      "key": "rasch2021aihwkit",
+      "type": "misc",
+      "title": "A Flexible and Fast {PyTorch} Toolkit for Simulating Training and Inference on Analog Crossbar Arrays",
+      "year": "2021",
+      "doi": "10.48550/arXiv.2104.02184",
+      "url": "https://arxiv.org/abs/2104.02184",
+      "eprint": "2104.02184",
+      "arxiv": "ok"
+    },
+    {
+      "key": "wu2023bwq",
+      "type": "article",
+      "title": "Block-Wise Mixed-Precision Quantization: Enabling High Efficiency for Practical {ReRAM}-based {DNN} Accelerators",
+      "year": "2024",
+      "doi": "10.1109/TCAD.2024.3409193",
+      "url": "https://doi.org/10.1109/TCAD.2024.3409193",
+      "eprint": null,
+      "crossref": "ok",
+      "cr_title": "Block-Wise Mixed-Precision Quantization: Enabling High Efficiency for Practical ReRAM-Based DNN Accelerators",
+      "cr_years": {
+        "print": 2024,
+        "online": null
+      },
+      "cr_volume": "43",
+      "cr_issue": "12",
+      "cr_page": "4558-4571",
+      "cr_article_number": null,
+      "title_similarity": 1.0
+    },
+    {
+      "key": "lin2023vitptq",
+      "type": "inproceedings",
+      "title": "{FQ-ViT}: Post-Training Quantization for Fully Quantized Vision Transformer",
+      "year": "2022",
+      "doi": "10.24963/ijcai.2022/164",
+      "url": "https://www.ijcai.org/proceedings/2022/164",
+      "eprint": "2111.13824",
+      "crossref": "ok",
+      "cr_title": "FQ-ViT: Post-Training Quantization for Fully Quantized Vision Transformer",
+      "cr_years": {
+        "print": 2022,
+        "online": null
+      },
+      "cr_volume": null,
+      "cr_issue": null,
+      "cr_page": "1173-1179",
+      "cr_article_number": null,
+      "title_similarity": 1.0
+    },
+    {
+      "key": "liu2021ptqvit",
+      "type": "inproceedings",
+      "title": "Post-Training Quantization for Vision Transformer",
+      "year": "2021",
+      "doi": null,
+      "url": "https://proceedings.neurips.cc/paper/2021/hash/ec8956637a99787bd197eacd77acce5e-Abstract.html",
+      "eprint": null
+    },
+    {
+      "key": "li2022qvit",
+      "type": "inproceedings",
+      "title": "{Q-ViT}: Accurate and Fully Quantized Low-Bit Vision Transformer",
+      "year": "2022",
+      "doi": null,
+      "url": "https://openreview.net/forum?id=fU-m9kQe0ke",
+      "eprint": null
+    },
+    {
+      "key": "wang2024epim",
+      "type": "inproceedings",
+      "title": "{EPIM}: Efficient Processing-In-Memory Accelerators based on Epitome",
+      "year": "2024",
+      "doi": "10.1145/3649329.3657377",
+      "url": "https://arxiv.org/abs/2311.07620",
+      "eprint": "2311.07620",
+      "crossref": "ok",
+      "cr_title": "EPIM: Efficient Processing-In-Memory Accelerators based on Epitome",
+      "cr_years": {
+        "print": 2024,
+        "online": 2024
+      },
+      "cr_volume": null,
+      "cr_issue": null,
+      "cr_page": "1-6",
+      "cr_article_number": null,
+      "title_similarity": 1.0
+    },
+    {
+      "key": "ge2024allspark",
+      "type": "article",
+      "title": "Allspark: Workload Orchestration for Visual Transformers on Processing In-Memory Systems",
+      "year": "2025",
+      "doi": "10.1109/TC.2024.3483633",
+      "url": "https://doi.org/10.1109/TC.2024.3483633",
+      "eprint": null,
+      "crossref": "ok",
+      "cr_title": "Allspark: Workload Orchestration for Visual Transformers on Processing In-Memory Systems",
+      "cr_years": {
+        "print": 2025,
+        "online": null
+      },
+      "cr_volume": "74",
+      "cr_issue": "2",
+      "cr_page": "427-441",
+      "cr_article_number": null,
+      "title_similarity": 1.0
+    },
+    {
+      "key": "gebregiorgis2023organiccim",
+      "type": "article",
+      "title": "An Energy-Efficient Solid-State Organic Device Array for Neuromorphic Computing",
+      "year": "2023",
+      "doi": "10.1109/TED.2023.3327947",
+      "url": "https://doi.org/10.1109/TED.2023.3327947",
+      "eprint": null,
+      "crossref": "ok",
+      "cr_title": "An Energy-Efficient Solid-State Organic Device Array for Neuromorphic Computing",
+      "cr_years": {
+        "print": 2023,
+        "online": null
+      },
+      "cr_volume": "70",
+      "cr_issue": "12",
+      "cr_page": "6520-6525",
+      "cr_article_number": null,
+      "title_similarity": 1.0
+    },
+    {
+      "key": "zhang2025opect",
+      "type": "article",
+      "title": "Near-infrared organic photoelectrochemical synaptic transistors by wafer-scale photolithography for neuromorphic visual system",
+      "year": "2026",
+      "doi": "10.1038/s41467-025-66891-6",
+      "url": "https://doi.org/10.1038/s41467-025-66891-6",
+      "eprint": null,
+      "crossref": "ok",
+      "cr_title": "Near-infrared organic photoelectrochemical synaptic transistors by wafer-scale photolithography for neuromorphic visual system",
+      "cr_years": {
+        "print": null,
+        "online": 2025
+      },
+      "cr_volume": "17",
+      "cr_issue": "1",
+      "cr_page": null,
+      "cr_article_number": "197",
+      "title_similarity": 1.0
+    },
+    {
+      "key": "visionarch2023crosstalk",
+      "type": "article",
+      "title": "Artificial Visual Synaptic Architecture with High-Linearity Light-Modulated Weight for Optoelectronic Neuromorphic Computing",
+      "year": "2023",
+      "doi": "10.1021/acsami.3c11495",
+      "url": "https://doi.org/10.1021/acsami.3c11495",
+      "eprint": null,
+      "crossref": "ok",
+      "cr_title": "Artificial Visual Synaptic Architecture with High-Linearity Light-Modulated Weight for Optoelectronic Neuromorphic Computing",
+      "cr_years": {
+        "print": 2023,
+        "online": 2023
+      },
+      "cr_volume": "15",
+      "cr_issue": "44",
+      "cr_page": "51380-51389",
+      "cr_article_number": null,
+      "title_similarity": 1.0
+    },
+    {
+      "key": "amspa2024insensor",
+      "type": "article",
+      "title": "An Active-Matrix Synaptic Phototransistor Array for In-Sensor Spectral Processing",
+      "year": "2024",
+      "doi": "10.1002/advs.202406401",
+      "url": "https://doi.org/10.1002/advs.202406401",
+      "eprint": null,
+      "crossref": "ok",
+      "cr_title": "An Active‐Matrix Synaptic Phototransistor Array for In‐Sensor Spectral Processing",
+      "cr_years": {
+        "print": 2024,
+        "online": 2024
+      },
+      "cr_volume": "11",
+      "cr_issue": "39",
+      "cr_page": null,
+      "cr_article_number": "2406401",
+      "title_similarity": 1.0
+    },
+    {
+      "key": "fastirdrop2025",
+      "type": "article",
+      "title": "Fast IR-Drop Model of Memristor Crossbars and Circuit Compensation Utilizing DTCO",
+      "year": "2025",
+      "doi": "10.1109/TED.2025.3573996",
+      "url": "https://doi.org/10.1109/TED.2025.3573996",
+      "eprint": null,
+      "crossref": "ok",
+      "cr_title": "Fast IR-Drop Model of Memristor Crossbars and Circuit Compensation Utilizing DTCO",
+      "cr_years": {
+        "print": 2025,
+        "online": null
+      },
+      "cr_volume": "72",
+      "cr_issue": "8",
+      "cr_page": "4063-4069",
+      "cr_article_number": null,
+      "title_similarity": 1.0
+    },
+    {
+      "key": "iconniv2026",
+      "type": "article",
+      "title": "ICON-NIV: A Generalized Method for Mitigating the Impacts of IR Drop and Nonlinear I-V Effect in eNVM-based Accelerators",
+      "year": "2026",
+      "doi": "10.1145/3777381",
+      "url": "https://doi.org/10.1145/3777381",
+      "eprint": null,
+      "crossref": "ok",
+      "cr_title": "ICON-NIV: A Generalized Method for Mitigating the Impacts of IR Drop and Nonlinear I-V Effect in eNVM-based Accelerators.",
+      "cr_years": {
+        "print": 2026,
+        "online": 2026
+      },
+      "cr_volume": "23",
+      "cr_issue": "1",
+      "cr_page": "1-26",
+      "cr_article_number": null,
+      "title_similarity": 1.0
+    },
+    {
+      "key": "fuller2020tempresilient",
+      "type": "article",
+      "title": "Temperature-resilient solid-state organic artificial synapses for neuromorphic computing",
+      "year": "2020",
+      "doi": "10.1126/sciadv.abb2958",
+      "url": "https://doi.org/10.1126/sciadv.abb2958",
+      "eprint": null,
+      "crossref": "ok",
+      "cr_title": "Temperature-resilient solid-state organic artificial synapses for neuromorphic computing",
+      "cr_years": {
+        "print": 2020,
+        "online": null
+      },
+      "cr_volume": "6",
+      "cr_issue": "27",
+      "cr_page": null,
+      "cr_article_number": "eabb2958",
+      "title_similarity": 1.0
+    },
+    {
+      "key": "guo2024hightemp",
+      "type": "article",
+      "title": "Organic High-Temperature Synaptic Phototransistors for Energy-Efficient Neuromorphic Computing",
+      "year": "2024",
+      "doi": "10.1002/adma.202310155",
+      "url": "https://doi.org/10.1002/adma.202310155",
+      "eprint": null,
+      "crossref": "ok",
+      "cr_title": "Organic High‐Temperature Synaptic Phototransistors for Energy‐Efficient Neuromorphic Computing",
+      "cr_years": {
+        "print": 2024,
+        "online": 2023
+      },
+      "cr_volume": "36",
+      "cr_issue": "13",
+      "cr_page": null,
+      "cr_article_number": "2310155",
+      "title_similarity": 1.0
+    },
+    {
+      "key": "crosssim2024",
+      "type": "techreport",
+      "title": "CrossSim: Sandia's simulator for analog AI accelerators",
+      "year": "2024",
+      "doi": "10.2172/2585829",
+      "url": "https://doi.org/10.2172/2585829",
+      "eprint": null,
+      "crossref": "ok",
+      "cr_title": "CrossSim: Sandia's simulator for analog AI accelerators",
+      "cr_years": {
+        "print": 2024,
+        "online": null
+      },
+      "cr_volume": null,
+      "cr_issue": null,
+      "cr_page": null,
+      "cr_article_number": null,
+      "title_similarity": 1.0
+    },
+    {
+      "key": "photonics2025organicreview",
+      "type": "article",
+      "title": "Recent Progress in Organic Optoelectronic Synaptic Devices",
+      "year": "2025",
+      "doi": "10.3390/photonics12050435",
+      "url": "https://doi.org/10.3390/photonics12050435",
+      "eprint": null,
+      "crossref": "ok",
+      "cr_title": "Recent Progress in Organic Optoelectronic Synaptic Devices",
+      "cr_years": {
+        "print": null,
+        "online": 2025
+      },
+      "cr_volume": "12",
+      "cr_issue": "5",
+      "cr_page": "435",
+      "cr_article_number": null,
+      "title_similarity": 1.0
+    },
+    {
+      "key": "zhang2025mooptoelectronic",
+      "type": "article",
+      "title": "Large-scale High Uniform Optoelectronic Synapses Array for Artificial Visual Neural Network",
+      "year": "2025",
+      "doi": "10.1038/s41378-024-00859-2",
+      "url": "https://doi.org/10.1038/s41378-024-00859-2",
+      "eprint": null,
+      "crossref": "ok",
+      "cr_title": "Large-scale high uniform optoelectronic synapses array for artificial visual neural network",
+      "cr_years": {
+        "print": null,
+        "online": 2025
+      },
+      "cr_volume": "11",
+      "cr_issue": "1",
+      "cr_page": null,
+      "cr_article_number": "5",
+      "title_similarity": 1.0
+    },
+    {
+      "key": "cui2025multimode",
+      "type": "article",
+      "title": "Fully Integrated Multi-mode Optoelectronic Memristor Array for Diversified In-sensor Computing",
+      "year": "2025",
+      "doi": "10.1038/s41565-024-01794-z",
+      "url": "https://doi.org/10.1038/s41565-024-01794-z",
+      "eprint": null,
+      "crossref": "ok",
+      "cr_title": "Fully integrated multi-mode optoelectronic memristor array for diversified in-sensor computing",
+      "cr_years": {
+        "print": 2025,
+        "online": 2024
+      },
+      "cr_volume": "20",
+      "cr_issue": "1",
+      "cr_page": "93-103",
+      "cr_article_number": null,
+      "title_similarity": 1.0
+    },
+    {
+      "key": "jang2023insensor",
+      "type": "article",
+      "title": "In-sensor Computing: Materials, Devices, and Integration Technologies",
+      "year": "2023",
+      "doi": "10.1002/adma.202203830",
+      "url": "https://doi.org/10.1002/adma.202203830",
+      "eprint": null,
+      "crossref": "ok",
+      "cr_title": "In‐Sensor Computing: Materials, Devices, and Integration Technologies",
+      "cr_years": {
+        "print": 2023,
+        "online": 2022
+      },
+      "cr_volume": "35",
+      "cr_issue": "37",
+      "cr_page": null,
+      "cr_article_number": "2203830",
+      "title_similarity": 1.0
+    },
+    {
+      "key": "joshi2020accurate",
+      "type": "article",
+      "title": "Accurate Deep Neural Network Inference Using Computational Phase-Change Memory",
+      "year": "2020",
+      "doi": "10.1038/s41467-020-16108-9",
+      "url": "https://doi.org/10.1038/s41467-020-16108-9",
+      "eprint": null,
+      "crossref": "ok",
+      "cr_title": "Accurate deep neural network inference using computational phase-change memory",
+      "cr_years": {
+        "print": null,
+        "online": 2020
+      },
+      "cr_volume": "11",
+      "cr_issue": "1",
+      "cr_page": null,
+      "cr_article_number": "2473",
+      "title_similarity": 1.0
+    },
+    {
+      "key": "choi2019pact",
+      "type": "inproceedings",
+      "title": "{PACT}: Parameterized Clipping Activation for Quantized Neural Networks",
+      "year": "2018",
+      "doi": "10.48550/arXiv.1805.06085",
+      "url": "http://proceedings.mlr.press/v80/choi18a.html",
+      "eprint": null
+    },
+    {
+      "key": "tobin2017domain",
+      "type": "inproceedings",
+      "title": "Domain Randomization for Transferring Deep Neural Networks from Simulation to the Real World",
+      "year": "2017",
+      "doi": "10.1109/IROS.2017.8202133",
+      "url": "https://doi.org/10.1109/IROS.2017.8202133",
+      "eprint": null,
+      "crossref": "ok",
+      "cr_title": "Domain randomization for transferring deep neural networks from simulation to the real world",
+      "cr_years": {
+        "print": 2017,
+        "online": null
+      },
+      "cr_volume": null,
+      "cr_issue": null,
+      "cr_page": "23-30",
+      "cr_article_number": null,
+      "title_similarity": 1.0
+    },
+    {
+      "key": "liu2024wearable",
+      "type": "article",
+      "title": "A Wearable In-Sensor Computing Platform Based on Stretchable Organic Electrochemical Transistors",
+      "year": "2024",
+      "doi": "10.1038/s41928-024-01250-9",
+      "url": null,
+      "eprint": null,
+      "crossref": "ok",
+      "cr_title": "A wearable in-sensor computing platform based on stretchable organic electrochemical transistors",
+      "cr_years": {
+        "print": null,
+        "online": 2024
+      },
+      "cr_volume": "7",
+      "cr_issue": "12",
+      "cr_page": "1176-1185",
+      "cr_article_number": null,
+      "title_similarity": 1.0
+    },
+    {
+      "key": "beller2024organicneurons",
+      "type": "article",
+      "title": "Unravelling the Operation of Organic Artificial Neurons for Neuromorphic Bioelectronics",
+      "year": "2024",
+      "doi": "10.1038/s41467-024-49668-1",
+      "url": "https://doi.org/10.1038/s41467-024-49668-1",
+      "eprint": null,
+      "crossref": "ok",
+      "cr_title": "Unravelling the operation of organic artificial neurons for neuromorphic bioelectronics",
+      "cr_years": {
+        "print": null,
+        "online": 2024
+      },
+      "cr_volume": "15",
+      "cr_issue": "1",
+      "cr_page": null,
+      "cr_article_number": "5350",
+      "title_similarity": 1.0
+    },
+    {
+      "key": "ji2025singleoectneuron",
+      "type": "article",
+      "title": "Single-Transistor Organic Electrochemical Neurons",
+      "year": "2025",
+      "doi": "10.1038/s41467-025-59587-4",
+      "url": "https://doi.org/10.1038/s41467-025-59587-4",
+      "eprint": null,
+      "crossref": "ok",
+      "cr_title": "Single-transistor organic electrochemical neurons",
+      "cr_years": {
+        "print": null,
+        "online": 2025
+      },
+      "cr_volume": "16",
+      "cr_issue": "1",
+      "cr_page": null,
+      "cr_article_number": "4334",
+      "title_similarity": 1.0
+    },
+    {
+      "key": "harikesh2024oeneurons",
+      "type": "article",
+      "title": "Organic Electrochemical Neurons for Neuromorphic Perception",
+      "year": "2024",
+      "doi": "10.1038/s41928-024-01200-5",
+      "url": "https://doi.org/10.1038/s41928-024-01200-5",
+      "eprint": null,
+      "crossref": "ok",
+      "cr_title": "Organic electrochemical neurons for neuromorphic perception",
+      "cr_years": {
+        "print": null,
+        "online": 2024
+      },
+      "cr_volume": "7",
+      "cr_issue": "7",
+      "cr_page": "525-536",
+      "cr_article_number": null,
+      "title_similarity": 1.0
+    },
+    {
+      "key": "ando2025transfer",
+      "type": "inproceedings",
+      "title": "Transfer Learning on Edge Using 14nm {CMOS}-compatible {ReRAM} Array and Analog In-memory Training Algorithm",
+      "year": "2025",
+      "doi": "10.1109/IEDM50572.2025.11353900",
+      "url": "https://doi.org/10.1109/IEDM50572.2025.11353900",
+      "eprint": null,
+      "crossref": "ok",
+      "cr_title": "Transfer Learning on Edge Using 14nm CMOS-compatible ReRAM Array and Analog In-memory Training Algorithm",
+      "cr_years": {
+        "print": 2025,
+        "online": null
+      },
+      "cr_volume": null,
+      "cr_issue": null,
+      "cr_page": "1-4",
+      "cr_article_number": null,
+      "title_similarity": 1.0
+    },
+    {
+      "key": "qiu2025m3dattention",
+      "type": "inproceedings",
+      "title": "Monolithic 3D Integration of {MoS2} {eDRAM} and {RRAM} for Analog In-Memory Attention Computing",
+      "year": "2025",
+      "doi": "10.1109/IEDM50572.2025.11353844",
+      "url": "https://doi.org/10.1109/IEDM50572.2025.11353844",
+      "eprint": null,
+      "crossref": "ok",
+      "cr_title": "Monolithic 3D Integration of MoS\n                    <sub>2</sub>\n                    eDRAM and RRAM for Analog In-Memory Attention Computing",
+      "cr_years": {
+        "print": 2025,
+        "online": null
+      },
+      "cr_volume": null,
+      "cr_issue": null,
+      "cr_page": "1-4",
+      "cr_article_number": null,
+      "title_similarity": 0.994413407821229
+    },
+    {
+      "key": "yan2025learningaware",
+      "type": "inproceedings",
+      "title": "An 8Mb Learning-Aware {RRAM} Compute-in-Memory Accelerator for Embodied Self-Supervised Learning",
+      "year": "2025",
+      "doi": "10.1109/IEDM50572.2025.11353856",
+      "url": "https://doi.org/10.1109/IEDM50572.2025.11353856",
+      "eprint": null,
+      "crossref": "ok",
+      "cr_title": "An 8Mb Learning-Aware RRAM Compute-in-Memory Accelerator for Embodied Self-Supervised Learning",
+      "cr_years": {
+        "print": 2025,
+        "online": null
+      },
+      "cr_volume": null,
+      "cr_issue": null,
+      "cr_page": "1-4",
+      "cr_article_number": null,
+      "title_similarity": 1.0
+    },
+    {
+      "key": "mia2026trilinear",
+      "type": "misc",
+      "title": "Trilinear Compute-in-Memory Architecture for Energy-Efficient Transformer Acceleration",
+      "year": "2026",
+      "doi": null,
+      "url": null,
+      "eprint": "2604.07628",
+      "arxiv": "ok"
+    },
+    {
+      "key": "analogfm2025",
+      "type": "misc",
+      "title": "Analog Foundation Models",
+      "year": "2025",
+      "doi": null,
+      "url": "https://arxiv.org/abs/2505.09663",
+      "eprint": "2505.09663",
+      "arxiv": "ok"
+    },
+    {
+      "key": "lanza2025memristor",
+      "type": "article",
+      "title": "The Growing Memristor Industry",
+      "year": "2025",
+      "doi": "10.1038/s41586-025-08733-5",
+      "url": null,
+      "eprint": null,
+      "crossref": "ok",
+      "cr_title": "The growing memristor industry",
+      "cr_years": {
+        "print": 2025,
+        "online": 2025
+      },
+      "cr_volume": "640",
+      "cr_issue": "8059",
+      "cr_page": "613-622",
+      "cr_article_number": null,
+      "title_similarity": 1.0
+    },
+    {
+      "key": "wager2013dropout",
+      "type": "inproceedings",
+      "title": "Dropout Training as Adaptive Regularization",
+      "year": "2013",
+      "doi": null,
+      "url": "https://papers.nips.cc/paper/4882-dropout-training-as-adaptive-regularization",
+      "eprint": "1307.1493",
+      "arxiv": "ok"
+    },
+    {
+      "key": "kirkpatrick2017overcoming",
+      "type": "article",
+      "title": "Overcoming catastrophic forgetting in neural networks",
+      "year": "2017",
+      "doi": "10.1073/pnas.1611835114",
+      "url": "https://doi.org/10.1073/pnas.1611835114",
+      "eprint": null,
+      "crossref": "ok",
+      "cr_title": "Overcoming catastrophic forgetting in neural networks",
+      "cr_years": {
+        "print": 2017,
+        "online": 2017
+      },
+      "cr_volume": "114",
+      "cr_issue": "13",
+      "cr_page": "3521-3526",
+      "cr_article_number": null,
+      "title_similarity": 1.0
+    },
+    {
+      "key": "hochreiter1997flat",
+      "type": "article",
+      "title": "Flat Minima",
+      "year": "1997",
+      "doi": "10.1162/neco.1997.9.1.1",
+      "url": "https://doi.org/10.1162/neco.1997.9.1.1",
+      "eprint": null,
+      "crossref": "ok",
+      "cr_title": "Flat Minima",
+      "cr_years": {
+        "print": 1997,
+        "online": null
+      },
+      "cr_volume": "9",
+      "cr_issue": "1",
+      "cr_page": "1-42",
+      "cr_article_number": null,
+      "title_similarity": 1.0
+    },
+    {
+      "key": "roberts2022principles",
+      "type": "book",
+      "title": "The Principles of Deep Learning Theory: An Effective Theory Approach to Understanding Neural Networks",
+      "year": "2022",
+      "doi": "10.1017/9781009023405",
+      "url": "https://doi.org/10.1017/9781009023405",
+      "eprint": null,
+      "crossref": "ok",
+      "cr_title": "The Principles of Deep Learning Theory",
+      "cr_years": {
+        "print": 2022,
+        "online": 2022
+      },
+      "cr_volume": null,
+      "cr_issue": null,
+      "cr_page": null,
+      "cr_article_number": null,
+      "title_similarity": 0.5507246376811594
+    },
+    {
+      "key": "dziugaite2017computing",
+      "type": "inproceedings",
+      "title": "Computing Nonvacuous Generalization Bounds for Deep Stochastic Neural Networks with Many More Parameters than Training Data",
+      "year": "2017",
+      "doi": null,
+      "url": "https://mlanthology.org/uai/2017/dziugaite2017uai-computing/",
+      "eprint": "1703.11008",
+      "arxiv": "ok"
+    },
+    {
+      "key": "perez2021tighter",
+      "type": "article",
+      "title": "Tighter Risk Certificates for Neural Networks",
+      "year": "2021",
+      "doi": null,
+      "url": "https://jmlr.csail.mit.edu/papers/v22/20-879.html",
+      "eprint": null
+    },
+    {
+      "key": "foret2021sharpness",
+      "type": "inproceedings",
+      "title": "Sharpness-Aware Minimization for Efficiently Improving Generalization",
+      "year": "2021",
+      "doi": null,
+      "url": "https://openreview.net/forum?id=6Tm1mposlrM",
+      "eprint": "2010.01412",
+      "arxiv": "ok"
+    },
+    {
+      "key": "keskar2017large",
+      "type": "inproceedings",
+      "title": "On Large-Batch Training for Deep Learning: Generalization Gap and Sharp Minima",
+      "year": "2017",
+      "doi": null,
+      "url": "https://openreview.net/forum?id=H1oyRlYgg",
+      "eprint": "1609.04836",
+      "arxiv": "ok"
+    },
+    {
+      "key": "andriushchenko2022understanding",
+      "type": "inproceedings",
+      "title": "Towards Understanding Sharpness-Aware Minimization",
+      "year": "2022",
+      "doi": null,
+      "url": "https://proceedings.mlr.press/v162/andriushchenko22a.html",
+      "eprint": "2206.06232",
+      "arxiv": "ok"
+    },
+    {
+      "key": "mcallester1999some",
+      "type": "article",
+      "title": "Some PAC-Bayesian Theorems",
+      "year": "1999",
+      "doi": "10.1023/A:1007618624809",
+      "url": "https://doi.org/10.1023/A:1007618624809",
+      "eprint": null,
+      "crossref": "ok",
+      "cr_title": "Some PAC-Bayesian Theorems",
+      "cr_years": {
+        "print": 1999,
+        "online": null
+      },
+      "cr_volume": "37",
+      "cr_issue": "3",
+      "cr_page": "355-363",
+      "cr_article_number": null,
+      "title_similarity": 1.0
+    },
+    {
+      "key": "mcallester1999pac",
+      "type": "inproceedings",
+      "title": "PAC-Bayesian Model Averaging",
+      "year": "1999",
+      "doi": "10.1145/307400.307435",
+      "url": "https://doi.org/10.1145/307400.307435",
+      "eprint": null,
+      "crossref": "ok",
+      "cr_title": "PAC-Bayesian model averaging",
+      "cr_years": {
+        "print": 1999,
+        "online": 1999
+      },
+      "cr_volume": null,
+      "cr_issue": null,
+      "cr_page": "164-170",
+      "cr_article_number": null,
+      "title_similarity": 1.0
+    },
+    {
+      "key": "yousuf2025lea",
+      "type": "article",
+      "title": "Layer Ensemble Averaging for Fault Tolerance in Memristive Neural Networks",
+      "year": "2025",
+      "doi": "10.1038/s41467-025-56319-6",
+      "url": "https://doi.org/10.1038/s41467-025-56319-6",
+      "eprint": null,
+      "crossref": "ok",
+      "cr_title": "Layer ensemble averaging for fault tolerance in memristive neural networks",
+      "cr_years": {
+        "print": null,
+        "online": 2025
+      },
+      "cr_volume": "16",
+      "cr_issue": "1",
+      "cr_page": null,
+      "cr_article_number": "1250",
+      "title_similarity": 1.0
+    },
+    {
+      "key": "wang2025vant",
+      "type": "misc",
+      "title": "Variance-Aware Noisy Training: Hardening {DNN}s against Unstable Analog Computations",
+      "year": "2025",
+      "doi": null,
+      "url": "https://arxiv.org/abs/2503.16183",
+      "eprint": "2503.16183",
+      "arxiv": "ok"
+    },
+    {
+      "key": "yoshioka2024isscc",
+      "type": "inproceedings",
+      "title": "A 818--4094{TOPS/W} Capacitor-Reconfigured {CIM} Macro for Unified Acceleration of {CNN}s and Transformers",
+      "year": "2024",
+      "doi": "10.1109/ISSCC49657.2024.10454489",
+      "url": "https://doi.org/10.1109/ISSCC49657.2024.10454489",
+      "eprint": null,
+      "crossref": "ok",
+      "cr_title": "34.5 A 818-4094TOPS/W Capacitor-Reconfigured CIM Macro for Unified Acceleration of CNNs and Transformers",
+      "cr_years": {
+        "print": 2024,
+        "online": null
+      },
+      "cr_volume": null,
+      "cr_issue": null,
+      "cr_page": "574-576",
+      "cr_article_number": null,
+      "title_similarity": 0.9753694581280788
+    },
+    {
+      "key": "yoshioka2025jssc",
+      "type": "article",
+      "title": "A 818--4094 {TOPS/W} Capacitor-Reconfigured Analog {CIM} for Unified Acceleration of {CNN}s and Transformers",
+      "year": "2025",
+      "doi": "10.1109/JSSC.2024.3457898",
+      "url": "https://doi.org/10.1109/JSSC.2024.3457898",
+      "eprint": null,
+      "crossref": "ok",
+      "cr_title": "A 818–4094 TOPS/W Capacitor-Reconfigured Analog CIM for Unified Acceleration of CNNs and Transformers",
+      "cr_years": {
+        "print": 2025,
+        "online": null
+      },
+      "cr_volume": "60",
+      "cr_issue": "5",
+      "cr_page": "1844-1855",
+      "cr_article_number": null,
+      "title_similarity": 1.0
+    },
+    {
+      "key": "wolters2024memory",
+      "type": "misc",
+      "title": "Memory Is All You Need: An Overview of Compute-in-Memory Architectures for Accelerating Large Language Model Inference",
+      "year": "2024",
+      "doi": null,
+      "url": "https://arxiv.org/abs/2406.08413",
+      "eprint": "2406.08413",
+      "arxiv": "ok"
+    },
+    {
+      "key": "yu2025fullstack",
+      "type": "article",
+      "title": "A Full-Stack Memristor-Based Computation-in-Memory System with Software-Hardware Co-Development",
+      "year": "2025",
+      "doi": "10.1038/s41467-025-57183-0",
+      "url": "https://doi.org/10.1038/s41467-025-57183-0",
+      "eprint": null,
+      "crossref": "ok",
+      "cr_title": "A full-stack memristor-based computation-in-memory system with software-hardware co-development",
+      "cr_years": {
+        "print": null,
+        "online": 2025
+      },
+      "cr_volume": "16",
+      "cr_issue": "1",
+      "cr_page": null,
+      "cr_article_number": "2123",
+      "title_similarity": 1.0
+    },
+    {
+      "key": "wu2025halora",
+      "type": "misc",
+      "title": "{HaLoRA}: Hardware-aware Low-Rank Adaptation for Large Language Models Based on Hybrid Compute-in-Memory Architecture",
+      "year": "2025",
+      "doi": null,
+      "url": "https://arxiv.org/abs/2502.19747",
+      "eprint": "2502.19747",
+      "arxiv": "ok"
+    },
+    {
+      "key": "wu2025neurips_train",
+      "type": "inproceedings",
+      "title": "Analog In-memory Training on General Non-ideal Resistive Elements: The Impact of Response Functions",
+      "year": "2025",
+      "doi": null,
+      "url": "https://neurips.cc/virtual/2025/poster/116321",
+      "eprint": null
+    },
+    {
+      "key": "rasch2023ncomms",
+      "type": "article",
+      "title": "Hardware-Aware Training for Large-Scale and Diverse Deep Learning Inference Workloads Using In-Memory Computing-Based Accelerators",
+      "year": "2023",
+      "doi": "10.1038/s41467-023-40770-4",
+      "url": "https://doi.org/10.1038/s41467-023-40770-4",
+      "eprint": null,
+      "crossref": "ok",
+      "cr_title": "Hardware-aware training for large-scale and diverse deep learning inference workloads using in-memory computing-based accelerators",
+      "cr_years": {
+        "print": null,
+        "online": 2023
+      },
+      "cr_volume": "14",
+      "cr_issue": "1",
+      "cr_page": null,
+      "cr_article_number": "5282",
+      "title_similarity": 1.0
+    }
+  ]
+}

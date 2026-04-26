@@ -1,0 +1,142 @@
+% fig2_weight_mapping.tex — TikZ v2 optimized
+% 7-stage weight mapping flow: Input → Quantize → Diff Pair → Noise → MAC → ADC → Scale Recovery
+\documentclass[tikz,border=8pt]{standalone}
+\usepackage{amsmath}
+\renewcommand{\familydefault}{\sfdefault}
+\usepackage{tikz}
+\usetikzlibrary{positioning,arrows.meta,shapes.geometric,fit,backgrounds,calc,decorations.pathreplacing,patterns,patterns.meta}
+
+\definecolor{anaBlue}{RGB}{80,140,210}
+\definecolor{anaBlueBg}{RGB}{210,225,250}
+\definecolor{digiOrange}{RGB}{220,140,60}
+\definecolor{digiOrangeBg}{RGB}{255,235,210}
+\definecolor{noiseRed}{RGB}{200,70,70}
+\definecolor{noiseRedBg}{RGB}{255,225,225}
+
+\begin{document}
+\begin{tikzpicture}[scale=0.72, transform shape,
+  stagebox/.style={draw=black!30, rounded corners=3pt, inner sep=6pt, font=\sffamily, align=center, minimum width=1.15cm, minimum height=2.8cm},
+  analogstage/.style={stagebox, fill=anaBlueBg, draw=anaBlue!70, pattern={dots[radius=0.4pt, distance=2.5pt]}, pattern color=anaBlue!20},
+  digitalstage/.style={stagebox, fill=digiOrangeBg, draw=digiOrange!70},
+  noisestage/.style={stagebox, fill=noiseRedBg, draw=noiseRed!70, pattern={crosshatch[distance=3pt]}, pattern color=noiseRed!15},
+  arrowstyle/.style={->, >=Stealth, thick, draw=black!50},
+  steplabel/.style={font=\footnotesize\bfseries\sffamily, text=black!65},
+  mathlabel/.style={font=\tiny\sffamily, text=black!50},
+]
+
+% === Stage positions (compressed) ===
+\def\sx{0.9}
+
+% --- S1: Input ---
+\node[stagebox, fill=black!3, ] (S1) at (0, 0) {
+  \textbf{Software Weight}\\[2pt]
+  \begin{tikzpicture}[scale=0.3]
+    \foreach \r in {0,1,2,3} {
+      \foreach \c in {0,1,2,3} {
+        \pgfmathsetmacro{\pct}{int(30 + 15*\r + 12*\c)}
+        \fill[black!\pct] (\c*0.7, -\r*0.7) rectangle + (0.6, 0.6);
+      }
+    }
+  \end{tikzpicture}\\[1pt]
+  \tiny $W$ (FP32)
+};
+\node[steplabel, above=0.5cm] at (S1.north) {1. Input};
+
+% --- S2: Quantize ---
+\node[digitalstage, minimum height=2.6cm, right=\sx of S1] (S2) {
+  \textbf{Quantization}\\[3pt]
+  \begin{tikzpicture}[scale=0.3]
+    \foreach \r in {0,1,2,3} {
+      \foreach \c in {0,1,2,3} {
+        \pgfmathsetmacro{\val}{int(2+1.5*\r+1.2*\c)}
+        \pgfmathsetmacro{\pct}{int(100*min(1,\val/15))}
+        \fill[digiOrange!\pct] (\c*0.7, -\r*0.7) rectangle + (0.6, 0.6);
+      }
+    }
+  \end{tikzpicture}\\[1pt]
+  \tiny $W_q$ (4-bit)
+};
+\node[steplabel, above=0.5cm] at (S2.north) {2. Quantize};
+
+\draw[arrowstyle] (S1.east) -- (S2.west) node[midway, above, font=\tiny\sffamily] {4-bit};
+
+% --- S3: Diff Pair ---
+\node[analogstage, minimum height=2.6cm, right=\sx of S2] (S3) {
+  \textbf{Diff.\ Pair}\\[3pt]
+  \tiny $G^+_{ij} = g_0 + \alpha q_{ij}$\\[1pt]
+  \tiny $G^-_{ij} = g_0 - \alpha q_{ij}$\\[2pt]
+  \small $G^+ \!- G^- \propto W_q$
+};
+\node[steplabel, above=0.5cm] at (S3.north) {3. Map};
+
+\draw[arrowstyle] (S2.east) -- (S3.west) node[midway, above, font=\tiny\sffamily] {encode};
+
+% --- S4: Noise ---
+\node[noisestage, minimum height=2.6cm, right=\sx of S3] (S4) {
+  \textbf{Device Noise}\\[2pt]
+  \tiny $W_{\text{eff}} = W_q \!\cdot\! G$\\[1pt]
+  \tiny $\odot(1 \!+\! M_{\text{D2D}})$\\[1pt]
+  \tiny $+ \,\xi_{\text{C2C}}$\\[2pt]
+  \textcolor{noiseRed}{\tiny $\sigma_{\text{D2D}}\!=\!0.1$}\\[0pt]
+  \textcolor{noiseRed}{\tiny $\sigma_{\text{C2C}}\!=\!0.05$}
+};
+\node[steplabel, above=0.5cm] at (S4.north) {4. Noise};
+
+\draw[arrowstyle] (S3.east) -- (S4.west) node[midway, above, font=\tiny\sffamily] {D2D + C2C};
+
+% --- S5: MAC ---
+\node[analogstage, minimum height=2.6cm, right=\sx of S4] (S5) {
+  \textbf{Analog MAC}\\[3pt]
+  \tiny $I_{\text{out}} = W_{\text{eff}} \cdot x$\\[2pt]
+  \small Crossbar\\[1pt]
+  \textcolor{anaBlue}{\tiny $O(n^2)$ in $O(1)$}
+};
+\node[steplabel, above=0.5cm] at (S5.north) {5. Compute};
+
+\draw[arrowstyle] (S4.east) -- (S5.west) node[midway, above, font=\tiny\sffamily] {$V_{\text{in}}$};
+
+% --- S6: ADC ---
+\node[digitalstage, minimum height=2.6cm, right=\sx of S5] (S6) {
+  \textbf{ADC}\\[3pt]
+  \tiny $I_{\text{out}} \!\rightarrow\! d_{\text{out}}$\\[2pt]
+  \small 6-bit\\[1pt]
+  \tiny DNL $\approx$ 0.5 LSB
+};
+\node[steplabel, above=0.5cm] at (S6.north) {6. Digitize};
+
+\draw[arrowstyle] (S5.east) -- (S6.west) node[midway, above, font=\tiny\sffamily] {$I_{\text{out}}$};
+
+% --- S7: Scale Recovery ---
+\node[digitalstage, minimum height=2.6cm, right=\sx of S6] (S7) {
+  \textbf{Scale Recovery}\\[3pt]
+  \tiny $y = (d_{\text{out}} / G_{\text{ref}}) \cdot s$\\[2pt]
+  \small Calibrated\\[1pt]
+  $y$ (activation)
+};
+\node[steplabel, above=0.5cm] at (S7.north) {7. Recover};
+
+\draw[arrowstyle] (S6.east) -- (S7.west) node[midway, above, font=\tiny\sffamily] {$d_{\text{out}}$};
+
+% === Domain bands ===
+\begin{scope}[on background layer]
+  \fill[digiOrange!6] ($(S1.north west) + (-0.2,0.7)$) rectangle ($(S2.south east) + (0.2,-0.3)$);
+  \fill[anaBlue!6] ($(S3.north west) + (-0.2,0.7)$) rectangle ($(S5.south east) + (0.2,-0.3)$);
+  \fill[digiOrange!6] ($(S6.north west) + (-0.2,0.7)$) rectangle ($(S7.south east) + (0.2,-0.3)$);
+\end{scope}
+
+% Domain labels
+\node[font=\tiny\sffamily, text=digiOrange!70!black] at ($(S1.south)!0.5!(S2.south) + (0,-0.5)$) {Digital};
+\node[font=\tiny\sffamily, text=anaBlue!70!black] at ($(S3.south)!0.5!(S5.south) + (0,-0.5)$) {Analog (crossbar)};
+\node[font=\tiny\sffamily, text=digiOrange!70!black] at ($(S6.south)!0.5!(S7.south) + (0,-0.5)$) {Digital};
+
+% Noise marker
+\node[draw=noiseRed, circle, inner sep=0.5pt, fill=noiseRed!30, font=\tiny\bfseries\sffamily, text=noiseRed!80!black]
+  at ($(S4.north east) + (-0.15,0.15)$) {!};
+
+% Bottom flow arrow
+\draw[->, >=Stealth, very thick, draw=black!20]
+  ($(S1.south west) + (0,-0.9)$) -- ($(S7.south east) + (0,-0.9)$)
+  node[midway, below=1pt, font=\tiny\sffamily, text=black!35] {Forward-pass data flow};
+
+\end{tikzpicture}
+\end{document}

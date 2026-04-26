@@ -5,12 +5,12 @@
 \subsection{Baseline Digital Performance}
 \label{subsec:baseline-digital}
 
-Digital FP32 baselines are 95.46\% (ResNet-18), 90.74\% (ConvNeXt-Tiny), and 98.06\% (Tiny-ViT-5M) on CIFAR-10, with corresponding CIFAR-100 values of 78.64\%, 64.12\%, and 86.94\%. All accuracy values reported for noisy and HAT deployments are best-checkpoint results unless otherwise stated. ConvNeXt probes analog adaptation from random initialization, whereas Tiny-ViT probes foundation-model deployment.
+Digital FP32 baselines are 95.46\% (ResNet-18), 90.74\% (ConvNeXt-Tiny), and 98.06\% (Tiny-ViT-5M) on CIFAR-10, with corresponding CIFAR-100 values of 78.64\%, 64.12\%, and 86.94\%.
 
 \subsection{Quantization and Noise Resilience}
 \label{subsec:quantization-noise}
 
-Quantization alone introduces only a modest penalty in 4-bit hybrid models. The zero-noise hybrid control (V2; Table~\ref{tab:exp-notation}) retains 97.39$\pm$0.00\% ($n=10$ deterministic evaluations), suggesting that 4-bit mapping by itself is not the dominant source of error in the present setup. Under the canonical uniform-noise profile, the recovered-weight law later formalized in Eq.~\ref{eq:scale-recovery} suppresses much of the effective analog perturbation below the 4-bit least significant bit, so many noisy conductance realizations are mapped back into the same recovered weight bin after calibration. This behavior disappears once the noise law becomes state-dependent (Section~\ref{subsec:nl-hat-stress}).
+The zero-noise hybrid control (V2; Table~\ref{tab:exp-notation}) retains 97.39$\pm$0.00\% ($n=10$ deterministic evaluations). The recovered-weight law (Eq.~\ref{eq:scale-recovery}) suppresses much effective analog perturbation below the 4-bit LSB.
 
 \begin{figure}[t]
     \centering
@@ -26,19 +26,21 @@ Quantization alone introduces only a modest penalty in 4-bit hybrid models. The 
     \label{fig:hat-recovery}
 \end{figure}
 
-Deployment fragility increases with task complexity (Figs.~\ref{fig:accuracy-comparison}--\ref{fig:hat-recovery}). On CIFAR-100, HAT improves Tiny-ViT from 44.06\% to 65.48\% and ConvNeXt from 23.86\% to 60.54\%.
+On CIFAR-100, HAT improves Tiny-ViT from 44.06\% to 65.48\% and ConvNeXt from 23.86\% to 60.54\%.
 
-An extended ADC sweep confirms the same 6-bit threshold on ConvNeXt-Tiny (Supplementary Fig.~\SuppFigNoiseSweep). The iso-accuracy contour analysis (Section~\ref{subsec:iso-accuracy}) shows that this cliff is largely independent of device variability, producing a consistent $\sim$7~pp transition across all tested $\sigma_{\mathrm{D2D}}$ levels.
+The same 6-bit threshold holds on ConvNeXt-Tiny (Supplementary Fig.~\SuppFigNoiseSweep), and the iso-accuracy contour analysis (Section~\ref{subsec:iso-accuracy}) shows this cliff is independent of device variability, producing a consistent $\sim$7~pp transition across all tested $\sigma_{\mathrm{D2D}}$ levels.
 
 \subsection{Retention and Temporal Drift}
 \label{subsec:retention-drift}
 
-The corrected retention-aware follow-up model (V8) exhibits a rapid early drop (91.63\% at 0~s $\rightarrow$ 82.66\% at 1~s) followed by a broad plateau near 79\% (79.13--79.51\%) through 10~000~s (Supplementary Fig.~\SuppFigRetention), consistent with the uniform decay model being adequate in the present regime.
+The corrected retention-aware follow-up model (V8) exhibits a rapid early drop (91.63\% at 0~s $\rightarrow$ 82.66\% at 1~s) followed by a broad plateau near 79\% (79.13--79.51\%) through 10~000~s (Supplementary Fig.~\SuppFigRetention).
 
 \subsection{Hardware-Instance Transferability}
 \label{subsec:hardware-transferability}
 
-Fresh-instance evaluation reveals that standard fixed-mask HAT (V4) collapses to chance level (10.00\%) on arrays with different fixed D2D realizations, indicating pronounced hardware-instance overfitting. In this setting the 10.00\% result reflects a collapsed single-class predictor on class-balanced CIFAR-10 rather than a noisy dispersion around chance. The collapse was independently confirmed under FP32 inference with autocast disabled across the same 10 fresh D2D instances and 5 Monte Carlo evaluations per instance, yielding \(10.00\pm0.00\%\) in the no-AMP recovery run (\texttt{fresh\_instance\_eval\_v4\_standard\_noamp.json}). The single-class predictor is a deterministic outcome of fixed-mask training under epoch-resampled D2D, not a numerical artifact. This motivates the distribution-matched Ensemble HAT objective (Eq.~\ref{eq:hat-ensemble-distribution}), formally defined in Section~\ref{sec:methodology} and instantiated in Section~\ref{subsec:nl-hat-stress}.
+Standard fixed-mask HAT (V4) collapses to chance level (10.00\%) on arrays with different fixed D2D realizations, indicating pronounced hardware-instance overfitting. The collapse was independently confirmed under no-AMP FP32 inference (Supplementary Note S-Verification). This motivates the distribution-matched Ensemble HAT objective (Eq.~\ref{eq:hat-ensemble-distribution}), formally defined in Section~\ref{sec:methodology} and instantiated in Section~\ref{subsec:nl-hat-stress}.
+
+A canonical class-distribution diagnostic clarifies the collapse mechanism. Re-evaluating the fixed-mask Standard HAT checkpoint on five fresh D2D instances yields $10.00\pm0.00\%$ accuracy; for every instance, all 10\,000 test images are assigned to a single CIFAR-10 class (prediction entropy $\approx0$, maximum-class frequency $=100\%$). Under the same five-instance protocol, canonical Ensemble HAT reaches $85.97\pm1.98\%$ with near-uniform prediction entropy ($2.28$ vs.~$\ln 10$) and a maximum-class frequency of $15.27\pm2.27\%$ (Supplementary Fig.~\SuppFigCollapseMechanism). Thus, the fixed-mask failure is a deterministic single-class hardware-instance collapse rather than Monte Carlo noise or mixed-precision evaluation drift, and epoch-level D2D resampling prevents this degenerate predictor.
 
 \subsection{Physical Front-end Compensation}
 \label{subsec:frontend-compensation}
@@ -48,7 +50,7 @@ The organic phototransistor front end exhibits a sublinear photoresponse $I_{\te
 \subsection{Iso-Accuracy Operating Envelope}
 \label{subsec:iso-accuracy}
 
-A 63-point joint sweep over $\sigma_{\mathrm{D2D}} \in \{1,3,5,8,10,15,20\}\%$ and ADC $\in \{2,3,4,5,6,7,8,10,12\}$ bits (10 MC runs per point) reveals three regimes (Figure~\ref{fig:contour-map}). Below 5-bit ADC, accuracy collapses to near-chance; the 5-to-6-bit transition yields a consistent $\sim$7~pp jump (mean across all seven D2D levels; the per-row jump ranged from 5.8 to 8.1~pp). Above 6 bits, degradation is dominated by D2D: $\leq$10\% D2D maintains $>$84\%, while 20\% D2D reduces it to 71--77\%. Sobol analysis (Eq.~\ref{eq:sobol-first-order}; defined in Section~\ref{sec:methodology}) confirms the two-phase structure: $S_{\mathrm{ADC}}=0.98$ over the full grid, and $S_{\mathrm{D2D}}=0.92$ in the operational region ($\geq$6~bits, $\sigma_{\mathrm{D2D}} \leq 15\%$), with negligible interaction ($<$4\%).
+A 63-point joint sweep over $\sigma_{\mathrm{D2D}} \in \{1,3,5,8,10,15,20\}\%$ and ADC $\in \{2,3,4,5,6,7,8,10,12\}$ bits (10 MC runs per point) reveals three regimes (Figure~\ref{fig:contour-map}). Below 5-bit ADC, accuracy collapses to near-chance; the 5-to-6-bit transition yields a consistent $\sim$7~pp jump. Above 6 bits, degradation is dominated by D2D: $\leq$10\% D2D maintains $>$84\%, while 20\% D2D reduces it to 71--77\%. Sobol indices (Eq.~\ref{eq:sobol-first-order}) are $S_{\mathrm{ADC}}=0.98$ over the full grid and $S_{\mathrm{D2D}}=0.92$ in the operational region ($\geq$6~bits, $\sigma_{\mathrm{D2D}} \leq 15\%$), with negligible interaction ($<$4\%).
 
 \begin{figure}[t]
     \centering
@@ -60,21 +62,21 @@ A 63-point joint sweep over $\sigma_{\mathrm{D2D}} \in \{1,3,5,8,10,15,20\}\%$ a
 \subsection{Nonlinear Writing and Hardware-Aware Training}
 \label{subsec:nl-hat-stress}
 
-Proportional-noise HAT recovers Tiny-ViT to 97.37$\pm$0.05\% when training and evaluation physics are aligned. This robustness is strongly regime-specific: the same checkpoint falls to 10.38$\pm$0.44\% when evaluated under the original uniform-noise semantics. For ConvNeXt-Tiny, proportional-noise HAT reaches 91.98\% with 91.91$\pm$0.08\% Monte Carlo performance in the best single run.
+Proportional-noise HAT recovers Tiny-ViT to 97.37$\pm$0.05\% when training and evaluation physics are aligned, but falls to 10.38$\pm$0.44\% under uniform-noise semantics. For ConvNeXt-Tiny, proportional-noise HAT reaches 91.98\% (91.91$\pm$0.08\% Monte Carlo).
 
-Ensemble HAT (Figure~\ref{fig:ensemble-hat-concept}; formally defined in Section~\ref{sec:methodology}, Eq.~\ref{eq:hat-ensemble-distribution}) preserves 86.37$\pm$1.54\% across 10 fresh arrays under canonical uniform noise ($NL=1.0$), overwhelming standard HAT (one-sample $t$-test against the chance-level baseline, $n=10$ fresh arrays per arm, $p<10^{-15}$). An exploratory single-run training-ablation cadence scan (Supplementary Fig.~\SuppFigZeroShot) shows epoch-level resampling reaches 88.41\% (50-epoch training ablation), versus 87.18\% (fixed) and 86.16\% (per-batch), confirming that structured epoch-level resampling rather than per-batch perturbation is the load-bearing schedule choice.
+Ensemble HAT (Figure~\ref{fig:ensemble-hat-concept}; Eq.~\ref{eq:hat-ensemble-distribution}) preserves 86.16$\pm$0.19\% across three protocol-matched training seeds under canonical uniform noise ($NL=1.0$), with each seed evaluated on 10 fresh arrays and five Monte Carlo passes per array. The original plotted canonical checkpoint remains 86.37$\pm$1.54\% across its 10 fresh arrays, and all three seeds remain far above standard fixed-mask HAT ($10.00\pm0.00\%$). An ablation scan (Supplementary Fig.~\SuppFigZeroShot) shows epoch-level resampling reaches 88.41\% (50-epoch), versus 87.18\% (fixed) and 86.16\% (per-batch), confirming structured epoch-level resampling as the load-bearing schedule choice.
 
 \begin{figure}[t]
     \centering
     \includegraphics[width=0.88\textwidth]{figS3_ensemble_hat}
-    \caption{\textbf{Ensemble HAT concept.} Standard HAT reuses one fixed D2D mismatch map throughout training, whereas Ensemble HAT resamples the mismatch map at each epoch. The fresh-instance transfer panel (right) shows that standard HAT collapses to chance level on unseen hardware instances, while Ensemble HAT maintains $86.37\pm1.54\%$ across ten fresh arrays.}
+    \caption{\textbf{Ensemble HAT concept.} Standard HAT reuses one fixed D2D mismatch map throughout training, whereas Ensemble HAT resamples the mismatch map at each epoch. The fresh-instance transfer panel (right) shows the original canonical checkpoint: standard HAT collapses to chance level on unseen hardware instances, while Ensemble HAT maintains $86.37\pm1.54\%$ across ten fresh arrays. A protocol-matched three-seed rerun gives $86.16\pm0.19\%$ across seed-level fresh-instance means.}
     \label{fig:ensemble-hat-concept}
 \end{figure}
 
-The full accuracy matrix is provided in the Supplementary Information. Tiny-ViT demonstrates superior baseline accuracy and significant recovery under HAT, especially on complex tasks, though it remains sensitive to nonlinear write dynamics.
+
 
 \paragraph{Severe-NL retraining after gradient-scaling correction.}
-Retraining under severe write non-linearity ($NL=2.0$) was repeated with a revised gradient-scaling recipe (Section~\ref{subsec:modeling-nonidealities}). Table~\ref{tab:severe-nl-recovery} summarizes the local M-series results; remote batch-512 results (83.64\% Standard, 84.80\% Proportional) are provided in the Supplementary Information. All packets use true $NL_{\text{LTP}}=2.0$ and $NL_{\text{LTD}}=-2.0$ in both training and evaluation; the training forward path employs a differentiable ADC surrogate (no per-layer quantizers), while post-module-output hook diagnostic quantization is injected via inference-time hooks calibrated per-instance on each fresh noisy hardware realization (\S\ref{subsec:iso-accuracy}). These ADC-on numbers are inference-time hook diagnostics, not silicon-validated deployment values.
+Retraining under severe write non-linearity ($NL=2.0$) was repeated with a revised gradient-scaling recipe (Section~\ref{subsec:modeling-nonidealities}). Table~\ref{tab:severe-nl-recovery} summarizes the local M-series results; remote batch-512 results (83.64\% Standard, 84.80\% Proportional) are provided in the Supplementary Information. All packets use true $NL_{\text{LTP}}=2.0$ and $NL_{\text{LTD}}=-2.0$ in both training and evaluation. Per-instance ADC range recalibration confirms the static-cal protocol does not bias the headline.
 
 \begin{table}[htbp]
 \centering
@@ -96,14 +98,16 @@ M4 & Ensemble (V4) & Proportional & 456 & 80.67 & 0.41 & 80.75 \\
 }
 \end{table}
 
-Four observations emerge from the M-series evidence, now spanning three independent seeds (123, 456, 789). First, \textbf{all true-NL2 routes recover to the same $\sim$80--82\% band}, irrespective of noise law or D2D resampling strategy. Second, \textbf{Standard and Ensemble HAT do not separate within seed variance} (Standard uniform $81.20\%$ vs Ensemble uniform $80.54\%$ across three seeds). Third, \textbf{proportional noise offers no special advantage under $NL=2.0$} ($80.83\%$ vs uniform $80.54\%$). Fourth, \textbf{post-module-output hook diagnostic 8-bit ADC quantization does not materially alter the headline} ($-0.10$~pp on average), while a 6-bit spot-check reveals a larger $-2.8$~pp cliff, consistent with \S\ref{subsec:iso-accuracy}. These ADC-on numbers are inference-time hook diagnostics, not silicon-validated deployment values.
+An intermediate NL sweep (Ensemble HAT, seed 123, uniform noise) bridges the canonical and severe regimes. At $NL=1.2$ the fresh-instance mean is $83.03\pm0.22\%$; at $NL=1.5$ it is $82.63\pm0.10\%$; and at $NL=1.8$ it falls to $80.31\pm0.40\%$ (Supplementary Table~\ref{tab:r10d-nl-interpolation}). The degradation is gradual rather than abrupt, with the largest drop occurring between $NL=1.5$ and $NL=1.8$. This monotonic trend supports the interpretation that the $\sim$5~pp residual gap at $NL=2.0$ reflects a training-recipe limitation in the strongly nonlinear regime, not a physical accuracy floor.
 
-With the revised gradient-scaling recipe, severe-NL retraining recovers to the $\sim$80--82\% band, leaving a residual gap of roughly 15~pp to the digital baseline that is a joint effect of non-linear write dynamics and fresh-instance transfer, not of transfer alone.
+Four observations emerge from the M-series evidence (seeds 123, 456, 789). First, all true-NL2 routes recover to $\sim$80--82\%, irrespective of noise law or D2D resampling. Second, Standard and Ensemble HAT do not separate within seed variance (Standard uniform $81.20\%$ vs Ensemble uniform $80.54\%$). Third, proportional noise offers no advantage under $NL=2.0$ ($80.83\%$ vs uniform $80.54\%$). Fourth, 8-bit ADC quantization does not materially alter the headline ($-0.10$~pp), while a 6-bit spot-check reveals a $-2.8$~pp cliff, consistent with \S\ref{subsec:iso-accuracy}.
+
+Severe-NL retraining recovers to $\sim$80--82\%, leaving a residual gap of roughly 15~pp to the digital baseline.
 
 \subsection{Case Study: Zero-Shot Transfer to a Literature-Calibrated Device}
 \label{subsec:case-study}
 
-As a literature-anchored reference point, we simulated zero-shot transfer to a 2025 OPECT array \citep{zhang2025opect} ($\sigma_{\mathrm{C2C}}=2\%, \sigma_{\mathrm{D2D}}=3\%$). Figure~\ref{fig:case-study-transfer} shows that the standard-HAT checkpoints transfer poorly to these alternative profiles: ConvNeXt retains only partial transfer, whereas Tiny-ViT V4 collapses to chance level (10.00\%) across all shown alternatives. By contrast, the Ensemble-HAT checkpoint reaches \textbf{88.53$\pm$0.08\%} ($n=10$ fresh-instance evaluations) under the nominal OPECT proxy in the same workflow.
+We simulated zero-shot transfer to a 2025 OPECT array \citep{zhang2025opect} ($\sigma_{\mathrm{C2C}}=2\%, \sigma_{\mathrm{D2D}}=3\%$). Figure~\ref{fig:case-study-transfer} shows that standard-HAT checkpoints transfer poorly: ConvNeXt retains partial transfer, whereas Tiny-ViT V4 collapses to chance level (10.00\%) across all alternatives. By contrast, the Ensemble-HAT checkpoint reaches \textbf{88.53$\pm$0.08\%} ($n=10$ fresh-instance evaluations) under the nominal OPECT proxy.
 
 \begin{figure}[t]
     \centering
@@ -112,4 +116,4 @@ As a literature-anchored reference point, we simulated zero-shot transfer to a 2
     \label{fig:case-study-transfer}
 \end{figure}
 
-This literature-anchored case study illustrates how the framework links reported physical metrics to algorithm deployment risk. The stark contrast between standard and Ensemble HAT on literature-calibrated benchmarks suggests that addressing spatial mismatch map overfitting is important for realizing the potential of emerging organic optoelectronic arrays.
+The OPECT case study \citep{zhang2025opect} provides \textbf{one literature-anchored validation point}; we choose it because it is the most complete published organic-array characterization to date, with documented D2D, C2C, and conductance-window statistics. The framework is \textbf{profile-agnostic by design}: any measured device statistics can be ingested through the documented profile interface (Supplementary Note S-HW). We anticipate cross-validation against additional fabricated profiles in a companion study; the present zero-shot transfer demonstrates the framework's portability without retraining, not a claim that OPECT is universally representative.

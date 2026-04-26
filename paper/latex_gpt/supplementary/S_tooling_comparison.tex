@@ -20,3 +20,7 @@ The 14.4~pp divergence reflects a physical-modeling convention difference: we us
 \subsection*{S-T.2 Conceptual ancestry}
 
 We acknowledge AIHWKit (Rasch \emph{et al.}\ 2023) as the conceptual ancestor of the train-with-differentiable-surrogate / eval-with-ADC discipline and the per-epoch noise resampling primitives used in the present framework.
+
+\subsection*{S-T.3 AIHWKit head-to-head attempt}
+
+We attempted a direct head-to-head replication of the canonical Tiny-ViT V4 checkpoint in AIHWKit~v0.9.1. Conversion failed with \texttt{ValueError: Only one group is supported}, because Tiny-ViT's patch-embedding and stage-0 blocks employ grouped convolutions (depthwise-separable filters) that AIHWKit's \texttt{AnalogConv2d} does not currently map. A ResNet-18 equivalent (no grouped convolutions) converts successfully, but that architecture is outside the present study's scope. This limitation underscores why a custom framework was necessary for Vision-Transformer CIM evaluation: contemporary open-source analog-training toolkits are optimized for standard convolutions and fully-connected layers, not for the heterogeneous operator mix (grouped conv, attention, MLP) found in modern ViTs.

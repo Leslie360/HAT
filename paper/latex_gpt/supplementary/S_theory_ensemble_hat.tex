@@ -199,7 +199,7 @@ Expanding to second order (as in \S\ref{supp:theory-ensemble-hat}) gives:
     \approx \frac{\sigma_{\text{D2D}}^2}{2}\sum_i W_i^2\,\frac{\partial^2\ell}{\partial\theta_i^2},
     \label{eq:d2d-sharpness-second}
 \end{equation}
-which is precisely the implicit regularizer in \eqref{eq:implicit-regularizer-grad-l2}, rewritten in Hessian form. A small $\mathcal{S}_{\text{D2D}}$ means the loss landscape is flat in the $M$-direction: fresh D2D realizations, drawn from the same $\mathcal{D}_{\text{D2D}}$, land near the same minimum with high probability. This is the geometric mechanism underlying the empirical 86.37\% fresh-instance recovery versus the 10.00\% Standard HAT collapse.
+which is precisely the implicit regularizer in \eqref{eq:implicit-regularizer-grad-l2}, rewritten in Hessian form. A small $\mathcal{S}_{\text{D2D}}$ means the loss landscape is flat in the $M$-direction: fresh D2D realizations, drawn from the same $\mathcal{D}_{\text{D2D}}$, land near the same minimum with high probability. This is the geometric mechanism underlying the empirical 86.16\% three-seed fresh-instance recovery versus the 10.00\% Standard HAT collapse.
 
 \paragraph{Comparison to SAM.} SAM \citep{foret2021sharpness} minimizes the worst-case loss in an $\ell_2$ ball around the current weights:
 \begin{equation}

@@ -29321,3 +29321,54 @@ Dispatches issued for Round-11 (independent of this decision):
 
 V6 PHANTOM (95.82% → 82.58%) already fixed by Claude in supplementary.tex L132.
 
+
+---
+
+### [Claude] 2026-04-26 16:55 CST — PATH C LOCKED — ROUND-11D EXPLORATION DISPATCHED
+
+**User decision: Path C 比较好，我们应该更多探索**
+
+Path C = train AIHWKit at severe-NL stress regimes; if it collapses where Ensemble HAT survives → method-superiority story restored. If not → honest Path A reframing with operating envelope evidence.
+
+**5 experimental sub-tracks (DS) + 2 theory tracks (Kimi) + 1 figure track (Gemini)**:
+
+| Track | Owner | Spec |
+|:--|:--|:--|
+| R11D-1 | DS | AIHWKit at 4-bit precision (matches paper-1 4-bit cliff) |
+| R11D-2 | DS | AIHWKit at σ=0.20 (high-noise stress) |
+| R11D-3 | DS | AIHWKit at σ=0.30 (extreme; conditional) |
+| R11D-4 | DS | AIHWKit with PCM device model (realistic non-linear pulse update) |
+| R11D-6 | DS | Per-minibatch Ensemble HAT (cadence-matched to AIHWKit; conditional) |
+| R11D-5 | Kimi | Operational cadence comparison (code-level: where AIHWKit's noise injection differs from ours) |
+| R11D-T1 | Kimi | Theoretical addendum: per-batch (Wager-style L2) vs per-epoch (SAM-style sharpness) |
+| R11D-T2 | Gemini | Method operating-envelope plot (4 methods × stress regimes) |
+
+**Decision rules:**
+- AIHWKit collapses in some regime + Ensemble HAT survives → method-superiority restored
+- AIHWKit survives everywhere → honest Path A reframing
+- Mixed → targeted method-superiority in specific regimes
+
+My prediction: ~70% chance AIHWKit breaks at 4-bit OR PCM device. Worth the experiment.
+
+**Resource trade-off**:
+- ~5-7 days, 50-60 GPU-h on local
+- DS bandwidth: ~80% R11D + ~20% R11A residuals
+- Kimi: 40% R11D + 60% R11C paper fix-it
+- W2 Phase 2 paused for ~1 week (W2 has months buffer; paper-1 doesn't)
+- Submission timeline extends from 3-5 days → 10-14 days
+
+User accepted this in choosing Path C.
+
+**Files issued:**
+- `CLAUDE_ROUND11D_PATH_C_EXPLORATION_PLAN_20260426.md`
+- `DISPATCH_DS_R11D_AIHWKIT_EXPLORATION_20260426.md`
+- `DISPATCH_KIMI_R11D_THEORY_TEXT_20260426.md`
+- `DISPATCH_GEMINI_R11D_ENVELOPE_PLOT_20260426.md`
+- `BROADCAST_ROUND11D_LAUNCH_20260426.md`
+
+**Round-11A/B/C still in flight in parallel** (role reassignment + paper fix-it). DS handles R11A residuals (V3/V4 ablation resume, W2 P2 monitoring) at low priority.
+
+**@DeepSeek** — start R11D-1 (4-bit AIHWKit) NOW. Modify `make_rpu_config()` to `inp_res=out_res=1.0/16`. Train 100 epochs canonical, fresh-eval 10 instances. Report immediately. Then R11D-2/3/4. R11A residuals AT LOW priority.
+**@Kimi** — start R11D-5 cadence comparison NOW (4-6h, code-level investigation). Then R11D-T1 theory. Plus continue R11C paper fix-it.
+**@Gemini** — R11B-1 figure inventory + R11D-T2 plot prep. Standby for data.
+

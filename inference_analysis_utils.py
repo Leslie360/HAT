@@ -340,7 +340,7 @@ def _resolve_tinyvit_bundle(experiment: str, dataset: str, device: str,
 
     model = build_tinyvit_model(exp_cfg, num_classes=num_classes, device=device, pretrained=False)
     ckpt = torch.load(ckpt_path, map_location=device, weights_only=False)
-    model.load_state_dict(ckpt["model_state_dict"])
+    model.load_state_dict(ckpt["model_state_dict"], strict=False)
     _, testloader = get_tinyvit_dataloaders(
         dataset=dataset,
         batch_size=exp_cfg.batch_size,

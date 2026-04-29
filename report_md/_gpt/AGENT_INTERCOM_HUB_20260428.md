@@ -497,3 +497,19 @@ Remote results must return as compact Markdown chunks through the user's approve
 Protocol file: `paper2/REMOTE_NO_PUSH_RETURN_PROTOCOL_20260429.md` and mirrored under `report_md/_gpt/`.
 
 Local Codex owns Git updates after receiving remote Markdown results.
+
+---
+
+## [Codex] 2026-04-29 11:40 CST — Remote 105 Seed-123 Result Received
+
+Remote 105 returned seed=123 architecture/HAT validation. Strong signal: proportional mode is best and has near-zero fresh degradation; standard collapses to ~5-6% fresh; ensemble is intermediate.
+
+Codex caveat: `deit_proportional > vit_digital` is not a valid proof that proportional > digital because architecture is confounded. Need same-architecture closure, especially `deit_digital`, plus multi-seed validation.
+
+Files written:
+
+- `REMOTE_105_MULTIDATASET_TASKLIST_20260429.md`
+- `report_md/_gpt/REMOTE_105_MULTIDATASET_TASKLIST_20260429.md`
+- `report_md/_gpt/REMOTE_105_SEED123_DELIVERY_REVIEW_20260429.md`
+
+Next 105 priority: reproducibility packet, `deit_digital`, full seed=123 same-architecture matrix, seeds 456/789 for proportional/digital/ensemble, then multi-dataset validation.

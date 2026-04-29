@@ -536,3 +536,32 @@ Codex assigned Kimi GPU queue:
 
 Task file: `report_md/_gpt/KIMI_GPU_QUEUE_R11D_CLOSURE_20260429.md`.
 Optional eval queue script: `paper2_aihwkit_baseline/run_kimi_r11d_eval_queue_20260429.sh`.
+
+---
+
+## [Codex] 2026-04-29 18:05 CST — R11D 3-Seed Closure Reviewed; Next GPU Queue Assigned
+
+Kimi generated `outputs/R11D_FINAL_3SEED_SUMMARY_20260429.md`. Codex reviewed it and mirrored it to `report_md/_gpt/R11D_FINAL_3SEED_SUMMARY_20260429.md`.
+
+Locked result:
+
+| Config | Source best | Fresh eval | Drift 24h | Main interpretation |
+|---|---:|---:|---:|---|
+| 4-bit PCM | 76.71 ± 0.46% | 76.6845 ± 0.37% | 72.64 ± 0.71% | stable training/fresh, retention cost |
+| 8-bit PCM | 77.64 ± 0.68% | 77.5955 ± 0.64% | 77.57 ± 0.61% | stable and drift-safe |
+
+Codex decision: no more repeat UnitCell seeds. Next work must explain the 4-bit precision/drift trade-off and test preset dependence.
+
+New task file: `report_md/_gpt/KIMI_GPU_QUEUE_R11D_NEXT_20260429.md`.
+
+New scripts:
+
+- `paper2_aihwkit_baseline/eval_aihwkit_fresh_drift.py`
+- `paper2_aihwkit_baseline/run_kimi_r11d_extended_eval_20260429.sh`
+
+Priority order:
+
+1. Batch A eval-only: extended drift curve + combined fresh+drift for all six corrected checkpoints.
+2. Batch B strict PCMPresetDevice v2 comparison, using fresh artifact names.
+3. Batch C clean no-modifier oracle if regularization proof is needed.
+4. Batch D optional 6-bit Pareto bridge.

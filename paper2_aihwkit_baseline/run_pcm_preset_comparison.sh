@@ -1,7 +1,9 @@
 #!/bin/bash
-# T1-3: PCM Preset Comparison — PCMPresetUnitCell vs PCMPresetDevice
+# T1-3 v2: PCM Preset Comparison — PCMPresetUnitCell vs PCMPresetDevice
 # Purpose: Verify conclusions do not depend on specific PCM preset choice
 # Runs after multi-seed validation completes
+# Uses fresh v2 run IDs to avoid historical invalid `PCMPresetDevice_seed42`
+# artifact directories.
 
 set -euo pipefail
 export LD_LIBRARY_PATH=/home/qiaosir/miniconda3/envs/aihwkit/lib:$LD_LIBRARY_PATH
@@ -52,12 +54,12 @@ run_preset() {
     echo "=== $run_id $preset seed=$seed complete ===" | tee -a "$log"
 }
 
-# 8-bit PCM with PCMPresetDevice (compare against R11D-5a PCMPresetUnitCell)
-echo "=== T1-3a: 8-bit PCM PCMPresetDevice ==="
-run_preset "r11d_5a_pcm" "PCMPresetDevice" 42 0.00390625 0.00390625
+# 8-bit PCM with PCMPresetDevice (compare against R11D-5a PCMPresetUnitCell seed123)
+echo "=== T1-3a v2: 8-bit PCM PCMPresetDevice seed123 ==="
+run_preset "t13v2_r11d_5a_pcm" "PCMPresetDevice" 123 0.00390625 0.00390625
 
-# 4-bit PCM with PCMPresetDevice (compare against R11D-7 PCMPresetUnitCell)
-echo "=== T1-3b: 4-bit PCM PCMPresetDevice ==="
-run_preset "r11d_7_pcm_4bit" "PCMPresetDevice" 42 0.0625 0.0625
+# 4-bit PCM with PCMPresetDevice (compare against R11D-7 PCMPresetUnitCell seed123)
+echo "=== T1-3b v2: 4-bit PCM PCMPresetDevice seed123 ==="
+run_preset "t13v2_r11d_7_pcm_4bit" "PCMPresetDevice" 123 0.0625 0.0625
 
 echo "=== ALL PCM PRESET COMPARISON COMPLETE ==="

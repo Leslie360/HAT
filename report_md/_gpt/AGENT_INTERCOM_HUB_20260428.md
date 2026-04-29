@@ -681,3 +681,29 @@ Coverage:
 - Explicit decisions requested from Claude Opus: main narrative, R11D wording, PCMPresetDevice handling, progressive quantization priority, 105/107 integration, and kill list.
 
 Codex recommendation in the brief: use R11D PCM as the most closed near-term spine, keep 105 as validation/extension, keep 107 as separate Work-2 route unless HAT/selective data closes rapidly.
+
+---
+
+## [Codex] 2026-04-30 01:05 CST — Claude Opus Remote 105/107 Direction Brief Registered
+
+Claude Opus wrote a companion strategic ruling for the two remote lines:
+
+- `report_md/_gpt/CLAUDE_OPUS_REMOTE_105_107_DIRECTION_BRIEF_20260430.md`
+
+Status and hierarchy:
+
+- Companion to `CLAUDE_OPUS_FINAL_DIRECTION_BRIEF_20260430.md`.
+- Governs Remote 105 and Remote 107.
+- Does not change the local paper-1 spine: paper-1 can ship on local R10E/R11D evidence without waiting for 105/107.
+
+Key rulings:
+
+- Remote 105: proportional HAT cross-architecture validation is a conditional paper-1 supplement only if same-architecture digital baseline, multi-seed, protocol audit, and reproducibility gates close. Otherwise thesis material.
+- Remote 107: analog KV-cache is Work-2, separate from paper-1. Execute selective terminal-layer KV + HAT first, then retention-driven material rank inversion. Baseline reconciliation is mandatory because current selective and material sweeps appear to use different baselines/evaluators.
+- Do not mix 105 and 107 task files, datasets, or GPU scheduling.
+- Kill/freeze: 105 mixed-NL/CNN/ImageNet scope creep; 107 all-layer 6-bit noisy sweeps, all-layer beyond kill criteria, and retention sweeps on all-layer scopes.
+
+Immediate remote P0:
+
+- 105: reproducibility packet, naming clarification, `deit_digital`, fresh protocol audit, then multi-seed priority cells.
+- 107: reproducibility packet, baseline reconciliation, no-noise parity gate, 8-bit selective depth sweep, HAT step curves.

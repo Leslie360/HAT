@@ -31186,3 +31186,55 @@ Created `report_md/_gpt/CLAUDE_OPUS_FINAL_DIRECTION_BRIEF_20260430.md` for possi
 Brief includes: locked local R11D PCM 3-seed/fresh/drift data; current Batch B/C GPU status; invalidated historical results and bug list; remote 105 proportional-HAT validation plan; remote 107 KV-cache selective/HAT route; Git/data backup status; and seven explicit Opus decisions requested.
 
 Codex default recommendation: make R11D PCM precision-drift trade-off the near-term spine, treat 105 as validation/extension, and keep 107 as separate Work-2 unless selective/HAT KV closes quickly.
+
+---
+
+## [Claude] 2026-04-30 CST — Remote 105 & 107 Architectural Brief Written
+
+### File
+`report_md/_gpt/CLAUDE_OPUS_REMOTE_105_107_DIRECTION_BRIEF_20260430.md` — companion to the local/paper-1 brief.
+
+### One-line summary per line
+
+**105 (multi-arch HAT):** Default trajectory = paper-1 supplement (one Discussion paragraph + one SI table), conditional on G105-1 through G105-5 closing in 2 weeks. Otherwise → thesis chapter only. Do NOT delay paper-1 for 105.
+
+**107 (LLM analog KV-cache):** Two parallel narrative tracks — (A) selective terminal-layer + HAT (paper-2 spine), (B) retention-driven rank inversion (paper-3 spine). Pursue (A) first, (B) second; long-term goal is combined Work-2 paper (C). All post-defense; do NOT entangle with paper-1.
+
+### Validation gates (HARD)
+
+**G105:** naming clarification, deit_digital, multi-seed (3 seeds × 4 cells), protocol audit, reproducibility packet.
+**G107:** parity gate (1% PPL), baseline reconciliation (15.68 vs 107.27 different evaluators!), 3-seed retention cells, selective scope multi-seed, HAT step curves, reproducibility packet.
+
+### Critical finding flagged in brief
+The selective-route baseline (15.68 PPL) and material/retention-route baseline (~107 PPL) differ ~7× — strongly suggests two different evaluators or models. **G107-2 must reconcile** before any 107 result can be cited side-by-side.
+
+### Multi-paper structure proposed
+- Paper-1 (Nature Electronics): local R11D PCM + Ensemble HAT — alone, defense-gated.
+- Paper-1 supplement: 105 cross-arch IF gates close.
+- Paper-2 (NeurIPS/ICLR/HPCA/MICRO): selective-layer KV + HAT — post-defense.
+- Paper-3 (Nature Electronics or IEDM): retention-driven rank inversion — post-defense.
+- Combined Work-2: if 2+3 close together.
+- arXiv companion: thesis-only data dump.
+- Thesis: all of above as chapters.
+
+### Anti-patterns codified
+- Do NOT mix selective vs material baselines without reconciliation.
+- Do NOT push from remote.
+- Do NOT cite single-seed numbers in any paper.
+- Do NOT entangle 105 and 107 in same task file.
+- Do NOT delay paper-1 for either.
+
+### Tasks I'm NOT writing as pipeline task.md (right now)
+- 105 / 107 task lists are remote-agent tasks, not local pipeline tasks. They live in REMOTE_105_*.md and REMOTE_107_*.md respectively. Local pipeline only gets involved when results return and integration-into-paper is needed — that's `tasks/r11_105_proportional_validation.md` (P1 #8 in this brief), conditional on P0+P1 closure.
+
+@User — brief is written. Ready to commit on your signal.
+
+
+---
+Codex (Remote 105/107 Opus Brief Registered) | 2026-04-30 01:05 CST
+
+Registered `report_md/_gpt/CLAUDE_OPUS_REMOTE_105_107_DIRECTION_BRIEF_20260430.md` as the companion strategic ruling for Remote 105 and 107.
+
+Hierarchy: main Opus brief governs local paper-1. Remote 105/107 brief governs remote research lines. Paper-1 does not depend on 105/107 closing.
+
+Rulings: 105 proportional-HAT cross-architecture validation is conditional paper-1 supplement only after same-architecture digital + multi-seed + protocol/reproducibility gates. 107 analog KV-cache is separate Work-2; execute selective terminal-layer KV + HAT before retention-rank-inversion paper framing. Reconcile the 15.68 vs 107.27 PPL baseline/evaluator split before any 107 paper claim.

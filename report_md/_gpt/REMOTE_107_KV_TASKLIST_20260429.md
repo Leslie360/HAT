@@ -322,3 +322,88 @@ Do not frame the result as a broad material ranking yet. The correct provisional
 > Analog KV-cache viability is governed by temporal memory stability, not static write precision alone. Retention can invert material ranking: PCM is best statically but may collapse under cache lifetime dynamics, while Organic is worse statically but degrades more gradually.
 
 See `report_md/_gpt/REMOTE_107_KV_DELIVERY_REVIEW_20260429.md` for Codex's full review.
+
+---
+
+## 11. Update After 107 Selective-Layer Results — 2026-04-29
+
+107 returned new PPL data:
+
+- Digital baseline: PPL 15.68.
+- 8-bit all-layer zero-noise: PPL 17.48 = 1.115x baseline, fails 10% gate.
+- 6-bit all-layer is not viable even without noise: PPL 32.41.
+- Last-layer-only 8-bit passes:
+  - zero-noise PPL 15.82 = 1.009x
+  - realistic PPL 16.72 = 1.066x
+- All-layer HAT warmup helps but remains far from acceptable: PPL 579.52 -> 142.27 after 50 steps.
+
+### New Route Lock
+
+All-layer analog KV-cache is abandoned. Continue only selective terminal-layer KV-cache plus HAT adaptation.
+
+### Next Required Experiments
+
+1. 8-bit selective depth sweep:
+
+```text
+last1, last2, last4, last6, last8, all24
+zero-noise, realistic, D2D-only, C2C-only
+```
+
+2. 6-bit selective pilot:
+
+```text
+last1, last2, last4
+zero-noise first; add realistic only if zero-noise passes.
+```
+
+3. Selective HAT warmup:
+
+```text
+last1 realistic 8-bit
+last2 realistic 8-bit
+last4 realistic 8-bit if not catastrophic
+steps: 0, 50, 100, 200, 500
+```
+
+4. 3-seed repeat for the best passing scope:
+
+```text
+seeds: 42, 123, 456
+```
+
+### Gate
+
+Baseline PPL is 15.68, so the 10% gate is:
+
+```text
+PPL <= 17.248
+```
+
+Stop expanding scope after two consecutive larger scopes fail under realistic noise.
+
+Return compact Markdown only. Do not push from remote.
+
+### 11.1 Addendum — HAT Rescue Pending
+
+Do not overstate the all-layer decision before HAT validation returns.
+
+Current status:
+
+- Non-HAT all-layer analog KV-cache fails.
+- Selective terminal-layer KV is currently the safest path.
+- HAT-rescued all-layer remains under evaluation.
+
+For the next 107 return, prioritize HAT step curves:
+
+```text
+all-layer 8-bit realistic: steps 0, 50, 100, 200, 500
+last1/last2/last4 8-bit realistic: steps 0, 50, 100, 200, 500
+```
+
+Gate:
+
+```text
+PPL <= 1.10x baseline reopens the route.
+PPL > 1.20x after adequate HAT steps closes that scope.
+```

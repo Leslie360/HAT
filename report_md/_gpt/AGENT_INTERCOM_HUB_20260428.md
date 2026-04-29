@@ -458,3 +458,30 @@ Included in this sync:
 Explicit exclusion policy: no checkpoint files, no large logs, no generated PDFs, no temporary LaTeX edits, no local cache/data directories.
 
 Remote 107 should return compact `.md` + small JSON summaries only. Remote 105 should not consume 107 KV outputs as multi-dataset evidence.
+
+---
+
+## [Codex] 2026-04-29 11:05 CST — Remote 107 KV-Cache PPL Delivery Received
+
+User relayed Remote 107 Work-2 KV-cache delivery. Note: transferred report title says "105 server", but user clarified this is 107's KV work.
+
+Remote 107 reports:
+
+- Vectorized sliding-window WikiText-2 PPL evaluator, batch=64, runtime ~3.5h -> ~25min.
+- Compatibility with `transformers==5.7.0` `DynamicCache.layers` for real KV-cache noise injection.
+- Queue zombie-process hardening via `/proc/{pid}/status`.
+
+Reported WikiText-2 PPL:
+
+| Profile | Retention | PPL |
+|---|---:|---:|
+| PCM 32-state | off | 107.27 |
+| Organic | off | 429.05 |
+| Organic | on | 683.74 |
+| PCM 32-state | on | 751.28 |
+
+Codex interpretation: promising but provisional. The useful narrative is **static precision vs temporal cache stability**. PCM looks best statically, but retention can invert the material ranking under KV-cache lifetime dynamics.
+
+Required before using in paper: exact git SHA/diff, model/tokenizer, digital baseline PPL, no-noise/no-quant analog parity, sliding-window loss formula, retention-time semantics, profile equations, and 3-seed repeats.
+
+Full review and next 107 tasks: `report_md/_gpt/REMOTE_107_KV_DELIVERY_REVIEW_20260429.md`.

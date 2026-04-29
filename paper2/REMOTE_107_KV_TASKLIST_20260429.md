@@ -247,3 +247,78 @@ Local smoke tests suggested:
 - The main Work-2 novelty is persistent analog KV-cache storage with persistent D2D and fresh C2C reads, not merely analogizing projection weights.
 
 Therefore 107 should prioritize **cache-only inference diagnostics** before any training-heavy claims.
+
+---
+
+## 10. Update After Remote 107 PPL Delivery — 2026-04-29 11:05 CST
+
+Remote 107 has already moved beyond the original offline-only task list and reports end-to-end WikiText-2 PPL with analog KV-cache injection.
+
+Reported provisional PPL table:
+
+| Profile | Retention | PPL |
+|---|---:|---:|
+| PCM 32-state | off | 107.27 |
+| Organic | off | 429.05 |
+| Organic | on | 683.74 |
+| PCM 32-state | on | 751.28 |
+
+This result is promising, but must now pass reproducibility and parity gates before it is used as evidence.
+
+### 10.1 Immediate Required Return
+
+Return one Markdown file with:
+
+```bash
+git rev-parse HEAD
+git status --short
+git diff --stat
+git diff -- paper2 scripts tests
+python - <<'PY'
+import torch, transformers, json
+print(json.dumps({
+  'torch': torch.__version__,
+  'transformers': transformers.__version__,
+  'cuda': torch.version.cuda,
+  'device_count': torch.cuda.device_count(),
+  'devices': [torch.cuda.get_device_name(i) for i in range(torch.cuda.device_count())],
+}, indent=2))
+PY
+```
+
+Also report:
+
+- exact model and tokenizer
+- WikiText-2 split and preprocessing
+- sliding-window max length, stride, overlap loss accounting, token count, total NLL
+- exact PCM and Organic profile equations/parameters
+- exact retention-time mapping for `0.1s`
+- cache scope: K only, V only, or K+V; layer subset or all layers
+
+### 10.2 Validation Gate
+
+Run these before any larger sweep:
+
+| Run | Purpose | Kill criterion |
+|---|---|---|
+| Digital FP baseline | evaluator baseline | PPL implausible for chosen model |
+| Analog no-quant/no-noise/no-retention | injection parity | PPL differs from digital by >1% |
+| PCM 32-state retention off, 3 seeds | static reproducibility | result not near reported 107.27 |
+| PCM 32-state retention on, 3 seeds | avalanche reproducibility | result not near reported 751.28 |
+| Organic retention off/on, 3 seeds | rank inversion stability | retention ranking not stable |
+
+### 10.3 Next Sweep Priority
+
+1. Retention time sweep: `0, 0.01, 0.03, 0.1, 0.3, 1.0s` for PCM and Organic.
+2. Noise-source ablation: quantization only, static programming noise only, read/cycle noise only, retention only, full profile.
+3. KV scope ablation: K only, V only, K+V.
+4. Layer scope ablation: last 25% layers vs all layers.
+5. Per-position NLL buckets to show whether failure is a late-context avalanche.
+
+### 10.4 Updated Narrative Hypothesis
+
+Do not frame the result as a broad material ranking yet. The correct provisional hypothesis is:
+
+> Analog KV-cache viability is governed by temporal memory stability, not static write precision alone. Retention can invert material ranking: PCM is best statically but may collapse under cache lifetime dynamics, while Organic is worse statically but degrades more gradually.
+
+See `report_md/_gpt/REMOTE_107_KV_DELIVERY_REVIEW_20260429.md` for Codex's full review.

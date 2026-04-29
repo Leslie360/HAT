@@ -100,3 +100,39 @@ Pending:
 Decision:
 - Do not compute final 4-bit PCM seed mean/std until the clean rerun completes.
 - Do not use the partial seed456 best=66.08% in any table or narrative.
+
+## 7. Update — clean seed456 completed (2026-04-29 12:15 CST)
+
+`R11D-7 4-bit PCM seed=456` clean rerun has completed with required artifacts:
+
+- Directory: `paper2_aihwkit_baseline/checkpoints/r11d_7_pcm_4bit_seed456_clean`
+- `training_history.json`: present
+- `last.pt`: present
+- `best.pt`: present
+- Best test: **77.15%** at epoch 97
+- Final test: **76.86%** at epoch 100
+- Best train: 75.386%
+
+Corrected source/test table:
+
+| Config | Seed | Best test | Final test | Status |
+|---|---:|---:|---:|---|
+| 4-bit PCM | 123 | 76.74% | 76.33% | valid |
+| 4-bit PCM | 456 | 77.15% | 76.86% | valid |
+| 8-bit PCM | 123 | 77.00% | 77.00% | valid |
+| 8-bit PCM | 456 | 78.36% | 77.98% | valid |
+
+Two-seed source summaries:
+
+| Config | Mean best test | Sample std |
+|---|---:|---:|
+| 4-bit PCM | 76.95% | 0.29 pp |
+| 8-bit PCM | 77.68% | 0.96 pp |
+
+Next required work is not more exploratory training. First close evaluation parity:
+
+1. Fresh eval for the four corrected checkpoints, `n_fresh=10`, `mc_repeats=5`.
+2. Minimal drift eval for the four corrected checkpoints, times `0, 3600, 86400` seconds.
+3. Then seed789 for 4-bit and 8-bit PCM if GPU budget allows.
+
+Kimi queue file: `report_md/_gpt/KIMI_GPU_QUEUE_R11D_CLOSURE_20260429.md`.

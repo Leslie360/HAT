@@ -513,3 +513,26 @@ Files written:
 - `report_md/_gpt/REMOTE_105_SEED123_DELIVERY_REVIEW_20260429.md`
 
 Next 105 priority: reproducibility packet, `deit_digital`, full seed=123 same-architecture matrix, seeds 456/789 for proportional/digital/ensemble, then multi-dataset validation.
+
+---
+
+## [Codex] 2026-04-29 12:15 CST — Kimi GPU Queue For Local R11D Closure
+
+Local corrected R11D PCM training has landed:
+
+| Run | Seed | Best test | Final test | Status |
+|---|---:|---:|---:|---|
+| R11D-7 4-bit PCM | 123 | 76.74% | 76.33% | valid |
+| R11D-7 4-bit PCM | 456 clean | 77.15% | 76.86% | valid |
+| R11D-5a 8-bit PCM | 123 | 77.00% | 77.00% | valid |
+| R11D-5a 8-bit PCM | 456 | 78.36% | 77.98% | valid |
+
+Codex assigned Kimi GPU queue:
+
+1. P0 fresh eval for the four corrected checkpoints, `n_fresh=10`, `mc_repeats=5`.
+2. P1 minimal drift eval for the same four checkpoints, times 0/1h/24h.
+3. P2 only after P0/P1 summary: train seed789 for 4-bit and 8-bit PCM to get 3-seed paper-facing stats.
+4. Hold T1-3 PCMPresetDevice, R11D11 progressive, and oracle reruns until PCM closure is complete.
+
+Task file: `report_md/_gpt/KIMI_GPU_QUEUE_R11D_CLOSURE_20260429.md`.
+Optional eval queue script: `paper2_aihwkit_baseline/run_kimi_r11d_eval_queue_20260429.sh`.

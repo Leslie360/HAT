@@ -35,10 +35,13 @@
 .git/objects/16/7479bb0a5a8003644b95b02def00d0f08de4f8
 .git/objects/16/f9f48e1ab0b4754ff8d2c2a98b6324ac031c9d
 .git/objects/17/031ef758fe6acfd941f89bf8819c86405536f3
+.git/objects/18/0fb8b866a8f6e0efa7af2fc3e69b70b1304ba2
+.git/objects/18/3aab2a8296d8aa136f04049181115f4673e9c6
 .git/objects/18/89880512c8700e5fc21a2a34fab6c591f997f4
 .git/objects/1f/5d6199e19f71d2ee7a784b738ad757c9f010bd
 .git/objects/23/13f585d96af8811d14f307a72516e52267b19b
 .git/objects/24/7ec165007cce256d01618332a2108811eb3c68
+.git/objects/25/17201c88923ab12beae650a8fd21bcdfad12a8
 .git/objects/2a/ad933e9e1c1dd530f1768171775d67a043ba08
 .git/objects/2c/b55f8db35715a0c06f1e8b566b4b409a113360
 .git/objects/2d/1ae96571f3df7b331a79173a1234917aa52143
@@ -60,6 +63,7 @@
 .git/objects/4b/a53f7a22a4fa5fdf5eb423189337e15f9c37a6
 .git/objects/4c/461c376ea59d092ee1a0b7c00a513b09d1151e
 .git/objects/4d/d01bf3f9cce1928dcf159f10c6ecf6eea93112
+.git/objects/51/489b21e399a14ff0ea7be3d69e162d5f2c9110
 .git/objects/52/acbfbbf05abeee5e088ae6bfa5fff9a24dac03
 .git/objects/56/fd740a17d87649ee7c5fb5bb8dd836b967a430
 .git/objects/57/7a2a76c2158df893f6d19b45b24805507ab608
@@ -80,12 +84,14 @@
 .git/objects/6e/6bb7bf0aba7e5383b5b58df1b543a898223a8f
 .git/objects/71/0b947cd45aa7d32ebd3483066def8404568605
 .git/objects/71/d950d9e5e23ca667bda6473ac34179c8cf5e20
+.git/objects/73/3bc37448a841d0707733967546d9ab844b14f8
 .git/objects/73/d30259687f078c87703500e25fdaaea4b833e1
 .git/objects/78/1e52f54655bb3f63256eea5d0f9b8b555604c4
 .git/objects/78/6662fe8f2385c4d88e15c20c0502c069f646e2
 .git/objects/79/7c09787945bdc1b041397434add93ee27abbbd
 .git/objects/7d/000c5564d6ad8789081dd68eb128b2c96fb79c
 .git/objects/82/4cedb9a8bcae4fc329c0b1e71d7056d9f83eaf
+.git/objects/84/39766173dbad4efbac7bfd4a9199b0a4c8a679
 .git/objects/8b/e2105aaeb39a004033c011d634ca5acd6537ad
 .git/objects/8e/797bcc6b36c2049dd6239ed6b04db4886e8cfc
 .git/objects/93/30fb95586ec3666710d4cef99514a29009e585
@@ -128,6 +134,7 @@
 .git/objects/e5/d1e5b44050838f0bdb98bc5d37039e35bedec7
 .git/objects/e7/98256023c6342420258fa87353028047312635
 .git/objects/e8/c2393431d5a52e0f2801e1ebb990792265a238
+.git/objects/ec/3fc5af8193222ebf4aa62b39ac5659f459e936
 .git/objects/ed/d79d597807280ecd0631361383c8e730207203
 .git/objects/ee/18ebb59b5eb9d226ffa4139420fc49718f36a8
 .git/objects/f0/ad061a9c8582ffcf954e1abb9089b031cde6e6
@@ -138,6 +145,7 @@
 .git/objects/fb/c90963d1b07d8ea708fa459a50126afe19cb41
 .git/objects/fc/fc44855e4e190bc3dfd80165cf5dad1e302c3d
 .git/objects/fd/994c50c300cd9f160ef776f4511670775dceef
+.git/objects/fe/3770a90f6f156b57460aef88c8bc0bf8eda10c
 .git/objects/fe/799b7d8413c3a346965e8b5cb198e14a68505a
 .git/objects/ff/4e99d3d3f52a0ba2794253be3bbc303b2958ae
 .git/objects/pack/pack-52c1b12d1c0eea2214cef33be8322990e3f71eea.idx
@@ -200,6 +208,7 @@ paper2_aihwkit_baseline/r11d11_train_progressive.py
 paper2_aihwkit_baseline/r11d4_train_pcm.py
 paper2_aihwkit_baseline/r11d4_train_pcm_extended.py
 paper2_aihwkit_baseline/r11d_hat_pcm.py
+paper2_aihwkit_baseline/run_kimi_r11d_eval_queue_20260429.sh
 paper2_aihwkit_baseline/run_pcm_multi_seed_v2.sh
 paper2_aihwkit_baseline/run_pcm_preset_comparison.sh
 paper2_aihwkit_baseline/run_r11d11_progressive_quant.sh
@@ -214,6 +223,7 @@ report_md/_gpt/CODEX_R11D_RESULTS_REVIEW_20260429.md
 report_md/_gpt/CODEX_W2_KV_CACHE_OFFLINE_EVAL_REPORT_20260426.md
 report_md/_gpt/CODEX_W2_SCOPED_NOISE_PROBE_REPORT_20260425.md
 report_md/_gpt/FUTURE_DIRECTIONS_REVIEW_20260428.md
+report_md/_gpt/KIMI_GPU_QUEUE_R11D_CLOSURE_20260429.md
 report_md/_gpt/R11D_DATA_AUDIT_20260428.md
 report_md/_gpt/R11D_EXPERIMENT_AUDIT_SUMMARY_20260428.md
 report_md/_gpt/REMOTE_105_MULTIDATASET_TASKLIST_20260429.md

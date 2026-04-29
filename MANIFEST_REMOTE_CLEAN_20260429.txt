@@ -23,6 +23,7 @@
 .git/logs/refs/remotes/origin/remote-107-kv-20260429
 .git/objects/00/4ce491ab28bbdb71b704886a41a40132387db3
 .git/objects/01/0f13ec5ee0af9f0fb625567216695b6bd10eba
+.git/objects/01/aec25fee5bc333aa4fc534bfe1a60920262c81
 .git/objects/09/f23ae48bcea55011dbeb7e54388d9254940bf7
 .git/objects/13/81d18e1dfc04656178b2ec944d7b4a09f643f9
 .git/objects/16/7479bb0a5a8003644b95b02def00d0f08de4f8
@@ -41,14 +42,17 @@
 .git/objects/36/3a517ad3f2d25eb9993c10e08529d220b131d7
 .git/objects/37/aacc43ce3356660345745199834d7adda3ff4f
 .git/objects/38/d77bdbd7ddc8dcce7ad1d3e5ece13764341132
+.git/objects/3b/2f48a7ed03b8dcaafdedf209ba2b222cc18cb5
 .git/objects/3e/bbbdb74032c40566ddfd3e0db5debd15df81cf
 .git/objects/3e/dd6b9a18213b5f5623d8ff4e25ab70a41d4cab
 .git/objects/3f/27b49684d3549848f1daf35b9cb1c869b66eb1
+.git/objects/43/05e6fea806a6c6b600a778b57842bea90bb704
 .git/objects/48/1603e89c5d9a42a54d0c808b59c7d29b29e9ec
 .git/objects/4a/027ad0a697ac189aa39586b62353832104bd61
 .git/objects/4b/a53f7a22a4fa5fdf5eb423189337e15f9c37a6
 .git/objects/4c/461c376ea59d092ee1a0b7c00a513b09d1151e
 .git/objects/4d/d01bf3f9cce1928dcf159f10c6ecf6eea93112
+.git/objects/52/acbfbbf05abeee5e088ae6bfa5fff9a24dac03
 .git/objects/56/fd740a17d87649ee7c5fb5bb8dd836b967a430
 .git/objects/57/7a2a76c2158df893f6d19b45b24805507ab608
 .git/objects/59/4f7dec23ac601ae4c7143ccd97acbfb4cdd86c
@@ -58,8 +62,11 @@
 .git/objects/5f/9123fddc2da33d611f6123ab43029efa51c670
 .git/objects/60/14e88a4ffe499e4e3c9a8651b51b5b69e07a8f
 .git/objects/61/391ff1f490cb0ef3cba79f2c31721444a2fc1b
+.git/objects/62/574da2072996576f046c7c0edc36cdc2aed0cb
 .git/objects/65/f8476196ff5e692022281c1e41168458b0ff2b
 .git/objects/68/8036edaa17f5630b609de44efc4110b4b691ac
+.git/objects/6c/1597564ad7f2dfd9dd5851678a769a2ed9caa0
+.git/objects/6c/7807a5fbeb8ca79aee49d3f408d1aea221082e
 .git/objects/6c/816d3988357718516ed57c1eda9d4b3c96e16d
 .git/objects/6e/6bb7bf0aba7e5383b5b58df1b543a898223a8f
 .git/objects/71/0b947cd45aa7d32ebd3483066def8404568605
@@ -75,6 +82,7 @@
 .git/objects/93/30fb95586ec3666710d4cef99514a29009e585
 .git/objects/93/e35be35974ea00c352a2545c117ca02a33f4af
 .git/objects/97/7d7a2b7cbd0ed64cc76e10d2abc87f5871bcce
+.git/objects/98/4169bac3a2abad71daaaf9bd9b42714fe5a5bb
 .git/objects/9a/094ab82c07f08d4da80e112b5146fefe0f3433
 .git/objects/9a/2aef760b0a3e3803f6d478efe9712caec4137c
 .git/objects/9e/9e785be41aef0cdebe4863925b7170d404ce1c
@@ -84,6 +92,7 @@
 .git/objects/ab/b1b152dc5f5428e0e66038702352f9d5a386fe
 .git/objects/ad/72114d86b43441f7e81285d49c8fb42f270353
 .git/objects/ae/bd8378bbb7bc2b8fa0144345b066f35510dd79
+.git/objects/b0/f5d94950a1108843cb6a3a420e724485b9c047
 .git/objects/b2/89448417ae458a2ef997b8b1a0896f103192d9
 .git/objects/b2/afbe573ad5eaeaa9bb67183d858ffc764bea6d
 .git/objects/b2/c15ea9dc731e0489e0a87d63840d06a34cc569
@@ -153,6 +162,7 @@ inference_analysis_utils.py
 model_profiling.py
 paper2/README.md
 paper2/REMOTE_107_KV_TASKLIST_20260429.md
+paper2/REMOTE_NO_PUSH_RETURN_PROTOCOL_20260429.md
 paper2/WORK2_ARCHITECTURAL_MAPPING_SPEC_20260425.md
 paper2/WORK2_BENCHMARK_SUITE_20260425.md
 paper2/WORK2_TESTBED_DECISION_20260425.md
@@ -188,6 +198,7 @@ report_md/_gpt/R11D_DATA_AUDIT_20260428.md
 report_md/_gpt/R11D_EXPERIMENT_AUDIT_SUMMARY_20260428.md
 report_md/_gpt/REMOTE_107_KV_DELIVERY_REVIEW_20260429.md
 report_md/_gpt/REMOTE_107_KV_TASKLIST_20260429.md
+report_md/_gpt/REMOTE_NO_PUSH_RETURN_PROTOCOL_20260429.md
 requirements-optional.txt
 requirements.txt
 scripts/_gpt/multi_seed_train_gpt.py

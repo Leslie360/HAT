@@ -485,3 +485,15 @@ Codex interpretation: promising but provisional. The useful narrative is **stati
 Required before using in paper: exact git SHA/diff, model/tokenizer, digital baseline PPL, no-noise/no-quant analog parity, sliding-window loss formula, retention-time semantics, profile equations, and 3-seed repeats.
 
 Full review and next 107 tasks: `report_md/_gpt/REMOTE_107_KV_DELIVERY_REVIEW_20260429.md`.
+
+---
+
+## [Codex] 2026-04-29 11:20 CST — Remote No-Push Protocol
+
+User reports server-side copy restrictions and does not want to push from the remote server. Codex policy update: **remote servers are pull-only execution nodes**. Do not store GitHub credentials on remote and do not push from 105/107.
+
+Remote results must return as compact Markdown chunks through the user's approved channel. No checkpoints, no large logs, no model files. If copy is blocked, stop and request an approved export route; do not bypass controls.
+
+Protocol file: `paper2/REMOTE_NO_PUSH_RETURN_PROTOCOL_20260429.md` and mirrored under `report_md/_gpt/`.
+
+Local Codex owns Git updates after receiving remote Markdown results.

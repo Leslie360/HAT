@@ -7,10 +7,10 @@ This note documents the origin of every constant used in the first-order analyti
 
 \subsection*{S-Energy.1 Parameter table}
 
-\begin{table}[h]
+\begin{table}[ht]
 \centering
 \small
-\begin{tabular}{@{}llll@{}}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.24\textwidth}>{\raggedright\arraybackslash}p{0.14\textwidth}>{\raggedright\arraybackslash}p{0.36\textwidth}>{\raggedright\arraybackslash}p{0.16\textwidth}@{}}
 \toprule
 \textbf{Parameter} & \textbf{Value} & \textbf{Provenance} & \textbf{Status} \\
 \midrule
@@ -26,7 +26,7 @@ $E_{\text{softmax}}$ & $15~\text{pJ/elem}$ & Analytical estimate (exp + divide) 
 $E_{\text{layernorm}}$ & $8~\text{pJ/elem}$ & Analytical estimate (sqrt + divide) & Engineering estimate \\
 \bottomrule
 \end{tabular}
-\caption{Provenance of energy-model constants.  ``Literature proxy'' means the value is taken from a published silicon or thin-film measurement but is used as a generic placeholder for the target device technology.  ``Order-of-magnitude estimate'' means the value is a rounded central tendency drawn from a literature range or an analytical surrogate, intended for relative comparison rather than routed-circuit prediction.}
+\caption{Provenance of energy-model constants. ``Literature proxy'' means the value is taken from a published silicon or thin-film measurement but is used as a generic placeholder for the target device technology. ``Order-of-magnitude estimate'' means the value is a rounded central tendency drawn from a literature range or an analytical surrogate, intended for relative comparison rather than routed-circuit prediction.}
 \label{tab:energy-provenance}
 \end{table}
 

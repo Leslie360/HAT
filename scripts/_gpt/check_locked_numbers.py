@@ -76,6 +76,22 @@ def main() -> int:
             tolerance=0.01,
         ),
         LockedNumber(
+            id="H12",
+            description="AIHWKit baseline 8-bit fresh-instance (R10E canonical)",
+            json_path=REPO_ROOT / "paper2_aihwkit_baseline" / "checkpoints" / "fresh_eval.json",
+            accessor=lambda d: d["mean"],
+            expected=87.28,
+            tolerance=0.01,
+        ),
+        LockedNumber(
+            id="H13",
+            description="AIHWKit baseline 4-bit fresh-instance (R11D-1 collapse)",
+            json_path=REPO_ROOT / "paper2_aihwkit_baseline" / "checkpoints" / "r11d_1_4bit" / "fresh_eval.json",
+            accessor=lambda d: d["mean"],
+            expected=14.64,
+            tolerance=0.01,
+        ),
+        LockedNumber(
             id="H9_R10D_NL12",
             description="R10D NL=1.2 fresh-instance mean",
             json_path=REPO_ROOT / "report_md" / "_gpt" / "json_gpt" / "r10d_nl_interpolation_summary.json",

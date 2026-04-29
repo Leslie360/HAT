@@ -394,6 +394,8 @@ E_{\mathrm{DAC}} = N_{\mathrm{DAC}}E_{\mathrm{DAC},8b},
 \]
 and the digital/buffer terms evaluated from operator and access counts. These constants are literature-proxy placeholders for a first-order edge-node model, not measured circuit values, and any reported energy ratios are contingent on these assumptions. Interconnect overhead is behaviorally absorbed into the memory-access terms.
 
+\input{supplementary/S_energy_provenance}
+
 \subsection{Supplementary Figures}
 \label{subsec:supplementary-figures}
 
@@ -646,6 +648,43 @@ The subset-sampling protocol for this throughput-constrained CrossSim comparison
 is given later in Supplementary Note~S1, together with the confidence-interval
 estimate.
 
+\begin{table}[ht]
+\centering
+\caption{\textbf{Comparison of HAT method robustness under varying weight precision and noise regimes.}}
+\label{tab:aihwkit-comparison}
+\small
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.24\textwidth}>{\centering\arraybackslash}p{0.14\textwidth}>{\centering\arraybackslash}p{0.22\textwidth}>{\raggedright\arraybackslash}p{0.29\textwidth}@{}}
+\toprule
+\textbf{Method} & \textbf{Weight Precision} & \textbf{Fresh-Instance Accuracy (\%)} & \textbf{Cross-Instance Robustness} \\
+\midrule
+Standard HAT (fixed mask) & 4-bit & $10.00 \pm 0.00$ & Collapses (single-class predictor) \\
+AIHWKit baseline \citep{rasch2021aihwkit} & 8-bit & $87.28 \pm 0.13$ & Robust at 8-bit (per-batch noise) \\
+AIHWKit baseline \citep{rasch2021aihwkit} & 4-bit & $14.64 \pm 0.11$ & Collapses at 4-bit (per-batch noise) \\
+Ensemble HAT (3-seed) & 4-bit & $86.16 \pm 0.19$ & Robust at 4-bit (epoch-level D2D resampling) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[ht]
+\centering
+\caption{\textbf{PCM vs. IdealDevice comparison.} Training-domain best accuracy and fresh-instance mean ($\pm$ std) for AIHWKit IdealDevice and PCM device models, contrasted with Ensemble HAT. Drift impact reports accuracy excursion across 0~s, 1~h, and 24~h inference delays.}
+\label{tab:pcm-comparison}
+\small
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+\textbf{Method} & \textbf{Training Best (\%)} & \textbf{Fresh Mean (\%)} & \textbf{Fresh Std (\%)} & \textbf{Drift Impact} \\
+\midrule
+AIHWKit IdealDevice 8-bit~\citep{rasch2021aihwkit} & 87.73 & $87.28$ & $0.13$ & Negligible \\
+AIHWKit PCM 8-bit~\citep{rasch2021aihwkit} & 61.10 & $60.85$ & $0.17$ & $60.83\rightarrow61.07\rightarrow60.56$ \\
+Ensemble HAT 4-bit (3-seed) & 91.94 & $86.16$ & $0.19$ & See Table~\ref{tab:retention-comparison} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The comparison reveals a precision-dependent robustness boundary: AIHWKit's per-batch noise injection is effective at 8-bit but collapses at 4-bit, while Ensemble HAT's epoch-level D2D resampling maintains robustness at the 4-bit operating point tested here. This establishes the 4-bit regime as the operating point where distribution-matching training provides a decisive advantage over per-batch noise alone.
+
+\input{supplementary/S_opect_distribution}
+
 \subsection{Automated Profile Fitting Pipeline}
 
 For later measured-device studies, we also provide an automated fitting utility that ingests four raw-data categories:
@@ -678,7 +717,7 @@ C2C Variability ($\sigma_{\mathrm{C2C}}$) & 2.0\% (Zhang 2025) & 1.0\% -- 8.0\% 
 \addlinespace
 Retention ($\tau$, $A_0$) & $\tau=140/610$ms & $\pm 50\%$ & \textbf{Medium.} Affects long-term drift predictions. Extremely fast decay limits HAT recovery. & Sensitivity sweeps (Section~\ref{subsec:retention-sensitivity}) confirm conclusions remain stable over $\pm 50\%$ variations. \\
 \addlinespace
-Write Non-linearity ($NL$) & 2.0 (Proxy scaled) & 1.0 -- 3.0 & \textbf{High.} A sharp accuracy drop exists near $NL=2.0$. & Supplementary Fig.~\ref{fig:supp-nl-gradient} localizes the present surrogate failure to the MLP analog path, clarifying that this is a training-approximation bottleneck rather than a uniform forward-path collapse. \\
+Write Non-linearity ($NL$) & 2.0 (Proxy scaled) & 1.0 -- 3.0 & \textbf{High.} Severe nonlinear write drives a residual recovery gap even under the revised recipe. & Supplementary Fig.~\ref{fig:supp-nl-gradient} is retained as an earlier source-domain diagnostic; under the revised gradient-scaling recipe, severe-NL recovery is best framed as a training-approximation bottleneck rather than MLP-path localization. \\
 \bottomrule
 \end{tabular}
 }

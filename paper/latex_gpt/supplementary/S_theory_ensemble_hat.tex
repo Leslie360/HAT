@@ -30,7 +30,7 @@ For large $E$, this converges to the population expectation:
     \mathcal{L}_{\text{Ens}}(\theta) = \mathbb{E}_{M \sim \mathcal{D}_{\text{D2D}}} \, \mathbb{E}_{\xi^{\text{C2C}}, (x,y)} \bigl[ \ell\bigl(f(x; \theta \odot (1+M) + \xi^{\text{C2C}}), y\bigr) \bigr].
     \label{eq:ensemble-population}
 \end{equation}
-The expectation over $M$ is Monte-Carlo estimated with one fresh draw per epoch, held constant across all mini-batches within that epoch. This epoch-level discipline (rather than per-batch re-sampling) is empirically load-bearing: ablations under canonical $NL=1.0$ show that epoch-level resampling outperforms both fixed-mismatch and per-batch resampling (Supplementary Fig.~S-Resampling-Cadence; see Results for quantitative comparison). The epoch scale gives the optimizer enough consistent signal to fit each instance before the instance changes, enforcing a ``learn-to-adapt'' regime analogous to domain randomization in robotics \citep{tobin2017domain}.
+The expectation over $M$ is Monte-Carlo estimated with one fresh draw per epoch, held constant across all mini-batches within that epoch. This epoch-level discipline (rather than per-batch re-sampling) is empirically load-bearing: ablations under canonical $NL=1.0$ show that epoch-level resampling outperforms both fixed-mismatch and per-batch resampling (see Results for quantitative comparison). The epoch scale gives the optimizer enough consistent signal to fit each instance before the instance changes, enforcing a ``learn-to-adapt'' regime analogous to domain randomization in robotics \citep{tobin2017domain}.
 
 \subsection*{S.2 Taylor expansion and the implicit regularizer}
 

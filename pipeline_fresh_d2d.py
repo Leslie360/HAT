@@ -372,9 +372,10 @@ def run_pipeline(dry_run=False):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="HAT Fresh D2D Cross-Instance Pipeline (Codex P1)")
     parser.add_argument("--dry-run", action="store_true")
+    parser.add_argument("--resume", action="store_true")
     args = parser.parse_args()
 
-    if not args.dry_run and os.path.isfile(TASK_STATE_FILE):
+    if not args.resume and not args.dry_run and os.path.isfile(TASK_STATE_FILE):
         os.remove(TASK_STATE_FILE)
 
     run_pipeline(dry_run=args.dry_run)

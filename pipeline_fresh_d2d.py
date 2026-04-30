@@ -284,10 +284,11 @@ def run_pipeline(dry_run=False):
                 remaining = [t for t in pending if task_key(t) not in completed_keys]
                 remaining.sort(key=dispatch_priority)
 
-                # Find next dispatchable task
+                # Find next dispatchable task (not already active)
+                active_keys = {task_key(t) for t in active.values()}
                 next_t = None
                 for t in remaining:
-                    if task_key(t) in completed_keys:
+                    if task_key(t) in completed_keys or task_key(t) in active_keys:
                         continue
                     if t["type"] == "eval" and not os.path.isdir(t["checkpoint_dir"]):
                         continue  # still waiting

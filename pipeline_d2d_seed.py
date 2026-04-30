@@ -151,7 +151,6 @@ def log_file(task):
 
 def build_cmd(task, gpu_id):
     env = f"CUDA_VISIBLE_DEVICES={gpu_id} "
-    env += f"HTTP_PROXY=http://127.0.0.1:1080 HTTPS_PROXY=http://127.0.0.1:1080 "
     env += f"HF_HUB_OFFLINE=1 "
 
     if task["type"] == "eval":

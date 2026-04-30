@@ -95,7 +95,8 @@ for sigma in [0.02, 0.04]:
         for ed2d in EVAL_D2D_LEVELS:
             phase3_eval.append(make_eval_task(
                 ckpt_name, eval_sigma_d2d=ed2d, eval_sigma_c2c=0.0,
-                desc=f"Eval {ckpt_name} D2D={ed2d}",
+                d2d_seed=ds,  # explicit: same-instance eval
+                desc=f"Eval {ckpt_name} D2D={ed2d} d2d_seed={ds}",
             ))
 PHASES.append(("Phase 3: Eval 10 ckpts × 3 D2D levels", phase3_eval))
 
@@ -131,7 +132,8 @@ def get_free_gpus():
 def result_exists(task):
     if task["type"] == "eval":
         ckpt_name = os.path.basename(task["checkpoint_dir"])
-        fname = f"eval_{ckpt_name}_c2c{task['sigma_c2c']}_d2d{task['sigma_d2d']}.json"
+        ds = task.get("d2d_seed", 0xD2D)
+        fname = f"eval_{ckpt_name}_c2c{task['sigma_c2c']}_d2d{task['sigma_d2d']}_seed{ds}.json"
         return os.path.isfile(os.path.join(OUT_DIR, fname))
     else:
         fname = f"{task['name']}_seed{task['seed']}.json"
@@ -141,7 +143,8 @@ def result_exists(task):
 def log_file(task):
     if task["type"] == "eval":
         ckpt_name = os.path.basename(task["checkpoint_dir"])
-        return os.path.join(OUT_DIR, f"eval_{ckpt_name}_c2c{task['sigma_c2c']}_d2d{task['sigma_d2d']}.log")
+        ds = task.get("d2d_seed", 0xD2D)
+        return os.path.join(OUT_DIR, f"eval_{ckpt_name}_c2c{task['sigma_c2c']}_d2d{task['sigma_d2d']}_seed{ds}.log")
     else:
         return os.path.join(OUT_DIR, f"{task['name']}_seed{task['seed']}.log")
 
@@ -298,7 +301,8 @@ def run_pipeline(dry_run=False, resume=False):
             for t in completed:
                 if t["type"] == "eval":
                     ckpt_name = os.path.basename(t["checkpoint_dir"])
-                    fname = f"eval_{ckpt_name}_c2c{t['sigma_c2c']}_d2d{t['sigma_d2d']}.json"
+                    ds = t.get("d2d_seed", 0xD2D)
+                    fname = f"eval_{ckpt_name}_c2c{t['sigma_c2c']}_d2d{t['sigma_d2d']}_seed{ds}.json"
                     fpath = os.path.join(OUT_DIR, fname)
                     if os.path.isfile(fpath):
                         try:

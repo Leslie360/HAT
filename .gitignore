@@ -1,0 +1,64 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+
+# IDE
+.vscode/
+.idea/
+
+# Data
+data/
+*.tar.gz
+
+# Checkpoints (except deliverable)
+checkpoints/
+
+# Environment
+.env
+*.log
+
+# Misc
+.claude/
+.ssh/
+*.swp
+*.swo
+*~
+
+# Junk scripts on 107
+launch_*.sh
+run_*.py
+test_*.py
+smoke_*.py
+eval_*.py
+eval_llm*.py
+eval_analog*.py
+eval_fresh*.py
+generate_*.py
+p3_analyze*.py
+train_vit*.py
+train_tinyvit*.py
+ablation_*.py
+append_*.py
+complete_*.py
+launch_queue.py
+
+# Old report files
+report_md/
+*_FOR_REVIEW.md
+KV_CACHE_*.md
+EXPERIMENT_*.md
+EXPERIMENT_PROTOCOL.md
+MASTER_PLAN.md
+PROJECT_INDEX.md
+HANDOFF_MANIFEST.txt
+RELEASE_CHECKLIST.md
+REPRODUCIBILITY.md
+PUSH_TO_GITHUB.md
+README_REMOTE_GITHUB.md
+AGENT_SYNC_*.md
+CHECKPOINT_INVENTORY_*.md
+
+# Old configs
+auto_fitted_profile.json

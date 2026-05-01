@@ -79,6 +79,8 @@ paper/latex_gpt/figures/*.pdf
 !paper/latex_gpt/figures/figD.png
 !paper/latex_gpt/figures/figS1_asymmetry_concept.png
 !paper/latex_gpt/figures/figS2_nonideality.png
+!paper/latex_gpt/figures/fig1_paper1_spine.pdf
+!paper/latex_gpt/figures/fig1_paper1_spine.png
 !paper/latex_gpt/figures/graphical_abstract.png
 
 # Auto-cleanup doctrine (added 2026-04-25)

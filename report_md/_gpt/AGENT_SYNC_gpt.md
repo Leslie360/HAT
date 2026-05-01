@@ -31238,3 +31238,336 @@ Registered `report_md/_gpt/CLAUDE_OPUS_REMOTE_105_107_DIRECTION_BRIEF_20260430.m
 Hierarchy: main Opus brief governs local paper-1. Remote 105/107 brief governs remote research lines. Paper-1 does not depend on 105/107 closing.
 
 Rulings: 105 proportional-HAT cross-architecture validation is conditional paper-1 supplement only after same-architecture digital + multi-seed + protocol/reproducibility gates. 107 analog KV-cache is separate Work-2; execute selective terminal-layer KV + HAT before retention-rank-inversion paper framing. Reconcile the 15.68 vs 107.27 PPL baseline/evaluator split before any 107 paper claim.
+
+---
+Codex (Remote 107 Generalization Update, Trend-Only) | 2026-04-30 15:35 CST
+
+User relayed Remote 107 HAT generalization noise tests, plus note that Remote 107 found a noise-algorithm bug and is rerunning. Codex preserved the results as trend-only in `report_md/_gpt/REMOTE_107_KV_GENERALIZATION_NOISE_UPDATE_REVIEW_20260430.md` and created mandatory implementation documentation template `report_md/_gpt/REMOTE_107_CORE_MATH_REPRO_PACKET_TEMPLATE_20260430.md`.
+
+Current provisional trend: HAT appears to learn genuine noise robustness; high-D2D training generalizes better to higher eval D2D; C2C generalization is smooth; mixed D2D+C2C training is promising. Exact PPL values are not canonical until corrected rerun.
+
+Rerun requirement: start with corrected P0 subset, not all 55 cells; return core math/code packet covering conductance mapping, quantization, D2D/C2C/retention formulas, layer-mask semantics, seed policy, SDPA patch contract, HAT objective, baseline reconciliation, and unit-test evidence.
+
+---
+Codex (Remote 107 GitHub Pull Review) | 2026-04-30 CST
+
+Fetched and audited GitHub `origin/remote-exploration` commit `4fc0ebecf1c5ae1e11bcf5771cde72af84e19c77` in isolated worktree `/tmp/hat_remote_exploration_107`; no direct pull/merge due dirty local branch and large/delete-heavy remote branch.
+
+Review file: `report_md/_gpt/REMOTE_107_GITHUB_PULL_REVIEW_20260430.md`.
+
+Main audit point: 107's Phase-3 seed ablation is training-seed reproducibility, not D2D fresh-device reproducibility, because D2D buffers are generated with fixed `torch.manual_seed(0xD2D + layer_idx)` independent of CLI `--seed`. Require explicit `--d2d-seed`, separate `train_seed`/`d2d_seed` JSON fields, and fresh-D2D eval rerun before citing seed/fresh robustness.
+
+Also require selective checkpoint eval to persist/load `analog_layers`; current eval default patches all layers if the mask is not passed.
+
+---
+Codex (Remote 107 Clean Branch Review) | 2026-04-30 CST
+
+Fetched and audited `origin/107-clean` commit `ecda16c` in `/tmp/hat_107_clean`. Review file: `report_md/_gpt/REMOTE_107_CLEAN_BRANCH_REVIEW_20260430.md`.
+
+Verdict: clean branch is suitable as standalone 107 deliverable branch (~2.6 MB, no checkpoint blobs, orphan/standalone), but should not be merged into local main/current branch. Confirmed fixes: portable `deliverable/code` imports, `--d2d-seed`, `hat_config.json` metadata, eval autoload for `analog_layers`/`d2d_seed`, and py_compile passed.
+
+Remaining caveat: `pipeline_d2d_seed.py` currently evaluates each checkpoint with its own D2D seed via `hat_config.json`, so it measures same-instance/device-specific adaptation rather than fresh unseen D2D generalization. Require a cross-instance eval phase using explicit `--d2d-seed` overrides before claiming fresh-device robustness. Existing `results_v2` JSONs still lack `train_seed`/`d2d_seed` metadata.
+
+---
+Codex (Remote 107 GitHub Coordination Packet) | 2026-04-30 CST
+
+Added and pushed coordination MDs to `origin/107-clean` commit `9d92621 docs(remote107): add coordination task packet`.
+
+Files: `coordination/INDEX.md`, `coordination/CODEX_REVIEW_107_CLEAN_20260430.md`, `coordination/REMOTE107_NEXT_TASKS_20260430.md`, `coordination/RESULT_RETURN_TEMPLATE_107.md`.
+
+This makes `107-clean` a lightweight task/communication branch for Remote 107. It contains detailed next tasks, fresh-D2D eval requirements, seed metadata rules, and result return template. Local current branch was not merged or altered beyond broadcast logs.
+
+---
+Codex (Local R11D 6-bit 3-Seed Review) | 2026-04-30 CST
+
+Reviewed completed local 6-bit PCM UnitCell seed123/456/789. Report: `report_md/_gpt/CODEX_LOCAL_R11D_6BIT_3SEED_RESULT_20260430.md`.
+
+Result: seed123 fresh 77.3598%, seed789 fresh 77.7520%, seed456 fresh 69.0750%. 6-bit is drift-flat but seed456 creates large cross-seed instability; do not lock 6-bit as a clean Pareto midpoint until diagnostic completes.
+
+Launched `r11d_6bit_pcm_seed456_full100` with no early stop to test whether seed456 was killed too early or is a true bad basin. Log: `paper2_aihwkit_baseline/logs/r11d_6bit_pcm_seed456_full100_20260430_180342.log`.
+
+---
+Codex (Local 6-bit Corrected Final) | 2026-04-30 CST
+
+`r11d_6bit_pcm_seed456_full100` completed and fixed the 6-bit interpretation. Report: `report_md/_gpt/CODEX_LOCAL_R11D_6BIT_CORRECTED_FINAL_20260430.md`.
+
+Seed456 full100 reached best 78.49%, fresh 78.4716 ± 0.0453%, drift 1d 78.39%. The old 69.07% seed456 run was an early-stop artifact and should be diagnostic-only.
+
+Corrected 6-bit 3-seed: source best 77.8767 ± 0.5829%, fresh 77.8611 ± 0.5639%, drift 1d 77.7433 ± 0.6054%, 0s→1d drop 0.1033pp. 6-bit is now a valid Pareto midpoint/sweet-spot candidate. Update operational rule: no patience=10 early stop for canonical PCM precision-ladder runs before late recovery phase.
+
+---
+
+## 2026-04-30 Codex Sync — Remote 107 GitHub Update Audited
+
+`origin/107-clean` updated to `aca7dd5`. Codex audited via detached worktree `/tmp/hat_107_clean`; no merge into local dirty branch.
+
+Confirmed:
+- eval filename now includes D2D seed.
+- fresh-D2D pipeline has explicit `--d2d-seed` and `--resume`.
+- all-layer fresh-D2D results are present.
+
+Main result:
+- D2D=0.02 training: eval D2D 0.02/0.04/0.05 -> 26.05 / 44.34 / 66.84 PPL mean.
+- D2D=0.04 training: eval D2D 0.02/0.04/0.05 -> 27.97 / 38.35 / 47.98 PPL mean.
+
+Open gap:
+- `.pipeline_fresh_d2d_state.json` has only 7 completed tasks.
+- selective last1/last2 training exists, but cross-D2D eval JSONs are missing.
+
+Action for 107:
+- run `python pipeline_fresh_d2d.py --resume` until the full 4-checkpoint × 3-D2D × 5-seed matrix is complete.
+- add `RESULTS_SUMMARY_FRESH_D2D.md`.
+
+Record: `report_md/_gpt/REMOTE_107_GITHUB_UPDATE_D2D_SEED_REVIEW_20260430.md`.
+
+---
+
+## 2026-04-30 Codex Sync — Opus Final Council Packet
+
+105 server crashed; seed789/new-seed remote results delayed ~5 days. Codex prepared final multi-model collection packet:
+
+`report_md/_gpt/OPUS_FINAL_COUNCIL_PACKET_20260430.md`
+
+Purpose: collect Kimi/Gemini/DeepSeek/Codex/Remote105/Remote107 opinions in §7, then ask Claude Opus to write final arbitration in §8.
+
+Codex position prefilled:
+- ask Opus now, not after 105 recovers;
+- paper-1 remains local spine;
+- 105 is validation/SI/thesis conditional, not blocking;
+- 107 is separate Work-2;
+- corrected local 6-bit PCM makes the PCM story a 4/6/8-bit precision ladder with 6-bit Pareto midpoint.
+
+---
+
+## 2026-04-30 Codex Sync — Opus Packet Filled And Drift Preset Bug Fixed
+
+Kimi/Gemini/DeepSeek sections are filled in `report_md/_gpt/OPUS_FINAL_COUNCIL_PACKET_20260430.md`. All agree to ask Opus now, not after Remote 105 recovers.
+
+DeepSeek reported a blocking drift eval bug for PCMPresetDevice. Codex verified and fixed it in:
+
+- `paper2_aihwkit_baseline/eval_aihwkit_drift.py`
+- `paper2_aihwkit_baseline/eval_aihwkit_drift_extended.py`
+
+Fix: strict checkpoint `pcm_preset` resolution is passed through `make_rpu_config()` / `build_model()` / `replace_rpu_config()`, preventing silent UnitCell fallback. `python -m py_compile` passes for both files.
+
+Added Opus handoff prompt: `report_md/_gpt/OPUS_FINAL_HANDOFF_PROMPT_20260430.md`.
+
+---
+
+## 2026-04-30 Codex Sync — Acting Architect Final Ruling
+
+Opus unavailable; user delegated final direction to Codex. Codex filled §8 in `report_md/_gpt/OPUS_FINAL_COUNCIL_PACKET_20260430.md`.
+
+Final operational ruling:
+- proceed immediately, no wait for Remote 105;
+- paper-1 = pure 4-bit failure + Ensemble HAT rescue + PCM 4/6/8-bit precision ladder;
+- 6-bit PCM = tested Pareto midpoint;
+- 105 = optional SI/thesis validation;
+- 107 = separate Work-2;
+- 6-bit late-recovery curve goes to SI;
+- PCMPresetDevice drift claims frozen until rerun after preset-aware drift eval fix.
+
+Pointer: `report_md/_gpt/CODEX_FINAL_ARCHITECT_RULING_20260430.md`.
+
+---
+
+## 2026-04-30 Codex Sync — Acceptance Review Of Gemini/Kimi Takeover
+
+Reviewed Gemini's takeover deliverables. Report: `report_md/_gpt/CODEX_ACCEPTANCE_REVIEW_GEMINI_KIMI_TAKEOVER_20260430.md`.
+
+Verdict: direction passes; final text does not pass yet.
+
+Blocking/important fixes:
+- provenance table in `GEMINI_R11D_PRECISION_LADDER_TABLES_20260430.md` uses wrong seed set for 8-bit/4-bit;
+- replace “optimal tradeoff” with “best tested Pareto midpoint”;
+- replace “late-recovery mechanism inherent to PCM-preset simulations” with observed-run wording;
+- downgrade “physical tape-out constraints” wording.
+
+Do not integrate these drafts into LaTeX before line-level corrections.
+
+---
+
+## 2026-04-30 Codex Sync — Gemini/Kimi Takeover Accepted For Integration
+
+Re-reviewed updated Gemini/Paper1 deliverables. V2 report: `report_md/_gpt/CODEX_ACCEPTANCE_REVIEW_GEMINI_KIMI_TAKEOVER_V2_20260430.md`.
+
+Verdict: accepted as LaTeX integration input.
+
+Prior blockers resolved: canonical seed provenance, 6-bit overclaim, late-recovery causal overreach, and tape-out wording. Unsafe phrases now occur only as hostile-review attack examples, not manuscript claims.
+
+Next: integrate into LaTeX, run locked-number guard, compile, and perform final label/reference audit.
+
+---
+
+## 2026-05-01 Codex Sync — LaTeX Integration Audit
+
+Local verification of Gemini's LaTeX integration complete. Report: `report_md/_gpt/CODEX_LATEX_INTEGRATION_AUDIT_20260501.md`.
+
+Technical status: locked-number guard passes, PDFs compile, no undefined-ref grep hits.
+
+Content status: FAIL. Results has new precision ladder, but Abstract/Introduction/Discussion/Conclusion still carry old organic/OPECT/NL=2.0 story. `06_discussion.tex` line 48 still contains stale AIHWKit PCM 8-bit `61.10%` / `~26 pp gap` claim, contradicting canonical PCM 4/6/8-bit results.
+
+Required next: rewrite Abstract, Introduction contribution paragraph, Discussion AIHWKit/PCM paragraph, Conclusion, and stale supplementary PCM row before final manuscript acceptance.
+
+---
+
+## 2026-05-01 Codex Sync — LaTeX Repair And Verification Pass
+
+Report: `report_md/_gpt/CODEX_LATEX_INTEGRATION_REPAIR_AND_VERIFY_20260501.md`.
+
+Codex directly repaired the final LaTeX drift after the prior narrative-fail audit. Main-text severe-NL/MLP localization wording is no longer active narrative; PCM convergence wording is now tested-regime rather than causal; stale `61.10%` supplementary row is removed.
+
+Verification complete:
+- `python scripts/_gpt/check_locked_numbers.py` -> `22/22 passed`;
+- `latexmk` main and supplementary passed;
+- final logs have no undefined refs/citations, fatal errors, or overfull warnings;
+- stale/overclaim grep has no hits.
+
+Current verdict: Paper-1 LaTeX passes Codex acceptance for the locked precision-ladder spine. SI retains old OPECT/front-end/severe-NL material only as supporting/historical diagnostics.
+
+---
+
+## 2026-05-01 Codex Sync — Local Experiment Audit
+
+Report: `report_md/_gpt/CODEX_LOCAL_EXPERIMENT_AUDIT_20260501.md`.
+
+Local R11D/PCM raw-artifact audit complete. Main spine passes. Corrections applied: stale Batch B/C PCMPresetDevice table fixed; 6-bit seed789 provenance corrected from `patience=0` to `patience=10, not triggered`; Introduction PCM convergence wording downgraded.
+
+New guard: `scripts/_gpt/check_local_pcm_precision_ladder.py` verifies 8/6/4-bit PCM UnitCell 3-seed aggregates directly from raw JSON and passes.
+
+Canonical local numbers remain: 8-bit `77.60 ± 0.64%` fresh / `0.04pp` drift, 6-bit `77.86 ± 0.56%` fresh / `0.10pp` drift, 4-bit `76.68 ± 0.37%` fresh / `4.01pp` drift. Use PCMPresetDevice and clean oracle only as SI/diagnostic evidence.
+
+Artifact hygiene note: stale invalid marker in canonical `r11d_5a_pcm_seed123/` was renamed to `SUPERSEDED_INVALID_MARKER_20260428.md`; `CURRENT_STATUS_VALID_20260501.md` documents current valid provenance. PCM guard still passes.
+
+---
+
+## 2026-05-01 Codex Sync — Next Steps After Local Audit
+
+Report: `report_md/_gpt/CODEX_NEXT_STEPS_AFTER_LOCAL_AUDIT_20260501.md`.
+
+Codex decision: Paper-1 does not need more mandatory local GPU experiments now. Core local data are sufficient. Next bottleneck is manuscript packaging: title/keywords/opening framing, one main spine figure, and source-data manifest.
+
+Figure status: main table and SI PCM tables pass; SI late-recovery figure was added via `paper/latex_gpt/supplementary/fig_late_recovery_tikz.tex`; compile/log grep clean.
+
+---
+
+## 2026-05-01 — Codex Manuscript/Figure Patch Complete
+
+See `report_md/_gpt/CODEX_MANUSCRIPT_FIGURE_PATCH_20260501.md`.
+
+Artifacts:
+- `paper/latex_gpt/figures/fig1_paper1_spine.pdf`
+- `paper/latex_gpt/figures/fig1_paper1_spine.png`
+- `paper/latex_gpt/source_data/fig1_paper1_spine.csv`
+- `paper/latex_gpt/source_data/tab_pcm_precision_ladder.csv`
+- `paper/latex_gpt/source_data/manifest_paper1_spine.json`
+- `scripts/_gpt/plot_paper1_spine.py`
+- `scripts/_gpt/check_local_pcm_precision_ladder.py`
+
+Verification complete:
+- Locked numbers: 22/22 PASS.
+- Local PCM ladder: PASS.
+- Main and SI PDFs compile.
+- Final log/source scan clean.
+
+Current architecture ruling:
+- Paper-1 local GPU path is experimentally sufficient.
+- Figures are acceptable for draft/submission shaping after Fig. 1 addition.
+- Remaining work is source-data packaging, claim-strength hostile read, reference audit, and target-venue formatting.
+
+---
+
+## 2026-05-01 — Codex P0 Closure Complete
+
+See `report_md/_gpt/CODEX_P0_CLOSURE_20260501.md`.
+
+Artifacts added:
+- `scripts/_gpt/build_latex_artifact_manifest.py`
+- `scripts/_gpt/audit_latex_bib_keys.py`
+- `scripts/_gpt/audit_bib_doi_resolution.py`
+- `paper/latex_gpt/source_data/manifest_all_figures_20260501.json`
+- `paper/latex_gpt/source_data/manifest_all_figures_20260501.csv`
+- `paper/latex_gpt/source_data/manifest_bib_key_audit_20260501.json`
+- `paper/latex_gpt/source_data/manifest_bib_doi_resolution_20260501.json`
+
+Verification:
+- Bib key audit: 0 missing keys.
+- DOI/URL endpoint audit: 67/67 endpoint-resolved.
+- Locked numbers: 22/22 PASS.
+- Local PCM ladder: PASS.
+- Main/SI compile clean.
+- Final log/source scan clean.
+
+Decision:
+- Mandatory local Paper-1 GPU work remains closed.
+- Any future work is optional/venue-dependent packaging or separate Work-2 validation.
+
+---
+
+## 2026-05-01 — DS Non-GPU Dispatch Issued
+
+Dispatch: `report_md/_gpt/DISPATCH_DS_NON_GPU_PAPER1_CLOSURE_20260501.md`.
+
+Task scope:
+- Legacy SI figure source-data audit/reconstruction when possible.
+- Semantic reference audit.
+- Supplementary hostile-claim audit.
+- Reviewer reproducibility bundle plan.
+- GitHub clean branch checklist.
+
+GPU policy: no GPU, no training, no eval. Paper-1 mandatory local GPU path remains closed.
+
+## 2026-05-01 — Codex Current Status After DS/Gemini Closure
+
+Report: `report_md/_gpt/CODEX_CURRENT_STATUS_20260501.md`.
+
+Codex rechecked the live tree after DS and Gemini closure work.
+
+Verification:
+- `main.pdf` builds, 14 pages.
+- `supplementary_main.pdf` builds, 41 pages.
+- LaTeX/source grep clean: no undefined refs/cites, fatal errors, overfull warnings, placeholders, TODO/FIXME/TBD.
+- `check_locked_numbers.py`: 22/22 PASS.
+- `check_local_pcm_precision_ladder.py`: PASS.
+- Bib key audit: 43 used keys, 0 missing.
+- DOI/URL endpoint audit: 67/67 resolved or DOI-redirected.
+
+DS/Gemini:
+- DS-1 through DS-5 accepted after Codex correction.
+- Gemini reviewed DS closure and recommends closing Paper-1 GPU work.
+- Codex corrected DS release checklists for actual script paths under `scripts/_gpt/` and added warning to preserve canonical JSONs while excluding `.pt` checkpoints.
+
+Decision:
+- Mandatory Paper-1 local GPU path remains closed.
+- Next Paper-1 actions are non-GPU: reviewer bundle, clean publication branch, source-data packaging.
+- Remote 105/107 remain optional/separate; 107 must not enter Paper-1 claims until corrected rerun returns.
+
+## 2026-05-01 — Codex Paper-1 Release Organization Complete
+
+Report: `report_md/_gpt/CODEX_PAPER1_RELEASE_ORGANIZATION_20260501.md`.
+
+Codex directly organized Paper-1 release materials.
+
+Created:
+- `README_REPRODUCIBILITY_PAPER1.md`;
+- `paper/latex_gpt/source_data/canonical_json/` with 44 canonical JSON evidence files;
+- `release_artifacts/paper1_reviewer_bundle_20260501_1645/`;
+- `release_artifacts/paper1_reviewer_bundle_20260501_1645.tar.gz` (42 MB).
+
+Corrected:
+- `outputs/CANONICAL_NUMBERS_FROZEN_20260430.md` and `paper2_aihwkit_baseline/PCM_PROTOCOL.md` now state full 100-epoch completion/provenance accurately instead of implying identical patience CLI for every run.
+- DS release checklists now use actual `scripts/_gpt/` paths.
+
+Verification:
+- locked-number guard 22/22 PASS;
+- local PCM precision ladder PASS;
+- bib key audit missing key count 0;
+- DOI/URL audit 67/67 resolved or DOI-redirected;
+- LaTeX/source grep clean;
+- bundle forbidden-file scan clean;
+- bundle SHA256 manifest check passes.
+
+Routing:
+- Paper-1 GPU remains closed.
+- Next action: either make a clean GitHub branch from curated bundle or keep tarball as reviewer package.
+- Remote 107 remains separate Work-2 pending corrected rerun.

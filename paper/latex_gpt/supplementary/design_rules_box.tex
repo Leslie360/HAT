@@ -1,11 +1,11 @@
 % Design Rules Callout Box for §6.4
 % Insert at end of Discussion §6.4 using \input or paste inline
 
-\begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black,title=\textbf{Box~1: Design rules for organic optoelectronic CIM transformer deployment}]
+\begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black,title=\textbf{Box~1: Design rules for analog CIM transformer deployment}]
 \footnotesize
 \begin{enumerate}[leftmargin=1.2em,itemsep=2pt]
     \item \textbf{Secure $\geq$6-bit ADC readout first.}
-    Below 6-bit, transformer inference degrades by $\sim$7~pp per row across all tested D2D levels (Section~\ref{subsec:iso-accuracy}).
+    Below 6-bit, transformer inference degrades by $\sim$7~pp per row across all tested D2D levels.
     
     \item \textbf{Then minimize device-to-device variability.}
     Within the operational envelope ($\geq$6-bit, $\sigma_{\mathrm{D2D}} \leq 15\%$), D2D explains $92.2\%$ of residual accuracy variance.

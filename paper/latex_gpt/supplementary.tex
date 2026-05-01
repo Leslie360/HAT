@@ -31,8 +31,8 @@ Feed-forward networks & Analog & MLP layers dominate parameter count; efficient 
 \midrule
 Depthwise convolutions & Digital & Low weight reuse, irregular spatial access; poor crossbar utilization \citep{wu2023bwq} \\
 Layer normalization & Digital & Requires mean/variance computation across features; hard to parallelize on crossbar \\
-$\mathbf{QK}^{\top}$ (attention scores) & Digital & Dynamic, input-dependent computation; irregular memory access \citep{lin2024hardsea} \\
-Softmax & Digital & Non-linear transcendental function; precision-critical; retained in the digital path in contemporary hybrid CIM ViT mappings \citep{kim2025hemlet,lin2024hardsea} \\
+$\mathbf{QK}^{\top}$ (attention scores) & Digital & Dynamic, input-dependent computation; irregular memory access \citep{liu2024hardsea} \\
+Softmax & Digital & Non-linear transcendental function; precision-critical; retained in the digital path in contemporary hybrid CIM ViT mappings \citep{wang2025hemlet,liu2024hardsea} \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -174,13 +174,13 @@ Pooled fresh instances & \(86.16\pm1.52\)\% & mean \(\pm\) sample std over 30 in
 \toprule
 \textbf{Parameter} & \textbf{Canonical Organic Profile} & \textbf{Zhang 2025 OPECT Case Study} & \textbf{Nonlinear-Write Stress Tests} & \textbf{Provenance / Derivation Notes} \\
 \midrule
- Conductance Range (\(G_{\max}/G_{\min}\)) & 10 & 47.3 & 10 & Canonical anchored to scalable OPECTs; Zhang derives from reported max/min current levels \citep{zhang2025opect}. \\ 
- Effective States ($n_{states}$) & 16 (4-bit) & 34 & 16 (4-bit) & Canonical matches general low-precision target. Zhang anchored to Fig.3h \& Supp.Fig.8 \citep{zhang2025opect}. \\ 
- Cycle-to-Cycle Noise (\(\sigma_{\mathrm{C2C}}\)) & 5\% & 2\% & 5\% (Proportional) & Zhang value is a proxy estimate from 8-cycle repeatability (Supp.Fig.15) \citep{zhang2025opect}. Proportional stress scales \(\sigma \propto |G|\). \\
-  Device-to-Device Mismatch (\(\sigma_{\mathrm{D2D}}\)) & 10\% & 3\% & 10\% (Proportional) & Zhang uses 3\% as a conservative conductance-domain proxy from the reported $\sim$1\% $V_{th}$ spread \citep{zhang2025opect}. \\
- Retention Decay (\(\tau_1, \tau_2, A_0\)) & 140ms, 610ms, 0.6 & Not fitted & 140ms, 610ms, 0.6 & Canonical dual-exponential fit anchored to Vincze \citep{vincze2025dualplasticity}. Zhang (Fig.2d) is qualitative only. \\ 
- Nonlinear Write Asymmetry (\(NL\)) & 1.0 (LTP), -1.0 (LTD) & Canonical defaults retained & 2.0 (LTP), -2.0 (LTD) & Zhang does not report a pulse-level NL fit, so the case study keeps the canonical symmetric-write defaults rather than injecting a separate literature-fit NL term. Stress tests (\(NL=2\)) enforce severe gradient-scaling asymmetry. \\ 
- Noise Mode & Uniform & Uniform & Proportional & Uniform injects noise normalized to full range. Proportional applies state-dependent noise magnitudes. \\ 
+ Conductance Range (\(G_{\max}/G_{\min}\)) & 10 & 47.3 & 10 & Canonical anchored to scalable OPECTs; Zhang derives from reported max/min current levels \citep{liu2026opect}. \\
+ Effective States ($n_{states}$) & 16 (4-bit) & 34 & 16 (4-bit) & Canonical matches general low-precision target. Zhang anchored to Fig.3h \& Supp.Fig.8 \citep{liu2026opect}. \\
+ Cycle-to-Cycle Noise (\(\sigma_{\mathrm{C2C}}\)) & 5\% & 2\% & 5\% (Proportional) & Zhang value is a proxy estimate from 8-cycle repeatability (Supp.Fig.15) \citep{liu2026opect}. Proportional stress scales \(\sigma \propto |G|\). \\
+  Device-to-Device Mismatch (\(\sigma_{\mathrm{D2D}}\)) & 10\% & 3\% & 10\% (Proportional) & Zhang uses 3\% as a conservative conductance-domain proxy from the reported $\sim$1\% $V_{th}$ spread \citep{liu2026opect}. \\
+ Retention Decay (\(\tau_1, \tau_2, A_0\)) & 140ms, 610ms, 0.6 & Not fitted & 140ms, 610ms, 0.6 & Canonical dual-exponential fit anchored to Vincze \citep{vincze2025dualplasticity}. Zhang (Fig.2d) is qualitative only. \\
+ Nonlinear Write Asymmetry (\(NL\)) & 1.0 (LTP), -1.0 (LTD) & Canonical defaults retained & 2.0 (LTP), -2.0 (LTD) & Zhang does not report a pulse-level NL fit, so the case study keeps the canonical symmetric-write defaults rather than injecting a separate literature-fit NL term. Stress tests (\(NL=2\)) enforce severe gradient-scaling asymmetry. \\
+ Noise Mode & Uniform & Uniform & Proportional & Uniform injects noise normalized to full range. Proportional applies state-dependent noise magnitudes. \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -575,15 +575,15 @@ where $\alpha \in [0, 0.10]$ is the asymmetry factor. Table~\ref{tab:asymmetry-s
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.85\textwidth]{figS1_asymmetry_concept}
-    \caption{\textbf{Differential pair asymmetry concept.} 
-    Systematic mismatch between positive and negative branches 
+    \caption{\textbf{Differential pair asymmetry concept.}
+    Systematic mismatch between positive and negative branches
     (asymmetry factor $\alpha$) degrades the effective differential signal.
-    Quantitative sensitivity analysis shows tolerance up to 1\% asymmetry 
+    Quantitative sensitivity analysis shows tolerance up to 1\% asymmetry
     with $<$2\% accuracy degradation, but nonlinear collapse beyond 2\%.}
     \label{fig:supp-asymmetry-concept}
 \end{figure}
 
-The results indicate that differential-pair symmetry is a critical layout constraint: asymmetry up to 1\% is well-tolerated, but performance degrades nonlinearly beyond 2\%, with complete failure at 10\%. This motivates the need for explicit mismatch calibration or resistance balancing circuits in fabricated organic CIM arrays.
+The results indicate that differential-pair symmetry is an important layout constraint: asymmetry up to 1\% is well-tolerated, but performance degrades nonlinearly beyond 2\%, with complete failure at 10\%. This motivates the need for explicit mismatch calibration or resistance balancing circuits in fabricated organic CIM arrays.
 
 \subsection{Physical Non-Ideality Sensitivity}
 \label{subsec:supp-nonideality-sensitivity}
@@ -625,12 +625,12 @@ where $\delta_{\mathrm{IR}}^{\max} \in [0, 0.03]$ and $\sigma_{\mathrm{sneak}} \
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.95\textwidth]{figS2_nonideality}
-    \caption{\textbf{Physical non-idealities in resistive arrays.} 
-    (Left) IR drop causes position-dependent voltage loss along wordlines. 
+    \caption{\textbf{Physical non-idealities in resistive arrays.}
+    (Left) IR drop causes position-dependent voltage loss along wordlines.
     (Right) Sneak paths create unintended current leakage through adjacent cells.
-    Quantitative sensitivity analysis (Table~\ref{tab:nonideality-sensitivity}) 
-    indicates these non-idealities degrade accuracy by $<$2.2\% for typical 
-    1--3\% effect magnitudes, suggesting the qualitative advantage is robust 
+    Quantitative sensitivity analysis (Table~\ref{tab:nonideality-sensitivity})
+    indicates these non-idealities degrade accuracy by $<$2.2\% for typical
+    1--3\% effect magnitudes, suggesting the qualitative advantage is robust
     to moderate array-level effects.}
     \label{fig:supp-nonideality}
 \end{figure}
@@ -669,19 +669,19 @@ Ensemble HAT (3-seed) & 4-bit & $86.16 \pm 0.19$ & Robust at 4-bit (epoch-level 
 \centering
 \caption{\textbf{PCM vs. IdealDevice comparison.} Training-domain best accuracy and fresh-instance mean ($\pm$ std) for AIHWKit IdealDevice and PCM device models, contrasted with Ensemble HAT. Drift impact reports accuracy excursion across 0~s, 1~h, and 24~h inference delays.}
 \label{tab:pcm-comparison}
-\small
-\begin{tabular}{@{}lcccc@{}}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}p{0.33\textwidth}cccc@{}}
 \toprule
-\textbf{Method} & \textbf{Training Best (\%)} & \textbf{Fresh Mean (\%)} & \textbf{Fresh Std (\%)} & \textbf{Drift Impact} \\
+\textbf{Method} & \textbf{Train best} & \textbf{Fresh mean} & \textbf{Fresh std} & \textbf{Drift} \\
 \midrule
 AIHWKit IdealDevice 8-bit~\citep{rasch2021aihwkit} & 87.73 & $87.28$ & $0.13$ & Negligible \\
-AIHWKit PCM 8-bit~\citep{rasch2021aihwkit} & 61.10 & $60.85$ & $0.17$ & $60.83\rightarrow61.07\rightarrow60.56$ \\
 Ensemble HAT 4-bit (3-seed) & 91.94 & $86.16$ & $0.19$ & See Table~\ref{tab:retention-comparison} \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-The comparison reveals a precision-dependent robustness boundary: AIHWKit's per-batch noise injection is effective at 8-bit but collapses at 4-bit, while Ensemble HAT's epoch-level D2D resampling maintains robustness at the 4-bit operating point tested here. This establishes the 4-bit regime as the operating point where distribution-matching training provides a decisive advantage over per-batch noise alone.
+The comparison reveals a precision-dependent robustness boundary: AIHWKit's per-batch noise injection is effective at 8-bit but collapses at 4-bit, while Ensemble HAT's epoch-level D2D resampling maintains robustness at the 4-bit operating point tested here. This identifies the 4-bit regime as the operating point where distribution-matching training provides a clear advantage over per-batch noise alone.
 
 \input{supplementary/S_opect_distribution}
 
@@ -820,3 +820,97 @@ Figure~\ref{fig:supp-collapse-mechanism} compares per-class prediction distribut
     \caption{\textbf{Class-distribution diagnostic of the fresh-instance collapse mechanism.} Canonical fixed-mask Standard HAT evaluated on five fresh D2D instances at $NL=1.0$ remains at $10.00\pm0.00\%$ and assigns every CIFAR-10 test image to one class (prediction entropy $\approx0$, maximum-class frequency $=100\%$). Canonical Ensemble HAT under the same protocol reaches $85.97\pm1.98\%$ with near-uniform prediction entropy ($2.28$ vs.~$\ln 10$) and maximum-class frequency $15.27\pm2.27\%$.}
     \label{fig:supp-collapse-mechanism}
 \end{figure}
+
+
+\subsection{Full Local PCM Precision-Ladder Per-Seed Tables}
+\label{subsec:supp-pcm-precision-tables}
+
+The following tables detail the raw performance metrics across all three random seeds used to calculate the canonical means in the main text.
+
+\begin{table}[htbp]
+\centering
+\caption{\textbf{8-bit PCM UnitCell.} 3-seed Mean: 77.64\%, Fresh: 77.60\%, Drop: 0.04~pp.}
+\label{tab:supp_8bit_pcm}
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Seed} & \textbf{Best Test} & \textbf{Fresh Mean $\pm$ Std} & \textbf{Drift 1d} & \textbf{0s$\rightarrow$1d Drop} \\
+\midrule
+123 & 77.00\% & 77.00 $\pm$ 0.05\% & 77.01\% & -0.15~pp \\
+456 & 78.36\% & 78.27 $\pm$ 0.05\% & 78.22\% & 0.24~pp \\
+789 & 77.56\% & 77.52 $\pm$ 0.04\% & 77.49\% & 0.03~pp \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[htbp]
+\centering
+\caption{\textbf{6-bit PCM UnitCell.} 3-seed Mean: 77.88\%, Fresh: 77.86\%, Drop: 0.10~pp.}
+\label{tab:supp_6bit_pcm}
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Seed} & \textbf{Best Test} & \textbf{Fresh Mean $\pm$ Std} & \textbf{Drift 1d} & \textbf{0s$\rightarrow$1d Drop} \\
+\midrule
+123 & 77.33\% & 77.36 $\pm$ 0.04\% & 77.19\% & 0.16~pp \\
+456 & 78.49\% & 78.47 $\pm$ 0.05\% & 78.39\% & 0.11~pp \\
+789 & 77.81\% & 77.75 $\pm$ 0.04\% & 77.65\% & 0.04~pp \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[htbp]
+\centering
+\caption{\textbf{4-bit PCM UnitCell.} 3-seed Mean: 76.71\%, Fresh: 76.68\%, Drop: 4.01~pp.}
+\label{tab:supp_4bit_pcm}
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Seed} & \textbf{Best Test} & \textbf{Fresh Mean $\pm$ Std} & \textbf{Drift 1d} & \textbf{0s$\rightarrow$1d Drop} \\
+\midrule
+123 & 76.74\% & 76.65 $\pm$ 0.04\% & 72.28\% & 4.40~pp \\
+456 & 77.15\% & 77.07 $\pm$ 0.06\% & 72.18\% & 4.84~pp \\
+789 & 76.23\% & 76.33 $\pm$ 0.04\% & 73.45\% & 2.78~pp \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{6-bit PCM Late-Recovery Training Curve}
+\label{subsec:supp-late-recovery}
+
+\begin{figure}[htbp]
+    \centering
+    \input{supplementary/fig_late_recovery_tikz}
+    \caption{\textbf{Training trajectory of 6-bit PCM (seed 456).} Initial experiments utilizing a \texttt{patience=10} early-stopping criterion falsely terminated in a poor local minimum ($\sim$69\% at epoch 56). Complete 100-epoch training shows that this seed observed late recovery under a full schedule, reaching 78.49\%. All canonical precision-ladder results therefore utilize the full 100-epoch training schedule to avoid mathematical early-stop artifacts masquerading as physical instability.}
+    \label{fig:supp_late_recovery}
+\end{figure}
+
+\subsection{Provenance and Checkpoint Tracking}
+\label{subsec:supp-provenance}
+
+To ensure rigorous reproducibility, all canonical results are mapped to their generating scripts and deterministic seeds. All PCM precision-ladder aggregates use checkpoints that completed the full 100-epoch schedule. The 6-bit seed~456 checkpoint was explicitly rerun with \texttt{--early-stop-patience 0}; seed~789 was launched with \texttt{patience=10} but did not trigger early stopping and reached its best test accuracy at epoch~100.
+
+\begin{table}[htbp]
+\centering
+\caption{\textbf{Provenance and Checkpoint Tracking.}}
+\label{tab:supp_provenance}
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}ccp{0.46\textwidth}p{0.22\textwidth}@{}}
+\toprule
+\textbf{Precision} & \textbf{Seed} & \textbf{Checkpoint Directory} & \textbf{Schedule} \\
+\midrule
+8-bit & 123 & \texttt{r11d\_5a\_pcm\_seed123} & \texttt{patience=0} \\
+8-bit & 456 & \texttt{r11d\_5a\_pcm\_seed456} & \texttt{patience=0} \\
+8-bit & 789 & \texttt{r11d\_5a\_pcm\_seed789} & \texttt{patience=0} \\
+6-bit & 123 & \texttt{r11d\_6bit\_pcm\_seed123} & \texttt{patience=0} \\
+6-bit & 456 & \texttt{r11d\_6bit\_pcm\_seed456\_full100} & \texttt{patience=0} \\
+6-bit & 789 & \texttt{r11d\_6bit\_pcm\_seed789} & \texttt{patience=10} \newline (not triggered) \\
+4-bit & 123 & \texttt{r11d\_7\_pcm\_4bit\_seed123} & \texttt{patience=0} \\
+4-bit & 456 & \texttt{r11d\_7\_pcm\_4bit\_seed456\_clean} & \texttt{patience=0} \\
+4-bit & 789 & \texttt{r11d\_7\_pcm\_4bit\_seed789} & \texttt{patience=0} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Preliminary Remote Validation}
+\label{subsec:supp-remote-validation}
+
+Preliminary remote validation on DeiT/ViT suggests proportional noise-aware training preserves fresh-instance accuracy across transformer backbones, pending full multi-seed validation.

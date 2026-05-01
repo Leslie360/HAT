@@ -1,0 +1,41 @@
+{
+  "generated_by": "scripts/_gpt/plot_paper1_spine.py",
+  "outputs": [
+    "paper/latex_gpt/figures/fig1_paper1_spine.pdf",
+    "paper/latex_gpt/figures/fig1_paper1_spine.png",
+    "paper/latex_gpt/source_data/fig1_paper1_spine.csv",
+    "paper/latex_gpt/source_data/tab_pcm_precision_ladder.csv"
+  ],
+  "raw_sources": [
+    "paper2_aihwkit_baseline/checkpoints/fresh_eval.json",
+    "paper2_aihwkit_baseline/checkpoints/r11d_1_4bit/fresh_eval.json",
+    "report_md/_gpt/json_gpt/r10a_canonical_ensemble_hat_3seed_fresh_eval.json",
+    "paper2_aihwkit_baseline/checkpoints/r11d_5a_pcm_seed123/training_history.json",
+    "paper2_aihwkit_baseline/checkpoints/r11d_5a_pcm_seed456/training_history.json",
+    "paper2_aihwkit_baseline/checkpoints/r11d_5a_pcm_seed789/training_history.json",
+    "paper2_aihwkit_baseline/checkpoints/r11d_6bit_pcm_seed123/training_history.json",
+    "paper2_aihwkit_baseline/checkpoints/r11d_6bit_pcm_seed456_full100/training_history.json",
+    "paper2_aihwkit_baseline/checkpoints/r11d_6bit_pcm_seed789/training_history.json",
+    "paper2_aihwkit_baseline/checkpoints/r11d_7_pcm_4bit_seed123/training_history.json",
+    "paper2_aihwkit_baseline/checkpoints/r11d_7_pcm_4bit_seed456_clean/training_history.json",
+    "paper2_aihwkit_baseline/checkpoints/r11d_7_pcm_4bit_seed789/training_history.json",
+    "paper2_aihwkit_baseline/checkpoints/r11d_5a_pcm_seed123/fresh_eval.json",
+    "paper2_aihwkit_baseline/checkpoints/r11d_5a_pcm_seed456/fresh_eval.json",
+    "paper2_aihwkit_baseline/checkpoints/r11d_5a_pcm_seed789/fresh_eval.json",
+    "paper2_aihwkit_baseline/checkpoints/r11d_6bit_pcm_seed123/fresh_eval.json",
+    "paper2_aihwkit_baseline/checkpoints/r11d_6bit_pcm_seed456_full100/fresh_eval.json",
+    "paper2_aihwkit_baseline/checkpoints/r11d_6bit_pcm_seed789/fresh_eval.json",
+    "paper2_aihwkit_baseline/checkpoints/r11d_7_pcm_4bit_seed123/fresh_eval.json",
+    "paper2_aihwkit_baseline/checkpoints/r11d_7_pcm_4bit_seed456_clean/fresh_eval.json",
+    "paper2_aihwkit_baseline/checkpoints/r11d_7_pcm_4bit_seed789/fresh_eval.json",
+    "paper2_aihwkit_baseline/checkpoints/r11d_5a_pcm_seed123/drift_eval.json",
+    "paper2_aihwkit_baseline/checkpoints/r11d_5a_pcm_seed456/drift_eval.json",
+    "paper2_aihwkit_baseline/checkpoints/r11d_5a_pcm_seed789/drift_eval.json",
+    "paper2_aihwkit_baseline/checkpoints/r11d_6bit_pcm_seed123/drift_eval.json",
+    "paper2_aihwkit_baseline/checkpoints/r11d_6bit_pcm_seed456_full100/drift_eval.json",
+    "paper2_aihwkit_baseline/checkpoints/r11d_6bit_pcm_seed789/drift_eval.json",
+    "paper2_aihwkit_baseline/checkpoints/r11d_7_pcm_4bit_seed123/drift_eval.json",
+    "paper2_aihwkit_baseline/checkpoints/r11d_7_pcm_4bit_seed456_clean/drift_eval.json",
+    "paper2_aihwkit_baseline/checkpoints/r11d_7_pcm_4bit_seed789/drift_eval.json"
+  ]
+}

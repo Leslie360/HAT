@@ -5,9 +5,11 @@ Supports both CPU and GPU (requires CUDA-enabled aihwkit build).
 """
 
 import argparse
+import hashlib
 import json
 import os
 import random
+import subprocess
 import sys
 import time
 from datetime import datetime
@@ -55,12 +57,32 @@ def get_dataloaders(dataset_name="cifar10", batch_size=64, num_workers=2, pin=Fa
     return train_loader, test_loader, stats["num_classes"]
 
 
-def make_rpu_config():
+def sha256_file(path):
+    h = hashlib.sha256()
+    with open(path, "rb") as f:
+        for chunk in iter(lambda: f.read(1024 * 1024), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
+
+def git_commit_hash():
+    try:
+        return subprocess.check_output(
+            ["git", "rev-parse", "HEAD"],
+            stderr=subprocess.DEVNULL,
+            text=True,
+        ).strip()
+    except Exception:
+        return "unknown"
+
+
+def make_rpu_config(inp_res=1.0 / 256.0, out_res=1.0 / 256.0, modifier_std_dev=0.10, modifier_type="ADD_NORMAL"):
     cfg = InferenceRPUConfig()
-    cfg.forward.inp_res = 1.0 / 256.0
-    cfg.forward.out_res = 1.0 / 256.0
-    cfg.modifier.type = WeightModifierType.ADD_NORMAL
-    cfg.modifier.std_dev = 0.10
+    cfg.forward.inp_res = inp_res
+    cfg.forward.out_res = out_res
+    mt = getattr(WeightModifierType, modifier_type.upper(), WeightModifierType.ADD_NORMAL)
+    cfg.modifier.type = mt
+    cfg.modifier.std_dev = modifier_std_dev
     cfg.modifier.enable_during_test = False
     return cfg
 
@@ -82,10 +104,15 @@ def replace_linear_with_analog(module, rpu_config, parent_name=""):
             replace_linear_with_analog(child, rpu_config, full_name)
 
 
-def build_model(num_classes=10):
+def build_model(num_classes=10, inp_res=1.0 / 256.0, out_res=1.0 / 256.0, modifier_std_dev=0.10, modifier_type="ADD_NORMAL"):
     import timm
     model = timm.create_model("tiny_vit_5m_224", num_classes=num_classes, pretrained=False)
-    rpu_config = make_rpu_config()
+    rpu_config = make_rpu_config(
+        inp_res=inp_res,
+        out_res=out_res,
+        modifier_std_dev=modifier_std_dev,
+        modifier_type=modifier_type,
+    )
     replace_linear_with_analog(model, rpu_config)
     return model, rpu_config
 
@@ -137,6 +164,14 @@ def main():
     parser.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu")
     parser.add_argument("--save-dir", default="paper2_aihwkit_baseline/checkpoints")
     parser.add_argument("--log-interval", type=int, default=10)
+    parser.add_argument("--inp-res", type=float, default=1.0 / 256.0)
+    parser.add_argument("--out-res", type=float, default=1.0 / 256.0)
+    parser.add_argument("--modifier-std-dev", type=float, default=0.10)
+    parser.add_argument("--modifier-type", type=str, default="ADD_NORMAL",
+                        help="Weight modifier type: ADD_NORMAL, DOREFA, DISCRETIZE, etc.")
+    parser.add_argument("--early-stop-patience", type=int, default=0)
+    parser.add_argument("--early-stop-min-delta", type=float, default=0.0)
+    parser.add_argument("--run-id", default="r10e_baseline")
     args = parser.parse_args()
 
     random.seed(args.seed)
@@ -150,10 +185,20 @@ def main():
     print(f"Device: {device}")
     print(f"PyTorch: {torch.__version__}")
     print(f"Start: {datetime.now().isoformat()}")
-    print(f"Config: epochs={args.epochs}, bs={args.batch_size}, lr={args.lr}")
+    print(
+        "Config: "
+        f"run_id={args.run_id}, epochs={args.epochs}, bs={args.batch_size}, lr={args.lr}, "
+        f"inp_res={args.inp_res}, out_res={args.out_res}, modifier_type={args.modifier_type}, modifier_std_dev={args.modifier_std_dev}"
+    )
 
     train_loader, test_loader, num_classes = get_dataloaders(batch_size=args.batch_size, num_workers=args.workers, pin=device.type == "cuda")
-    model, rpu_config = build_model(num_classes=num_classes)
+    model, rpu_config = build_model(
+        num_classes=num_classes,
+        inp_res=args.inp_res,
+        out_res=args.out_res,
+        modifier_std_dev=args.modifier_std_dev,
+        modifier_type=args.modifier_type,
+    )
     model = model.to(device)
 
     n_analog = sum(1 for _ in model.modules() if isinstance(_, AnalogLinear))
@@ -165,8 +210,25 @@ def main():
     scheduler = optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=args.epochs, eta_min=1e-6)
 
     best_acc = 0.0
+    best_epoch = -1
     history = []
     start_time = time.time()
+    rpu_config_spec = {
+        "forward_inp_res": args.inp_res,
+        "forward_out_res": args.out_res,
+        "modifier_type": args.modifier_type,
+        "modifier_std_dev": args.modifier_std_dev,
+        "modifier_enable_during_test": False,
+    }
+    provenance = {
+        "run_id": args.run_id,
+        "commit_hash": git_commit_hash(),
+        "code_sha256": sha256_file(__file__),
+        "cuda_device_name": torch.cuda.get_device_name(device) if device.type == "cuda" else "cpu",
+        "pytorch_version": torch.__version__,
+        "exp_cfg": vars(args),
+        "rpu_config_spec": rpu_config_spec,
+    }
 
     for epoch in range(args.epochs):
         t0 = time.time()
@@ -185,20 +247,32 @@ def main():
             "epoch_time_sec": round(epoch_time, 1),
         })
 
-        if test_acc > best_acc:
+        if test_acc > best_acc + args.early_stop_min_delta:
             best_acc = test_acc
+            best_epoch = epoch
             ckpt = os.path.join(args.save_dir, "best.pt")
             torch.save({
                 "epoch": epoch,
                 "model_state_dict": model.state_dict(),
                 "test_acc": test_acc,
                 "args": vars(args),
+                "rpu_config_spec": rpu_config_spec,
+                "provenance": provenance,
             }, ckpt)
 
         if (epoch + 1) % args.log_interval == 0 or epoch == 0 or epoch == args.epochs - 1:
             elapsed = time.time() - start_time
             eta = elapsed / (epoch + 1) * (args.epochs - epoch - 1) if epoch > 0 else 0
             print(f"Epoch {epoch+1:3d}/{args.epochs} | Train {train_acc:.2f}% | Test {test_acc:.2f}% | Best {best_acc:.2f}% | {epoch_time:.1f}s/epoch | ETA {eta/3600:.1f}h")
+
+        if args.early_stop_patience > 0 and best_epoch >= 0:
+            epochs_without_improvement = epoch - best_epoch
+            if epochs_without_improvement >= args.early_stop_patience:
+                print(
+                    f"Early stop at epoch {epoch+1}: no test_acc improvement for "
+                    f"{args.early_stop_patience} epochs."
+                )
+                break
 
     total_elapsed = time.time() - start_time
     print(f"\n=== Complete ===")
@@ -215,6 +289,8 @@ def main():
             "args": vars(args),
             "aihwkit_version": "1.1.0",
             "rpu_config": str(rpu_config),
+            "rpu_config_spec": rpu_config_spec,
+            "provenance": provenance,
             "device": str(device),
             "finish_time": datetime.now().isoformat(),
         }, f, indent=2)

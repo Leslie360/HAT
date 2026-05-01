@@ -5,6 +5,7 @@
 \usepackage[colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue]{hyperref}
 \usepackage{enumitem}
 \setlist{nosep}
+\setlength{\emergencystretch}{2em}
 
 \signature{Songqiao Li}
 
@@ -14,7 +15,7 @@
 
 \opening{Dear Editors,}
 
-\textbf{Submission:} Hardware-Instance Overfitting in Organic Optoelectronic Compute-in-Memory: A Profile-Driven Simulation and Mitigation Framework
+\textbf{Submission:} Hardware-Aware Training and Precision-Retention Frontiers for Low-Precision Analog Vision
 
 \textbf{Article Type:} Article
 
@@ -23,36 +24,33 @@
 \vspace{0.5em}
 \textbf{Editorial Summary}
 
-We present a first-order behavioural simulation framework that bridges organic-device literature metrics to task-level vision accuracy, exposing a previously unnamed failure mode---hardware-instance overfitting---and providing a principled treatment. Our central result is Ensemble Hardware-Aware Training (HAT), a distribution-matching objective that resamples device-to-device (D2D) mismatch masks each training epoch. Ensemble HAT raises fresh-instance accuracy on unseen hardware arrays from chance level (10.00\%) to 86.16$\pm$0.19\% across three Tiny-ViT-5M training seeds (CIFAR-10), a gain of more than 76 percentage points. The protocol is theoretically grounded as an implicit gradient-$L_2$ regulariser equivalent to dropout-as-$L_2$ (Wager 2013), derived in Supplementary Note~S-Theory.
+We present a behavioural simulation framework for low-precision analog compute-in-memory vision that separates two deployment questions that are often conflated: whether a training objective generalizes across fresh hardware instances, and whether a physical memory substrate remains stable after programming. In an AIHWKit IdealDevice baseline, fixed-instance low-precision analog deployment is stable at 8-bit precision (87.28$\pm$0.13\% fresh-instance accuracy) but collapses at 4-bit precision (14.64$\pm$0.11\%). Ensemble Hardware-Aware Training (HAT), which resamples device-to-device mismatch during training, rescues this 4-bit pure-quantization regime and recovers 86.16$\pm$0.19\% fresh-instance accuracy across three seeds.
 
-The framework is demonstrated under canonical evaluation, literature-anchored zero-shot transfer, and severe-NL stress: (i) canonical uniform noise (10\% D2D, 5\% C2C, $NL=1.0$), where Ensemble HAT recovers 86.16$\pm$0.19\% across three training seeds; (ii) a literature-anchored OPECT organic-phototransistor proxy ($\sigma_{\mathrm{D2D}}=3\%$, $\sigma_{\mathrm{C2C}}=2\%$), where zero-shot transfer reaches 88.53$\pm$0.08\% without retraining; and (iii) severe nonlinear write ($NL=2.0$), where hardware-aware training with a revised gradient-scaling recipe recovers to the $\sim$80--82\% band. A residual gap of roughly 15~pp to the 98.06\% digital baseline remains, whose closure awaits higher-order gradient corrections or device-level linearisation.
-
-To bound realistic deployment performance, we report a dual-column ADC discipline: ADC-off training-surrogate baselines are paired with post-module-output hook diagnostic 8-bit ADC-on evaluations calibrated per-instance on each fresh hardware array. Under severe NL, the ADC-on headline differs from the ADC-off surrogate by only $-0.10$~pp on average, while a 6-bit spot-check reveals a larger $-2.8$~pp cliff. Stage-2 per-instance calibration confirms the ADC-on headline is stable to within $0.01$~pp run-to-run std, validating the static-calibration baseline. Spatially correlated D2D is also evaluated under a separable AR(1) proxy: moderate correlation ($\rho=0.3$) degrades Ensemble HAT by only $-1.76$~pp (84.57$\pm$2.39\%), and stronger correlation ($\rho=0.5$) by $-4.20$~pp (82.12$\pm$3.95\%), with no instance collapsing below 73.7\%---empirical evidence of bounded degradation rather than structural collapse (canonical evaluation protocol, $NL=1.0$, AMP disabled).
+We then test whether the algorithmic rescue survives a more realistic phase-change memory (PCM) simulation setting. Under the tested PCM UnitCell regime, 4-bit, 6-bit, and 8-bit models all converge, but retention behaviour becomes precision dependent. The 8-bit PCM model is drift-flat over the tested retention window; the 4-bit PCM model is trainable but incurs a measurable 4.01 percentage-point drift; and the 6-bit PCM model is the best observed Pareto midpoint, maintaining 77.86$\pm$0.56\% fresh-instance accuracy with only a 0.10 percentage-point drift drop. The central message is therefore not simply that HAT improves accuracy, but that distribution-level HAT resolves the cross-instance robustness bottleneck and exposes the remaining physical precision-retention frontier.
 
 \vspace{0.5em}
 \textbf{Why Nature Electronics?}
 
-This work sits at the intersection of emerging device physics, mixed-signal system design, and machine-learning robustness. Organic optoelectronic compute-in-memory offers multi-modal tuning and excellent low-power analogue behaviour, yet lacks a systematic methodology for translating literature device parameters into task-level accuracy predictions before fabrication closure. We provide that methodology: a PyTorch-native, profile-driven behavioural simulator with explicit device-profile substitution and hybrid analogue/digital deployment decomposition. The Ensemble HAT contribution is not merely a training trick; it is a distribution-matching objective with theoretical grounding that generalises across noise profiles, spatial correlation structures, and front-end nonlinearities. We believe this hardware--algorithm co-design narrative, combined with strict source-data provenance and independent cross-checks, is a natural fit for Nature Electronics' readership.
+This work sits at the intersection of analog memory device modelling, mixed-signal system design, and machine-learning robustness. The paper provides a deployment-facing bridge between device-level non-idealities and task-level transformer accuracy, with explicit provenance for the numerical claims and a reproducibility bundle containing the manuscript source, source-data manifests, verification scripts, and canonical JSON evidence. We believe this hardware--algorithm co-design narrative is well aligned with Nature Electronics' readership because it frames low-precision analog deployment as a coupled algorithmic and physical design problem rather than as a pure neural-network training result.
 
 \vspace{0.5em}
 \textbf{Methodological Rigor}
 
-All numerical claims in the manuscript carry source-data provenance distinguishing canonical evaluations, diagnostic ablations, and supplementary sensitivity checks. The severe-NL narrative uses a revised gradient-scaling recipe and reports recovery-band evidence under matched training and evaluation settings. The framework is further fabrication-ready: measured device statistics from a fabricated organic optoelectronic array can be integrated via the ingest pipeline described in Supplementary Note~S-HW as soon as such measurements become available.
+All locked numerical claims are backed by JSON artifacts and guard scripts. The release package includes checks for locked numbers, PCM precision-ladder consistency, bibliography key coverage, DOI/URL resolution, and LaTeX artifact provenance. The manuscript distinguishes canonical claims from diagnostic supplementary analyses and keeps remote cross-architecture and analog-KV-cache results out of the Paper-1 main claim set until their independent gates close.
 
 \vspace{0.5em}
 \textbf{Companion Work and Collaboration}
 
-A companion paper will extend the framework to the attention-pathway analog-CIM regime, specifically KV-cache storage in organic crossbar arrays; the outlook section previews this extension and demonstrates that the diagnostic-treatment signature generalises beyond the feedforward path. We are also collaborating with a fabrication team to obtain measured D2D spatial covariance kernels and retention trajectories; these will be integrated in revision stage via the profile-fitting pipeline.
+A separate follow-on line will study analog KV-cache for large language model inference. That work is intentionally kept outside the present manuscript because its evaluation metrics, memory-access pattern, and noise model differ from the vision-training setting reported here.
 
 \vspace{0.5em}
 \textbf{Key Contributions}
 
 \begin{enumerate}
-    \item Profile-driven, PyTorch-native behavioural simulator for organic optoelectronic CIM with explicit device-profile substitution and hybrid analogue/digital deployment decomposition
-    \item Ensemble HAT: theoretically grounded distribution-matching training raises fresh-instance accuracy from 10.00\% to 86.16$\pm$0.19\% across three training seeds
-    \item Literature-anchored OPECT case study (88.53$\pm$0.08\% zero-shot) and severe-NL recovery to the $\sim$80--82\% band under revised training
-    \item Dual-column ADC discipline (surrogate + hook-diagnostic) that bounds realistic deployment performance before silicon validation
-    \item Correlated-D2D bounded-degradation evidence under AR(1) spatial structure, with worst-case instance 73.7\% at $\rho=0.5$
+    \item A behavioural analog-CIM vision workflow that separates cross-instance robustness from physical precision-retention limits.
+    \item Ensemble HAT, a distribution-matching training protocol that raises 4-bit fresh-instance accuracy from 14.64$\pm$0.11\% to 86.16$\pm$0.19\% in the tested pure-quantization regime.
+    \item A PCM precision ladder showing 8-bit drift-flat behaviour, trainable but drift-limited 4-bit behaviour, and 6-bit as the best observed Pareto midpoint in the tested UnitCell sweep.
+    \item A reproducibility package with canonical JSON evidence, source-data manifests, and guard scripts for locked-number and reference validation.
 \end{enumerate}
 
 \vspace{0.5em}

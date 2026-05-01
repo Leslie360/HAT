@@ -1,0 +1,30 @@
+\begin{tikzpicture}[
+    font=\sffamily\small,
+    >=Latex,
+    box/.style={draw=black, line width=0.55pt, rounded corners=2pt, minimum width=3.2cm, minimum height=1.25cm, align=center},
+    note/.style={align=center, font=\sffamily\footnotesize},
+    arrow/.style={-{Latex[length=2.4mm]}, line width=0.65pt}
+]
+\definecolor{hatTeal}{HTML}{2A9D8F}
+\definecolor{hatTealLight}{HTML}{8FD3C7}
+\definecolor{hatInk}{HTML}{1F2933}
+
+\node[font=\sffamily\bfseries] at (3.1,4.45) {Differential-pair asymmetry};
+\node[note, draw=hatInk, rounded corners=2pt, inner xsep=6pt, inner ysep=3pt] at (8.2,4.45)
+{$\alpha \in [0,0.20]$};
+
+\node[note, font=\sffamily\bfseries] at (1.5,3.65) {$\alpha=0$};
+\node[box, fill=hatTeal!80] (p0) at (0,2.7) {Positive branch\\$G^+$};
+\node[box, fill=hatTealLight!80] (n0) at (3.2,2.7) {Negative branch\\$G^-$};
+\draw[arrow] (1.6,1.95) -- (1.6,1.35);
+\node[note] at (1.6,0.95) {$G_{\mathrm{eff}}=G^+-G^-$};
+
+\node[note, font=\sffamily\bfseries] at (7.2,3.65) {$\alpha=0.10$};
+\node[box, fill=hatTeal!95] (p1) at (5.7,2.7) {Positive branch\\$(1+\alpha)G^+$};
+\node[box, fill=hatTealLight!70] (n1) at (9.0,2.7) {Negative branch\\$(1-\alpha)G^-$};
+\draw[arrow] (7.35,1.95) -- (7.35,1.35);
+\node[note] at (7.35,0.95) {$G_{\mathrm{eff}}^{(\alpha)}=(1+\alpha)G^+-(1-\alpha)G^- -2\alpha G_{\min}$};
+
+\node[note, text width=9.7cm] at (5.0,0.05)
+{Branch imbalance changes the differential readout even when the nominal digital weight is unchanged; Table~\ref{tab:asymmetry-sensitivity} quantifies the accuracy sensitivity.};
+\end{tikzpicture}

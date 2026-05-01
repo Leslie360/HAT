@@ -11,7 +11,7 @@ A quantitative decomposition supports this ordering: designers should first secu
 
 The first is ADC resolution. Below 6 bits, transformer inference degrades substantially, indicating that conductance control remains gated by readout precision.
 
-The second is hardware-instance overfitting. The collapse of V4 under fresh-instance transfer (10.00\%) shows that standard HAT readily fits a single fixed D2D realization. Replacing the fixed-mask objective (Eq.~\ref{eq:hat-standard}) with the mismatch-distributed objective (Eq.~\ref{eq:hat-ensemble-distribution}) raises fresh-instance accuracy to $86.16\pm0.19\%$ across three training seeds. Mechanistically, Ensemble HAT changes the mismatch map across epochs rather than merely perturbing one nominal instance.
+The second is hardware-instance overfitting. The collapse of V4 under fresh-instance transfer (10.00\%) shows that standard HAT readily fits a single fixed D2D realization. Replacing that fixed-mask training recipe with the mismatch-distributed objective in Eq.~\ref{eq:hat-ensemble-distribution} raises fresh-instance accuracy to $86.16\pm0.19\%$ across three training seeds. Mechanistically, Ensemble HAT changes the mismatch map across epochs rather than merely perturbing one nominal instance.
 
 A residual gap to the 98.06\% digital baseline persists; part may reflect regularization from per-epoch D2D resampling. Capacity-aware Ensemble HAT schedules remain an open problem.
 

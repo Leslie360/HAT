@@ -39,18 +39,18 @@ def configure_style():
         "font.family": "serif",
         "font.serif": ["STIXGeneral", "DejaVu Serif"],
         "font.style": "normal",
-        "font.size": 8,
-        "axes.titlesize": 8,
+        "font.size": 9.5,
+        "axes.titlesize": 9.5,
         "axes.titleweight": "semibold",
-        "axes.labelsize": 8,
+        "axes.labelsize": 9.2,
         "axes.labelweight": "normal",
-        "legend.fontsize": 7,
+        "legend.fontsize": 8.2,
         "legend.frameon": True,
         "legend.edgecolor": "#cfcfcf",
         "legend.facecolor": "#ffffff",
         "legend.framealpha": 0.95,
-        "xtick.labelsize": 7,
-        "ytick.labelsize": 7,
+        "xtick.labelsize": 8.2,
+        "ytick.labelsize": 8.2,
         "axes.spines.top": False,
         "axes.spines.right": False,
         "axes.linewidth": 0.8,
@@ -1142,8 +1142,8 @@ def plot_fig9_noise_sensitivity(output_dir: Path):
         return
 
     n_heatmaps = max(1, len(heatmap_specs))
-    fig_width = 10.8 if n_heatmaps == 1 else 14.4
-    fig, axes = plt.subplots(1, n_heatmaps + 1, figsize=(fig_width, 4.6), sharey=False)
+    fig_width = 8.2 if n_heatmaps == 1 else 11.2
+    fig, axes = plt.subplots(1, n_heatmaps + 1, figsize=(fig_width, 3.9), sharey=False)
     if not isinstance(axes, np.ndarray):
         axes = np.asarray([axes])
 
@@ -1164,7 +1164,8 @@ def plot_fig9_noise_sensitivity(output_dir: Path):
             acc = row.get("mean_acc", row.get("test_acc_mean", row.get("acc_mean")))
             if acc is not None:
                 grid[i, j] = float(acc)
-        im = ax.imshow(grid, cmap="viridis", aspect="auto", origin="lower", vmin=vmin, vmax=vmax)
+        cmap = plt.get_cmap("YlGnBu")
+        im = ax.imshow(grid, cmap=cmap, aspect="auto", origin="lower", vmin=vmin, vmax=vmax)
         heatmap_im = im
         heatmap_axes_with_data.append(ax)
         ax.set_xticks(np.arange(len(c2c_vals)))
@@ -1179,8 +1180,10 @@ def plot_fig9_noise_sensitivity(output_dir: Path):
             for j in range(grid.shape[1]):
                 if math.isnan(grid[i, j]):
                     continue
-                txt_color = "white" if grid[i, j] < 55 else "#1b1b1b"
-                ax.text(j, i, f"{grid[i, j]:.1f}", ha="center", va="center", fontsize=7.5, color=txt_color)
+                rgba = cmap((grid[i, j] - vmin) / (vmax - vmin))
+                luminance = 0.2126 * rgba[0] + 0.7152 * rgba[1] + 0.0722 * rgba[2]
+                txt_color = "white" if luminance < 0.48 else "#1b1b1b"
+                ax.text(j, i, f"{grid[i, j]:.1f}", ha="center", va="center", fontsize=8.0, color=txt_color)
 
     if heatmap_im is not None and heatmap_axes_with_data:
         fig.colorbar(heatmap_im, ax=heatmap_axes_with_data, fraction=0.025, pad=0.02, label="Accuracy (%)")

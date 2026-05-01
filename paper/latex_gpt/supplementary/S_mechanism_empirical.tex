@@ -27,7 +27,7 @@ Ensemble HAT & 91.25\% & 88.39\% & 27.06\% \\
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.85\textwidth]{figS_d2d_loss_landscape}
-    \caption{\textbf{D2D-direction loss-landscape interpolation (E2).} Test accuracy (left axis, solid lines with markers) and test loss (right axis, dashed lines with crosses) for canonical Standard HAT and Ensemble HAT as a function of interpolation parameter $\alpha$ from the training mask ($\alpha=0$) toward a fresh mask ($\alpha=1$) and beyond ($\alpha=3$). Standard HAT collapses to chance level at $\alpha=1$, whereas Ensemble HAT maintains $88.39\%$. Shaded regions denote $\pm 1$ standard deviation across three sampled fresh masks.}
+    \caption{\textbf{D2D-direction loss-landscape interpolation (E2).} Standard HAT collapses when moving from the training mask to a fresh mask; Ensemble HAT remains accurate. Shading denotes $\pm 1$ standard deviation across three fresh masks.}
     \label{fig:e2-landscape}
 \end{figure}
 
@@ -57,7 +57,7 @@ We perturb exactly one analog layer at a time with a fixed $\sigma_{\text{D2D}}=
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.95\textwidth]{figS_per_layer_sensitivity}
-    \caption{\textbf{Per-layer D2D mismatch sensitivity (E4).} Accuracy drop (in percentage points) when exactly one analog layer at a time is perturbed with a fixed $\sigma_{\text{D2D}}=10\%$ mask. Bars are colored by layer group: MLP (red), patch embedding (purple), QKV projection (blue), output projection (teal), and head (gold). Four of the five most sensitive layers are MLP layers, with \texttt{stages.2.blocks.4.mlp.fc2} showing the largest single-layer drop (1.38~pp).}
+    \caption{\textbf{Per-layer D2D mismatch sensitivity (E4).} Bars show accuracy drop when perturbing one analog layer at a time with a fixed $\sigma_{\text{D2D}}=10\%$ mask; colors denote layer group.}
     \label{fig:e4-sensitivity}
 \end{figure}
 
@@ -87,7 +87,7 @@ M3 Proportional ($NL=2.0$) & 1{,}764.97 \\
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.85\textwidth]{figS_hessian_spectrum}
-    \caption{\textbf{Hessian eigenspectrum approximation (E1).} Absolute Ritz eigenvalues (log scale) from Lanczos iteration over analog parameters for five checkpoints. At $NL=1.0$, Standard HAT exhibits a lower top eigenvalue ($23.28$) than Ensemble HAT ($221.30$), but this mask-specific ``flatness'' does not predict fresh-instance transferability (Table~\ref{tab:e2-landscape}). The $NL=2.0$ severe-NL checkpoints (M1--M3) show dramatically larger eigenvalues, consistent with loss-surface instability under strong write nonlinearity.}
+    \caption{\textbf{Hessian eigenspectrum approximation (E1).} Lanczos Ritz eigenvalues over analog parameters show that mask-specific flatness does not predict fresh-instance transfer; severe-NL checkpoints have much larger eigenvalues.}
     \label{fig:e1-hessian}
 \end{figure}
 
@@ -102,7 +102,7 @@ Linear Centered Kernel Alignment (CKA) across the M-series checkpoints (42 commo
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.75\textwidth]{figS_cka_mseries}
-    \caption{\textbf{Cross-checkpoint linear CKA matrix (E3).} CKA similarity between M-series checkpoints across 42 common analog layers. The aggregate off-diagonal CKA of $0.455$ indicates mixed representational similarity: checkpoints achieve comparable accuracy through distinct internal representations rather than converging to a single fixed point.}
+    \caption{\textbf{Cross-checkpoint linear CKA matrix (E3).} Off-diagonal CKA shows that M-series checkpoints reach comparable accuracy through partially distinct internal representations.}
     \label{fig:e3-cka}
 \end{figure}
 
@@ -113,6 +113,6 @@ Naive parameter-space averaging of two Standard HAT checkpoints (M1 seed~123 and
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.65\textwidth]{figS_checkpoint_avg}
-    \caption{\textbf{Checkpoint averaging ablation (E5).} Fresh-instance accuracy for Standard HAT seed~123, Standard HAT seed~456, their naive parameter-space average, and the Ensemble HAT reference. Averaging two Standard checkpoints yields chance-level performance ($10.00\%$), confirming that per-epoch D2D resampling is not equivalent to simple parameter-space smoothing.}
+    \caption{\textbf{Checkpoint averaging ablation (E5).} Naively averaging two Standard-HAT checkpoints remains at chance, so per-epoch D2D resampling is not equivalent to parameter-space smoothing.}
     \label{fig:e5-avg}
 \end{figure}

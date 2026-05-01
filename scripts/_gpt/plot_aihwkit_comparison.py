@@ -1,7 +1,10 @@
-import os
+#!/usr/bin/env python3
+"""Generate the supplementary AIHWKit comparison figure."""
+
 import json
+import os
+
 import matplotlib.pyplot as plt
-import numpy as np
 
 def main():
     # Setup
@@ -28,19 +31,20 @@ def main():
 
     # Plot style
     plt.rcParams.update({
-        'font.size': 12,
-        'font.family': 'sans-serif',
-        'axes.labelsize': 14,
-        'axes.titlesize': 16,
-        'xtick.labelsize': 12,
-        'ytick.labelsize': 12,
-        'legend.fontsize': 12,
+        "font.family": "DejaVu Sans",
+        "font.size": 10.2,
+        "axes.labelsize": 10.2,
+        "axes.titlesize": 10.6,
+        "xtick.labelsize": 9.2,
+        "ytick.labelsize": 9.2,
+        "pdf.fonttype": 42,
+        "ps.fonttype": 42,
     })
 
-    fig, ax = plt.subplots(figsize=(8, 6))
+    fig, ax = plt.subplots(figsize=(6.8, 4.1))
 
-    # Colors: standard (red), ensemble (blue), aihwkit (orange)
-    colors = ['#d62728', '#1f77b4', '#ff7f0e']
+    # Palette shared with the main paper spine figure.
+    colors = ["#B94A48", "#2E7D5B", "#2F5D8C"]
 
     bars = ax.bar(methods, means, yerr=stds, capsize=8, color=colors, alpha=0.8, edgecolor='black', width=0.6)
 
@@ -48,10 +52,10 @@ def main():
     for bar, mean, std in zip(bars, means, stds):
         y_pos = bar.get_height() + (std if std > 0 else 0) + 1
         ax.text(bar.get_x() + bar.get_width()/2, y_pos,
-                f"{mean:.2f} $\\pm$ {std:.2f}%", ha='center', va='bottom', fontsize=12, fontweight='bold')
+                f"{mean:.2f} $\\pm$ {std:.2f}%", ha='center', va='bottom', fontsize=9.2, fontweight='bold')
 
     ax.set_ylabel("Fresh-Instance Accuracy (%)")
-    ax.set_title("Cross-Instance Generalization vs AIHWKit")
+    ax.set_title("Cross-instance generalization vs AIHWKit")
     ax.set_ylim(0, 105)
 
     ax.grid(axis='y', linestyle='--', alpha=0.7)

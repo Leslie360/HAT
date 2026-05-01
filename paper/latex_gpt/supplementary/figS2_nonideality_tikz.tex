@@ -1,0 +1,50 @@
+\begin{tikzpicture}[
+    font=\sffamily\small,
+    >=Latex,
+    cell/.style={draw=black!55, line width=0.35pt, minimum width=0.58cm, minimum height=0.58cm},
+    linegrid/.style={black!45, line width=0.5pt},
+    arrow/.style={-{Latex[length=2.3mm]}, line width=0.7pt},
+    leak/.style={orange!85!black, dashed, line width=0.7pt, rounded corners=7pt}
+]
+\definecolor{hatBlueA}{HTML}{1F9FD0}
+\definecolor{hatBlueB}{HTML}{0B3C5D}
+\definecolor{hatTeal}{HTML}{6AB29D}
+\definecolor{hatOrange}{HTML}{E67E22}
+
+\node[font=\sffamily\bfseries] at (1.9,3.65) {IR drop};
+\node[align=center, font=\sffamily\footnotesize] at (1.9,3.28) {position-dependent\\voltage loss};
+\foreach \x/\c in {0/hatBlueA!90,0.8/hatBlueA!78,1.6/hatBlueB!65,2.4/hatBlueB!88} {
+    \foreach \y in {0,0.75,1.5,2.25} {
+        \node[cell, fill=\c] at (\x,\y) {};
+    }
+}
+\foreach \x in {-0.35,0.45,1.25,2.05,2.85} {\draw[linegrid] (\x,-0.35) -- (\x,2.6);}
+\foreach \y in {-0.3,0.45,1.2,1.95,2.7} {\draw[linegrid] (-0.45,\y) -- (3.05,\y);}
+\draw[arrow, hatOrange] (-0.6,1.2) -- (3.15,1.2);
+\node[font=\sffamily\footnotesize, anchor=east] at (-0.7,1.2) {$V_{\mathrm{DD}}$};
+\node[font=\sffamily\footnotesize, anchor=west] at (3.25,1.2) {$V_{\mathrm{SS}}$};
+\node[align=center, font=\sffamily\footnotesize] at (1.35,-0.82) {effective conductance\\decreases along wordlines};
+
+\begin{scope}[xshift=6.1cm]
+\node[font=\sffamily\bfseries] at (1.9,3.65) {Sneak paths};
+\node[align=center, font=\sffamily\footnotesize] at (1.9,3.28) {unselected-cell\\current leakage};
+\foreach \x in {0,0.8,1.6,2.4} {
+    \foreach \y in {0,0.75,1.5,2.25} {
+        \node[cell, fill=hatTeal!78] at (\x,\y) {};
+    }
+}
+\node[cell, fill=hatOrange!92, minimum width=0.68cm, minimum height=0.68cm] at (1.6,1.5) {};
+\foreach \x in {-0.35,0.45,1.25,2.05,2.85} {\draw[linegrid] (\x,-0.35) -- (\x,2.6);}
+\foreach \y in {-0.3,0.45,1.2,1.95,2.7} {\draw[linegrid] (-0.45,\y) -- (3.05,\y);}
+\draw[arrow, hatOrange] (-0.65,1.5) -- (1.22,1.5);
+\draw[arrow, hatOrange] (3.15,1.5) -- (1.98,1.5);
+\draw[arrow, hatOrange] (1.6,-0.45) -- (1.6,1.10);
+\draw[leak] (0.1,0.05) -- (0.1,2.2) -- (2.55,2.2) -- (2.55,1.55);
+\draw[leak] (0.1,0.05) -- (2.1,0.05) -- (2.1,1.18) -- (1.72,1.18);
+\node[font=\sffamily\footnotesize, text=hatOrange, align=center] at (1.05,0.73) {sneak\\paths};
+\node[align=center, font=\sffamily\footnotesize] at (1.35,-0.82) {leakage adds\\readout error};
+\end{scope}
+
+\node[align=center, font=\sffamily\footnotesize] at (5.0,-1.55)
+{$G_{\mathrm{read}}=G_{\mathrm{ideal}}+\Delta G_{\mathrm{array}}$; Table~\ref{tab:nonideality-sensitivity} reports the tested error range.};
+\end{tikzpicture}

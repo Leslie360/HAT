@@ -12,7 +12,7 @@ To address this, we apply Ensemble Hardware-Aware Training (HAT). By resampling 
 \begin{figure}[t]
 \centering
 \includegraphics[width=\textwidth]{fig1_paper1_spine}
-\caption{\textbf{Paper-1 experimental spine.} (A) The tested AIHWKit IdealDevice baseline is stable at 8-bit precision but collapses at 4-bit precision under fresh hardware instances; Ensemble HAT restores 4-bit fresh-instance accuracy by resampling D2D mismatch during training. (B) The tested PCM UnitCell regime separates trainability from retention: 4/6/8-bit models all converge, but 4-bit incurs a larger one-day drift drop while 6-bit gives the best observed precision-retention midpoint in the sweep. Error bars denote cross-seed standard deviation for the reported seed means.}
+\caption{\textbf{Paper-1 experimental spine.} (A) AIHWKit IdealDevice is stable at 8-bit but collapses at 4-bit; Ensemble HAT rescues the 4-bit fresh-instance regime. (B) PCM UnitCell converges at 4/6/8-bit, but 4-bit drifts more over one day; 6-bit is the best observed precision-retention midpoint.}
 \label{fig:paper1-spine}
 \end{figure}
 
@@ -25,16 +25,16 @@ Under the tested PCM UnitCell simulation regime, we observe 4-bit and 6-bit conv
 
 \begin{table}[htbp]
 \centering
-\caption{\textbf{PCM Precision Ladder and Deployment Frontier.} Data reflects locked canonical numbers for PCM UnitCell across 3 seeds. Note: We found that canonical PCM precision-ladder comparisons require full-schedule training: a 6-bit seed that appeared to plateau under patience-based early stopping recovered late in the schedule, so all reported 6-bit PCM statistics use the matched full 100-epoch protocol.}
+\caption{\textbf{PCM precision ladder and deployment frontier.} Values are 3-seed means. Source and fresh columns are accuracy (\%); drift is the 0~s to 1~day drop in percentage points. All 6-bit PCM statistics use the matched full 100-epoch protocol because one seed recovered late after a false early plateau.}
 \label{tab:pcm_precision_ladder}
 \resizebox{\textwidth}{!}{%
 \begin{tabular}{lcccc}
 \toprule
-\textbf{Precision} & \textbf{Source Best Mean} & \textbf{Fresh-Instance Mean} & \textbf{1-Day Drift Drop} & \textbf{Deployment Role} \\
+\textbf{Precision} & \textbf{Source best (\%)} & \textbf{Fresh mean (\%)} & \textbf{1-day drift (pp)} & \textbf{Deployment role} \\
 \midrule
-\textbf{8-bit PCM} & 77.64 $\pm$ 0.68\% & 77.60 $\pm$ 0.64\% & 0.04~pp & Drift-flat reference \\
-\textbf{6-bit PCM} & 77.88 $\pm$ 0.58\% & 77.86 $\pm$ 0.56\% & 0.10~pp & Pareto midpoint \\
-\textbf{4-bit PCM} & 76.71 $\pm$ 0.46\% & 76.68 $\pm$ 0.37\% & 4.01~pp & Drift-limited \\
+\textbf{8-bit PCM} & 77.64 $\pm$ 0.68 & 77.60 $\pm$ 0.64 & 0.04 & Drift-flat reference \\
+\textbf{6-bit PCM} & 77.88 $\pm$ 0.58 & 77.86 $\pm$ 0.56 & 0.10 & Pareto midpoint \\
+\textbf{4-bit PCM} & 76.71 $\pm$ 0.46 & 76.68 $\pm$ 0.37 & 4.01 & Drift-limited \\
 \bottomrule
 \end{tabular}%
 }

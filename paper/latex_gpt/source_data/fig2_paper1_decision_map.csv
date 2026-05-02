@@ -1,0 +1,4 @@
+stage,condition,fresh_accuracy_pct,drift_drop_1d_pp,decision
+failure,IdealDevice 4-bit fixed-mask,14.6368,NA,reject fixed-mask 4-bit
+rescue,IdealDevice 4-bit Ensemble HAT,86.15873333333333,NA,distribution-level HAT works
+physical_frontier,PCM UnitCell 6-bit,77.86113333333333,0.10333333333333883,best tested deployment midpoint

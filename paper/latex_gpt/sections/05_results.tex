@@ -21,34 +21,21 @@ To address this, we apply Ensemble Hardware-Aware Training (HAT). By resampling 
 
 While Ensemble HAT addresses the algorithmic generalization problem in a pure-quantization context, realistic analog deployment must account for complex device physics, particularly conductance drift. We evaluate our approach using the \texttt{PCMPresetUnitCell} model in AIHWKit, which incorporates non-linear update physics, finite dynamic range, and time-dependent drift.
 
-Under the tested PCM UnitCell simulation regime, we observe 4-bit and 6-bit convergence where the pure quantization baseline collapses. As shown in Figure~\ref{fig:paper1-spine} and Table~\ref{tab:pcm_precision_ladder}, training is viable across 4-bit, 6-bit, and 8-bit precisions. However, the results reveal a precision-retention deployment frontier for the tested PCM simulation regime.
+Under the tested PCM UnitCell simulation regime, training is viable across 4-bit, 6-bit, and 8-bit precisions. However, the results reveal a precision-retention deployment frontier rather than a single best compression point. Figure~\ref{fig:paper1-decision-map} converts the result into a deployment decision map: distribution-level HAT fixes the fresh-instance failure, while PCM precision selects the retention budget.
 
-\begin{table}[htbp]
+\begin{figure}[H]
 \centering
-\caption{\textbf{PCM precision ladder and deployment frontier.} Values are 3-seed means. Source and fresh columns are accuracy (\%); drift is the 0~s to 1~day drop in percentage points. All 6-bit PCM statistics use the matched full 100-epoch protocol because one seed recovered late after a false early plateau.}
-\label{tab:pcm_precision_ladder}
-\resizebox{\textwidth}{!}{%
-\begin{tabular}{lcccc}
-\toprule
-\textbf{Precision} & \textbf{Source best (\%)} & \textbf{Fresh mean (\%)} & \textbf{1-day drift (pp)} & \textbf{Deployment role} \\
-\midrule
-\textbf{8-bit PCM} & 77.64 $\pm$ 0.68 & 77.60 $\pm$ 0.64 & 0.04 & Drift-flat reference \\
-\textbf{6-bit PCM} & 77.88 $\pm$ 0.58 & 77.86 $\pm$ 0.56 & 0.10 & Pareto midpoint \\
-\textbf{4-bit PCM} & 76.71 $\pm$ 0.46 & 76.68 $\pm$ 0.37 & 4.01 & Drift-limited \\
-\bottomrule
-\end{tabular}%
-}
-\end{table}
+\includegraphics[width=\textwidth]{fig2_paper1_decision_map}
+\caption{\textbf{Results-to-deployment decision map.} (A) Fixed-mask 4-bit HAT collapses under fresh hardware instances, while D2D-resampled Ensemble HAT restores 4-bit fresh accuracy near the 8-bit idealized baseline. (B) In PCM UnitCell simulation, 8-bit and 6-bit are drift-flat over one day, whereas 4-bit is trainable but drift-limited. (C) The resulting deployment rule is sequential: diagnose fresh-instance collapse, train with a mismatch-distributed objective, then choose the PCM precision from the retention budget.}
+\label{fig:paper1-decision-map}
+\end{figure}
+\FloatBarrier
 
 
 \subsection{Deployment Guidance}
 \label{subsec:deployment-guidance}
 
-The precision ladder clearly separates the algorithmic challenge of cross-instance robustness from the device-level precision-retention tradeoff.
-
-8-bit PCM serves as a highly stable reference, remaining effectively drift-flat over the tested 24-hour retention window. Conversely, while 4-bit PCM achieves significant memory compression and remains highly trainable (76.68 $\pm$ 0.37\% fresh accuracy), it incurs a measurable time-dependent drift, dropping by $\sim$4.01~pp over one day.
-
-In this sweep, 6-bit provides the best observed Pareto midpoint between model compression and long-term inference reliability in the tested PCM UnitCell setting. It maintains 8-bit-like drift stability (dropping only 0.10~pp over one day) while achieving a fresh accuracy of 77.86 $\pm$ 0.56\%, comparable to or slightly exceeding the 8-bit aggregate.
+The precision ladder separates the algorithmic challenge of cross-instance robustness from the device-level precision-retention tradeoff. 8-bit PCM is the drift-flat reference; 4-bit PCM is trainable but loses $\sim$4.01~pp over one day; 6-bit is the best observed midpoint in the tested PCM UnitCell setting, with 77.86 $\pm$ 0.56\% fresh accuracy and only 0.10~pp one-day drift.
 
 \subsection{Future Directions}
 \label{subsec:future-directions}

@@ -25,7 +25,7 @@ Under the tested PCM UnitCell simulation regime, training is viable across 4-bit
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=\textwidth]{fig2_paper1_decision_map}
+\makebox[\textwidth][c]{\includegraphics[width=1.16\textwidth]{fig2_paper1_decision_map}}
 \caption{\textbf{Results-to-deployment decision map.} (A) Fixed-mask 4-bit HAT collapses under fresh hardware instances, while D2D-resampled Ensemble HAT restores 4-bit fresh accuracy near the 8-bit idealized baseline. (B) In PCM UnitCell simulation, 8-bit and 6-bit are drift-flat over one day, whereas 4-bit is trainable but drift-limited. (C) The resulting deployment rule is sequential: diagnose fresh-instance collapse, train with a mismatch-distributed objective, then choose the PCM precision from the retention budget.}
 \label{fig:paper1-decision-map}
 \end{figure}

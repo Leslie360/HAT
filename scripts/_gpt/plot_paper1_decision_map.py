@@ -22,15 +22,15 @@ for font_file in TINOS_DIR.glob("Tinos-*.ttf"):
 
 COL = {
     "ink": "#1E252B",
-    "muted": "#68717A",
-    "rule": "#D7DDE3",
-    "blue": "#2C5F8A",
-    "blue_fill": "#EAF2F8",
-    "red": "#B94A48",
-    "red_fill": "#F7E9E7",
-    "green": "#2E7D5B",
-    "green_fill": "#E7F2EC",
-    "gold": "#C88A2D",
+    "muted": "#66717A",
+    "rule": "#E1E6EB",
+    "blue": "#0072B2",
+    "blue_fill": "#E7F3FB",
+    "red": "#D55E00",
+    "red_fill": "#FBEADE",
+    "green": "#009E73",
+    "green_fill": "#E4F4EF",
+    "gold": "#E69F00",
     "gold_fill": "#FFF1D8",
     "gray_fill": "#F5F6F7",
 }
@@ -79,7 +79,7 @@ plt.rcParams.update(
         "font.family": "Tinos",
         "font.serif": ["Tinos", "Times New Roman", "Nimbus Roman", "Liberation Serif", "DejaVu Serif"],
         "mathtext.fontset": "stix",
-        "font.size": 9.8,
+        "font.size": 12.0,
         "axes.linewidth": 0.75,
         "pdf.fonttype": 42,
         "ps.fonttype": 42,
@@ -88,8 +88,8 @@ plt.rcParams.update(
 
 
 def panel_header(ax, label: str, title: str, x: float, y: float) -> None:
-    ax.text(x, y, label, ha="left", va="bottom", fontsize=11.6, fontweight="bold", color=COL["ink"])
-    ax.text(x + 0.044, y + 0.003, title, ha="left", va="bottom", fontsize=10.0, fontweight="bold", color=COL["ink"])
+    ax.text(x, y, label, ha="left", va="bottom", fontsize=15.2, fontweight="bold", color=COL["ink"])
+    ax.text(x + 0.044, y + 0.003, title, ha="left", va="bottom", fontsize=13.4, fontweight="bold", color=COL["ink"])
 
 
 def box(ax, x: float, y: float, w: float, h: float, fc: str, ec: str, lw: float = 0.95) -> None:
@@ -126,31 +126,31 @@ pcm_8 = pcm["8-bit PCM"]
 pcm_6 = pcm["6-bit PCM"]
 pcm_4 = pcm["4-bit PCM"]
 
-fig, ax = plt.subplots(figsize=(8.6, 3.55), facecolor="white")
+fig, ax = plt.subplots(figsize=(9.4, 5.10), facecolor="white")
 ax.set_axis_off()
 ax.set_xlim(0, 1)
 ax.set_ylim(0, 1)
-fig.subplots_adjust(left=0.035, right=0.985, top=0.94, bottom=0.08)
+fig.subplots_adjust(left=0.030, right=0.990, top=0.950, bottom=0.070)
 
 # Panel A/B: evidence cards.
 panel_header(ax, "A", "Evidence: failure and rescue", 0.02, 0.90)
 panel_header(ax, "B", "Evidence: physical precision", 0.57, 0.90)
 
-card_y = 0.52
-card_h = 0.27
-card_w = 0.160
+card_y = 0.55
+card_h = 0.31
+card_w = 0.168
 cards = [
     (0.03, "4-bit fixed", f"{fixed:.1f}%", "fresh", "reject", COL["red"], COL["red_fill"]),
     (0.250, "4-bit Ensemble", f"{rescued:.1f}%", f"near 8-bit ({base8:.1f}%)", "rescue", COL["green"], COL["green_fill"]),
 ]
 for x, title, number, sub, footer, color, fill in cards:
     box(ax, x, card_y, card_w, card_h, fill, color, lw=1.15)
-    ax.text(x + card_w / 2, card_y + 0.205, title, ha="center", va="center", fontsize=8.7, fontweight="bold", color=color)
-    ax.text(x + card_w / 2, card_y + 0.125, number, ha="center", va="center", fontsize=17.0, fontweight="bold", color=COL["ink"])
-    ax.text(x + card_w / 2, card_y + 0.065, sub, ha="center", va="center", fontsize=8.0, color=COL["muted"])
-    ax.text(x + card_w / 2, card_y - 0.055, footer, ha="center", va="top", fontsize=8.2, fontweight="bold", color=color)
+    ax.text(x + card_w / 2, card_y + 0.238, title, ha="center", va="center", fontsize=11.8, fontweight="bold", color=color)
+    ax.text(x + card_w / 2, card_y + 0.148, number, ha="center", va="center", fontsize=25.0, fontweight="bold", color=COL["ink"])
+    ax.text(x + card_w / 2, card_y + 0.070, sub, ha="center", va="center", fontsize=10.8, color=COL["muted"])
+    ax.text(x + card_w / 2, card_y - 0.060, footer, ha="center", va="top", fontsize=10.8, fontweight="bold", color=color)
 arrow(ax, 0.198, card_y + card_h / 2, 0.247, card_y + card_h / 2)
-ax.text(0.223, card_y + card_h / 2 + 0.060, "resample\nD2D masks", ha="center", va="center", fontsize=7.1, color=COL["muted"])
+ax.text(0.226, card_y + card_h / 2 + 0.074, "resample\nD2D masks", ha="center", va="center", fontsize=11.6, color=COL["muted"])
 
 precision_cards = [
     (0.565, "8-bit", pcm_8, COL["blue"], COL["blue_fill"], "safe"),
@@ -162,35 +162,35 @@ for x, label, row, color, fill, role in precision_cards:
     box(ax, x, card_y, w, card_h, fill, color, lw=1.55 if label == "6-bit" else 1.0)
     fresh = float(row["fresh_mean"])
     drift = float(row["drift_drop_1d_pp"])
-    ax.text(x + w / 2, card_y + 0.205, label, ha="center", va="center", fontsize=10.0, fontweight="bold", color=color)
-    ax.text(x + w / 2, card_y + 0.130, f"{fresh:.1f}%", ha="center", va="center", fontsize=13.0, fontweight="bold", color=COL["ink"])
+    ax.text(x + w / 2, card_y + 0.238, label, ha="center", va="center", fontsize=13.4, fontweight="bold", color=color)
+    ax.text(x + w / 2, card_y + 0.133, f"{fresh:.1f}%", ha="center", va="center", fontsize=19.4, fontweight="bold", color=COL["ink"])
     drift_color = COL["red"] if drift > 1.0 else COL["green"]
-    ax.text(x + w / 2, card_y + 0.070, f"{drift:.2f} pp", ha="center", va="center", fontsize=8.6, fontweight="bold", color=drift_color)
-    ax.text(x + w / 2, card_y + 0.025, "1-day drift", ha="center", va="center", fontsize=7.0, color=COL["muted"])
-    ax.text(x + w / 2, card_y - 0.055, role, ha="center", va="top", fontsize=8.0, fontweight="bold", color=color)
+    ax.text(x + w / 2, card_y + 0.078, f"{drift:.2f} pp", ha="center", va="center", fontsize=11.5, fontweight="bold", color=drift_color)
+    ax.text(x + w / 2, card_y + 0.030, "1-day drift", ha="center", va="center", fontsize=9.6, color=COL["muted"])
+    ax.text(x + w / 2, card_y - 0.060, role, ha="center", va="top", fontsize=10.6, fontweight="bold", color=color)
 
 # Vertical divider.
-ax.plot([0.515, 0.515], [0.45, 0.86], color=COL["rule"], linewidth=0.9)
+ax.plot([0.515, 0.515], [0.48, 0.88], color=COL["rule"], linewidth=0.9)
 
 # Panel C: decision rule chain.
-panel_header(ax, "C", "Decision rule", 0.02, 0.34)
-rule_y = 0.075
-rule_h = 0.19
-rule_w = 0.235
+panel_header(ax, "C", "Decision rule", 0.02, 0.360)
+rule_y = 0.080
+rule_h = 0.245
+rule_w = 0.245
 steps = [
-    (0.090, "1", "diagnose", "fresh-instance\ncollapse", COL["red"], COL["red_fill"]),
-    (0.385, "2", "train", "D2D-resampled\nEnsemble HAT", COL["green"], COL["green_fill"]),
-    (0.680, "3", "deploy", "6-bit PCM unless\nrefreshing 4-bit", COL["blue"], COL["blue_fill"]),
+    (0.075, "1", "diagnose", "fresh-instance\ncollapse", COL["red"], COL["red_fill"]),
+    (0.382, "2", "train", "D2D-resampled\nEnsemble HAT", COL["green"], COL["green_fill"]),
+    (0.690, "3", "deploy", "6-bit PCM unless\nrefreshing 4-bit", COL["blue"], COL["blue_fill"]),
 ]
 for i, (x, num, head, body, color, fill) in enumerate(steps):
     box(ax, x, rule_y, rule_w, rule_h, fill, color, lw=1.05)
-    ax.text(x + 0.040, rule_y + rule_h / 2, num, ha="center", va="center", fontsize=11.0, fontweight="bold", color="white", bbox={"boxstyle": "circle,pad=0.18", "facecolor": color, "edgecolor": "none"})
-    ax.text(x + 0.135, rule_y + 0.125, head, ha="center", va="center", fontsize=8.8, fontweight="bold", color=color)
-    ax.text(x + 0.135, rule_y + 0.066, body, ha="center", va="center", fontsize=8.1, color=COL["ink"], linespacing=1.0)
+    ax.text(x + 0.043, rule_y + rule_h / 2, num, ha="center", va="center", fontsize=15.2, fontweight="bold", color="white", bbox={"boxstyle": "circle,pad=0.18", "facecolor": color, "edgecolor": "none"})
+    ax.text(x + 0.142, rule_y + 0.166, head, ha="center", va="center", fontsize=12.2, fontweight="bold", color=color)
+    ax.text(x + 0.142, rule_y + 0.085, body, ha="center", va="center", fontsize=11.2, color=COL["ink"], linespacing=1.0)
     if i < 2:
         arrow(ax, x + rule_w + 0.012, rule_y + rule_h / 2, x + 0.285, rule_y + rule_h / 2)
 
-ax.text(0.50, 0.012, "Claim boundary: algorithmic generalization and physical retention are separate deployment decisions.", ha="center", va="bottom", fontsize=8.0, color=COL["muted"])
+ax.text(0.50, 0.016, "Claim boundary: algorithmic generalization and physical retention are separate deployment decisions.", ha="center", va="bottom", fontsize=10.5, color=COL["muted"])
 
 for ext in ["pdf", "png"]:
     fig.savefig(FIG_DIR / f"fig2_paper1_decision_map.{ext}", bbox_inches="tight", pad_inches=0.04, dpi=300)

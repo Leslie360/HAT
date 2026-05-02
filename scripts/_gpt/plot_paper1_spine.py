@@ -26,15 +26,15 @@ SRC_DIR.mkdir(parents=True, exist_ok=True)
 
 COL = {
     "ink": "#1E252B",
-    "muted": "#68717A",
-    "rule": "#D7DDE3",
-    "blue": "#2C5F8A",
-    "blue_fill": "#EAF2F8",
-    "red": "#B94A48",
-    "red_fill": "#F7E9E7",
-    "green": "#2E7D5B",
-    "green_fill": "#E7F2EC",
-    "gold": "#C88A2D",
+    "muted": "#66717A",
+    "rule": "#E1E6EB",
+    "blue": "#0072B2",
+    "blue_fill": "#E7F3FB",
+    "red": "#D55E00",
+    "red_fill": "#FBEADE",
+    "green": "#009E73",
+    "green_fill": "#E4F4EF",
+    "gold": "#E69F00",
     "gold_fill": "#FFF1D8",
     "gray_fill": "#F5F6F7",
 }
@@ -151,11 +151,11 @@ plt.rcParams.update(
         "font.family": "Tinos",
         "font.serif": ["Tinos", "Times New Roman", "Nimbus Roman", "Liberation Serif", "DejaVu Serif"],
         "mathtext.fontset": "stix",
-        "font.size": 9.2,
-        "axes.labelsize": 9.8,
-        "axes.titlesize": 10.0,
-        "xtick.labelsize": 8.7,
-        "ytick.labelsize": 8.7,
+        "font.size": 10.2,
+        "axes.labelsize": 10.6,
+        "axes.titlesize": 10.8,
+        "xtick.labelsize": 9.4,
+        "ytick.labelsize": 9.4,
         "axes.linewidth": 0.75,
         "pdf.fonttype": 42,
         "ps.fonttype": 42,
@@ -164,8 +164,8 @@ plt.rcParams.update(
 
 
 def panel_header(ax, label: str, title: str, y: float = 1.04) -> None:
-    ax.text(0.0, y, label, transform=ax.transAxes, ha="left", va="bottom", fontsize=11.3, fontweight="bold", color=COL["ink"])
-    ax.text(0.14, y + 0.004, title, transform=ax.transAxes, ha="left", va="bottom", fontsize=9.8, fontweight="bold", color=COL["ink"])
+    ax.text(0.0, y, label, transform=ax.transAxes, ha="left", va="bottom", fontsize=12.6, fontweight="bold", color=COL["ink"])
+    ax.text(0.14, y + 0.004, title, transform=ax.transAxes, ha="left", va="bottom", fontsize=10.8, fontweight="bold", color=COL["ink"])
 
 
 def box(ax, x: float, y: float, w: float, h: float, text: str, fc: str, ec: str, fs: float = 7.5, weight: str = "bold") -> None:
@@ -202,8 +202,8 @@ def style_axis(ax) -> None:
     ax.tick_params(length=3, width=0.7, color=COL["ink"], labelcolor=COL["ink"])
 
 
-fig = plt.figure(figsize=(8.6, 3.65), facecolor="white")
-gs = fig.add_gridspec(1, 3, width_ratios=[1.42, 1.0, 1.0], wspace=0.36)
+fig = plt.figure(figsize=(9.0, 4.05), facecolor="white")
+gs = fig.add_gridspec(1, 3, width_ratios=[1.42, 1.0, 1.05], wspace=0.40)
 ax_a = fig.add_subplot(gs[0, 0])
 ax_b = fig.add_subplot(gs[0, 1])
 ax_c = fig.add_subplot(gs[0, 2])
@@ -244,7 +244,17 @@ means = [float(row["fresh_mean"]) for row in ideal_rows]
 stds = [float(row["fresh_std"]) for row in ideal_rows]
 colors = [COL["blue"], COL["red"], COL["green"]]
 x = np.arange(3)
-ax_b.bar(x, means, yerr=stds, capsize=2.4, width=0.58, color=colors, edgecolor=COL["ink"], linewidth=0.55)
+ax_b.bar(
+    x,
+    means,
+    yerr=stds,
+    capsize=0,
+    width=0.56,
+    color=colors,
+    edgecolor="white",
+    linewidth=0.7,
+    error_kw={"elinewidth": 0.8, "ecolor": "#555555"},
+)
 panel_header(ax_b, "B", "4-bit collapse and rescue", y=1.02)
 ax_b.set_ylabel("Fresh accuracy (%)")
 ax_b.set_ylim(0, 100)
@@ -258,31 +268,36 @@ style_axis(ax_b)
 # Panel C: PCM precision/retention frontier.
 labels_pcm = ["8-bit", "6-bit", "4-bit"]
 fresh = [float(row["fresh_mean"]) for row in pcm_rows]
-fresh_std = [float(row["fresh_std"]) for row in pcm_rows]
 drift = [float(row["drift_drop_1d_pp"]) for row in pcm_rows]
-x2 = np.arange(3)
 bar_colors = ["#79A7C8", COL["green"], COL["gold"]]
-bars_c = ax_c.bar(x2, fresh, yerr=fresh_std, capsize=2.4, width=0.58, color=bar_colors, edgecolor=COL["ink"], linewidth=0.55)
-bars_c[1].set_edgecolor(COL["green"])
-bars_c[1].set_linewidth(1.25)
 panel_header(ax_c, "C", "PCM precision-retention frontier", y=1.02)
 ax_c.set_ylabel("Fresh accuracy (%)")
-ax_c.set_ylim(75.6, 79.2)
-ax_c.set_xticks(x2)
-ax_c.set_xticklabels(labels_pcm)
-for i, v in enumerate(fresh):
-    ax_c.text(i, v + 0.20, f"{v:.1f}", ha="center", va="bottom", fontsize=8.7, fontweight="bold", color=COL["ink"])
+ax_c.set_xlabel("1-day drift drop (pp, log scale)")
+ax_c.set_xscale("log")
+ax_c.set_xlim(0.025, 5.3)
+ax_c.set_ylim(76.1, 78.6)
+ax_c.set_xticks([0.04, 0.10, 1.0, 4.0])
+ax_c.set_xticklabels(["0.04", "0.10", "1", "4"])
+ax_c.plot(drift, fresh, color=COL["muted"], linewidth=1.25, zorder=1)
+ax_c.scatter(drift, fresh, s=[54, 78, 60], color=bar_colors, edgecolor="white", linewidth=0.8, zorder=3)
+for i, (label, xval, yval, dval) in enumerate(zip(labels_pcm, drift, fresh, drift)):
+    dx = 1.06 if i < 2 else 0.88
+    ha = "left" if i < 2 else "right"
+    dy = 0.13 if i != 1 else 0.10
+    ax_c.text(xval * dx, yval + dy, f"{label}\n{yval:.1f}%, {dval:.2f} pp", ha=ha, va="bottom", fontsize=8.8, fontweight="bold", color=COL["ink"], linespacing=1.0)
+ax_c.annotate(
+    "midpoint",
+    xy=(drift[1], fresh[1]),
+    xytext=(0.38, 78.25),
+    textcoords="data",
+    arrowprops={"arrowstyle": "-|>", "color": COL["green"], "lw": 0.9},
+    ha="left",
+    va="center",
+    fontsize=9.2,
+    fontweight="bold",
+    color=COL["green"],
+)
 style_axis(ax_c)
-
-ax_d = ax_c.twinx()
-ax_d.plot(x2, drift, color="#7B2D2C", marker="o", markersize=4.0, linewidth=1.5)
-ax_d.set_ylim(-0.1, 4.5)
-ax_d.set_ylabel("1-day drift (pp)", color="#7B2D2C")
-ax_d.tick_params(axis="y", colors="#7B2D2C", labelsize=7.0, length=3, width=0.7)
-ax_d.spines[["top"]].set_visible(False)
-for i, v in enumerate(drift):
-    dy = 0.14 if v < 1 else 0.18
-    ax_d.text(i, v + dy, f"{v:.2f}", ha="center", va="bottom", fontsize=8.6, color="#7B2D2C", fontweight="bold")
 
 for ext in ["pdf", "png"]:
     fig.savefig(FIG_DIR / f"fig1_paper1_spine.{ext}", dpi=300, bbox_inches="tight", pad_inches=0.04)

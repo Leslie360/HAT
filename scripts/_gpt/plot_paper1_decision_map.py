@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate a main-text decision-map figure for Paper 1."""
+"""Generate a clean main-text decision-map figure for Paper 1."""
 
 from __future__ import annotations
 
@@ -7,8 +7,7 @@ import csv
 from pathlib import Path
 
 import matplotlib.pyplot as plt
-import numpy as np
-from matplotlib.patches import FancyArrowPatch, FancyBboxPatch, Rectangle
+from matplotlib.patches import FancyArrowPatch, FancyBboxPatch
 
 ROOT = Path(__file__).resolve().parents[2]
 FIG_DIR = ROOT / "paper" / "latex_gpt" / "figures"
@@ -16,18 +15,19 @@ SRC_DIR = ROOT / "paper" / "latex_gpt" / "source_data"
 FIG_DIR.mkdir(parents=True, exist_ok=True)
 SRC_DIR.mkdir(parents=True, exist_ok=True)
 
-PALETTE = {
-    "blue": "#2F5D8C",
-    "blue_light": "#E7F0FA",
+COL = {
+    "ink": "#1E252B",
+    "muted": "#68717A",
+    "rule": "#D7DDE3",
+    "blue": "#2C5F8A",
+    "blue_fill": "#EAF2F8",
     "red": "#B94A48",
-    "red_light": "#F7E7E5",
+    "red_fill": "#F7E9E7",
     "green": "#2E7D5B",
-    "green_light": "#E7F4EE",
-    "orange": "#D59A4A",
-    "orange_light": "#FFF1DD",
-    "ink": "#202020",
-    "muted": "#666666",
-    "paper": "#FAFAF7",
+    "green_fill": "#E7F2EC",
+    "gold": "#C88A2D",
+    "gold_fill": "#FFF1D8",
+    "gray_fill": "#F5F6F7",
 }
 
 
@@ -38,7 +38,6 @@ def read_csv(path: Path) -> list[dict[str, str]]:
 
 ideal_rows = read_csv(SRC_DIR / "fig1_paper1_spine.csv")
 pcm_rows = read_csv(SRC_DIR / "tab_pcm_precision_ladder.csv")
-
 ideal = {row["condition"]: row for row in ideal_rows}
 pcm = {row["condition"]: row for row in pcm_rows}
 
@@ -73,134 +72,121 @@ with (SRC_DIR / "fig2_paper1_decision_map.csv").open("w", newline="", encoding="
 plt.rcParams.update(
     {
         "font.family": "DejaVu Sans",
-        "font.size": 8.8,
-        "axes.labelsize": 8.6,
-        "axes.titlesize": 9.0,
-        "xtick.labelsize": 7.8,
-        "ytick.labelsize": 7.8,
-        "axes.linewidth": 0.8,
+        "font.size": 8.0,
+        "axes.linewidth": 0.75,
         "pdf.fonttype": 42,
         "ps.fonttype": 42,
     }
 )
 
-fig = plt.figure(figsize=(8.4, 4.85), facecolor="white")
-gs = fig.add_gridspec(2, 2, width_ratios=[1.02, 1.18], height_ratios=[1.0, 0.48], wspace=0.28, hspace=0.40)
-ax_a = fig.add_subplot(gs[0, 0])
-ax_b = fig.add_subplot(gs[0, 1])
-ax_c = fig.add_subplot(gs[1, :])
+
+def panel_header(ax, label: str, title: str, x: float, y: float) -> None:
+    ax.text(x, y, label, ha="left", va="bottom", fontsize=9.8, fontweight="bold", color=COL["ink"])
+    ax.text(x + 0.032, y + 0.003, title, ha="left", va="bottom", fontsize=8.1, fontweight="bold", color=COL["ink"])
 
 
-def panel_title(ax, label: str, title: str) -> None:
-    ax.text(0.00, 1.04, label, transform=ax.transAxes, fontsize=11, fontweight="bold", va="bottom", color=PALETTE["ink"])
-    ax.text(0.075, 1.045, title, transform=ax.transAxes, fontsize=9.2, fontweight="bold", va="bottom", color=PALETTE["ink"])
-
-
-def rounded(ax, xy, wh, fc, ec, text=None, fontsize=8.6, weight="normal", color=None, lw=1.0):
-    patch = FancyBboxPatch(
-        xy,
-        wh[0],
-        wh[1],
-        boxstyle="round,pad=0.018,rounding_size=0.035",
-        facecolor=fc,
-        edgecolor=ec,
-        linewidth=lw,
-    )
-    ax.add_patch(patch)
-    if text:
-        ax.text(xy[0] + wh[0] / 2, xy[1] + wh[1] / 2, text, ha="center", va="center", fontsize=fontsize, fontweight=weight, color=color or PALETTE["ink"])
-    return patch
-
-
-def arrow(ax, start, end, color=None, lw=1.2, rad=0.0):
+def box(ax, x: float, y: float, w: float, h: float, fc: str, ec: str, lw: float = 0.95) -> None:
     ax.add_patch(
-        FancyArrowPatch(
-            start,
-            end,
-            arrowstyle="-|>",
-            mutation_scale=13,
+        FancyBboxPatch(
+            (x, y),
+            w,
+            h,
+            boxstyle="round,pad=0.012,rounding_size=0.025",
             linewidth=lw,
-            color=color or PALETTE["muted"],
-            connectionstyle=f"arc3,rad={rad}",
+            facecolor=fc,
+            edgecolor=ec,
         )
     )
 
-# Panel A: failure and algorithmic treatment.
-ax_a.set_axis_off()
-ax_a.set_xlim(0, 1)
-ax_a.set_ylim(0, 1)
-panel_title(ax_a, "A", "Failure mode and treatment")
+
+def arrow(ax, x0: float, y0: float, x1: float, y1: float, color: str = COL["muted"], lw: float = 1.0) -> None:
+    ax.add_patch(
+        FancyArrowPatch(
+            (x0, y0),
+            (x1, y1),
+            arrowstyle="-|>",
+            mutation_scale=12,
+            linewidth=lw,
+            color=color,
+        )
+    )
+
 
 fixed = float(ideal["IdealDevice 4-bit"]["fresh_mean"])
 rescued = float(ideal["Ensemble HAT 4-bit"]["fresh_mean"])
 base8 = float(ideal["IdealDevice 8-bit"]["fresh_mean"])
+pcm_8 = pcm["8-bit PCM"]
+pcm_6 = pcm["6-bit PCM"]
+pcm_4 = pcm["4-bit PCM"]
 
-rounded(ax_a, (0.05, 0.60), (0.34, 0.20), PALETTE["red_light"], PALETTE["red"], "fixed-mask\n4-bit HAT", fontsize=8.0, weight="bold", color=PALETTE["red"])
-rounded(ax_a, (0.61, 0.60), (0.34, 0.20), PALETTE["green_light"], PALETTE["green"], "Ensemble HAT\n4-bit", fontsize=8.0, weight="bold", color=PALETTE["green"])
-arrow(ax_a, (0.40, 0.695), (0.60, 0.695), color=PALETTE["muted"])
-ax_a.text(0.50, 0.805, "resample D2D masks", ha="center", va="bottom", fontsize=6.9, color=PALETTE["muted"])
+fig, ax = plt.subplots(figsize=(8.6, 3.05), facecolor="white")
+ax.set_axis_off()
+ax.set_xlim(0, 1)
+ax.set_ylim(0, 1)
+fig.subplots_adjust(left=0.035, right=0.985, top=0.94, bottom=0.08)
 
-ax_a.text(0.22, 0.46, f"{fixed:.1f}%", ha="center", va="center", fontsize=17.5, fontweight="bold", color=PALETTE["red"])
-ax_a.text(0.22, 0.35, "fresh accuracy", ha="center", va="center", fontsize=8.1, color=PALETTE["muted"])
-ax_a.text(0.78, 0.46, f"{rescued:.1f}%", ha="center", va="center", fontsize=17.5, fontweight="bold", color=PALETTE["green"])
-ax_a.text(0.78, 0.35, f"near 8-bit baseline ({base8:.1f}%)", ha="center", va="center", fontsize=7.3, color=PALETTE["muted"])
+# Panel A/B: evidence cards.
+panel_header(ax, "A", "Evidence: failure and rescue", 0.02, 0.90)
+panel_header(ax, "B", "Evidence: physical precision", 0.57, 0.90)
 
-rounded(ax_a, (0.12, 0.10), (0.76, 0.12), "#F6F6F6", "#CCCCCC", "Randomize hardware instances, not data labels.", fontsize=7.2, color=PALETTE["ink"])
-
-# Panel B: PCM deployment frontier as compact card table.
-ax_b.set_axis_off()
-ax_b.set_xlim(0, 1)
-ax_b.set_ylim(0, 1)
-panel_title(ax_b, "B", "PCM precision choice")
-
+card_y = 0.52
+card_h = 0.27
+card_w = 0.160
 cards = [
-    ("8-bit", pcm["8-bit PCM"], PALETTE["blue"], PALETTE["blue_light"], "safe\nreference"),
-    ("6-bit", pcm["6-bit PCM"], PALETTE["green"], PALETTE["green_light"], "chosen\nmidpoint"),
-    ("4-bit", pcm["4-bit PCM"], PALETTE["orange"], PALETTE["orange_light"], "drift\nlimited"),
+    (0.03, "4-bit fixed", f"{fixed:.1f}%", "fresh", "reject", COL["red"], COL["red_fill"]),
+    (0.250, "4-bit Ensemble", f"{rescued:.1f}%", f"near 8-bit ({base8:.1f}%)", "rescue", COL["green"], COL["green_fill"]),
 ]
-for i, (label, row, color, fill, role) in enumerate(cards):
-    x0 = 0.04 + i * 0.32
-    w = 0.28
-    ec = color
-    lw = 1.7 if label == "6-bit" else 1.0
-    rounded(ax_b, (x0, 0.18), (w, 0.65), fill, ec, lw=lw)
-    ax_b.text(x0 + w / 2, 0.76, label, ha="center", va="center", fontsize=11.4, fontweight="bold", color=color)
+for x, title, number, sub, footer, color, fill in cards:
+    box(ax, x, card_y, card_w, card_h, fill, color, lw=1.15)
+    ax.text(x + card_w / 2, card_y + 0.205, title, ha="center", va="center", fontsize=7.2, fontweight="bold", color=color)
+    ax.text(x + card_w / 2, card_y + 0.125, number, ha="center", va="center", fontsize=15.0, fontweight="bold", color=COL["ink"])
+    ax.text(x + card_w / 2, card_y + 0.065, sub, ha="center", va="center", fontsize=6.8, color=COL["muted"])
+    ax.text(x + card_w / 2, card_y - 0.055, footer, ha="center", va="top", fontsize=7.0, fontweight="bold", color=color)
+arrow(ax, 0.198, card_y + card_h / 2, 0.247, card_y + card_h / 2)
+ax.text(0.223, card_y + card_h / 2 + 0.060, "resample\nD2D masks", ha="center", va="center", fontsize=6.0, color=COL["muted"])
+
+precision_cards = [
+    (0.565, "8-bit", pcm_8, COL["blue"], COL["blue_fill"], "safe"),
+    (0.715, "6-bit", pcm_6, COL["green"], COL["green_fill"], "midpoint"),
+    (0.865, "4-bit", pcm_4, COL["gold"], COL["gold_fill"], "drift-limited"),
+]
+for x, label, row, color, fill, role in precision_cards:
+    w = 0.115
+    box(ax, x, card_y, w, card_h, fill, color, lw=1.55 if label == "6-bit" else 1.0)
     fresh = float(row["fresh_mean"])
     drift = float(row["drift_drop_1d_pp"])
-    ax_b.text(x0 + w / 2, 0.60, f"{fresh:.1f}%", ha="center", va="center", fontsize=14.6, fontweight="bold", color=PALETTE["ink"])
-    ax_b.text(x0 + w / 2, 0.50, "fresh", ha="center", va="center", fontsize=7.9, color=PALETTE["muted"])
-    # Bar uses 70-80% domain to show that all PCM settings train.
-    bx, by, bw, bh = x0 + 0.04, 0.405, w - 0.08, 0.035
-    ax_b.add_patch(Rectangle((bx, by), bw, bh, facecolor="white", edgecolor="#D0D0D0", linewidth=0.5))
-    ax_b.add_patch(Rectangle((bx, by), bw * np.clip((fresh - 70) / 10, 0, 1), bh, facecolor=color, edgecolor="none", alpha=0.86))
-    ax_b.text(x0 + w / 2, 0.30, f"{drift:.2f} pp", ha="center", va="center", fontsize=10.4, fontweight="bold", color=PALETTE["red"] if drift > 1 else PALETTE["green"])
-    ax_b.text(x0 + w / 2, 0.225, "1-day drift", ha="center", va="center", fontsize=7.5, color=PALETTE["muted"])
-    ax_b.text(x0 + w / 2, 0.105, role, ha="center", va="top", fontsize=7.7, color=color, fontweight="bold")
+    ax.text(x + w / 2, card_y + 0.205, label, ha="center", va="center", fontsize=8.5, fontweight="bold", color=color)
+    ax.text(x + w / 2, card_y + 0.130, f"{fresh:.1f}%", ha="center", va="center", fontsize=11.2, fontweight="bold", color=COL["ink"])
+    drift_color = COL["red"] if drift > 1.0 else COL["green"]
+    ax.text(x + w / 2, card_y + 0.070, f"{drift:.2f} pp", ha="center", va="center", fontsize=7.4, fontweight="bold", color=drift_color)
+    ax.text(x + w / 2, card_y + 0.025, "1-day drift", ha="center", va="center", fontsize=5.9, color=COL["muted"])
+    ax.text(x + w / 2, card_y - 0.055, role, ha="center", va="top", fontsize=6.8, fontweight="bold", color=color)
 
-# Panel C: actionable rule chain.
-ax_c.set_axis_off()
-ax_c.set_xlim(0, 1)
-ax_c.set_ylim(0, 1)
-panel_title(ax_c, "C", "Claim boundary and deployment rule")
+# Vertical divider.
+ax.plot([0.515, 0.515], [0.45, 0.86], color=COL["rule"], linewidth=0.9)
 
+# Panel C: decision rule chain.
+panel_header(ax, "C", "Decision rule", 0.02, 0.34)
+rule_y = 0.09
+rule_h = 0.16
+rule_w = 0.235
 steps = [
-    ("1", "diagnose", "fresh-instance\ncollapse", PALETTE["red"], PALETTE["red_light"]),
-    ("2", "train", "D2D-resampled\nEnsemble HAT", PALETTE["green"], PALETTE["green_light"]),
-    ("3", "deploy", "6-bit PCM unless\nrefreshing 4-bit", PALETTE["blue"], PALETTE["blue_light"]),
+    (0.090, "1", "diagnose", "fresh-instance\ncollapse", COL["red"], COL["red_fill"]),
+    (0.385, "2", "train", "D2D-resampled\nEnsemble HAT", COL["green"], COL["green_fill"]),
+    (0.680, "3", "deploy", "6-bit PCM unless\nrefreshing 4-bit", COL["blue"], COL["blue_fill"]),
 ]
-for i, (num, head, body, color, fill) in enumerate(steps):
-    x0 = 0.055 + i * 0.315
-    rounded(ax_c, (x0, 0.22), (0.235, 0.48), fill, color, lw=1.1)
-    ax_c.text(x0 + 0.040, 0.59, num, ha="center", va="center", fontsize=10.5, fontweight="bold", color="white", bbox={"boxstyle": "circle,pad=0.20", "facecolor": color, "edgecolor": "none"})
-    ax_c.text(x0 + 0.142, 0.60, head, ha="center", va="center", fontsize=8.1, fontweight="bold", color=color)
-    ax_c.text(x0 + 0.118, 0.40, body, ha="center", va="center", fontsize=7.7, color=PALETTE["ink"])
+for i, (x, num, head, body, color, fill) in enumerate(steps):
+    box(ax, x, rule_y, rule_w, rule_h, fill, color, lw=1.05)
+    ax.text(x + 0.040, rule_y + rule_h / 2, num, ha="center", va="center", fontsize=9.8, fontweight="bold", color="white", bbox={"boxstyle": "circle,pad=0.18", "facecolor": color, "edgecolor": "none"})
+    ax.text(x + 0.135, rule_y + 0.100, head, ha="center", va="center", fontsize=7.8, fontweight="bold", color=color)
+    ax.text(x + 0.135, rule_y + 0.050, body, ha="center", va="center", fontsize=7.2, color=COL["ink"], linespacing=1.0)
     if i < 2:
-        arrow(ax_c, (x0 + 0.245, 0.46), (x0 + 0.305, 0.46), color=PALETTE["muted"], lw=1.0)
+        arrow(ax, x + rule_w + 0.012, rule_y + rule_h / 2, x + 0.285, rule_y + rule_h / 2)
 
-ax_c.text(0.50, 0.08, "Main claim: algorithmic generalization and physical retention are separate decisions.", ha="center", va="center", fontsize=7.8, color=PALETTE["muted"])
+ax.text(0.50, 0.015, "Claim boundary: algorithmic generalization and physical retention are separate deployment decisions.", ha="center", va="bottom", fontsize=7.0, color=COL["muted"])
 
 for ext in ["pdf", "png"]:
-    fig.savefig(FIG_DIR / f"fig2_paper1_decision_map.{ext}", bbox_inches="tight", dpi=300)
+    fig.savefig(FIG_DIR / f"fig2_paper1_decision_map.{ext}", bbox_inches="tight", pad_inches=0.04, dpi=300)
 
 print(FIG_DIR / "fig2_paper1_decision_map.pdf")
 print(SRC_DIR / "fig2_paper1_decision_map.csv")

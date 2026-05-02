@@ -9,12 +9,17 @@ from pathlib import Path
 
 import matplotlib.pyplot as plt
 import numpy as np
+from matplotlib import font_manager
 from matplotlib.patches import FancyArrowPatch, FancyBboxPatch
 
 ROOT = Path(__file__).resolve().parents[2]
 FIG_DIR = ROOT / "paper" / "latex_gpt" / "figures"
 SRC_DIR = ROOT / "paper" / "latex_gpt" / "source_data"
 CKPT = ROOT / "paper2_aihwkit_baseline" / "checkpoints"
+TINOS_DIR = Path("/usr/share/fonts/truetype/croscore")
+
+for font_file in TINOS_DIR.glob("Tinos-*.ttf"):
+    font_manager.fontManager.addfont(str(font_file))
 
 FIG_DIR.mkdir(parents=True, exist_ok=True)
 SRC_DIR.mkdir(parents=True, exist_ok=True)
@@ -143,12 +148,14 @@ with (SRC_DIR / "manifest_paper1_spine.json").open("w", encoding="utf-8") as han
 
 plt.rcParams.update(
     {
-        "font.family": "DejaVu Sans",
-        "font.size": 8.0,
-        "axes.labelsize": 8.0,
-        "axes.titlesize": 8.4,
-        "xtick.labelsize": 7.2,
-        "ytick.labelsize": 7.2,
+        "font.family": "Tinos",
+        "font.serif": ["Tinos", "Times New Roman", "Nimbus Roman", "Liberation Serif", "DejaVu Serif"],
+        "mathtext.fontset": "stix",
+        "font.size": 9.2,
+        "axes.labelsize": 9.8,
+        "axes.titlesize": 10.0,
+        "xtick.labelsize": 8.7,
+        "ytick.labelsize": 8.7,
         "axes.linewidth": 0.75,
         "pdf.fonttype": 42,
         "ps.fonttype": 42,
@@ -157,8 +164,8 @@ plt.rcParams.update(
 
 
 def panel_header(ax, label: str, title: str, y: float = 1.04) -> None:
-    ax.text(0.0, y, label, transform=ax.transAxes, ha="left", va="bottom", fontsize=9.6, fontweight="bold", color=COL["ink"])
-    ax.text(0.075, y + 0.004, title, transform=ax.transAxes, ha="left", va="bottom", fontsize=8.1, fontweight="bold", color=COL["ink"])
+    ax.text(0.0, y, label, transform=ax.transAxes, ha="left", va="bottom", fontsize=11.3, fontweight="bold", color=COL["ink"])
+    ax.text(0.14, y + 0.004, title, transform=ax.transAxes, ha="left", va="bottom", fontsize=9.8, fontweight="bold", color=COL["ink"])
 
 
 def box(ax, x: float, y: float, w: float, h: float, text: str, fc: str, ec: str, fs: float = 7.5, weight: str = "bold") -> None:
@@ -195,7 +202,7 @@ def style_axis(ax) -> None:
     ax.tick_params(length=3, width=0.7, color=COL["ink"], labelcolor=COL["ink"])
 
 
-fig = plt.figure(figsize=(8.6, 3.05), facecolor="white")
+fig = plt.figure(figsize=(8.6, 3.65), facecolor="white")
 gs = fig.add_gridspec(1, 3, width_ratios=[1.42, 1.0, 1.0], wspace=0.36)
 ax_a = fig.add_subplot(gs[0, 0])
 ax_b = fig.add_subplot(gs[0, 1])
@@ -212,24 +219,24 @@ row_y = [0.62, 0.25]
 row_name = [("Fixed-mask HAT", COL["red"]), ("D2D-resampled HAT", COL["green"])]
 for idx, y in enumerate(row_y):
     label, color = row_name[idx]
-    ax_a.text(0.06, y + 0.205, label, ha="left", va="center", fontsize=7.5, color=color, fontweight="bold")
-    box(ax_a, 0.06, y, 0.18, 0.15, "digital\nweights", COL["gray_fill"], "#9DA5AD", fs=7.1)
+    ax_a.text(0.06, y + 0.205, label, ha="left", va="center", fontsize=8.8, color=color, fontweight="bold")
+    box(ax_a, 0.06, y, 0.18, 0.15, "digital\nweights", COL["gray_fill"], "#9DA5AD", fs=8.6)
     arrow(ax_a, 0.245, y + 0.075, 0.315, y + 0.075)
     if idx == 0:
-        box(ax_a, 0.32, y, 0.15, 0.15, "$M_0$", COL["red_fill"], COL["red"], fs=9.0)
+        box(ax_a, 0.32, y, 0.15, 0.15, "$M_0$", COL["red_fill"], COL["red"], fs=10.6)
         arrow(ax_a, 0.475, y + 0.075, 0.555, y + 0.075, color=COL["red"])
-        box(ax_a, 0.56, y, 0.18, 0.15, "fresh\nchip", COL["gold_fill"], COL["gold"], fs=7.1)
-        ax_a.text(0.78, y + 0.075, "fail", ha="left", va="center", fontsize=7.2, color=COL["red"], fontweight="bold")
+        box(ax_a, 0.56, y, 0.18, 0.15, "fresh\nchip", COL["gold_fill"], COL["gold"], fs=8.6)
+        ax_a.text(0.78, y + 0.075, "fail", ha="left", va="center", fontsize=8.3, color=COL["red"], fontweight="bold")
     else:
         for k, x0 in enumerate([0.305, 0.385, 0.465]):
-            box(ax_a, x0, y, 0.060, 0.15, f"$M_{k+1}$", COL["green_fill"], COL["green"], fs=7.0)
-        ax_a.text(0.535, y + 0.075, "$\cdots$", ha="center", va="center", fontsize=10.5, color=COL["green"])
+            box(ax_a, x0, y, 0.060, 0.15, f"$M_{k+1}$", COL["green_fill"], COL["green"], fs=8.2)
+        ax_a.text(0.535, y + 0.075, "$\cdots$", ha="center", va="center", fontsize=12.0, color=COL["green"])
         arrow(ax_a, 0.56, y + 0.075, 0.615, y + 0.075, color=COL["green"])
-        box(ax_a, 0.62, y, 0.18, 0.15, "fresh\nchip", COL["gold_fill"], COL["gold"], fs=7.1)
-        ax_a.text(0.835, y + 0.075, "pass", ha="left", va="center", fontsize=7.2, color=COL["green"], fontweight="bold")
+        box(ax_a, 0.62, y, 0.18, 0.15, "fresh\nchip", COL["gold_fill"], COL["gold"], fs=8.6)
+        ax_a.text(0.835, y + 0.075, "pass", ha="left", va="center", fontsize=8.3, color=COL["green"], fontweight="bold")
 
 ax_a.plot([0.02, 0.97], [0.50, 0.50], color=COL["rule"], linewidth=0.7)
-ax_a.text(0.06, 0.065, "Training distribution changes across hardware instances.", ha="left", va="center", fontsize=6.8, color=COL["muted"])
+ax_a.text(0.06, 0.065, "Train over hardware-instance distribution.", ha="left", va="center", fontsize=8.1, color=COL["muted"])
 
 # Panel B: failure/rescue data.
 labels = ["8-bit\nideal", "4-bit\nfixed", "4-bit\nEnsemble"]
@@ -245,7 +252,7 @@ ax_b.set_xticks(x)
 ax_b.set_xticklabels(labels)
 ax_b.axhline(10, color=COL["muted"], linestyle=(0, (1, 2)), linewidth=0.8)
 for i, v in enumerate(means):
-    ax_b.text(i, v + 3.0, f"{v:.1f}", ha="center", va="bottom", fontsize=7.6, fontweight="bold", color=COL["ink"])
+    ax_b.text(i, v + 3.0, f"{v:.1f}", ha="center", va="bottom", fontsize=8.8, fontweight="bold", color=COL["ink"])
 style_axis(ax_b)
 
 # Panel C: PCM precision/retention frontier.
@@ -264,7 +271,7 @@ ax_c.set_ylim(75.6, 79.2)
 ax_c.set_xticks(x2)
 ax_c.set_xticklabels(labels_pcm)
 for i, v in enumerate(fresh):
-    ax_c.text(i, v + 0.20, f"{v:.1f}", ha="center", va="bottom", fontsize=7.4, fontweight="bold", color=COL["ink"])
+    ax_c.text(i, v + 0.20, f"{v:.1f}", ha="center", va="bottom", fontsize=8.7, fontweight="bold", color=COL["ink"])
 style_axis(ax_c)
 
 ax_d = ax_c.twinx()
@@ -275,7 +282,7 @@ ax_d.tick_params(axis="y", colors="#7B2D2C", labelsize=7.0, length=3, width=0.7)
 ax_d.spines[["top"]].set_visible(False)
 for i, v in enumerate(drift):
     dy = 0.14 if v < 1 else 0.18
-    ax_d.text(i, v + dy, f"{v:.2f}", ha="center", va="bottom", fontsize=7.0, color="#7B2D2C", fontweight="bold")
+    ax_d.text(i, v + dy, f"{v:.2f}", ha="center", va="bottom", fontsize=8.6, color="#7B2D2C", fontweight="bold")
 
 for ext in ["pdf", "png"]:
     fig.savefig(FIG_DIR / f"fig1_paper1_spine.{ext}", dpi=300, bbox_inches="tight", pad_inches=0.04)

@@ -7,13 +7,18 @@ import csv
 from pathlib import Path
 
 import matplotlib.pyplot as plt
+from matplotlib import font_manager
 from matplotlib.patches import FancyArrowPatch, FancyBboxPatch
 
 ROOT = Path(__file__).resolve().parents[2]
 FIG_DIR = ROOT / "paper" / "latex_gpt" / "figures"
 SRC_DIR = ROOT / "paper" / "latex_gpt" / "source_data"
+TINOS_DIR = Path("/usr/share/fonts/truetype/croscore")
 FIG_DIR.mkdir(parents=True, exist_ok=True)
 SRC_DIR.mkdir(parents=True, exist_ok=True)
+
+for font_file in TINOS_DIR.glob("Tinos-*.ttf"):
+    font_manager.fontManager.addfont(str(font_file))
 
 COL = {
     "ink": "#1E252B",
@@ -71,8 +76,10 @@ with (SRC_DIR / "fig2_paper1_decision_map.csv").open("w", newline="", encoding="
 
 plt.rcParams.update(
     {
-        "font.family": "DejaVu Sans",
-        "font.size": 8.0,
+        "font.family": "Tinos",
+        "font.serif": ["Tinos", "Times New Roman", "Nimbus Roman", "Liberation Serif", "DejaVu Serif"],
+        "mathtext.fontset": "stix",
+        "font.size": 9.8,
         "axes.linewidth": 0.75,
         "pdf.fonttype": 42,
         "ps.fonttype": 42,
@@ -81,8 +88,8 @@ plt.rcParams.update(
 
 
 def panel_header(ax, label: str, title: str, x: float, y: float) -> None:
-    ax.text(x, y, label, ha="left", va="bottom", fontsize=9.8, fontweight="bold", color=COL["ink"])
-    ax.text(x + 0.032, y + 0.003, title, ha="left", va="bottom", fontsize=8.1, fontweight="bold", color=COL["ink"])
+    ax.text(x, y, label, ha="left", va="bottom", fontsize=11.6, fontweight="bold", color=COL["ink"])
+    ax.text(x + 0.044, y + 0.003, title, ha="left", va="bottom", fontsize=10.0, fontweight="bold", color=COL["ink"])
 
 
 def box(ax, x: float, y: float, w: float, h: float, fc: str, ec: str, lw: float = 0.95) -> None:
@@ -119,7 +126,7 @@ pcm_8 = pcm["8-bit PCM"]
 pcm_6 = pcm["6-bit PCM"]
 pcm_4 = pcm["4-bit PCM"]
 
-fig, ax = plt.subplots(figsize=(8.6, 3.05), facecolor="white")
+fig, ax = plt.subplots(figsize=(8.6, 3.55), facecolor="white")
 ax.set_axis_off()
 ax.set_xlim(0, 1)
 ax.set_ylim(0, 1)
@@ -138,12 +145,12 @@ cards = [
 ]
 for x, title, number, sub, footer, color, fill in cards:
     box(ax, x, card_y, card_w, card_h, fill, color, lw=1.15)
-    ax.text(x + card_w / 2, card_y + 0.205, title, ha="center", va="center", fontsize=7.2, fontweight="bold", color=color)
-    ax.text(x + card_w / 2, card_y + 0.125, number, ha="center", va="center", fontsize=15.0, fontweight="bold", color=COL["ink"])
-    ax.text(x + card_w / 2, card_y + 0.065, sub, ha="center", va="center", fontsize=6.8, color=COL["muted"])
-    ax.text(x + card_w / 2, card_y - 0.055, footer, ha="center", va="top", fontsize=7.0, fontweight="bold", color=color)
+    ax.text(x + card_w / 2, card_y + 0.205, title, ha="center", va="center", fontsize=8.7, fontweight="bold", color=color)
+    ax.text(x + card_w / 2, card_y + 0.125, number, ha="center", va="center", fontsize=17.0, fontweight="bold", color=COL["ink"])
+    ax.text(x + card_w / 2, card_y + 0.065, sub, ha="center", va="center", fontsize=8.0, color=COL["muted"])
+    ax.text(x + card_w / 2, card_y - 0.055, footer, ha="center", va="top", fontsize=8.2, fontweight="bold", color=color)
 arrow(ax, 0.198, card_y + card_h / 2, 0.247, card_y + card_h / 2)
-ax.text(0.223, card_y + card_h / 2 + 0.060, "resample\nD2D masks", ha="center", va="center", fontsize=6.0, color=COL["muted"])
+ax.text(0.223, card_y + card_h / 2 + 0.060, "resample\nD2D masks", ha="center", va="center", fontsize=7.1, color=COL["muted"])
 
 precision_cards = [
     (0.565, "8-bit", pcm_8, COL["blue"], COL["blue_fill"], "safe"),
@@ -155,20 +162,20 @@ for x, label, row, color, fill, role in precision_cards:
     box(ax, x, card_y, w, card_h, fill, color, lw=1.55 if label == "6-bit" else 1.0)
     fresh = float(row["fresh_mean"])
     drift = float(row["drift_drop_1d_pp"])
-    ax.text(x + w / 2, card_y + 0.205, label, ha="center", va="center", fontsize=8.5, fontweight="bold", color=color)
-    ax.text(x + w / 2, card_y + 0.130, f"{fresh:.1f}%", ha="center", va="center", fontsize=11.2, fontweight="bold", color=COL["ink"])
+    ax.text(x + w / 2, card_y + 0.205, label, ha="center", va="center", fontsize=10.0, fontweight="bold", color=color)
+    ax.text(x + w / 2, card_y + 0.130, f"{fresh:.1f}%", ha="center", va="center", fontsize=13.0, fontweight="bold", color=COL["ink"])
     drift_color = COL["red"] if drift > 1.0 else COL["green"]
-    ax.text(x + w / 2, card_y + 0.070, f"{drift:.2f} pp", ha="center", va="center", fontsize=7.4, fontweight="bold", color=drift_color)
-    ax.text(x + w / 2, card_y + 0.025, "1-day drift", ha="center", va="center", fontsize=5.9, color=COL["muted"])
-    ax.text(x + w / 2, card_y - 0.055, role, ha="center", va="top", fontsize=6.8, fontweight="bold", color=color)
+    ax.text(x + w / 2, card_y + 0.070, f"{drift:.2f} pp", ha="center", va="center", fontsize=8.6, fontweight="bold", color=drift_color)
+    ax.text(x + w / 2, card_y + 0.025, "1-day drift", ha="center", va="center", fontsize=7.0, color=COL["muted"])
+    ax.text(x + w / 2, card_y - 0.055, role, ha="center", va="top", fontsize=8.0, fontweight="bold", color=color)
 
 # Vertical divider.
 ax.plot([0.515, 0.515], [0.45, 0.86], color=COL["rule"], linewidth=0.9)
 
 # Panel C: decision rule chain.
 panel_header(ax, "C", "Decision rule", 0.02, 0.34)
-rule_y = 0.09
-rule_h = 0.16
+rule_y = 0.075
+rule_h = 0.19
 rule_w = 0.235
 steps = [
     (0.090, "1", "diagnose", "fresh-instance\ncollapse", COL["red"], COL["red_fill"]),
@@ -177,13 +184,13 @@ steps = [
 ]
 for i, (x, num, head, body, color, fill) in enumerate(steps):
     box(ax, x, rule_y, rule_w, rule_h, fill, color, lw=1.05)
-    ax.text(x + 0.040, rule_y + rule_h / 2, num, ha="center", va="center", fontsize=9.8, fontweight="bold", color="white", bbox={"boxstyle": "circle,pad=0.18", "facecolor": color, "edgecolor": "none"})
-    ax.text(x + 0.135, rule_y + 0.100, head, ha="center", va="center", fontsize=7.8, fontweight="bold", color=color)
-    ax.text(x + 0.135, rule_y + 0.050, body, ha="center", va="center", fontsize=7.2, color=COL["ink"], linespacing=1.0)
+    ax.text(x + 0.040, rule_y + rule_h / 2, num, ha="center", va="center", fontsize=11.0, fontweight="bold", color="white", bbox={"boxstyle": "circle,pad=0.18", "facecolor": color, "edgecolor": "none"})
+    ax.text(x + 0.135, rule_y + 0.125, head, ha="center", va="center", fontsize=8.8, fontweight="bold", color=color)
+    ax.text(x + 0.135, rule_y + 0.066, body, ha="center", va="center", fontsize=8.1, color=COL["ink"], linespacing=1.0)
     if i < 2:
         arrow(ax, x + rule_w + 0.012, rule_y + rule_h / 2, x + 0.285, rule_y + rule_h / 2)
 
-ax.text(0.50, 0.015, "Claim boundary: algorithmic generalization and physical retention are separate deployment decisions.", ha="center", va="bottom", fontsize=7.0, color=COL["muted"])
+ax.text(0.50, 0.012, "Claim boundary: algorithmic generalization and physical retention are separate deployment decisions.", ha="center", va="bottom", fontsize=8.0, color=COL["muted"])
 
 for ext in ["pdf", "png"]:
     fig.savefig(FIG_DIR / f"fig2_paper1_decision_map.{ext}", bbox_inches="tight", pad_inches=0.04, dpi=300)

@@ -12,7 +12,7 @@ To address this, we apply Ensemble Hardware-Aware Training (HAT). By resampling 
 \begin{figure}[t]
 \centering
 \includegraphics[width=\textwidth]{fig1_paper1_spine}
-\caption{\textbf{Paper-1 experimental spine.} (A) AIHWKit IdealDevice is stable at 8-bit but collapses at 4-bit; Ensemble HAT rescues the 4-bit fresh-instance regime. (B) PCM UnitCell converges at 4/6/8-bit, but 4-bit drifts more over one day; 6-bit is the best observed precision-retention midpoint.}
+\caption{\textbf{Paper-1 experimental spine.} (A) Standard fixed-mask HAT optimizes one device instance, whereas Ensemble HAT trains over resampled D2D masks. (B) In the idealized AIHWKit baseline, 4-bit fresh-instance accuracy collapses while Ensemble HAT recovers it. (C) Under PCM UnitCell simulation, 4/6/8-bit models all train, but 4-bit has larger one-day drift and 6-bit is the best tested precision-retention midpoint.}
 \label{fig:paper1-spine}
 \end{figure}
 
@@ -39,6 +39,7 @@ Under the tested PCM UnitCell simulation regime, we observe 4-bit and 6-bit conv
 \end{tabular}%
 }
 \end{table}
+
 
 \subsection{Deployment Guidance}
 \label{subsec:deployment-guidance}

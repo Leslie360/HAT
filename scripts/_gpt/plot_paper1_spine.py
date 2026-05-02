@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate the main Paper-1 spine figure and source-data tables."""
+"""Generate the main Paper-1 multi-panel spine figure and source-data tables."""
 
 from __future__ import annotations
 
@@ -9,6 +9,7 @@ from pathlib import Path
 
 import matplotlib.pyplot as plt
 import numpy as np
+from matplotlib.patches import FancyArrowPatch, FancyBboxPatch
 
 ROOT = Path(__file__).resolve().parents[2]
 FIG_DIR = ROOT / "paper" / "latex_gpt" / "figures"
@@ -17,6 +18,19 @@ CKPT = ROOT / "paper2_aihwkit_baseline" / "checkpoints"
 
 FIG_DIR.mkdir(parents=True, exist_ok=True)
 SRC_DIR.mkdir(parents=True, exist_ok=True)
+
+PALETTE = {
+    "blue": "#2F5D8C",
+    "blue_light": "#E7F0FA",
+    "red": "#B94A48",
+    "red_light": "#F7E7E5",
+    "green": "#2E7D5B",
+    "green_light": "#E7F4EE",
+    "orange": "#D59A4A",
+    "orange_light": "#FFF1DD",
+    "ink": "#202020",
+    "muted": "#666666",
+}
 
 
 def load_json(path: Path) -> dict:
@@ -128,66 +142,131 @@ with (SRC_DIR / "manifest_paper1_spine.json").open("w", encoding="utf-8") as han
 plt.rcParams.update(
     {
         "font.family": "DejaVu Sans",
-        "font.size": 10.2,
-        "axes.labelsize": 10.2,
+        "font.size": 10.0,
+        "axes.labelsize": 9.8,
         "axes.titlesize": 10.4,
-        "xtick.labelsize": 9.2,
-        "ytick.labelsize": 9.2,
+        "xtick.labelsize": 8.8,
+        "ytick.labelsize": 8.8,
         "axes.linewidth": 0.8,
         "pdf.fonttype": 42,
         "ps.fonttype": 42,
     }
 )
 
-fig, axes = plt.subplots(1, 2, figsize=(7.6, 3.25), gridspec_kw={"width_ratios": [1.05, 1.12]})
+
+def panel_label(ax, label: str, title: str) -> None:
+    ax.text(0.0, 1.04, label, transform=ax.transAxes, ha="left", va="bottom", fontsize=11, fontweight="bold")
+    ax.text(0.085, 1.045, title, transform=ax.transAxes, ha="left", va="bottom", fontsize=9.6, fontweight="bold")
+
+
+def rounded_box(ax, xy, width, height, text, fc, ec, fontsize=9.2, weight="normal"):
+    box = FancyBboxPatch(
+        xy,
+        width,
+        height,
+        boxstyle="round,pad=0.018,rounding_size=0.035",
+        facecolor=fc,
+        edgecolor=ec,
+        linewidth=1.0,
+    )
+    ax.add_patch(box)
+    ax.text(xy[0] + width / 2, xy[1] + height / 2, text, ha="center", va="center", fontsize=fontsize, fontweight=weight, color=PALETTE["ink"])
+    return box
+
+
+def arrow(ax, start, end, color=None, rad=0.0):
+    patch = FancyArrowPatch(
+        start,
+        end,
+        arrowstyle="-|>",
+        mutation_scale=12,
+        lw=1.0,
+        color=color or PALETTE["muted"],
+        connectionstyle=f"arc3,rad={rad}",
+    )
+    ax.add_patch(patch)
+
+
+def draw_mechanism_panel(ax):
+    ax.set_axis_off()
+    ax.set_xlim(0, 1)
+    ax.set_ylim(0, 1)
+    panel_label(ax, "A", "Training objective")
+
+    rounded_box(ax, (0.06, 0.75), 0.25, 0.105, "digital\nmodel", "#F6F6F6", "#999999", fontsize=8.0, weight="bold")
+    rounded_box(ax, (0.40, 0.75), 0.23, 0.105, "analog\nmapping", PALETTE["blue_light"], PALETTE["blue"], fontsize=8.0, weight="bold")
+    rounded_box(ax, (0.72, 0.75), 0.21, 0.105, "fresh\nchip", PALETTE["orange_light"], PALETTE["orange"], fontsize=8.0, weight="bold")
+    arrow(ax, (0.31, 0.802), (0.40, 0.802))
+    arrow(ax, (0.63, 0.802), (0.72, 0.802))
+
+    ax.text(0.07, 0.60, "fixed mask", ha="left", va="center", fontsize=8.6, fontweight="bold", color=PALETTE["red"])
+    rounded_box(ax, (0.37, 0.535), 0.15, 0.11, "$M_0$", PALETTE["red_light"], PALETTE["red"], fontsize=10.5, weight="bold")
+    arrow(ax, (0.54, 0.59), (0.72, 0.59), color=PALETTE["red"])
+    ax.text(0.75, 0.59, "fails on\nfresh chips", ha="left", va="center", fontsize=8.1, color=PALETTE["red"])
+
+    ax.text(0.07, 0.34, "resampled\nmasks", ha="left", va="center", fontsize=8.2, fontweight="bold", color=PALETTE["green"])
+    for i, x0 in enumerate([0.42, 0.51, 0.60]):
+        rounded_box(ax, (x0, 0.285), 0.065, 0.105, f"$M_{i+1}$", PALETTE["green_light"], PALETTE["green"], fontsize=8.7, weight="bold")
+    ax.text(0.69, 0.34, "$\cdots$", ha="center", va="center", fontsize=11, color=PALETTE["green"])
+    arrow(ax, (0.72, 0.34), (0.77, 0.34), color=PALETTE["green"])
+    ax.text(0.80, 0.34, "transfers to\nfresh chips", ha="left", va="center", fontsize=8.1, color=PALETTE["green"])
+
+
+
+fig = plt.figure(figsize=(8.4, 5.2))
+gs = fig.add_gridspec(2, 2, width_ratios=[1.18, 1.0], height_ratios=[1.0, 1.0], wspace=0.40, hspace=0.58)
+ax_a = fig.add_subplot(gs[:, 0])
+ax_b = fig.add_subplot(gs[0, 1])
+ax_c = fig.add_subplot(gs[1, 1])
 fig.patch.set_facecolor("white")
 
-# Panel A: algorithmic failure and rescue.
-ax = axes[0]
-labels_a = ["8-bit\nIdeal", "4-bit\nIdeal", "4-bit\nEnsemble HAT"]
+# Panel A: schematic mechanism.
+draw_mechanism_panel(ax_a)
+
+# Panel B: algorithmic failure and rescue.
+labels_a = ["8-bit\nIdeal", "4-bit\nIdeal", "4-bit\nEnsemble"]
 means_a = [row["fresh_mean"] for row in ideal_rows]
 stds_a = [row["fresh_std"] for row in ideal_rows]
-colors_a = ["#2F5D8C", "#B94A48", "#2E7D5B"]
-ax.bar(np.arange(len(labels_a)), means_a, yerr=stds_a, capsize=3, color=colors_a, edgecolor="#202020", linewidth=0.6)
-ax.set_ylim(0, 95)
-ax.set_ylabel("Fresh-instance accuracy (%)")
-ax.set_xticks(np.arange(len(labels_a)))
-ax.set_xticklabels(labels_a)
-ax.set_title("A. Pure 4-bit failure and rescue", loc="left", fontweight="bold")
-ax.axhline(10, color="#777777", linestyle=":", linewidth=0.8)
-ax.text(1.02, 12.0, "chance", color="#555555", fontsize=8.6)
+colors_a = [PALETTE["blue"], PALETTE["red"], PALETTE["green"]]
+ax_b.bar(np.arange(len(labels_a)), means_a, yerr=stds_a, capsize=3, color=colors_a, edgecolor=PALETTE["ink"], linewidth=0.6)
+ax_b.set_ylim(0, 96)
+ax_b.set_ylabel("Fresh accuracy (%)")
+ax_b.set_xticks(np.arange(len(labels_a)))
+ax_b.set_xticklabels(labels_a)
+panel_label(ax_b, "B", "4-bit collapse and rescue")
+ax_b.axhline(10, color="#777777", linestyle=":", linewidth=0.8)
 for idx, value in enumerate(means_a):
-    ax.text(idx, value + 3.0, f"{value:.2f}", ha="center", va="bottom", fontsize=8.8)
-ax.spines[["top", "right"]].set_visible(False)
+    ax_b.text(idx, value + 3.0, f"{value:.1f}", ha="center", va="bottom", fontsize=8.5)
+ax_b.spines[["top", "right"]].set_visible(False)
+ax_b.grid(axis="y", alpha=0.18, linewidth=0.6)
 
-# Panel B: PCM precision-retention ladder.
-ax = axes[1]
+# Panel C: PCM precision-retention frontier.
 labels_b = ["8-bit", "6-bit", "4-bit"]
 fresh_b = [row["fresh_mean"] for row in pcm_rows]
 fresh_std_b = [row["fresh_std"] for row in pcm_rows]
 drift_b = [row["drift_drop_1d_pp"] for row in pcm_rows]
 x = np.arange(len(labels_b))
-bars = ax.bar(x, fresh_b, yerr=fresh_std_b, capsize=3, color=["#7FA8C9", "#4E9F74", "#D59A4A"], edgecolor="#202020", linewidth=0.6)
-ax.set_ylim(70, 80.5)
-ax.set_ylabel("Fresh accuracy (%)")
-ax.set_xticks(x)
-ax.set_xticklabels(labels_b)
-ax.set_title("B. PCM precision-retention frontier", loc="left", fontweight="bold")
+ax_c.bar(x, fresh_b, yerr=fresh_std_b, capsize=3, color=["#7FA8C9", PALETTE["green"], PALETTE["orange"]], edgecolor=PALETTE["ink"], linewidth=0.6)
+ax_c.set_ylim(70, 80.7)
+ax_c.set_ylabel("Fresh accuracy (%)")
+ax_c.set_xticks(x)
+ax_c.set_xticklabels(labels_b)
+panel_label(ax_c, "C", "PCM precision-retention frontier")
 for idx, value in enumerate(fresh_b):
-    ax.text(idx, value + 0.35, f"{value:.2f}", ha="center", va="bottom", fontsize=8.8)
-ax.spines[["top"]].set_visible(False)
+    ax_c.text(idx, value + 0.34, f"{value:.1f}", ha="center", va="bottom", fontsize=8.4)
+ax_c.spines[["top"]].set_visible(False)
+ax_c.grid(axis="y", alpha=0.18, linewidth=0.6)
 
-ax2 = ax.twinx()
-ax2.plot(x, drift_b, color="#7A2E2E", marker="o", linewidth=1.8)
-ax2.set_ylim(0, 4.6)
-ax2.set_ylabel("1-day drift drop (pp)", color="#7A2E2E")
+ax2 = ax_c.twinx()
+ax2.plot(x, drift_b, color="#7A2E2E", marker="o", linewidth=1.9)
+ax2.set_ylim(0, 4.7)
+ax2.set_ylabel("1-day drift (pp)", color="#7A2E2E")
 ax2.tick_params(axis="y", colors="#7A2E2E")
 ax2.spines["top"].set_visible(False)
 for idx, value in enumerate(drift_b):
-    ax2.text(idx + 0.05, value + 0.12, f"{value:.2f} pp", color="#7A2E2E", fontsize=8.6)
-ax2.annotate("best tested\nPareto midpoint", xy=(1, fresh_b[1]), xycoords=ax.transData, xytext=(0.64, 0.20), textcoords="axes fraction", arrowprops=dict(arrowstyle="->", color="#2D6A4F", lw=0.9), fontsize=8.6, color="#2D6A4F", ha="center")
+    ax2.text(idx + 0.04, value + 0.12, f"{value:.2f}", color="#7A2E2E", fontsize=8.0)
+ax_c.text(1, 70.45, "midpoint", ha="center", va="bottom", fontsize=7.8, color=PALETTE["green"], fontweight="bold")
 
-fig.tight_layout(w_pad=2.0)
 for ext in ["pdf", "png"]:
     fig.savefig(FIG_DIR / f"fig1_paper1_spine.{ext}", bbox_inches="tight", dpi=300)
 print(FIG_DIR / "fig1_paper1_spine.pdf")

@@ -1,164 +1,99 @@
-% fig1_system_architecture.tex — TikZ v2 optimized
-% Panel (a) Device cross-section | (b) Crossbar array | (c) ViT block table
-\documentclass[tikz,border=10pt]{standalone}
-\usepackage{amsmath,array}
+% fig1_system_architecture.tex -- clean journal-style redraw
+\documentclass[tikz,border=8pt]{standalone}
+\usepackage{amsmath}
 \renewcommand{\familydefault}{\sfdefault}
 \usepackage{tikz}
-\usetikzlibrary{positioning,arrows.meta,shapes.geometric,fit,backgrounds,calc,decorations.pathreplacing,patterns,patterns.meta}
+\usetikzlibrary{arrows.meta,positioning,fit,calc}
 
-\definecolor{anaBlue}{RGB}{80,140,210}
-\definecolor{anaBlueBg}{RGB}{210,225,250}
-\definecolor{digiOrange}{RGB}{220,140,60}
-\definecolor{digiOrangeBg}{RGB}{255,235,210}
-\definecolor{noiseRed}{RGB}{200,70,70}
+\definecolor{analogBlue}{HTML}{2F5D8C}
+\definecolor{analogFill}{HTML}{E7F0FA}
+\definecolor{digitalOrange}{HTML}{C76B1E}
+\definecolor{digitalFill}{HTML}{FFF0DF}
+\definecolor{deviceGreen}{HTML}{2E7D5B}
+\definecolor{deviceFill}{HTML}{E7F4EE}
+\definecolor{noiseRed}{HTML}{B94A48}
+\definecolor{ink}{HTML}{202020}
+\definecolor{muted}{HTML}{666666}
 
 \begin{document}
 \begin{tikzpicture}[
-  analogbox/.style={draw=anaBlue, fill=anaBlueBg, pattern={dots[distance=2.5pt]}, pattern color=anaBlue!25, rounded corners=3pt, thick, inner sep=5pt, font=\sffamily},
-  digitalbox/.style={draw=digiOrange, fill=digiOrangeBg, rounded corners=3pt, thick, inner sep=5pt, font=\sffamily},
-  boxtitle/.style={font=\bfseries\sffamily},
-  panelmark/.style={font=\bfseries\sffamily\Large},
-  arrowstyle/.style={->, >=Stealth, thick, draw=black!55},
+  font=\sffamily,
+  panel/.style={draw=black!25, rounded corners=5pt, fill=white, line width=0.6pt},
+  title/.style={font=\sffamily\bfseries\large, text=ink, anchor=west},
+  tag/.style={font=\sffamily\bfseries\Large, text=ink},
+  small/.style={font=\sffamily\footnotesize, text=muted},
+  tinylabel/.style={font=\sffamily\scriptsize, text=muted},
+  analog/.style={draw=analogBlue, fill=analogFill, rounded corners=3pt, line width=0.7pt, align=center},
+  digital/.style={draw=digitalOrange, fill=digitalFill, rounded corners=3pt, line width=0.7pt, align=center},
+  device/.style={draw=deviceGreen, fill=deviceFill, rounded corners=3pt, line width=0.7pt, align=center},
+  arrow/.style={-{Latex[length=2.4mm]}, line width=0.75pt, draw=ink!75},
+  softarrow/.style={-{Latex[length=2.2mm]}, line width=0.7pt, draw=muted!70}
 ]
 
-% ===================================================================
-% PANEL (a) — Device cross-section
-% ===================================================================
-\begin{scope}[local bounding box=panelA]
-  \node[panelmark] at (-3.5, 3.6) {(a)};
-  \node[boxtitle, anchor=west] at (-3.2, 3.6) {Device Level: Organic Optoelectronic Memory Cell};
+% ------------------------------------------------------------------
+% Panel A: device abstraction
+% ------------------------------------------------------------------
+\node[panel, minimum width=5.7cm, minimum height=4.35cm, anchor=north west] (pa) at (0,4.35) {};
+\node[tag] at ($(pa.north west)+(0.35,-0.42)$) {A};
+\node[title] at ($(pa.north west)+(0.82,-0.43)$) {Device abstraction};
 
-  % Substrate
-  \fill[black!12] (-2.0, 0) rectangle (2.0, 0.35);
-  \draw[thick, black!40] (-2.0, 0) -- (2.0, 0) -- (2.0, 0.35) -- (-2.0, 0.35) -- cycle;
-  \node[font=\footnotesize\sffamily, text=black!60] at (0, 0.17) {Substrate (glass / PET)};
+\node[device, minimum width=3.45cm, minimum height=0.42cm] (top) at (2.85,2.95) {top electrode};
+\node[device, minimum width=3.85cm, minimum height=0.80cm] (semi) at (2.85,2.25) {organic channel};
+\node[device, minimum width=3.45cm, minimum height=0.42cm] (bot) at (2.85,1.48) {source/drain};
+\draw[arrow, deviceGreen] (2.85,4.0) -- (2.85,3.27);
+\node[font=\sffamily\small, text=deviceGreen] at (2.85,4.12) {$h\nu$};
+\node[small, align=center] at (2.85,0.80) {$G \leftarrow$ programmed conductance\\$I_{\mathrm{photo}} \propto P^{\gamma_{\mathrm{phys}}}$};
 
-  % Bottom electrode
-  \fill[gray!55] (-1.4, 0.35) rectangle (1.4, 0.7);
-  \draw[thick, black!50] (-1.4, 0.35) -- (1.4, 0.35) -- (1.4, 0.7) -- (-1.4, 0.7) -- cycle;
-  \node[font=\footnotesize\sffamily, white] at (0, 0.52) {Bottom Electrode (Au, S/D)};
+% ------------------------------------------------------------------
+% Panel B: array + mixed-signal boundary
+% ------------------------------------------------------------------
+\node[panel, minimum width=9.0cm, minimum height=4.35cm, anchor=north west] (pb) at (6.15,4.35) {};
+\node[tag] at ($(pb.north west)+(0.35,-0.42)$) {B};
+\node[title] at ($(pb.north west)+(0.82,-0.43)$) {Analog crossbar with digital boundary};
 
-  % Organic semiconductor
-  \fill[green!35!black!25] (-1.2, 0.7) rectangle (1.2, 1.8);
-  \draw[thick, green!55!black] (-1.2, 0.7) -- (1.2, 0.7) -- (1.2, 1.8) -- (-1.2, 1.8) -- cycle;
-  \node[font=\footnotesize\sffamily, text=black!70] at (0, 1.35) {Organic Semiconductor};
+\node[digital, minimum width=1.25cm, minimum height=0.55cm] (dac) at (7.15,2.15) {DAC};
+\node[analog, minimum width=3.7cm, minimum height=2.6cm] (xb) at (10.0,2.2) {};
+\node[digital, minimum width=1.25cm, minimum height=0.55cm] (adc) at (12.85,2.15) {ADC};
+\draw[arrow] (dac.east) -- (xb.west) node[midway, above, tinylabel] {$V_{\mathrm{in}}$};
+\draw[arrow] (xb.east) -- (adc.west) node[midway, above, tinylabel] {$I_{\mathrm{out}}$};
 
-  % Active channel
-  \fill[green!45!black!15] (-0.6, 0.7) rectangle (0.6, 1.8);
-  \draw[dashed, green!50!black, thin] (-0.6, 0.7) rectangle (0.6, 1.8);
-  \node[font=\tiny\sffamily, text=green!40!black] at (0, 1.65) {Active Channel};
-
-  % Dielectric
-  \fill[blue!18] (-1.1, 1.65) rectangle (1.1, 1.8);
-  \draw[thick, blue!35!black] (-1.1, 1.65) -- (1.1, 1.65) -- (1.1, 1.8) -- (-1.1, 1.8) -- cycle;
-  \node[font=\tiny\sffamily, text=blue!55!black] at (0, 1.72) {Gate Dielectric};
-
-  % Top electrode
-  \fill[gray!38] (-1.0, 1.8) rectangle (1.0, 2.15);
-  \draw[thick, black!50] (-1.0, 1.8) -- (1.0, 1.8) -- (1.0, 2.15) -- (-1.0, 2.15) -- cycle;
-  \node[font=\footnotesize\sffamily] at (0, 1.97) {Top Electrode (Gate, Al)};
-
-  % Photon
-  \draw[->, >=Stealth, thick, violet!65!black] (0, 2.7) -- (0, 2.25);
-  \draw[violet!35, thick] (0, 3.0) circle (0.25);
-  \node[font=\footnotesize\sffamily, violet!65!black] at (0, 3.4) {$h\nu$};
-
-  % G label
-  \draw[<->, >=Stealth, thin, black!35] (2.1, 1.25) -- (2.45, 1.25);
-  \node[font=\small\sffamily, anchor=west] at (2.5, 1.25) {$G$};
-
-  % Photo-response
-  \node[font=\tiny\sffamily, text=black!45, anchor=north west] at (-3.2, -0.4)
-    {$I_{\text{photo}} \propto P^{\gamma_{\text{phys}}}$ (sub-linear photoresponse)};
-\end{scope}
-
-% ===================================================================
-% PANEL (b) — Crossbar array
-% ===================================================================
-\begin{scope}[shift={(0, -5.0)}, local bounding box=panelB]
-  \node[panelmark] at (-3.5, 5.2) {(b)};
-  \node[boxtitle, anchor=west] at (-3.2, 5.2) {Array Level: Hybrid Analog-Digital Crossbar};
-
-  % Crossbar grid
-  \foreach \r in {0,1,2,3} {
-    \draw[thick, blue!35!black] (-0.8, 4.0-\r*0.85) -- (3.2, 4.0-\r*0.85);
-    \node[font=\tiny\sffamily, anchor=east] at (-0.85, 4.0-\r*0.85) {WL$_\r$};
-    \draw[thick, blue!35!black] (\r*0.95, 4.3) -- (\r*0.95, 1.15);
-    \node[font=\tiny\sffamily, anchor=north] at (\r*0.95, 1.05) {BL$_\r$};
+% Crossbar grid inside xb
+\foreach \i in {0,...,3} {
+  \draw[analogBlue!65, line width=0.65pt] ($(xb.west)+(0.55,0.9-0.6*\i)$) -- ($(xb.east)+(-0.55,0.9-0.6*\i)$);
+  \draw[analogBlue!65, line width=0.65pt] ($(xb.west)+(0.75+0.72*\i,1.1)$) -- ($(xb.west)+(0.75+0.72*\i,-1.1)$);
+}
+\foreach \i in {0,...,3} {
+  \foreach \j in {0,...,3} {
+    \node[circle, draw=analogBlue, fill=white, minimum size=4.5pt, inner sep=0pt] at ($(xb.west)+(0.75+0.72*\j,0.9-0.6*\i)$) {};
   }
+}
+\node[font=\sffamily\small\bfseries, text=analogBlue] at ($(xb.south)+(0,-0.28)$) {analog MAC};
+\node[draw=noiseRed, fill=white, rounded corners=2pt, inner sep=2pt, font=\sffamily\scriptsize, text=noiseRed] at ($(xb.north)+(0,-0.45)$) {D2D fixed per instance};
+\node[draw=noiseRed, fill=white, rounded corners=2pt, inner sep=2pt, font=\sffamily\scriptsize, text=noiseRed] at ($(xb.center)+(0,-0.08)$) {C2C per read};
 
-  % Memory cells
-  \foreach \r in {0,1,2,3} {
-    \foreach \c in {0,1,2,3} {
-      \node[draw=anaBlue, fill=anaBlueBg, pattern={dots[distance=1.5pt]}, pattern color=anaBlue!30, minimum size=5pt, inner sep=0pt, circle] at (\c*0.95, 4.0-\r*0.85) {};
-    }
-  }
+\node[digital, minimum width=1.75cm, minimum height=0.46cm] (soft) at (14.05,2.95) {softmax};
+\node[digital, minimum width=1.75cm, minimum height=0.46cm] (norm) at (14.05,2.25) {LayerNorm};
+\node[digital, minimum width=1.75cm, minimum height=0.46cm] (res) at (14.05,1.55) {residual};
+\draw[softarrow] (adc.east) -- (soft.west);
+\draw[softarrow] (adc.east) -- (norm.west);
+\draw[softarrow] (adc.east) -- (res.west);
+\node[small, text=digitalOrange] at (14.05,3.58) {digital path};
 
-  % D2D label
-  \node[font=\tiny\sffamily, text=noiseRed, anchor=south west, inner sep=1pt] at (0.3, 3.5) {$\sigma_{\text{D2D}}$};
+% ------------------------------------------------------------------
+% Panel C: deployment policy
+% ------------------------------------------------------------------
+\node[panel, minimum width=15.15cm, minimum height=3.35cm, anchor=north west] (pc) at (0, -0.35) {};
+\node[tag] at ($(pc.north west)+(0.35,-0.42)$) {C};
+\node[title] at ($(pc.north west)+(0.82,-0.43)$) {ViT deployment policy};
 
-  % DAC
-  \node[digitalbox, minimum width=1.1cm, font=\tiny\sffamily, inner sep=3pt] (dac) at (-2.4, 2.7) {DAC\\4-bit};
-  \draw[arrowstyle] (dac.east) -- (-0.8, 2.7) node[midway, above, font=\tiny\sffamily] {$V_{\text{in}}$};
-
-  % ADC
-  \node[digitalbox, minimum width=1.1cm, font=\tiny\sffamily, inner sep=3pt] (adc) at (4.3, 2.7) {ADC\\6-bit};
-  \draw[arrowstyle] (3.2, 2.7) -- (adc.west) node[midway, above, font=\tiny\sffamily] {$I_{\text{out}}$};
-
-  % Analog bracket
-  \draw[decorate, decoration={brace, mirror, amplitude=7pt}, thick, draw=anaBlue!70]
-    (-1.2, 0.5) -- (3.6, 0.5) node[midway, below=8pt, font=\small\sffamily, text=anaBlue] {Analog MAC (crossbar)};
-
-  % Digital blocks
-  \node[digitalbox, minimum width=1.8cm, font=\footnotesize\sffamily, anchor=west] (softmax) at (5.0, 4.5) {Softmax};
-  \node[digitalbox, minimum width=1.8cm, font=\footnotesize\sffamily, anchor=west] (ln) at (5.0, 3.6) {LayerNorm};
-  \node[digitalbox, minimum width=1.8cm, font=\footnotesize\sffamily, anchor=west] (res) at (5.0, 2.7) {Residual};
-
-  \draw[arrowstyle, draw=digiOrange!70, dashed] (adc.east) -- (softmax.west)
-    node[midway, above, font=\tiny\sffamily, text=digiOrange] {digital};
-
-  % Digital domain bg
-  \begin{scope}[on background layer]
-    \node[draw=digiOrange!40, rounded corners=5pt, fill=digiOrange!5, inner sep=3pt,
-          fit=(softmax)(ln)(res), label={[font=\tiny\sffamily, text=digiOrange]north east:{Digital}}] {};
-  \end{scope}
-
-  % C2C label
-  \node[draw=noiseRed!35, rounded corners=2pt, fill=noiseRed!5, font=\tiny\sffamily, text=noiseRed, inner sep=2pt]
-    at (1.5, 3.2) {$\xi_{\text{C2C}}$ per read};
-
-  % Legend
-  \node[analogbox, minimum width=1.0cm, font=\tiny\sffamily, inner sep=2pt] at (-2.8, 0.8) {Analog};
-  \node[digitalbox, minimum width=1.0cm, font=\tiny\sffamily, inner sep=2pt] at (-1.2, 0.8) {Digital};
-\end{scope}
-
-% ===================================================================
-% PANEL (c) — ViT block table (tabular inside node)
-% ===================================================================
-\begin{scope}[shift={(0, -10.2)}, local bounding box=panelC]
-  \node[panelmark] at (-3.5, 3.5) {(c)};
-  \node[boxtitle, anchor=west] at (-3.2, 3.5) {Network Level: ViT Hybrid Deployment Policy};
-
-  \node[draw=black!30, rounded corners=4pt, fill=white, inner sep=8pt] (tbl) {
-    \begin{tabular}{>{\sffamily\footnotesize}p{3.2cm}>{\sffamily\footnotesize}c>{\sffamily\footnotesize}c}
-      \textbf{TinyViT Layer} & \textbf{Mapping} & \textbf{Noise Injection} \\
-      \hline
-      PatchEmbed (Conv2d) & \tikz[baseline]\node[analogbox,inner sep=2pt,font=\tiny\sffamily]{Analog}; & D2D $+$ C2C \\
-      QKV Projection & \tikz[baseline]\node[analogbox,inner sep=2pt,font=\tiny\sffamily]{Analog}; & D2D $+$ C2C \\
-      Attention Softmax & \tikz[baseline]\node[digitalbox,inner sep=2pt,font=\tiny\sffamily]{Digital}; & --- \\
-      Output Projection & \tikz[baseline]\node[analogbox,inner sep=2pt,font=\tiny\sffamily]{Analog}; & D2D $+$ C2C \\
-      MLP fc1 & \tikz[baseline]\node[analogbox,inner sep=2pt,font=\tiny\sffamily]{Analog}; & D2D $+$ C2C \\
-      MLP fc2 & \tikz[baseline]\node[analogbox,inner sep=2pt,font=\tiny\sffamily]{Analog}; & D2D $+$ C2C \\
-      LayerNorm & \tikz[baseline]\node[digitalbox,inner sep=2pt,font=\tiny\sffamily]{Digital}; & --- \\
-      Residual Add & \tikz[baseline]\node[digitalbox,inner sep=2pt,font=\tiny\sffamily]{Digital}; & --- \\
-      Classifier Head & \tikz[baseline]\node[digitalbox,inner sep=2pt,font=\tiny\sffamily]{Digital}; & --- \\
-    \end{tabular}
-  };
-
-  % Policy caption
-  \node[font=\footnotesize\sffamily, text=black!55, anchor=north west, align=left, text width=8.5cm] at (-3.5, -2.0)
-    {Dense linear ops $\rightarrow$ crossbar (analog).  Dynamic/statistical ops\\ (softmax, normalization, residual) remain digital.};
-\end{scope}
+\node[analog, minimum width=4.1cm, minimum height=1.85cm, anchor=west] (ana) at (0.85,-2.0)
+{\textbf{Analog mapped}\\[2pt] patch embed\\QKV / output projection\\MLP fc1, fc2};
+\node[digital, minimum width=4.1cm, minimum height=1.85cm, anchor=west] (dig) at (5.55,-2.0)
+{\textbf{Digital retained}\\[2pt] attention scores / softmax\\LayerNorm / residual\\classifier head};
+\node[draw=noiseRed, fill=white, rounded corners=4pt, minimum width=3.75cm, minimum height=1.35cm, align=center, font=\sffamily\small, text=noiseRed, anchor=west] (noise) at (10.25,-2.0)
+{\textbf{Noise injection}\\D2D $+$ C2C on\\analog weights only};
+\draw[arrow] (ana.east) -- (dig.west);
+\draw[arrow] (dig.east) -- (noise.west);
 
 \end{tikzpicture}
 \end{document}

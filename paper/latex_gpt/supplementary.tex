@@ -49,6 +49,8 @@ Weights are decomposed into differential conductance pairs, quantized, perturbed
     \label{fig:supp-weight-mapping-pipeline}
 \end{figure}
 
+\FloatBarrier
+
 \subsubsection{Hybrid System Architecture}
 \label{subsec:supp-system-architecture}
 
@@ -58,6 +60,8 @@ Weights are decomposed into differential conductance pairs, quantized, perturbed
     \caption{\textbf{Hybrid analog-CIM inference stack.} Dense weight-stationary operators are executed on analog crossbars, whereas dynamic attention and control-heavy operators remain in the digital path.}
     \label{fig:supp-system-architecture}
 \end{figure}
+
+\FloatBarrier
 
 \subsubsection{Nonlinear-Write Surrogate}
 \label{subsec:supp-nl-surrogate}
@@ -80,6 +84,46 @@ The absence of an explicit $NL$ prefactor in Eq.~\ref{eq:supp-nl-surrogate} is i
 This is therefore a behavioral proxy for position-dependent gradient attenuation, not a strict functional derivative.
 When \texttt{use\_second\_order\_ste=True}, a second-order Taylor correction adds a negative-signed brake to both branches, preventing aggressive bound-pushing without changing the first-order scaling.\footnote{Branch~A ratified in canonical commit \texttt{ab56c2d}.}
 Ideal write is recovered when $NL_{\mathrm{LTP}}=1$ and $|NL_{\mathrm{LTD}}|=1$.
+
+
+\subsection{Mathematical Formalism of Hardware-Aware Training}
+\label{subsec:supp-hat-math}
+
+Standard hardware-aware training (HAT) optimizes weights $\theta$ against a single, fixed device-to-device (D2D) mismatch field $M_0$:
+\begin{equation}
+    \theta_{\mathrm{std}}^{\star}=\arg\min_{\theta}\frac{1}{N}\sum_{n=1}^{N}\ell\!\left(f(x_{n};\theta,M_{0}),y_{n}\right),
+\label{eq:hat-standard}
+\end{equation}
+Ensemble HAT replaces the fixed mask with samples from the D2D distribution:
+\begin{equation}
+    \theta_{\mathrm{ens}}^{\star}=\arg\min_{\theta}\mathbb{E}_{M\sim p(M)}
+    \left[\frac{1}{N}\sum_{n=1}^{N}\ell\!\left(f(x_{n};\theta,M),y_{n}\right)\right].
+\label{eq:hat-ensemble-distribution}
+\end{equation}
+Fresh-instance transfer is then evaluated over unseen arrays $M'$ drawn from the same distribution:
+\begin{equation}
+    \mathrm{Acc}_{\mathrm{fresh}}=\mathbb{E}_{M'\sim p(M)}\!\left[\mathrm{Acc}\!\left(f(\cdot;\theta_{\mathrm{ens}}^{\star},M')\right)\right].
+\label{eq:fresh-instance}
+\end{equation}
+
+\subsection{Physical Front-end Modeling}
+\label{subsec:supp-frontend-math}
+
+The organic phototransistor front end is modeled with an inverse-gamma preprocessor $P_{\mathrm{in}}$ applied to the normalized input $X \in [0,1]$:
+\begin{equation}
+    P_{\mathrm{in}} = X^{1/\gamma_{\mathrm{phys}}}.
+\label{eq:inverse-gamma}
+\end{equation}
+The photocurrent $I_{\mathrm{photo}}$ subsequently incorporates physical transduction nonlinearity and shot noise $\varepsilon_{\mathrm{shot}}$:
+\begin{equation}
+    I_{\mathrm{photo}} = \alpha P_{\mathrm{in}}^{\gamma_{\mathrm{phys}}} + I_{\mathrm{dark}} + \varepsilon_{\mathrm{shot}} \approx \alpha X + I_{\mathrm{dark}} + \varepsilon_{\mathrm{shot}},
+\label{eq:frontend-photoresponse}
+\end{equation}
+where $\mathrm{Var}[\varepsilon_{\mathrm{shot}}] \propto I_{\mathrm{photo}}$. The signal is renormalized per sample before being passed to the first neural layer:
+\begin{equation}
+    X_{\mathrm{norm}} = \frac{I_{\mathrm{photo}}-I_{\min}}{I_{\max}-I_{\min}+\epsilon}.
+\label{eq:frontend-renorm}
+\end{equation}
 
 \subsection{Detailed Experiment Matrix}
 \label{subsec:detailed-experiment-matrix}
@@ -825,7 +869,7 @@ The following tables detail the raw performance metrics across all three random 
 \label{tab:supp_8bit_pcm}
 \begin{tabular}{lcccc}
 \toprule
-\textbf{Seed} & \textbf{Best Test} & \textbf{Fresh Mean $\pm$ Std} & \textbf{Drift 1d} & \textbf{0s$\rightarrow$1d Drop} \\
+\textbf{Seed} & \textbf{Best Test} & \textbf{Fresh Mean $\pm$ Std} & \textbf{Drift 1d} & \textbf{$\Delta$ Drift (1d)} \\
 \midrule
 123 & 77.00\% & 77.00 $\pm$ 0.05\% & 77.01\% & -0.15~pp \\
 456 & 78.36\% & 78.27 $\pm$ 0.05\% & 78.22\% & 0.24~pp \\
@@ -840,7 +884,7 @@ The following tables detail the raw performance metrics across all three random 
 \label{tab:supp_6bit_pcm}
 \begin{tabular}{lcccc}
 \toprule
-\textbf{Seed} & \textbf{Best Test} & \textbf{Fresh Mean $\pm$ Std} & \textbf{Drift 1d} & \textbf{0s$\rightarrow$1d Drop} \\
+\textbf{Seed} & \textbf{Best Test} & \textbf{Fresh Mean $\pm$ Std} & \textbf{Drift 1d} & \textbf{$\Delta$ Drift (1d)} \\
 \midrule
 123 & 77.33\% & 77.36 $\pm$ 0.04\% & 77.19\% & 0.16~pp \\
 456 & 78.49\% & 78.47 $\pm$ 0.05\% & 78.39\% & 0.11~pp \\
@@ -855,7 +899,7 @@ The following tables detail the raw performance metrics across all three random 
 \label{tab:supp_4bit_pcm}
 \begin{tabular}{lcccc}
 \toprule
-\textbf{Seed} & \textbf{Best Test} & \textbf{Fresh Mean $\pm$ Std} & \textbf{Drift 1d} & \textbf{0s$\rightarrow$1d Drop} \\
+\textbf{Seed} & \textbf{Best Test} & \textbf{Fresh Mean $\pm$ Std} & \textbf{Drift 1d} & \textbf{$\Delta$ Drift (1d)} \\
 \midrule
 123 & 76.74\% & 76.65 $\pm$ 0.04\% & 72.28\% & 4.40~pp \\
 456 & 77.15\% & 77.07 $\pm$ 0.06\% & 72.18\% & 4.84~pp \\

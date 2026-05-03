@@ -1,0 +1,2 @@
+n,peak_amp_mean_nA,peak_amp_std_nA,peak_amp_cv_pct,peak_amp_min_nA,peak_amp_max_nA,trend_slope_nA_per_run,trend_intercept_nA,trend_r2,c3_valid_count
+24,28.066479833333332,4.741761870768581,16.894750958889393,17.367539,37.64560300000001,0.18929008260869526,25.70035380072463,0.07967943495603835,21

@@ -55,7 +55,7 @@ REQUIRED_CKPTS = [
         "label": "all-layer D2D=0.04",
     },
     {
-        "name": "hat_d2d002_500_freshd2d_last1_seed42",
+        "name": "hat_d2d002_500_freshd2d_last1",
         "ckpt_dir": os.path.join(CKPT_DIR, "hat_d2d002_500_freshd2d_last1_seed42"),
         "needs_train": True,  # train now
         "train_sigma_d2d": 0.02,
@@ -63,7 +63,7 @@ REQUIRED_CKPTS = [
         "label": "last1 D2D=0.02",
     },
     {
-        "name": "hat_d2d002_500_freshd2d_last2_seed42",
+        "name": "hat_d2d002_500_freshd2d_last2",
         "ckpt_dir": os.path.join(CKPT_DIR, "hat_d2d002_500_freshd2d_last2_seed42"),
         "needs_train": True,  # train now
         "train_sigma_d2d": 0.02,

@@ -256,7 +256,8 @@ def main():
         batch_size=args.batch_size,
     )
 
-    output_path = args.output or f"report_md/_gpt/json_gpt/{Path(args.checkpoint).stem}_fresh_eval.json"
+    ckpt_path = Path(args.checkpoint)
+    output_path = args.output or f"report_md/_gpt/json_gpt/{ckpt_path.parent.name}_{ckpt_path.stem}_fresh_eval.json"
     Path(output_path).parent.mkdir(parents=True, exist_ok=True)
     with open(output_path, "w") as f:
         json.dump(result, f, indent=2)

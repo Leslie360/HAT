@@ -360,6 +360,8 @@ def main():
     parser.add_argument("--retention_step_time", type=float, default=0.0,
                         help="Retention decay step time in seconds per token position. "
                              "0.0 = retention disabled. Requires analog_cfg.retention_enabled=True.")
+    parser.add_argument("--model_name", type=str, default="EleutherAI/pythia-410m-deduped",
+                        help="HuggingFace model name or path")
     parser.add_argument("--output_dir", type=str, default="/home/lisq753/projects/HAT_kv107/paper2/results/remote107")
     args = parser.parse_args()
 
@@ -375,9 +377,9 @@ def main():
 
     analog_layers = set(int(x) for x in args.analog_layers.split(",")) if args.analog_layers else None
 
-    print("Loading Pythia-410m...")
-    model = AutoModelForCausalLM.from_pretrained("EleutherAI/pythia-410m-deduped", torch_dtype=torch.float32)
-    tokenizer = AutoTokenizer.from_pretrained("EleutherAI/pythia-410m-deduped")
+    print("Loading %s..." % args.model_name)
+    model = AutoModelForCausalLM.from_pretrained(args.model_name, torch_dtype=torch.float32)
+    tokenizer = AutoTokenizer.from_pretrained(args.model_name)
     tokenizer.pad_token = tokenizer.eos_token
     model = model.to(device)
 

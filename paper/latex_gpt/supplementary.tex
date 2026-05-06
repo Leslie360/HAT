@@ -436,7 +436,7 @@ E_{\mathrm{ADC}} = N_{\mathrm{ADC}}E_{\mathrm{ADC},8b},
 \qquad
 E_{\mathrm{DAC}} = N_{\mathrm{DAC}}E_{\mathrm{DAC},8b},
 \]
-and the digital/buffer terms evaluated from operator and access counts. These constants are literature-proxy placeholders for a first-order edge-node model, not measured circuit values, and any reported energy ratios are contingent on these assumptions. Interconnect overhead is behaviorally absorbed into the memory-access terms.
+and the digital/buffer terms evaluated from operator and access counts. These constants are literature-derived proxy values for a first-order edge-node model, not measured circuit values, and any reported energy ratios are contingent on these assumptions. Interconnect overhead is behaviorally absorbed into the memory-access terms.
 
 \input{supplementary/S_energy_provenance}
 
@@ -564,12 +564,10 @@ Because the derivative is negative, the MSE can be reduced by increasing $\beta$
     \label{fig:supp-snr-curves}
 \end{figure}
 
-\begin{figure}[ht]
-    \centering
-    \includegraphics[width=0.88\textwidth]{fig8_pareto_energy_accuracy}
-    \caption{\textbf{Energy--accuracy placement of the digital baseline and hybrid V2--V7 family.} Energy values are computed with the placeholder first-order analytical model (Supplementary Methods) and are intended for relative comparison only.}
-    \label{fig:supp-pareto}
-\end{figure}
+The first-order energy model is retained as provenance for relative accounting only.
+We do not include an energy--accuracy Pareto plot because finalized routed-circuit
+energy points are not available for the canonical Tiny-ViT variants; presenting an
+empty or proxy-only frontier would overstate the maturity of the energy analysis.
 
 \subsubsection{Retention Sensitivity Analysis}
 \label{subsec:retention-sensitivity}

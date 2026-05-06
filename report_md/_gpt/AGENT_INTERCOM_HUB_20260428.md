@@ -1366,3 +1366,19 @@ Decision remains:
 - no Paper-1 GPU;
 - next step is either clean GitHub branch from curated bundle or hold tarball as reviewer package;
 - Remote 107 remains separate Work-2 until corrected rerun returns.
+
+---
+
+### [Codex] 2026-05-06 CST — Remote 107 fresh-D2D closes selective KV route
+
+Fetched and audited `origin/107-clean` at `37df860` without merging local Paper-1 branch. Full review: `report_md/_gpt/REMOTE_107_FRESH_D2D_UPDATE_REVIEW_20260506.md`.
+
+Result: selective terminal-layer analog KV-cache + HAT is now the Work-2 primary route. Last1 (`analog_layers=[23]`) fresh-D2D PPL across five eval D2D seeds is `18.42 +/- 0.02` at D2D=0.02, `18.55 +/- 0.03` at D2D=0.04, `18.60 +/- 0.03` at D2D=0.05. Last2 is robust but worse. All-layer is a stress/control path, not deployment.
+
+Caveat: current JSONs lack full canonical metadata fields; ask 107 for `RESULTS_SUMMARY_FRESH_D2D.md` with commit, commands, environment, seed semantics, and aggregate tables before paper-locking.
+
+---
+
+### [Codex] 2026-05-06 CST — Local appendix visual cleanup complete
+
+Report: `report_md/_gpt/CODEX_LOCAL_APPENDIX_VISUAL_CLEANUP_20260506.md`. SI visual pass completed: unified plot styling, removed the empty energy frontier, repaired the asymmetry schematic, and replaced the empty sign-flip panel in the NL-gradient figure with a gradient-norm-ratio panel. Main/SI compile, locked-number guard, PCM ladder guard, and source scan pass.

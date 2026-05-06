@@ -31571,3 +31571,27 @@ Routing:
 - Paper-1 GPU remains closed.
 - Next action: either make a clean GitHub branch from curated bundle or keep tarball as reviewer package.
 - Remote 107 remains separate Work-2 pending corrected rerun.
+
+---
+
+## 2026-05-06 — Codex Remote 107 Fresh-D2D Update Audited
+
+Report: `report_md/_gpt/REMOTE_107_FRESH_D2D_UPDATE_REVIEW_20260506.md`.
+
+Fetched `origin/107-clean`; no merge into local Paper-1 branch. Remote 107 advanced from `aca7dd5` to `37df860` with a selective checkpoint naming fix and completed fresh-D2D results.
+
+Key result: selective terminal-layer analog KV-cache + HAT is now the strongest Work-2 route. Last1 (`analog_layers=[23]`) fresh-D2D PPL is `18.42 +/- 0.02` at eval D2D=0.02, `18.55 +/- 0.03` at eval D2D=0.04, and `18.60 +/- 0.03` at eval D2D=0.05 across 5 eval D2D seeds. Last2 is also robust but worse (`18.71`, `19.07`, `19.21`). All-layer remains useful as a stress/control path, not the deployment route.
+
+Verification: archived `origin/107-clean` py_compile passed for `deliverable/code/p3_hat_train.py`, `deliverable/code/p3_hat_eval.py`, `pipeline_d2d_seed.py`, `pipeline_fresh_d2d.py`, `pipeline_runner.py`, and `pipeline_next.py`.
+
+Caveat: JSON metadata is still incomplete relative to Codex's canonical template; values are route-strong but metadata-provisional. Remote 107 should add `RESULTS_SUMMARY_FRESH_D2D.md` with commit, commands, environment, training/eval seed semantics, and aggregate tables before paper locking.
+
+---
+
+## 2026-05-06 — Codex Local Appendix Visual Cleanup Complete
+
+Report: `report_md/_gpt/CODEX_LOCAL_APPENDIX_VISUAL_CLEANUP_20260506.md`.
+
+Local SI/appendix cleanup completed after returning from Remote 107 coordination. Updated SI plot style in `paper/plot_paper_figures.py`, removed the empty energy--accuracy frontier block, repaired the differential-pair TikZ schematic, and regenerated the NL-gradient figure as populated direction/norm-ratio panels with a `--plot-only` JSON reproduction path.
+
+Verification: `main.pdf` builds, `supplementary_main.pdf` builds, locked-number guard 22/22 PASS, local PCM precision ladder PASS, figure scripts py_compile PASS, focused warning/source scan clean.

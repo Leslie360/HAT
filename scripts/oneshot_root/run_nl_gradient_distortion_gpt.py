@@ -24,16 +24,17 @@ import matplotlib
 matplotlib.use("Agg")
 
 import matplotlib.pyplot as plt
-import torch
-import torch.nn.functional as F
+from matplotlib import font_manager
+import numpy as np
 
-from inference_analysis_utils import (
-    iter_analog_modules,
-    load_model_bundle,
-    restore_analog_state,
-    snapshot_analog_state,
-)
-from train_tinyvit import get_dataloaders, set_seed
+torch = None
+F = None
+iter_analog_modules = None
+load_model_bundle = None
+restore_analog_state = None
+snapshot_analog_state = None
+get_dataloaders = None
+set_seed = None
 
 
 DEFAULT_JSON_PATH = "report_md/_gpt/json_gpt/nl_gradient_distortion_gpt.json"
@@ -200,57 +201,97 @@ def plot_rows(rows: List[dict], figure_path: str) -> None:
     figure = Path(figure_path)
     figure.parent.mkdir(parents=True, exist_ok=True)
 
+    tinos_dir = Path("/usr/share/fonts/truetype/croscore")
+    for font_file in tinos_dir.glob("Tinos-*.ttf"):
+        font_manager.fontManager.addfont(str(font_file))
+
     plt.style.use("seaborn-v0_8-paper")
     plt.rcParams.update({
         "figure.dpi": 300,
         "savefig.dpi": 300,
-        "font.size": 12,
-        "axes.titlesize": 12,
-        "axes.labelsize": 12,
-        "legend.fontsize": 10,
-        "xtick.labelsize": 10,
-        "ytick.labelsize": 10,
-        "font.family": "serif",
-        "font.serif": ["STIXGeneral", "DejaVu Serif"],
+        "font.size": 11.5,
+        "axes.titlesize": 12.0,
+        "axes.labelsize": 11.2,
+        "legend.fontsize": 10.0,
+        "xtick.labelsize": 9.8,
+        "ytick.labelsize": 10.0,
+        "font.family": "Tinos",
+        "font.serif": ["Tinos", "Times New Roman", "Nimbus Roman", "Liberation Serif", "DejaVu Serif"],
         "mathtext.fontset": "stix",
+        "axes.spines.top": False,
+        "axes.spines.right": False,
+        "axes.edgecolor": "#1E252B",
     })
 
     labels = [row["group_label"] for row in rows]
     full_cos = [row["full_grad_cosine_mean"] for row in rows]
     affected_cos = [row["affected_grad_cosine_mean"] for row in rows]
-    sign_flip = [row["affected_sign_flip_rate_mean"] * 100.0 for row in rows]
+    full_norm = [row["full_grad_norm_ratio_mean"] for row in rows]
+    affected_norm = [row["affected_grad_norm_ratio_mean"] for row in rows]
 
-    x = torch.arange(len(rows)).numpy()
+    x = np.arange(len(rows))
     width = 0.36
-    fig, axes = plt.subplots(1, 2, figsize=(10.8, 4.2))
+    colors = {"full": "#0072B2", "affected": "#D55E00"}
+    fig, axes = plt.subplots(1, 2, figsize=(11.2, 4.35), sharex=True)
 
-    axes[0].bar(x - width / 2, full_cos, width=width, color="#35618f", label="Full gradient")
-    axes[0].bar(x + width / 2, affected_cos, width=width, color="#d57a3a", label="Affected params")
-    axes[0].set_ylim(0.0, 1.02)
-    axes[0].set_ylabel("Cosine similarity vs NL=1 baseline")
-    axes[0].set_xticks(x)
-    axes[0].set_xticklabels(labels, rotation=20, ha="right")
-    axes[0].grid(axis="y", linestyle=":", linewidth=0.8, alpha=0.6)
-    axes[0].legend(frameon=True)
+    panels = [
+        (axes[0], full_cos, affected_cos, "A  Direction cosine", "Cosine vs. NL=1 baseline", (0.0, 1.04)),
+        (axes[1], full_norm, affected_norm, "B  Gradient norm ratio", "Norm ratio vs. NL=1 baseline", (0.0, 1.22)),
+    ]
+    for ax, full_vals, affected_vals, title, ylabel, ylim in panels:
+        ax.bar(
+            x - width / 2,
+            full_vals,
+            width=width,
+            color=colors["full"],
+            alpha=0.88,
+            edgecolor="white",
+            linewidth=0.7,
+            label="Full gradient",
+        )
+        ax.bar(
+            x + width / 2,
+            affected_vals,
+            width=width,
+            color=colors["affected"],
+            alpha=0.88,
+            edgecolor="white",
+            linewidth=0.7,
+            label="Affected params",
+        )
+        ax.axhline(1.0, color="#555555", linewidth=0.8, linestyle=(0, (3, 2)))
+        ax.set_ylim(*ylim)
+        ax.set_title(title, loc="left", fontweight="bold", pad=6)
+        ax.set_ylabel(ylabel)
+        ax.set_xticks(x)
+        ax.set_xticklabels(labels, rotation=22, ha="right")
+        ax.grid(axis="y", linestyle=(0, (2, 2)), linewidth=0.55, alpha=0.75, color="#D8DEE4")
+    axes[0].legend(frameon=True, loc="lower left")
+    axes[1].text(
+        0.03,
+        0.08,
+        "Sign-flip rate = 0% for all groups",
+        transform=axes[1].transAxes,
+        fontsize=9.5,
+        color="#4B5563",
+        bbox=dict(boxstyle="round,pad=0.24", facecolor="white", edgecolor="#D8DEE4", alpha=0.95),
+    )
 
-    axes[1].bar(x, sign_flip, width=0.58, color="#8e4c6d")
-    axes[1].set_ylabel("Sign-flip rate on affected params (%)")
-    axes[1].set_xticks(x)
-    axes[1].set_xticklabels(labels, rotation=20, ha="right")
-    axes[1].grid(axis="y", linestyle=":", linewidth=0.8, alpha=0.6)
-
-    fig.suptitle("Group-wise NL=2.0 gradient distortion on Tiny-ViT V4", y=1.02, fontsize=13)
-    fig.tight_layout()
+    fig.suptitle("Group-wise NL=2.0 gradient distortion on Tiny-ViT V4", y=1.02, fontsize=13.2, fontweight="bold")
+    fig.tight_layout(w_pad=1.8)
     fig.savefig(figure, bbox_inches="tight")
     fig.savefig(figure.with_suffix(".pdf"), bbox_inches="tight")
     plt.close(fig)
 
 
 def main() -> None:
+    global torch, F, iter_analog_modules, load_model_bundle, restore_analog_state
+    global snapshot_analog_state, get_dataloaders, set_seed
+
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--experiment", default="V4")
     parser.add_argument("--dataset", default="cifar10")
-    parser.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu")
+    parser.add_argument("--device", default="cuda")
     parser.add_argument("--checkpoint-path", default=None)
     parser.add_argument("--checkpoint-dir", default="checkpoints")
     parser.add_argument("--data-root", default="./data")
@@ -262,7 +303,40 @@ def main() -> None:
     parser.add_argument("--md-path", default=DEFAULT_MD_PATH)
     parser.add_argument("--figure-path", default=DEFAULT_FIG_PATH)
     parser.add_argument("--log-path", default=DEFAULT_LOG_PATH)
+    parser.add_argument(
+        "--plot-only",
+        action="store_true",
+        help="Regenerate the figure from an existing JSON file without importing torch or loading the model.",
+    )
     args = parser.parse_args()
+
+    if args.plot_only:
+        with Path(args.json_path).open("r", encoding="utf-8") as f:
+            payload = json.load(f)
+        rows = payload.get("results") or payload.get("rows")
+        if not rows:
+            raise RuntimeError(f"No result rows found in {args.json_path}")
+        plot_rows(rows, args.figure_path)
+        return
+
+    import torch as _torch
+    import torch.nn.functional as _F
+    from inference_analysis_utils import (
+        iter_analog_modules as _iter_analog_modules,
+        load_model_bundle as _load_model_bundle,
+        restore_analog_state as _restore_analog_state,
+        snapshot_analog_state as _snapshot_analog_state,
+    )
+    from train_tinyvit import get_dataloaders as _get_dataloaders, set_seed as _set_seed
+
+    torch = _torch
+    F = _F
+    iter_analog_modules = _iter_analog_modules
+    load_model_bundle = _load_model_bundle
+    restore_analog_state = _restore_analog_state
+    snapshot_analog_state = _snapshot_analog_state
+    get_dataloaders = _get_dataloaders
+    set_seed = _set_seed
 
     logger = FileLogger(args.log_path)
     set_seed(args.seed)

@@ -20,6 +20,7 @@ matplotlib.use("Agg")
 
 import matplotlib.pyplot as plt
 import numpy as np
+from matplotlib import font_manager
 from matplotlib.lines import Line2D
 from matplotlib.patches import FancyBboxPatch, Rectangle
 
@@ -28,37 +29,52 @@ ROOT = Path(__file__).resolve().parents[1]
 REPORT_DIR = ROOT / "report_md"
 GPT_REPORT_DIR = REPORT_DIR / "_gpt"
 FIGURE_DIR = ROOT / "paper" / "figures"
+TINOS_DIR = Path("/usr/share/fonts/truetype/croscore")
+
+for font_file in TINOS_DIR.glob("Tinos-*.ttf"):
+    font_manager.fontManager.addfont(str(font_file))
+
+COL = {
+    "ink": "#1E252B",
+    "muted": "#66717A",
+    "grid": "#E1E6EB",
+    "blue": "#0072B2",
+    "orange": "#D55E00",
+    "green": "#009E73",
+    "gold": "#E69F00",
+    "gray": "#777777",
+}
 
 
 def configure_style():
-    """Paper-style plot defaults with restrained serif typography."""
+    """Paper-style plot defaults shared by main and supplementary figures."""
     plt.style.use("seaborn-v0_8-paper")
     plt.rcParams.update({
         "figure.dpi": 300,
         "savefig.dpi": 300,
-        "font.family": "serif",
-        "font.serif": ["STIXGeneral", "DejaVu Serif"],
+        "font.family": "Tinos",
+        "font.serif": ["Tinos", "Times New Roman", "Nimbus Roman", "Liberation Serif", "DejaVu Serif"],
         "font.style": "normal",
-        "font.size": 9.5,
-        "axes.titlesize": 9.5,
-        "axes.titleweight": "semibold",
-        "axes.labelsize": 9.2,
+        "font.size": 10.6,
+        "axes.titlesize": 11.2,
+        "axes.titleweight": "bold",
+        "axes.labelsize": 10.8,
         "axes.labelweight": "normal",
-        "legend.fontsize": 8.2,
+        "legend.fontsize": 9.4,
         "legend.frameon": True,
-        "legend.edgecolor": "#cfcfcf",
+        "legend.edgecolor": "#D8DEE4",
         "legend.facecolor": "#ffffff",
         "legend.framealpha": 0.95,
-        "xtick.labelsize": 8.2,
-        "ytick.labelsize": 8.2,
+        "xtick.labelsize": 9.4,
+        "ytick.labelsize": 9.4,
         "axes.spines.top": False,
         "axes.spines.right": False,
         "axes.linewidth": 0.8,
-        "axes.edgecolor": "#333333",
+        "axes.edgecolor": COL["ink"],
         "axes.grid": False,
-        "grid.linewidth": 0.4,
-        "grid.alpha": 0.3,
-        "grid.color": "#b0b0b0",
+        "grid.linewidth": 0.5,
+        "grid.alpha": 0.42,
+        "grid.color": COL["grid"],
         "figure.autolayout": False,
         "hatch.linewidth": 0.4,
         "mathtext.fontset": "stix",
@@ -79,9 +95,9 @@ def enable_major_y_grid(ax):
         axis="y",
         which="major",
         linestyle=(0, (2.0, 2.0)),
-        linewidth=0.6,
-        alpha=0.24,
-        color="#8a8a8a",
+        linewidth=0.55,
+        alpha=0.85,
+        color=COL["grid"],
         zorder=0,
     )
 
@@ -107,6 +123,11 @@ def save_figure_pair(fig, output_dir: Path, stem: str):
 
 
 def save_placeholder_figure(path: Path, title: str, message: str):
+    # Do not replace an existing publication figure with a "missing data" panel.
+    # Empty placeholders are visually worse than preserving the last audited figure.
+    if path.exists():
+        print(f"Skipping placeholder overwrite for existing figure: {path}")
+        return
     fig, ax = plt.subplots(figsize=(6.8, 4.2))
     ax.axis("off")
     ax.text(
@@ -1417,8 +1438,8 @@ def plot_fig_contour_map(output_dir: Path):
     y_idx = np.arange(len(d2d_vals))
     xx, yy = np.meshgrid(x_idx, y_idx)
 
-    fig, ax = plt.subplots(figsize=(6.35, 4.0))
-    cmap = plt.get_cmap("RdYlBu_r")
+    fig, ax = plt.subplots(figsize=(7.1, 4.55))
+    cmap = plt.get_cmap("cividis")
     norm = plt.Normalize(vmin=10.0, vmax=90.0)
     im = ax.imshow(grid, cmap=cmap, norm=norm, aspect="auto", origin="lower")
 
@@ -1448,9 +1469,9 @@ def plot_fig_contour_map(output_dir: Path):
                 f"{value:.1f}",
                 ha="center",
                 va="center",
-                fontsize=6.7,
+                fontsize=8.6,
                 color=text_color,
-                fontweight="normal",
+                fontweight="bold",
             )
 
     ax.set_xticks(x_idx)
@@ -1477,7 +1498,7 @@ def plot_fig_contour_map(output_dir: Path):
         bbox_to_anchor=(0.0, 1.01),
         ncol=3,
         frameon=False,
-        fontsize=6.7,
+        fontsize=8.8,
         columnspacing=0.8,
         handlelength=1.8,
         borderpad=0.0,
@@ -1489,7 +1510,7 @@ def plot_fig_contour_map(output_dir: Path):
     cbar.set_label("Accuracy (%)")
     cbar.outline.set_linewidth(0.6)
 
-    fig.tight_layout(rect=[0.0, 0.0, 1.0, 0.96], pad=0.35)
+    fig.tight_layout(rect=[0.0, 0.0, 1.0, 0.96], pad=0.60)
     save_figure_pair(fig, output_dir, "fig_contour_map")
     plt.close(fig)
 
@@ -1517,8 +1538,8 @@ def plot_fig_proxy_sensitivity_map(output_dir: Path):
             grid[i, j] = float(row.get("test_acc_mean", math.nan))
             std_grid[i, j] = float(row.get("test_acc_std", math.nan))
 
-    fig, ax = plt.subplots(figsize=(5.45, 3.55))
-    cmap = plt.get_cmap("YlGnBu")
+    fig, ax = plt.subplots(figsize=(6.45, 4.25))
+    cmap = plt.get_cmap("cividis")
     norm = plt.Normalize(vmin=np.nanmin(grid) - 0.2, vmax=np.nanmax(grid) + 0.2)
     im = ax.imshow(grid, cmap=cmap, norm=norm, aspect="auto", origin="lower")
 
@@ -1536,7 +1557,8 @@ def plot_fig_proxy_sensitivity_map(output_dir: Path):
                 f"{value:.1f}",
                 ha="center",
                 va="center",
-                fontsize=6.8,
+                fontsize=9.0,
+                fontweight="bold",
                 color=text_color,
             )
 
@@ -1559,7 +1581,7 @@ def plot_fig_proxy_sensitivity_map(output_dir: Path):
             "nominal",
             ha="right",
             va="top",
-            fontsize=6.3,
+            fontsize=8.1,
             color="#202020",
             bbox=dict(boxstyle="round,pad=0.12", facecolor="white", edgecolor="none", alpha=0.92),
         )
@@ -1575,13 +1597,13 @@ def plot_fig_proxy_sensitivity_map(output_dir: Path):
     ax.set_yticks(np.arange(-0.5, len(c2c_vals), 1), minor=True)
     ax.grid(which="minor", color=(1.0, 1.0, 1.0, 0.18), linewidth=0.5)
     ax.tick_params(which="minor", bottom=False, left=False)
-    ax.set_title("Zhang-proxy C2C/D2D sensitivity", loc="left", pad=6)
+    ax.set_title("Zhang-proxy C2C/D2D sensitivity", loc="left", pad=8, fontweight="bold")
 
     cbar = fig.colorbar(im, ax=ax, fraction=0.05, pad=0.03)
     cbar.set_label("Accuracy (%)")
     cbar.outline.set_linewidth(0.6)
 
-    fig.tight_layout(pad=0.35)
+    fig.tight_layout(pad=0.60)
     save_figure_pair(fig, output_dir, "fig_proxy_sensitivity_map")
     plt.close(fig)
 
@@ -1612,7 +1634,7 @@ def plot_fig_fresh_instance_ablation(output_dir: Path):
     standard_instances = np.asarray(fresh["V4_Standard"]["instances"], dtype=float)
     ensemble_instances = np.asarray(fresh["V4_Ensemble"]["instances"], dtype=float)
 
-    fig, axes = plt.subplots(1, 2, figsize=(7.35, 3.45))
+    fig, axes = plt.subplots(1, 2, figsize=(8.7, 4.05))
 
     ax = axes[0]
     categories = [
@@ -1625,10 +1647,10 @@ def plot_fig_fresh_instance_ablation(output_dir: Path):
         ax.scatter(
             np.full(len(values), xpos) + used_offsets,
             values,
-            s=24,
+            s=34,
             color=color,
             edgecolor="white",
-            linewidth=0.45,
+            linewidth=0.55,
             zorder=3,
         )
         mean = float(np.mean(values))
@@ -1640,7 +1662,7 @@ def plot_fig_fresh_instance_ablation(output_dir: Path):
             fmt="o",
             color="#111111",
             markersize=4.4,
-            capsize=3.0,
+            capsize=0.0,
             linewidth=0.9,
             zorder=4,
         )
@@ -1650,7 +1672,7 @@ def plot_fig_fresh_instance_ablation(output_dir: Path):
             f"{mean:.2f}±{std:.2f}",
             ha="center",
             va="bottom",
-            fontsize=6.8,
+            fontsize=9.0,
             color="#222222",
         )
     ax.set_xticks([0, 1])
@@ -1675,10 +1697,10 @@ def plot_fig_fresh_instance_ablation(output_dir: Path):
         np.arange(len(values)),
         values,
         color=colors,
-        edgecolor="#222222",
-        linewidth=0.7,
-        zorder=3,
-    )
+            edgecolor="white",
+            linewidth=0.7,
+            zorder=3,
+        )
     for bar, value in zip(bars, values):
         ax.text(
             bar.get_x() + bar.get_width() / 2.0,
@@ -1686,7 +1708,8 @@ def plot_fig_fresh_instance_ablation(output_dir: Path):
             f"{value:.2f}",
             ha="center",
             va="bottom",
-            fontsize=6.8,
+            fontsize=9.0,
+            fontweight="bold",
             color="#222222",
         )
     ax.set_xticks(np.arange(len(values)))
@@ -1694,10 +1717,10 @@ def plot_fig_fresh_instance_ablation(output_dir: Path):
     ax.set_ylim(85.5, 89.1)
     ax.set_ylabel("Held-out accuracy (%)")
     ax.set_title("(b) D2D-resampling frequency ablation", loc="left", pad=6)
-    ax.grid(axis="y", linestyle=(0, (2.0, 2.0)), linewidth=0.6, alpha=0.24, color="#8a8a8a", zorder=0)
+    ax.grid(axis="y", linestyle=(0, (2.0, 2.0)), linewidth=0.55, alpha=0.85, color=COL["grid"], zorder=0)
     ax.set_axisbelow(True)
 
-    fig.tight_layout(pad=0.45, w_pad=1.2)
+    fig.tight_layout(pad=0.60, w_pad=1.45)
     save_figure_pair(fig, output_dir, "fig_fresh_instance_ablation")
     plt.close(fig)
 
@@ -1728,9 +1751,9 @@ def plot_fig_sobol_sensitivity(output_dir: Path):
             float(data["operational_region"]["S_interaction"]),
         ],
     ])
-    colors = ["#2B6CB0", "#D94841", "#7A7A7A"]
+    colors = [COL["blue"], COL["orange"], COL["gray"]]
 
-    fig, ax = plt.subplots(figsize=(5.8, 3.6))
+    fig, ax = plt.subplots(figsize=(6.7, 4.05))
     x = np.arange(len(group_labels))
     width = 0.22
 
@@ -1742,7 +1765,7 @@ def plot_fig_sobol_sensitivity(output_dir: Path):
             width=width,
             label=label,
             color=color,
-            edgecolor="#222222",
+            edgecolor="white",
             linewidth=0.7,
         )
         for bar, val in zip(bars, values[:, idx]):
@@ -1752,7 +1775,8 @@ def plot_fig_sobol_sensitivity(output_dir: Path):
                 f"{val:.3f}",
                 ha="center",
                 va="bottom",
-                fontsize=7,
+                fontsize=9.0,
+                fontweight="bold",
                 color="#222222",
             )
 
@@ -1760,11 +1784,11 @@ def plot_fig_sobol_sensitivity(output_dir: Path):
     ax.set_xticklabels(group_labels)
     ax.set_ylim(0.0, 1.05)
     ax.set_ylabel("First-order Sobol index")
-    ax.grid(axis="y", linestyle=(0, (2.0, 2.0)), linewidth=0.6, alpha=0.24, color="#8a8a8a")
+    ax.grid(axis="y", linestyle=(0, (2.0, 2.0)), linewidth=0.55, alpha=0.85, color=COL["grid"])
     ax.set_axisbelow(True)
     ax.legend(loc="upper center", ncol=3, frameon=True, bbox_to_anchor=(0.5, 1.16))
 
-    fig.tight_layout(pad=0.35)
+    fig.tight_layout(pad=0.60)
     save_figure_pair(fig, output_dir, "fig_sobol_sensitivity")
     plt.close(fig)
 
@@ -1795,7 +1819,7 @@ def plot_fig_corr_d2d(output_dir: Path):
     labels = [label for _, label, _ in ordered]
     deltas = [means[idx] - means[0] for idx in range(len(means))]
 
-    fig, ax = plt.subplots(figsize=(4.8, 3.2))
+    fig, ax = plt.subplots(figsize=(6.0, 3.85))
     ax.plot(x, means, color="#222222", linewidth=1.0, zorder=2)
     for xpos, mean_val, std_val, color, delta in zip(x, means, stds, colors, deltas):
         ax.errorbar(
@@ -1806,10 +1830,10 @@ def plot_fig_corr_d2d(output_dir: Path):
             color=color,
             ecolor="#333333",
             elinewidth=0.9,
-            capsize=3.0,
-            markersize=5.0,
+            capsize=0.0,
+            markersize=6.6,
             markeredgecolor="white",
-            markeredgewidth=0.45,
+            markeredgewidth=0.55,
             zorder=3,
         )
         label = f"{mean_val:.2f}±{std_val:.2f}"
@@ -1821,7 +1845,8 @@ def plot_fig_corr_d2d(output_dir: Path):
             label,
             ha="center",
             va="bottom",
-            fontsize=6.7,
+            fontsize=8.9,
+            fontweight="bold",
             color="#222222",
         )
 
@@ -1832,7 +1857,7 @@ def plot_fig_corr_d2d(output_dir: Path):
         "standard-HAT collapse baseline",
         ha="right",
         va="bottom",
-        fontsize=6.6,
+        fontsize=8.7,
         color="#8C3D3D",
     )
 
@@ -1843,7 +1868,7 @@ def plot_fig_corr_d2d(output_dir: Path):
     ax.set_ylabel("Fresh-instance accuracy (%)")
     ax.set_title("Correlated-D2D stress test", loc="left", pad=6)
     enable_major_y_grid(ax)
-    fig.tight_layout(pad=0.35)
+    fig.tight_layout(pad=0.60)
     save_figure_pair(fig, output_dir, "figS_corr_d2d")
     plt.close(fig)
 

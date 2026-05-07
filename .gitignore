@@ -62,3 +62,46 @@ CHECKPOINT_INVENTORY_*.md
 
 # Old configs
 auto_fitted_profile.json
+
+# Legacy eval scripts (superseded by p3_hat_eval.py)
+p3_e2e_eval.py
+p3_e2e_eval_v2.py
+
+# Legacy remote handoff docs (archived)
+远端/
+
+# Legacy CV training scripts (not part of current manuscript)
+train_convnext.py
+train_resnet18.py
+plot_convnext_results.py
+plot_resnet18_results.py
+prepare_imagenet_val.py
+download_imagenet_val.py
+download_data.sh
+probe_resnet_ckpts.py
+visualize_attention.py
+model_profiling.py
+
+# Legacy pipeline / sweep scripts (superseded)
+experiment_nonideality_sweep.py
+proxy_sensitivity_sweep_gpt.py
+pipeline_baseline_noise_eval.py
+pipeline_comprehensive_eval.py
+repo_bootstrap.py
+report_asset_paths.py
+report_comp_eval.py
+report_final.py
+make_appendix.py
+overnight_full.py
+overnight_pythia1b_ablation.py
+
+# One-off fix scripts (preserved in git history if needed)
+fix_drudge_wave.py
+fix_gemini_missing_tasks.py
+fix_selective_eval.py
+diag_fresh_instance.py
+
+# Misc old experiments
+analog_layers_ensemble.py
+stress_test_combined_last1.py
+tinyvit_hybrid_utils.py

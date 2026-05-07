@@ -1,0 +1,12 @@
+{
+  "evaluator": "p3_hat_train.evaluate_ppl",
+  "model": "EleutherAI/pythia-410m-deduped",
+  "analog_patch": false,
+  "ppl": 22.184916424250176,
+  "ctx_len": 512,
+  "stride": 256,
+  "batch_size": 1,
+  "dataset": "wikitext-2-raw-v1 (test)",
+  "wall_clock_time": 59.812384366989136,
+  "gpu": "NVIDIA PH402 SKU 200"
+}

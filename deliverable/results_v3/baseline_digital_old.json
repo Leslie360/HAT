@@ -1,0 +1,10 @@
+{
+  "evaluator": "old_e2e_eval (max_length=1024, stride=512)",
+  "model": "EleutherAI/pythia-410m-deduped",
+  "ppl": 15.61752700805664,
+  "max_length": 1024,
+  "stride": 512,
+  "batch_size": 8,
+  "dataset": "wikitext-2-raw-v1 (test)",
+  "wall_clock_time": 112.79915452003479
+}

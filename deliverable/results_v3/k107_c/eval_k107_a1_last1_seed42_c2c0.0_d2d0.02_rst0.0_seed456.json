@@ -1,0 +1,28 @@
+{
+  "git_commit": "eca1ac371ce00f5b7f506f5c2009fe3971b41ed1",
+  "git_status_short": "M pipeline_next.py\n M pipeline_runner.py\n?? README.md\n?? analog_layers_ensemble.py\n?? deliverable/results_v3/k107_c/\n?? device_profile_utils.py\n?? device_profiles/\n?? diag_fresh_instance.py\n?? dispatches/\n?? docs/DEVICE_PROFILE_GUIDE.md\n?? docs/KEY_SOURCE_SYNC_20260422.md\n?? docs/PHYSICS_STACK.md\n?? docs/README.md\n?? docs/REMOTE_CHECKPOINT_UPDATE_GUIDE.md\n?? docs/REMOTE_GITHUB_PUSH_GUIDE.md\n?? docs/REMOTE_SERVER_GITHUB_HANDOFF.md\n?? docs/REPO_HYGIENE_AND_GIT_POLICY.md\n?? download_data.sh\n?? download_imagenet_val.py\n?? environment.yml\n?? experiment_nonideality_sweep.py\n?? fix_drudge_wave.py\n?? fix_gemini_missing_tasks.py\n?? fix_selective_eval.py\n?? inference_analysis_utils.py\n?? k107_c_launcher.py\n?? make_appendix.py\n?? model_profiling.py\n?? overnight_full.py\n?? overnight_pythia1b_ablation.py\n?? p3_e2e_eval.py\n?? p3_e2e_eval_v2.py\n?? paper/\n?? physical_noise_pipeline.py\n?? pipeline_baseline_noise_eval.py\n?? pipeline_comprehensive_eval.py\n?? plot_convnext_results.py\n?? plot_resnet18_results.py\n?? prepare_imagenet_val.py\n?? probe_resnet_ckpts.py\n?? proxy_sensitivity_sweep_gpt.py\n?? repo_bootstrap.py\n?? report_asset_paths.py\n?? report_comp_eval.py\n?? report_final.py\n?? requirements-optional.txt\n?? requirements.txt\n?? scripts/\n?? setup_cuda_torch.sh\n?? stress_test_combined_last1.py\n?? tinyvit_hybrid_utils.py\n?? train_convnext.py\n?? train_resnet18.py\n?? visualize_attention.py\n?? \"\\350\\277\\234\\347\\253\\257/\"",
+  "script": "p3_hat_eval.py",
+  "command": "/home/lisq753/projects/HAT/HAT/p3_hat_eval.py --checkpoint_dir /home/lisq753/projects/HAT_kv107/paper2/results/remote107/checkpoints/k107_a1_last1_seed42 --n_states 256 --sigma_d2d 0.02 --sigma_c2c 0.0 --max_length 512 --output_dir /home/lisq753/projects/HAT/HAT/deliverable/results_v3/k107_c --d2d-seed 456",
+  "mode": "eval",
+  "model": "/home/lisq753/projects/HAT_kv107/paper2/results/remote107/checkpoints/k107_a1_last1_seed42",
+  "dataset_train": null,
+  "dataset_eval": "wikitext-2-raw-v1 (test)",
+  "train_seed": null,
+  "train_d2d_seed": null,
+  "eval_d2d_seed": 456,
+  "n_states": 256,
+  "sigma_c2c": 0.0,
+  "sigma_d2d": 0.02,
+  "retention_step_time": 0.0,
+  "analog_layers": [
+    23
+  ],
+  "ctx_len": 512,
+  "stride": 512,
+  "max_steps": null,
+  "batch_size": 1,
+  "ppl": 19.466294145299486,
+  "wall_clock_time": 71.81777548789978,
+  "gpu_id": "2",
+  "gpu_name": "NVIDIA PH402 SKU 200"
+}

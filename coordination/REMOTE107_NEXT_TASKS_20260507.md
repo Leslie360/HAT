@@ -199,3 +199,31 @@ git push origin HEAD:107-clean
 ```
 
 If some result folders do not exist, adjust `git add` narrowly. Do not use `git add .`.
+
+---
+
+## 8. Pull Safety Warning
+
+Do **not** run this while staying on `main`, `master`, or `remote-exploration`:
+
+```bash
+git pull origin 107-clean
+```
+
+That merges this compact/clean 107 deliverable branch into a full project branch and may appear to delete many files.
+
+Correct sequence:
+
+```bash
+git fetch origin
+git switch 107-clean 2>/dev/null || git switch -c 107-clean --track origin/107-clean
+git pull --ff-only origin 107-clean
+```
+
+If you already see many `D ...` lines in `git status`, stop and do not commit or push. Return:
+
+```bash
+git status --short --branch
+git rev-parse --abbrev-ref HEAD
+git log --oneline -5
+```

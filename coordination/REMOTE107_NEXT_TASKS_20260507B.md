@@ -6,7 +6,7 @@ Priority: P0 before any larger exploration
 
 ## 0. Context
 
-Codex reviewed the latest 107 return through `origin/107-clean@a5b89be`.
+Codex reviewed the latest 107 return through `origin/107-clean@d28da30` before adding this follow-up task commit.
 
 Current result is strong:
 
@@ -14,6 +14,12 @@ Current result is strong:
 - `last2` is consistently worse.
 - `all24` is catastrophic and should remain a stress/control anchor only.
 - Low state counts remain viable.
+
+
+Additional late results already received before this follow-up was pushed:
+
+- C2C baseline on `k107_a1_last1_seed42`: C2C=0.01/0.02 adds only about +0.01/+0.07 PPL over D2D=0.02 baseline. Moderate C2C is not currently the bottleneck.
+- Pythia-1B last1 seed42: D2D=0.02 mean 14.59 PPL, D2D=0.05 mean 14.80 PPL. This is promising scale-up evidence, but still provisional until paired no-patch / patch-no-noise / patch-noise ablations separate fine-tuning gain from analog overhead.
 
 But two blockers remain before these results can become manuscript-canonical:
 
@@ -154,10 +160,10 @@ Return:
 
 Only after P0 and P1.
 
-Run minimal Pythia-1B selective terminal-layer check:
+Extend the already-started Pythia-1B selective terminal-layer check:
 
 - terminal layer only;
-- train seeds: 42, 123;
+- train seeds: 42 already returned; add 123 only after P0/P1 if GPU remains available;
 - sigma_d2d train: 0.02;
 - eval sigma_d2d: 0.02 and 0.05;
 - eval seeds: 42, 456, 1001;

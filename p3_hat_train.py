@@ -11,6 +11,8 @@ import sys
 import json
 import argparse
 import types
+import subprocess
+import time
 from typing import Optional
 
 import torch
@@ -343,7 +345,19 @@ def evaluate_ppl(model, tokenizer, device="cuda", max_tokens=999999, max_length=
     return math.exp(sum(nlls) / total_predicted)
 
 
+def _git_info():
+    try:
+        commit = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=os.path.dirname(__file__),
+                                         stderr=subprocess.DEVNULL, timeout=5).decode().strip()
+        status = subprocess.check_output(["git", "status", "--short"], cwd=os.path.dirname(__file__),
+                                         stderr=subprocess.DEVNULL, timeout=5).decode().strip()
+    except Exception:
+        commit, status = None, None
+    return commit, status
+
+
 def main():
+    start_time = time.time()
     parser = argparse.ArgumentParser()
     parser.add_argument("--name", type=str, default="hat_warmup")
     parser.add_argument("--n_states", type=int, default=256)
@@ -405,20 +419,38 @@ def main():
     print(f"PPL after HAT:  {ppl_after:.2f}")
 
     analog_layers_list = sorted(analog_layers) if analog_layers else list(range(model.config.num_hidden_layers))
+    git_commit, git_status_short = _git_info()
+    gpu_name = torch.cuda.get_device_name(0) if torch.cuda.is_available() else "cpu"
+    gpu_id = os.environ.get("CUDA_VISIBLE_DEVICES", "unknown")
     result = {
-        "name": args.name,
+        "git_commit": git_commit,
+        "git_status_short": git_status_short,
+        "script": os.path.basename(__file__),
+        "command": " ".join(sys.argv),
+        "mode": "train",
+        "model": args.model_name,
+        "dataset_train": "wikitext-2-raw-v1 (train)",
+        "dataset_eval": "wikitext-2-raw-v1 (test)",
         "train_seed": args.seed,
-        "d2d_seed": args.d2d_seed,
+        "train_d2d_seed": args.d2d_seed,
+        "eval_d2d_seed": None,
         "n_states": args.n_states,
         "sigma_c2c": args.sigma_c2c,
         "sigma_d2d": args.sigma_d2d,
-        "analog_layers": analog_layers_list,
-        "lr": args.lr,
-        "max_steps": args.max_steps,
         "retention_step_time": args.retention_step_time,
+        "analog_layers": analog_layers_list,
+        "ctx_len": args.max_length,
+        "stride": args.max_length // 2,
+        "max_steps": args.max_steps,
+        "batch_size": 1,
+        "epochs": args.epochs,
+        "lr": args.lr,
         "ppl_before": ppl_before,
         "ppl_after": ppl_after,
         "losses": losses,
+        "wall_clock_time": time.time() - start_time,
+        "gpu_id": gpu_id,
+        "gpu_name": gpu_name,
     }
 
     # Save checkpoint for downstream noise-generalization eval

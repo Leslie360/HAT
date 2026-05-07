@@ -10,6 +10,8 @@ import os
 import sys
 import json
 import argparse
+import subprocess
+import time
 
 import torch
 import torch.nn.functional as F
@@ -22,7 +24,19 @@ from analog_layers import AnalogLinearConfig
 from p3_hat_train import patch_model_for_hat, evaluate_ppl
 
 
+def _git_info():
+    try:
+        commit = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=os.path.dirname(__file__),
+                                         stderr=subprocess.DEVNULL, timeout=5).decode().strip()
+        status = subprocess.check_output(["git", "status", "--short"], cwd=os.path.dirname(__file__),
+                                         stderr=subprocess.DEVNULL, timeout=5).decode().strip()
+    except Exception:
+        commit, status = None, None
+    return commit, status
+
+
 def main():
+    start_time = time.time()
     parser = argparse.ArgumentParser()
     parser.add_argument("--checkpoint_dir", type=str, required=True)
     parser.add_argument("--n_states", type=int, default=256)
@@ -84,15 +98,35 @@ def main():
     ppl = evaluate_ppl(model, tokenizer, args.device, max_length=args.max_length)
     print(f"PPL: {ppl:.2f}")
 
+    analog_layers_list = sorted(analog_layers) if analog_layers else list(range(model.config.num_hidden_layers))
+    git_commit, git_status_short = _git_info()
+    gpu_name = torch.cuda.get_device_name(0) if torch.cuda.is_available() else "cpu"
+    gpu_id = os.environ.get("CUDA_VISIBLE_DEVICES", "unknown")
     result = {
-        "checkpoint_dir": args.checkpoint_dir,
+        "git_commit": git_commit,
+        "git_status_short": git_status_short,
+        "script": os.path.basename(__file__),
+        "command": " ".join(sys.argv),
+        "mode": "eval",
+        "model": args.checkpoint_dir,
+        "dataset_train": None,
+        "dataset_eval": "wikitext-2-raw-v1 (test)",
+        "train_seed": None,
+        "train_d2d_seed": None,
+        "eval_d2d_seed": d2d_seed,
         "n_states": args.n_states,
         "sigma_c2c": args.sigma_c2c,
         "sigma_d2d": args.sigma_d2d,
-        "d2d_seed": d2d_seed,
         "retention_step_time": args.retention_step_time,
-        "analog_layers": sorted(analog_layers) if analog_layers else list(range(model.config.num_hidden_layers)),
+        "analog_layers": analog_layers_list,
+        "ctx_len": args.max_length,
+        "stride": args.max_length,
+        "max_steps": None,
+        "batch_size": 1,
         "ppl": ppl,
+        "wall_clock_time": time.time() - start_time,
+        "gpu_id": gpu_id,
+        "gpu_name": gpu_name,
     }
 
     out_file = os.path.join(

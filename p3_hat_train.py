@@ -274,6 +274,8 @@ def train_hat(
     grad_accum: int = 4,
     max_steps: int = 100,
     analog_layers: Optional[set] = None,
+    freeze_non_target: bool = False,
+    fp16: bool = False,
 ):
     """Run HAT training on WikiText-2."""
     # Memory optimization: only optimize patched attention layers when doing
@@ -296,12 +298,33 @@ def train_hat(
             params_to_optimize = model.parameters()
     else:
         params_to_optimize = model.parameters()
+
+    # Optionally freeze non-target layers to save backward memory.
+    # Only meaningful when selective analog is used.
+    if freeze_non_target and len(target_layers) < num_layers:
+        frozen_count = 0
+        trainable_count = 0
+        for name, p in model.named_parameters():
+            layer_idx = None
+            for part in name.split('.'):
+                if part.isdigit():
+                    layer_idx = int(part)
+                    break
+            if layer_idx is not None and layer_idx not in target_layers:
+                p.requires_grad = False
+                frozen_count += p.numel()
+            else:
+                trainable_count += p.numel()
+        print(f"[freeze_non_target] Frozen {frozen_count:,} params, trainable {trainable_count:,} params")
+
     optimizer = AdamW(params_to_optimize, lr=lr, weight_decay=0.01)
 
     dataset = load_dataset("wikitext", "wikitext-2-raw-v1", split="train")
     text = "\n\n".join(dataset["text"])
     encodings = tokenizer(text, return_tensors="pt")
     seq_len = encodings.input_ids.size(1)
+
+    scaler = torch.amp.GradScaler("cuda") if fp16 else None
 
     model.train()
     step = 0
@@ -313,18 +336,27 @@ def train_hat(
             end_loc = min(begin_loc + max_length, seq_len)
             input_ids = encodings.input_ids[:, begin_loc:end_loc].to(device)
 
-            outputs = model(input_ids, use_cache=False)
-            logits = outputs.logits
+            with torch.amp.autocast("cuda", enabled=fp16):
+                outputs = model(input_ids, use_cache=False)
+                logits = outputs.logits
 
-            # CLM loss
-            shift_logits = logits[..., :-1, :].contiguous()
-            shift_labels = input_ids[..., 1:].contiguous()
-            loss = F.cross_entropy(shift_logits.view(-1, shift_logits.size(-1)), shift_labels.view(-1))
+                # CLM loss
+                shift_logits = logits[..., :-1, :].contiguous()
+                shift_labels = input_ids[..., 1:].contiguous()
+                loss = F.cross_entropy(shift_logits.view(-1, shift_logits.size(-1)), shift_labels.view(-1))
             loss = loss / grad_accum
-            loss.backward()
+
+            if fp16:
+                scaler.scale(loss).backward()
+            else:
+                loss.backward()
 
             if (step + 1) % grad_accum == 0:
-                optimizer.step()
+                if fp16:
+                    scaler.step(optimizer)
+                    scaler.update()
+                else:
+                    optimizer.step()
                 optimizer.zero_grad()
 
             losses.append(loss.item() * grad_accum)
@@ -341,7 +373,7 @@ def train_hat(
     return losses
 
 
-def evaluate_ppl(model, tokenizer, device="cuda", max_tokens=999999, max_length=512):
+def evaluate_ppl(model, tokenizer, device="cuda", max_tokens=999999, max_length=512, fp16=False):
     """Quick PPL eval on WikiText-2 test."""
     model.eval()
     dataset = load_dataset("wikitext", "wikitext-2-raw-v1", split="test")
@@ -355,11 +387,12 @@ def evaluate_ppl(model, tokenizer, device="cuda", max_tokens=999999, max_length=
         for begin_loc in range(0, seq_len, max_length):
             end_loc = min(begin_loc + max_length, seq_len)
             input_ids = encodings.input_ids[:, begin_loc:end_loc].to(device)
-            outputs = model(input_ids, use_cache=False)
-            logits = outputs.logits
-            shift_logits = logits[..., :-1, :].contiguous()
-            shift_labels = input_ids[..., 1:].contiguous()
-            loss = F.cross_entropy(shift_logits.view(-1, shift_logits.size(-1)), shift_labels.view(-1), reduction='sum')
+            with torch.amp.autocast("cuda", enabled=fp16):
+                outputs = model(input_ids, use_cache=False)
+                logits = outputs.logits
+                shift_logits = logits[..., :-1, :].contiguous()
+                shift_labels = input_ids[..., 1:].contiguous()
+                loss = F.cross_entropy(shift_logits.view(-1, shift_logits.size(-1)), shift_labels.view(-1), reduction='sum')
             nlls.append(loss.item())
             total_predicted += shift_labels.numel()
 
@@ -398,6 +431,10 @@ def main():
     parser.add_argument("--model_name", type=str, default="EleutherAI/pythia-410m-deduped",
                         help="HuggingFace model name or path")
     parser.add_argument("--output_dir", type=str, default="/home/lisq753/projects/HAT_kv107/paper2/results/remote107")
+    parser.add_argument("--freeze-non-target-params", action="store_true",
+                        help="Set requires_grad=False on non-target layers to save backward memory.")
+    parser.add_argument("--fp16", action="store_true",
+                        help="Use FP16 weights + AMP training to reduce VRAM (required for 6.9B scale).")
     args = parser.parse_args()
 
     torch.manual_seed(args.seed)
@@ -413,7 +450,8 @@ def main():
     analog_layers = set(int(x) for x in args.analog_layers.split(",")) if args.analog_layers else None
 
     print("Loading %s..." % args.model_name)
-    model = AutoModelForCausalLM.from_pretrained(args.model_name, torch_dtype=torch.float32)
+    dtype = torch.float16 if args.fp16 else torch.float32
+    model = AutoModelForCausalLM.from_pretrained(args.model_name, torch_dtype=dtype)
     tokenizer = AutoTokenizer.from_pretrained(args.model_name)
     tokenizer.pad_token = tokenizer.eos_token
     model = model.to(device)
@@ -425,7 +463,7 @@ def main():
                         d2d_seed=args.d2d_seed)
 
     print("\nPre-HAT PPL eval...")
-    ppl_before = evaluate_ppl(model, tokenizer, device, max_length=args.max_length)
+    ppl_before = evaluate_ppl(model, tokenizer, device, max_length=args.max_length, fp16=args.fp16)
     print(f"PPL before HAT: {ppl_before:.2f}")
 
     print("\nStarting HAT training...")
@@ -434,10 +472,12 @@ def main():
         device=device, epochs=args.epochs, lr=args.lr,
         max_length=args.max_length, max_steps=args.max_steps,
         analog_layers=analog_layers,
+        freeze_non_target=args.freeze_non_target_params,
+        fp16=args.fp16,
     )
 
     print("\nPost-HAT PPL eval...")
-    ppl_after = evaluate_ppl(model, tokenizer, device, max_length=args.max_length)
+    ppl_after = evaluate_ppl(model, tokenizer, device, max_length=args.max_length, fp16=args.fp16)
     print(f"PPL after HAT:  {ppl_after:.2f}")
 
     analog_layers_list = sorted(analog_layers) if analog_layers else list(range(model.config.num_hidden_layers))

@@ -273,9 +273,30 @@ def train_hat(
     batch_size: int = 1,
     grad_accum: int = 4,
     max_steps: int = 100,
+    analog_layers: Optional[set] = None,
 ):
     """Run HAT training on WikiText-2."""
-    optimizer = AdamW(model.parameters(), lr=lr, weight_decay=0.01)
+    # Memory optimization: only optimize patched attention layers when doing
+    # selective analog (e.g. last1). Full-model analog still optimizes everything.
+    num_layers = model.config.num_hidden_layers
+    target_layers = analog_layers if analog_layers is not None else set(range(num_layers))
+    if len(target_layers) < num_layers:
+        params_to_optimize = []
+        for name, module in model.named_modules():
+            if 'attention' in name.lower() and hasattr(module, 'forward') and type(module).__name__ == 'GPTNeoXAttention':
+                layer_idx = None
+                for p in name.split('.'):
+                    if p.isdigit():
+                        layer_idx = int(p)
+                        break
+                if layer_idx is not None and layer_idx in target_layers:
+                    params_to_optimize.extend(list(module.parameters()))
+        if not params_to_optimize:
+            # Fallback: optimize everything if we failed to extract layer params
+            params_to_optimize = model.parameters()
+    else:
+        params_to_optimize = model.parameters()
+    optimizer = AdamW(params_to_optimize, lr=lr, weight_decay=0.01)
 
     dataset = load_dataset("wikitext", "wikitext-2-raw-v1", split="train")
     text = "\n\n".join(dataset["text"])
@@ -412,6 +433,7 @@ def main():
         model, tokenizer, analog_cfg,
         device=device, epochs=args.epochs, lr=args.lr,
         max_length=args.max_length, max_steps=args.max_steps,
+        analog_layers=analog_layers,
     )
 
     print("\nPost-HAT PPL eval...")

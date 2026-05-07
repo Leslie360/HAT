@@ -77,6 +77,7 @@ def main():
         n_states=args.n_states,
         sigma_c2c=args.sigma_c2c,
         sigma_d2d=args.sigma_d2d,
+        retention_enabled=(args.retention_step_time > 0),
     )
 
     print(f"Loading checkpoint from {args.checkpoint_dir}...")
@@ -131,7 +132,7 @@ def main():
 
     out_file = os.path.join(
         args.output_dir,
-        f"eval_{args.checkpoint_dir.rstrip('/').split('/')[-1]}_c2c{args.sigma_c2c}_d2d{args.sigma_d2d}_seed{d2d_seed}.json"
+        f"eval_{args.checkpoint_dir.rstrip('/').split('/')[-1]}_c2c{args.sigma_c2c}_d2d{args.sigma_d2d}_rst{args.retention_step_time}_seed{d2d_seed}.json"
     )
     with open(out_file, "w") as f:
         json.dump(result, f, indent=2)

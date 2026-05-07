@@ -40,3 +40,4 @@ Every remote result should be returned with:
 5. JSON result path and a small MD summary.
 6. Statement whether the result is canonical or provisional.
 - 2026-05-07: `REMOTE107_NEXT_TASKS_20260507.md` — Codex experiment-first dispatch; selective terminal-layer KV canonicalization.
+- 2026-05-07: `REMOTE107_NEXT_TASKS_20260507B.md` — Codex follow-up: baseline reconciliation, paired checkpoint ablations, train metadata export, EPSC proxy stress.

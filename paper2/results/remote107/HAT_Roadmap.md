@@ -63,6 +63,16 @@
 | downstream clean | — | — | — | lambada/hellaswag/arc | **运行中 (GPU 6)** |
 | downstream analog | — | — | — | σ_c2c=0.01, σ_d2d=0.02 | **运行中 (GPU 7)** |
 
+### 410M 灵敏度与鲁棒性扫描（2026-05-09 新增）
+| 实验 | 关键结果 | 结论 |
+|------|---------|------|
+| σ_c2c sweep (0.0→0.10) | PPL 17.86→18.48 | 线性退化，5×训练噪声退化+3.5% |
+| σ_d2d sweep (0.0→0.10) | PPL 17.86→18.49 | 与C2C退化幅度相当 |
+| eval σ_c2c mismatch | train=0.01, eval=0.10 → PPL 18.67 | 10×训练噪声退化+4.5% |
+| eval σ_d2d mismatch | train=0.02, eval=0.10 → PPL 18.49 | D2D相对更鲁棒 |
+| D2D seed cross-instance | 5 seeds, PPL 18.26-18.30, std=0.016 | 跨芯片一致性极好 |
+| n_states sweep (128→1024) | 所有点 PPL 18.30 | 7-bit (128 states) 已足够 |
+
 ---
 
 ## 二、待办实验（近期）
@@ -71,9 +81,11 @@
 - [x] 6.9B fixed 500（PPL 11.40，已完成）
 - [x] 2.8B last2 fixed 500 结果读取（PPL 12.61）
 - [x] 2.8B last4 fixed 500 结果读取（PPL 12.71）
+- [x] 410M 超参灵敏度扫描（σ_c2c/σ_d2d sweep，已完成）
+- [x] 410M n_states 扫描（128-1024，已完成）
 - [ ] 2.8B fixed500 downstream eval（lm-eval，运行中 GPU 4/5）
 - [ ] 6.9B fixed500 downstream eval（lm-eval，运行中 GPU 6/7）
-- [ ] 410M/2.8B/6.9B 超参灵敏度扫描（sigma_c2c / sigma_d2d / n_states）
+- [ ] 2.8B/6.9B 超参灵敏度扫描
 
 ### P1: 基线对比（已完成代码实现）
 - [x] INT4 RTN KV cache 量化baseline实现（`p3_hat_eval_quantized_baseline.py`）
@@ -83,8 +95,11 @@
 - [x] 410M Lambada/HellaSwag/ARC 上 clean vs analog accuracy 对比
 - [ ] 2.8B/6.9B downstream accuracy 对比（运行中）
 
-### P2: 鲁棒性验证（需要改eval逻辑）
-- [ ] Train-eval mismatch（训练sigma=0.02, 评估sigma=0.05）
+### P2: 鲁棒性验证（已完成410M，待扩展2.8B/6.9B）
+- [x] Train-eval mismatch（410M 已完成：C2C +4.5% @ 10×train, D2D +3.4% @ 5×train）
+- [x] D2D seed cross-instance（410M 已完成：5 seeds, std=0.016）
+- [x] n_states 灵敏度（410M 已完成：128-1024 完全平坦）
+- [ ] Train-eval mismatch（2.8B/6.9B 待启动）
 - [ ] Retention 极端测试（retention_step_time=0.1/1.0）
 
 ---
@@ -176,3 +191,7 @@
 7. **Downstream 任务基本无损，甚至正则化提升**：410M analog 下 arc_easy acc +0.55%，hellaswag acc_norm +0.23%
 8. **Selective layer 在 scale-up 上依然有效**：2.8B last2 PPL 12.61（优于 last1 的 12.69），last4 12.71 基本无损
 9. **6.9B 单卡 32GB 可行**：bf16 + last1 约占 13.3GB 显存，fixed500 训练成功
+10. **HAT 对 ±2× 训练噪声基本鲁棒**：410M eval σ=0.02（2× train）时 PPL 仅 +0.7%，5× 时 +3.5%
+11. **C2C 比 D2D 更敏感**：相同倍数超训练噪声时，C2C 退化幅度 > D2D
+12. **跨器件实例一致性极好**：5 个不同 D2D seed 间 PPL 标准差仅 0.016
+13. **量化精度需求极低**：410M 上 n_states 128→1024 对 PPL 完全无影响，7-bit 已饱和

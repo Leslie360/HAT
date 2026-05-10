@@ -1,0 +1,10 @@
+status	config	v1_bug_ppl	v2_corrected_ppl	source_path	line_range	blocking_note
+partial_metadata_only	D2D=0.02 500	22.29	25.49	/home/qiaosir/projects/remote_reviews/107/RESULTS_SUMMARY.md	52-65	missing per-row code SHA, exact command, checkpoint hash, and resolved eval stride
+partial_metadata_only	D2D=0.04 500	31.85	35.93	/home/qiaosir/projects/remote_reviews/107/RESULTS_SUMMARY.md	52-65	missing per-row code SHA, exact command, checkpoint hash, and resolved eval stride
+partial_metadata_only	C2C=0.01 500	19.97	21.21	/home/qiaosir/projects/remote_reviews/107/RESULTS_SUMMARY.md	52-65	missing per-row code SHA, exact command, checkpoint hash, and resolved eval stride
+partial_metadata_only	D2D=0.025 500	24.77	27.47	/home/qiaosir/projects/remote_reviews/107/RESULTS_SUMMARY.md	52-65	missing per-row code SHA, exact command, checkpoint hash, and resolved eval stride
+partial_metadata_only	D2D=0.03 500	27.16	30.38	/home/qiaosir/projects/remote_reviews/107/RESULTS_SUMMARY.md	52-65	missing per-row code SHA, exact command, checkpoint hash, and resolved eval stride
+partial_metadata_only	D2D=0.035 500	29.47	32.19	/home/qiaosir/projects/remote_reviews/107/RESULTS_SUMMARY.md	52-65	missing per-row code SHA, exact command, checkpoint hash, and resolved eval stride
+partial_metadata_only	D2D=0.045 500	35.43	38.86	/home/qiaosir/projects/remote_reviews/107/RESULTS_SUMMARY.md	52-65	missing per-row code SHA, exact command, checkpoint hash, and resolved eval stride
+partial_metadata_only	D2D=0.05 500	40.18	42.63	/home/qiaosir/projects/remote_reviews/107/RESULTS_SUMMARY.md	52-65	missing per-row code SHA, exact command, checkpoint hash, and resolved eval stride
+partial_metadata_only	Best selective last1	NA	18.14	/home/qiaosir/projects/remote_reviews/107/deliverable/README.md	40-50	README-level summary only, not an exact old-vs-corrected matched row

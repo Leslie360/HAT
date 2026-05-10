@@ -14,11 +14,23 @@ Do not overwrite `../cn/` or `../en/` while migrating to the XJTU class.
 
 ## Current status
 
-Planning lane only. No formal XJTU build has been generated here yet.
+The XJTU template conversion has been generated and compile-validated. The build is structurally complete, but it remains a pre-submission draft until official metadata and university-format review are finalized.
+
+Current build artifacts:
+
+- Source entry: `main.tex`
+- Chapter spine: `Main_Spine/c1.tex` ... `Main_Spine/c8.tex`
+- Front/back matter: `Main_Miscellaneous/`
+- Bibliography: `References/reference.bib`
+- Local preview PDF: `Build/main.pdf`
 
 The template audit is recorded at:
 
 `../../coordination/agent_reports/Claude/CC_XJTU_TEMPLATE_AUDIT_20260510.md`
+
+The migration report is recorded at:
+
+`../../coordination/agent_reports/Claude/CC_XJTU_SUBMISSION_MIGRATION_REPORT_20260510.md`
 
 ## Blocked metadata
 
@@ -33,6 +45,20 @@ These values must come from the user/university before a submission-ready build:
 - Submission date.
 - Defense date/location, committee, and reviewer lists if required.
 - Originality/confidentiality declaration requirements.
+
+## Migration checklist
+
+- [x] Copy XJTU template class/assets into this lane.
+- [x] Create `main.tex` for the XJTU class.
+- [x] Map current CN chapters into `Main_Spine/c1.tex` ... `c8.tex`.
+- [x] Convert copied chapter citations to the biber/biblatex flow used by the template.
+- [x] Copy active bibliography into `References/reference.bib`.
+- [x] Generate abstract, acknowledgement, glossary, appendix, and achievement stubs.
+- [x] Compile a XeLaTeX draft PDF under `Build/main.pdf`.
+- [ ] Replace placeholder metadata with confirmed values.
+- [ ] Compare against current XJTU 2025+ graduate-school requirements.
+- [ ] Decide blind-review vs normal committee/reviewer pages.
+- [ ] Decide whether a generated PDF should be tracked for a release bundle.
 
 ## Migration plan
 

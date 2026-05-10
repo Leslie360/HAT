@@ -32,39 +32,57 @@
 各组孤立精度均维持在 $91.61\%$--$91.72\%$ 区间，
 差异小于 $0.11$~pp，说明在 canonical 均匀噪声下没有单一\emph{层组}构成明显的精度瓶颈。
 
-进一步的全 $42$ 层单层 D2D 重采样 pilot 扫描显示，逐层风险并非均匀分布。
-该扫描冻结 V4 检查点与其余层的 D2D 缓冲，仅对一个目标模拟层重新采样 $\sigma_{\mathrm{D2D}}=10\%$ 失配，
-并在 $512$ 张 CIFAR-10 子集、$3$ 个随机种子上估计精度掉点（见
+进一步的全 $42$ 层单层 D2D 重采样预实验显示，逐层风险并非均匀分布。
+该实验固定 V4 训练检查点及非目标层的 D2D 缓冲，仅对一个目标模拟层重新采样 $\sigma_{\mathrm{D2D}}=10\%$ 失配，
+并在 $512$ 张 CIFAR-10 子集、$3$ 个随机种子上估计精度下降（见
 \texttt{layer\_sensitivity\_full42\_summary\_20260510.tsv}）。
-结果呈现明显 heavy-tail：末级 MLP 输出层 \texttt{stages.3.blocks.0.mlp.fc2} 的平均掉点达到 $83.59$~pp，
+结果呈现明显长尾分布：末级 MLP 输出层 \texttt{stages.3.blocks.0.mlp.fc2} 的平均精度下降达到 $83.59$~pp，
 而第二敏感层为 $26.24$~pp，多数 attention projection 与后段 attention 层低于 $1$~pp。
-该证据仍为 \texttt{pilot/provisional}，不能替代完整测试集或 fresh-instance 协议；
-但它提示混合精度或冗余保护不应平均分配到所有阵列，而应优先覆盖少数 catastrophic outlier。
+该证据属于 \texttt{pilot/provisional} 级别，不能替代完整测试集或 fresh-instance 协议；
+但它说明混合精度或冗余保护不宜在所有阵列层之间平均分配，而应优先覆盖少数高敏感层。
 
 \begin{figure}[t]
     \centering
     \includegraphics[width=0.95\textwidth]{../figures/mixed_precision/fig_layer_sensitivity_full42_20260510}
-    \caption{全 $42$ 个可映射模拟层的单层 D2D 重采样敏感度 pilot。每次仅重采样一个目标层，其余层恢复到 V4 检查点 D2D 缓冲；精度掉点在 $512$ 张 CIFAR-10 子集与 $3$ 个种子上统计。该图用于定位混合精度保护候选，不作为最终 claim-bearing 验证。}
+    \caption{全 $42$ 个可映射模拟层的单层 D2D 重采样敏感度预实验。每次仅重采样一个目标层，其余层恢复到 V4 检查点 D2D 缓冲；精度下降在 $512$ 张 CIFAR-10 子集与 $3$ 个种子上统计。该图用于定位混合精度保护候选层，不作为最终结论性验证。}
     \label{fig:full42-layer-sensitivity}
 \end{figure}
 
-为检验该排序是否能转化为部署保护策略，本研究追加了一个 full-test provisional 保护曲线：
-在完整 $10{,}000$ 张 CIFAR-10 测试集与 $3$ 个种子上，将所有模拟层重采样为 fresh D2D 实例，
-然后把 full42 排名前 $K$ 的敏感层保留在 checkpoint D2D（\texttt{freeze\_topK\_d2d}），其余层仍使用 fresh D2D。
+为检验该排序是否能转化为部署保护策略，本研究进一步构建完整测试集保护曲线：
+在完整 $10{,}000$ 张 CIFAR-10 测试集与 $3$ 个种子上，将所有模拟层重采样为全新 D2D 失配样本，
+再将 full42 排名前 $K$ 的敏感层保留为检查点 D2D 缓冲（\texttt{freeze\_topK\_d2d}），其余层仍使用全新 D2D 失配样本。
 结果如图~\ref{fig:protection-map-fulltest} 所示。
-完全 fresh 的全模拟模型为 $10.00\%$，对应随机猜测；保护前 $10$ 层提高到 $22.44\pm3.74\%$，
+全新失配下的全模拟模型为 $10.00\%$，接近随机猜测；保护前 $10$ 层提高到 $22.44\pm3.74\%$，
 前 $13$ 层提高到 $34.81\pm3.09\%$，前 $20$ 层提高到 $65.93\pm2.88\%$，
-前 $30$ 层达到 $86.06\pm0.23\%$，距离全 checkpoint D2D 的 $91.96\pm0.20\%$ 仅约 $5.90$~pp。
-这说明 full42 排序确实携带强定位信号：风险集中在一个长尾子集内，而非平均分布于全部 $42$ 个阵列层。
-但该协议仍是推理期 D2D 保留/重采样诊断，不等同于真实工艺中的混合精度实现，也不是多硬件实例 fresh-instance 训练评估。
-因此，混合精度策略在本文中应定位为候选部署设计：若外围或工艺预算允许优先保护约 $30/42$ 个高敏感层，
-则有望接近源域性能；若只保护前 $10$--$13$ 个 catastrophic outlier，则仍不足以解除固定掩膜模型的部署崩溃。
+前 $30$ 层达到 $86.06\pm0.23\%$，距离全层保留检查点 D2D 的 $91.96\pm0.20\%$ 约 $5.90$~pp。
+这说明 full42 排序具有明确的定位能力：部署风险集中在长尾高敏感层集合内，而非平均分布于全部 $42$ 个阵列层。
 
 \begin{figure}[t]
     \centering
     \includegraphics[width=0.95\textwidth]{../figures/mixed_precision/fig_protection_map_fulltest_p1_20260510}
-    \caption{基于 full42 排序的完整 CIFAR-10 测试集保护曲线。\texttt{freeze\_topK\_d2d} 将排名前 $K$ 的敏感层保留为 checkpoint D2D，其余层重采样为 fresh D2D。结果显示 top-$30$ 保护可恢复到 $86.06\pm0.23\%$，但该图仍为推理期定位诊断，不是最终 fresh-instance 部署验证。}
+    \caption{基于 full42 排序的完整 CIFAR-10 测试集保护曲线。\texttt{freeze\_topK\_d2d} 将排名前 $K$ 的敏感层保留为检查点 D2D 缓冲，其余层重采样为全新 D2D 失配样本。结果显示 top-$30$ 保护可恢复到 $86.06\pm0.23\%$，但该图仍为推理期定位诊断，不等同于最终 fresh-instance 部署验证。}
     \label{fig:protection-map-fulltest}
+\end{figure}
+
+需要强调的是，该曲线仍是推理期 D2D 保留/重采样诊断，而非真实工艺中的混合精度实现。
+因此，本文将其作为部署设计的筛选证据：它证明了保护预算应向高敏感层倾斜，
+但最终结论仍需由多个未见硬件实例上的 fresh-instance 协议确认。
+进一步的分片式 fresh-instance 复核采用同一 full42 排序，逐实例比较
+\texttt{fresh\_all\_analog}、\texttt{freeze\_top20\_d2d}、\texttt{freeze\_top30\_d2d} 与
+\texttt{freeze\_top42\_d2d}（完整测试集，$10$ 个未见 D2D 实例，每实例 $1$ 次 C2C 蒙特卡洛前向传播）。
+如图~\ref{fig:fresh-instance-protection-sharded} 所示，全新失配配置仍稳定在 $10.00\pm0.00\%$，
+保护前 $20$ 层恢复到 $67.63\pm3.32\%$，保护前 $30$ 层达到 $85.97\pm1.02\%$，
+而全 $42$ 层保留检查点 D2D 为 $91.71\pm0.22\%$。
+该结果说明完整测试集保护曲线并非少数 D2D 实例的偶然现象：top-$30$ 保护在 $10$ 个未见实例上保持稳定救援，
+但它仍是分片式 $10\times1$ 复核，尚未达到标准多次蒙特卡洛前向传播的最终部署协议。
+从现有证据看，若外围或工艺预算允许优先保护约 $30/42$ 个高敏感层，
+则有望接近源域性能；若只保护前 $10$--$13$ 个极端高敏感层，则仍不足以解除固定掩膜模型的部署崩溃。
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=0.95\textwidth]{../figures/mixed_precision/fig_fresh_instance_protection_maps_sharded_20260510}
+    \caption{基于 full42 排序的分片式 fresh-instance 保护复核。每个策略在完整 CIFAR-10 测试集上评估 $10$ 个未见 D2D 实例、每实例 $1$ 次 C2C 蒙特卡洛前向传播。top-$30$ 保护在多实例上达到 $85.97\pm1.02\%$，显著高于全新失配配置的 $10.00\pm0.00\%$，但该图仍不是最终多次蒙特卡洛前向传播的部署协议。}
+    \label{fig:fresh-instance-protection-sharded}
 \end{figure}
 
 外围读出电路的能效约束通过一阶解析模型估算。

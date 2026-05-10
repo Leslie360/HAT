@@ -1,2 +1,0 @@
-# CLAUDE-CF: Paper 2 Route Final Selection
-Day 4. Route selected: Deep-dive into structural limits of attention under severe nonlinearities. Will leverage CX-J1b/c/d diagnostics as the foundation for the next paper.

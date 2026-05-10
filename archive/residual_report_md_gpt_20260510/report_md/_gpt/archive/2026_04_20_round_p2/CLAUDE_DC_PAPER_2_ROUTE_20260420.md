@@ -1,2 +1,0 @@
-# CLAUDE-DC: Paper 2 Route Selection
-Day 4. Paper-2 route remains frozen as selected (Route R-A / structural attention limits). The architectural skeleton (K-Y9 to K-Y13) and memo (G-GG5) properly reflect a theory-first layout without depending on finalized GPU numbers.

@@ -5,8 +5,8 @@ Purpose: Compatibility index after R3 report/coordination migration.
 
 ## Active files kept here
 
-- `AGENT_SYNC_gpt.md` — active multi-agent sync log
-- `CLAUDE_TASK_gpt.md` — active Claude/Codex task entry
+- `AGENT_SYNC_gpt.md` — compatibility symlink to deprecated sync stub; do not append new work here
+- `CLAUDE_TASK_gpt.md` — symlink to current short Claude/Codex task handoff
 - `FILE_PURPOSE_INVENTORY_20260509.tsv` — machine-readable full file inventory
 - `FILE_PURPOSE_INVENTORY_SUMMARY_20260509.md` — inventory summary
 - `ROOT_ENTRY_PURPOSE_MAP_20260509.md` — root entry purpose map

@@ -1,135 +1,85 @@
-# Claude Task: Code Review — R11D-HAT-PCM Hybrid Script
+# Claude/Codex Current Task Handoff — 2026-05-10
 
-**Date:** 2026-04-27
-**Agent:** Codex (coding) + Gemini (critic) + Kimi (doc)
-**Source:** `paper2_aihwkit_baseline/r11d_hat_pcm.py` (written by Claude)
-**Context:** Ensemble HAT + PCM device model hybrid for Nature Electronics paper
+## Status
 
----
+This file is the short current handoff for agents that still read `report_md/_gpt/CLAUDE_TASK_gpt.md` or `coordination/active/CLAUDE_TASK_gpt.md`.
 
-## 1. What the code does
+Do not use the old long `AGENT_SYNC_gpt.md` history as the active task source.
 
-Implements per-epoch D2D mismatch resampling on aihwkit `AnalogLinear` tile weights,
-while keeping `AnalogSGD` + `PCMPresetUnitCell` for real PCM pulse-update physics.
-Key idea: disable aihwkit's per-batch `ADD_NORMAL` modifier; inject D2D noise
-manually at epoch boundary; let PCM `post_update_step()` train on the noisy weights.
+## Current canonical files
 
-Two modes:
-- `scaled` (default): estimate ideal weight `w_ideal = w_current - old_noise`,
-  then add noise scaled by `mean(|w_ideal|)`.
-- `additive`: directly add scaled noise to current weights.
+- Workspace broadcast: `/home/qiaosir/projects/BROADCAST.md`
+- Master next-work tasklist: `coordination/active/NEXT_WORK_MASTER_TASKLIST_20260510.md`
+- Legacy Markdown consolidation: `coordination/agent_reports/Claude/CC_LEGACY_MARKDOWN_CONSOLIDATED_HANDOFF_20260510.md`
+- XJTU template audit: `coordination/agent_reports/Claude/CC_XJTU_TEMPLATE_AUDIT_20260510.md`
+- Codex command dashboard: `coordination/active/CODEX_COMMAND_DASHBOARD_20260510.md`
 
----
+### 0. Claude-only execution mode
 
-## 2. Issues found by self-audit (Claude)
+- Current mode: Claude acts as single commander and executor.
+- No Codex executor is assumed available.
+- User will arrange external review separately.
+- Current executable queue remains useful as a task queue, but ownership is Claude unless reassigned:
+  - `coordination/remote_tasks/thesis/CODEX_POST_CLEANUP_EXECUTION_QUEUE_20260510.md`
+- Archive/non-active artifact cleanup report:
+  - `coordination/agent_reports/Claude/CC_ARCHIVE_ARTIFACT_CLEANUP_20260510.md`
+- Paper1 external artifact record:
+  - `coordination/agent_reports/Claude/CC_EXTERNAL_ARTIFACT_RECORD_20260510.md`
 
-### P0 — Approximation in `w_ideal = w_current - old_noise`
+### 1. Repository and Markdown hygiene
 
-**Location:** `resample_all_d2d_noise()`, line ~72
-**Problem:** Assumes PCM `post_update_step()` updates weights additively.
-PCM is non-linear (sigmoid-like pulse-update). After many epochs,
-`w_current - old_noise` may deviate from true ideal weight.
-**Impact:** Medium. Noise estimate drifts; D2D resampling loses exact orthogonality.
-**Mitigation:** Smoke test (3 epochs) shows convergence ~29% (similar to R11D-4),
-suggesting approximation is acceptable for early epochs. Long-term drift unknown.
-**Ask reviewers:** Is there a way to extract "programmed weight" vs "noise offset"
-from aihwkit `InferenceTile` API? If not, document as known limitation.
+- Treat `coordination/active/AGENT_SYNC_gpt.md` as a deprecated compatibility stub, not a new append target.
+- Keep current work in short scoped files.
+- Do not delete active Paper1/Paper2/thesis sources, checkpoint/data paths, or `remote_reviews/`.
+- Do not push without explicit user approval.
 
-### P1 — `state_dict()` / checkpoint safety
+### 2. XJTU thesis submission lane
 
-**Location:** `torch.save()` calls with `model.state_dict()`
-**Problem:** `AnalogLinear.state_dict()` returns `analog_module.shared_weights`.
-`set_weights()` updates tile internal state, which IS reflected in `state_dict()`
-(verified by test script). BUT: `AnalogSGD.step()` + `post_update_step()` may
-update tile state in a way not fully captured by `get_weights()`.
-**Impact:** Low. Verified `shared_weights` matches `get_weights()` after `set_weights()`.
-**Ask reviewers:** Should we add `get_weights()` snapshot to checkpoint explicitly
-for extra safety?
+- Active thesis sources remain:
+  - CN: `thesis/cn/`
+  - EN: `thesis/en/`
+- XJTU template asset: `thesis/xjtu_template/`.
+- Current audit: `coordination/agent_reports/Claude/CC_XJTU_TEMPLATE_AUDIT_20260510.md`.
+- Recommended future path: `thesis/xjtu_submission/`.
+- Blocked metadata must come from the user/university; do not invent advisor, school, degree wording, defense info, or official dates.
 
-### P1 — Noise magnitude scaling strategy
+### 3. Local GPU thesis/Paper3 tasks
 
-**Location:** `resample_all_d2d_noise()`, `scale = w_ideal.abs().mean().item()`
-**Problem:** Original HAT uses `sigma_d2d * G_range` where `G_range` is full
-conductance span. `mean(|weight|)` is an ad-hoc proxy. Could be too small for
-some layers (e.g. final classifier head has smaller weights) or too large for others.
-**Impact:** Medium. May under/over-noise certain layers.
-**Ask reviewers:** Should scaling be per-layer std instead of mean? Should we use
-`w.abs().max()` or `w.std()`? Or map weights to conductance domain first?
+Start only after `nvidia-smi` confirms safe capacity and no active training conflict.
 
-### P2 — `get_weights()` / `set_weights()` CPU-GPU roundtrip per epoch
+Priority order:
 
-**Location:** `resample_all_d2d_noise()`
-**Problem:** 41 layers x 2 calls/epoch x 100 epochs = 8,200 CPU-GPU transfers.
-Each transfer moves ~0.5MB (TinyViT layer). Total ~4GB of PCIe traffic.
-**Impact:** Low. Epoch time ~165s (same as R11D-4), so overhead is negligible.
-**Ask reviewers:** Any way to operate directly on GPU tiles without roundtrip?
+1. `coordination/remote_tasks/thesis/LOCAL_GPU_MIXED_PRECISION_P0_TASKLIST_20260510.md`
+2. `coordination/remote_tasks/thesis/LOCAL_GPU_DRIFT_AWARE_SAM_TASKLIST_20260510.md`
+3. `coordination/remote_tasks/thesis/LOCAL_GPU_SPATIAL_VARIANCE_TASKLIST_20260510.md`
+4. `coordination/remote_tasks/thesis/LOCAL_GPU_CNN_VS_VIT_HAT_TASKLIST_20260510.md`
 
-### P2 — Unused `device` parameter in `init_hat_noise_buffers`
+Rules:
 
-**Location:** `init_hat_noise_buffers(model, std_dev, device="cpu")`
-**Problem:** Parameter ignored; buffers always on CPU.
-**Impact:** Cosmetic.
-**Fix:** Remove parameter or use it.
+- tee all script output to timestamped files under `logs/`.
+- default batch size target is `bs>=128`; reduce only on OOM.
+- avoid 100% VRAM saturation.
+- do not run parallel GPU jobs unless explicitly approved.
 
-### P2 — Duplicate `make_rpu_config()` call
+### 4. Paper2 / Remote 107
 
-**Location:** `main()` calls `make_rpu_config()` early for validation;
-`build_model()` calls it again.
-**Impact:** Cosmetic. Prints "Resolved preset" twice in log.
-**Fix:** Pass pre-resolved `rpu_config` to `build_model()`.
+- Current gate: `107 CLAIM LOCK BLOCKED - RERUN/MANIFEST REQUIRED`.
+- Current local 107 results remain audit-only.
+- Required unblock path is remote manifest recovery or minimal corrected-noise rerun.
+- Use existing 107 task files under `coordination/remote_tasks/107/`.
 
----
+### 5. Paper1
 
-## 3. Questions for pipeline review
+- Treat Paper1 release as frozen unless the user asks for another wording or packaging pass.
+- Current external tarball SHA is recorded in `NEXT_WORK_MASTER_TASKLIST_20260510.md`.
+- Do not change Paper1 source data or release payload casually.
 
-1. **Codex:** Does `AnalogLinear.set_weights()` correctly propagate through
-   `analog_module.set_weights()` for all aihwkit tile types (InferenceTile,
-   AnalogTile, etc.)? Any edge case with `bias=None`?
+## Expected report after execution
 
-2. **Codex:** `AnalogSGD.step()` calls `tile.post_update_step()` which applies
-   PCM pulse-update. If we call `set_weights()` immediately after `step()`,
-   does `post_update_step()` get "undone"? In our code we call `set_weights()`
-   at the START of the next epoch, so there is a full `evaluate()` call in between.
-   Is this sufficient? Should we call `model.eval()` before `set_weights()`?
+When an executor completes a task, write a short report under `coordination/agent_reports/<Agent>/` with:
 
-3. **Gemini:** Is the `scaled` noise formula `randn * std_dev * mean(|w|)`
-   physically sound for D2D mismatch? In HAT original, D2D is per-crossbar
-   (same offset for all cells in an array). Our implementation is per-weight-element.
-   Is this closer to C2C than D2D? Should we add a per-layer scalar offset
-   (single random value per layer) instead of element-wise noise?
-
-4. **Gemini:** HAT's canonical result uses `sigma_d2d=0.10`. Our `std_dev=0.10`
-   with `mean(|w|)` scaling gives effective ~0.005 std per weight element.
-   Is this equivalent to HAT's 0.10? Or should `std_dev` be set to ~1.0 to
-   match HAT's noise level?
-
-5. **Kimi:** Document the "approximate HAT" caveat in manuscript terms.
-   If HAT PCM results are > 61%, how do we frame this? "HAT-inspired per-epoch
-   resampling improves PCM training" or "true Ensemble HAT + PCM"?
-
----
-
-## 4. Action items
-
-- [ ] Codex: Review `r11d_hat_pcm.py` for logic correctness, edge cases, aihwkit API misuse
-- [ ] Codex: Run 10-epoch quick test with `additive` mode; compare to `scaled`
-- [ ] Gemini: Critique physical soundness of noise model and scaling strategy
-- [ ] Gemini: Suggest `std_dev` tuning (0.10 vs 0.50 vs 1.0)
-- [ ] Kimi: Draft manuscript paragraph describing HAT PCM method and caveats
-- [ ] Claude: After review, apply fixes and queue full 100-epoch run
-
----
-
-## 5. Files to review
-
-| File | Purpose |
-|------|---------|
-| `paper2_aihwkit_baseline/r11d_hat_pcm.py` | Main training script (NEW) |
-| `paper2_aihwkit_baseline/r11d4_train_pcm.py` | Baseline PCM script (for diff) |
-| `paper2_aihwkit_baseline/run_r11d_hat_pcm.sh` | Launch script |
-| `analog_layers_ensemble.py` | Original HAT implementation (reference) |
-
----
-
-**Priority:** HIGH (blocks full HAT PCM experiment launch)
-**Deadline:** Before R11D-5a/5b complete (~2h)
+- exact commands.
+- log paths.
+- output paths.
+- evidence grade: claim-bearing, audit-only, pilot/provisional, or future work.
+- remaining risks.

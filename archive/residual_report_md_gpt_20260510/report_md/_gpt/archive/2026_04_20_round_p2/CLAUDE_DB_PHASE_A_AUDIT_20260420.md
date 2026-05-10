@@ -1,2 +1,0 @@
-# CLAUDE-DB: Phase Alpha Audit
-Day 3. Verified K-Y1 through K-Y7 (Chinese Ch.1-3 and front matter) and G-GG1 through G-GG4 (theory foundations). The Chinese translation is accurate and structurally aligned. Negative-result theory framing is solid.

@@ -207,8 +207,8 @@ ImageNet-1k 的评估结果来自 \texttt{imagenet\_eval\_results\_gpt.json}，
 经核查，\texttt{imagenet\_eval\_results\_gpt.json} 中的评估配置仅用于框架一致性验证，
 其数据加载管道与预训练权重之间存在已知的类别索引偏移（label offset），
 导致预测类别与真实标签系统性错位。
-该 JSON 因此不代表模型真实的 ImageNet-1k 能力，而仅作为当前仿真体制下的\emph{占位评估}（placeholder evaluation）。
-完整的 ImageNet-1k 基准留待未来修复数据加载管道后重新运行。
+该 JSON 因此不代表模型真实的 ImageNet-1k 能力，而仅用于当前仿真体制的数据通路一致性检查。
+完整的 ImageNet-1k 基准需在修复数据加载管道后重新运行。
 
 \section{Fresh-Instance 评估}
 

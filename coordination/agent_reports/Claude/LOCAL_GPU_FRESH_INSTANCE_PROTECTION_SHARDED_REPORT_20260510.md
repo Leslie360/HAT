@@ -2,25 +2,24 @@
 
 ## Evidence grade
 
-- `fresh-instance/full-test/sharded-n10-mc1`: full CIFAR-10 test split, 10 held-out D2D instances, one C2C MC pass per instance.
-- This reaches the canonical instance count, but still uses one MC pass per instance rather than the multi-MC final protocol.
+- `fresh-instance/full-test/sharded-n10-mc3`: full CIFAR-10 test split, 10 held-out D2D instances, 3 C2C MC passes per instance.
 - Batch size was reduced to 64 and instances were run sequentially to avoid GPU freezes.
 
 ## Summary
 
-| Strategy | Mean acc. | Std | Min | Max | Gain vs fresh |
-|---|---:|---:|---:|---:|---:|
-| `fresh_all_analog` | 10.00% | 0.00 | 10.00% | 10.01% | +0.00 pp |
-| `freeze_top20_d2d` | 67.63% | 3.32 | 61.17% | 71.46% | +57.63 pp |
-| `freeze_top30_d2d` | 85.97% | 1.02 | 84.18% | 87.72% | +75.97 pp |
-| `freeze_top42_d2d` | 91.71% | 0.22 | 91.44% | 92.10% | +81.71 pp |
+| Strategy | Mean acc. | Std | Min | Max | Gain vs fresh | Runs |
+|---|---:|---:|---:|---:|---:|---:|
+| `fresh_all_analog` | 10.00% | 0.01 | 10.00% | 10.03% | +0.00 pp | 30 |
+| `freeze_top20_d2d` | 67.65% | 3.21 | 61.17% | 71.70% | +57.65 pp | 30 |
+| `freeze_top30_d2d` | 86.04% | 0.95 | 84.18% | 87.96% | +76.04 pp | 30 |
+| `freeze_top42_d2d` | 91.66% | 0.19 | 91.27% | 92.10% | +81.66 pp | 30 |
 
 ## Interpretation
 
-- `fresh_all_analog` remains at chance level across 10 held-out instances.
-- Protecting the top 20 layers gives a partial but more variable rescue.
+- `fresh_all_analog` remains at chance level across the full 10×3 protocol.
+- Protecting the top 20 layers gives partial rescue but remains instance-sensitive.
 - Protecting the top 30 layers is stable around 86%, close to the top42/source-domain ceiling around 91.7%.
-- This supports sensitivity-ranked protection as a deployment-design candidate; final claim-bearing validation still needs multi-MC replication per instance.
+- The 10×3 result is suitable as the current thesis-level fresh-instance evidence for sensitivity-ranked protection, while still representing an inference-time protection diagnosis rather than a fabricated hardware implementation.
 
 ## Artifacts
 

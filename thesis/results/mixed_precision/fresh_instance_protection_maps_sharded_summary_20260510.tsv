@@ -1,5 +1,5 @@
-strategy	protected_k	mean_accuracy	std_accuracy	min_accuracy	max_accuracy	mean_loss	std_loss	instances	mc_runs_per_instance	test_size	batch_size	evidence_grade	gain_vs_fresh_pp
-fresh_all_analog	0	10.0010	0.0032	10.0000	10.0100	6.108790	0.198373	10	1	10000	64	fresh-instance/full-test/sharded-n10-mc1	0.0000
-freeze_top20_d2d	20	67.6300	3.3205	61.1700	71.4600	1.335815	0.141799	10	1	10000	64	fresh-instance/full-test/sharded-n10-mc1	57.6290
-freeze_top30_d2d	30	85.9670	1.0197	84.1800	87.7200	0.596764	0.045747	10	1	10000	64	fresh-instance/full-test/sharded-n10-mc1	75.9660
-freeze_top42_d2d	42	91.7130	0.2167	91.4400	92.1000	0.453015	0.007082	10	1	10000	64	fresh-instance/full-test/sharded-n10-mc1	81.7120
+strategy	protected_k	mean_accuracy	std_accuracy	min_accuracy	max_accuracy	mean_loss	std_loss	instances	mc_runs_per_instance	total_runs	test_size	batch_size	evidence_grade	gain_vs_fresh_pp
+fresh_all_analog	0	10.0017	0.0059	10.0000	10.0300	6.108731	0.184382	10	3	30	10000	64	fresh-instance/full-test/sharded-n10-mc3	0.0000
+freeze_top20_d2d	20	67.6500	3.2104	61.1700	71.7000	1.328763	0.138265	10	3	30	10000	64	fresh-instance/full-test/sharded-n10-mc3	57.6483
+freeze_top30_d2d	30	86.0427	0.9478	84.1800	87.9600	0.594135	0.047150	10	3	30	10000	64	fresh-instance/full-test/sharded-n10-mc3	76.0410
+freeze_top42_d2d	42	91.6570	0.1852	91.2700	92.1000	0.451446	0.008243	10	3	30	10000	64	fresh-instance/full-test/sharded-n10-mc3	81.6553

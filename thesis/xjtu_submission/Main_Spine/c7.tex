@@ -69,19 +69,19 @@
 但最终结论仍需由多个未见硬件实例上的 fresh-instance 协议确认。
 进一步的分片式 fresh-instance 复核采用同一 full42 排序，逐实例比较
 \texttt{fresh\_all\_analog}、\texttt{freeze\_top20\_d2d}、\texttt{freeze\_top30\_d2d} 与
-\texttt{freeze\_top42\_d2d}（完整测试集，$10$ 个未见 D2D 实例，每实例 $1$ 次 C2C 蒙特卡洛前向传播）。
-如图~\ref{fig:fresh-instance-protection-sharded} 所示，全新失配配置仍稳定在 $10.00\pm0.00\%$，
-保护前 $20$ 层恢复到 $67.63\pm3.32\%$，保护前 $30$ 层达到 $85.97\pm1.02\%$，
-而全 $42$ 层保留检查点 D2D 为 $91.71\pm0.22\%$。
+\texttt{freeze\_top42\_d2d}（完整测试集，$10$ 个未见 D2D 实例，每实例 $3$ 次 C2C 蒙特卡洛前向传播）。
+如图~\ref{fig:fresh-instance-protection-sharded} 所示，全新失配配置仍稳定在 $10.00\pm0.01\%$，
+保护前 $20$ 层恢复到 $67.65\pm3.21\%$，保护前 $30$ 层达到 $86.04\pm0.95\%$，
+而全 $42$ 层保留检查点 D2D 为 $91.66\pm0.19\%$。
 该结果说明完整测试集保护曲线并非少数 D2D 实例的偶然现象：top-$30$ 保护在 $10$ 个未见实例上保持稳定救援，
-但它仍是分片式 $10\times1$ 复核，尚未达到标准多次蒙特卡洛前向传播的最终部署协议。
+但它仍是推理期保护诊断，不等同于已经实现的混合精度硬件方案。
 从现有证据看，若外围或工艺预算允许优先保护约 $30/42$ 个高敏感层，
 则有望接近源域性能；若只保护前 $10$--$13$ 个极端高敏感层，则仍不足以解除固定掩膜模型的部署崩溃。
 
 \begin{figure}[t]
     \centering
     \includegraphics[width=0.95\textwidth]{fig_fresh_instance_protection_maps_sharded_20260510}
-    \caption{基于 full42 排序的分片式 fresh-instance 保护复核。每个策略在完整 CIFAR-10 测试集上评估 $10$ 个未见 D2D 实例、每实例 $1$ 次 C2C 蒙特卡洛前向传播。top-$30$ 保护在多实例上达到 $85.97\pm1.02\%$，显著高于全新失配配置的 $10.00\pm0.00\%$，但该图仍不是最终多次蒙特卡洛前向传播的部署协议。}
+    \caption{基于 full42 排序的分片式 fresh-instance 保护复核。每个策略在完整 CIFAR-10 测试集上评估 $10$ 个未见 D2D 实例、每实例 $3$ 次 C2C 蒙特卡洛前向传播。top-$30$ 保护在多实例上达到 $86.04\pm0.95\%$，显著高于全新失配配置的 $10.00\pm0.01\%$，但该图仍表示推理期保护诊断，而非已实现的混合精度硬件方案。}
     \label{fig:fresh-instance-protection-sharded}
 \end{figure}
 

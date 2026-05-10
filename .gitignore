@@ -55,11 +55,18 @@ auto_fitted_profile.json
 
 # root-level LaTeX artifacts
 *.aux
+*.blg
 *.fdb_latexmk
 *.fls
 *.log
 *.out
+*.toc
+*.xdv
 cover_letter.pdf
+
+# Paper1 main-manuscript bibliography sidecars; supplementary_main.bbl is curated/tracked.
+paper1/manuscript/main.bbl
+paper1/release/paper1_submission_bundle_20260509_final/main.bbl
 
 # archived coordination files
 report_md/_gpt/archive/
@@ -101,6 +108,9 @@ tmp/
 
 # Backup retention dirs
 tmp/bak_cleanup_*/
+
+# Embedded template repo managed separately
+thesis/xjtu_template/
 
 # GitHub slimming: keep generated/redundant release packages local-only
 *.tar.gz

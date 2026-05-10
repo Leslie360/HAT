@@ -12,7 +12,7 @@
 
 | Result | Value | Notes |
 |:---|:---|:---|
-| **Ensemble HAT** | **86.37 ± 1.54%** | Tiny-ViT-5M on CIFAR-10 with epoch-level D2D resampling |
+| **Ensemble HAT** | **86.16 ± 0.19%** | Tiny-ViT-5M on CIFAR-10; three training seeds with epoch-level D2D resampling |
 | Severe-NL recovery | ~81% | Recovery under NL=2.0 using audited gradient-scaling recipe |
 | Correlated D2D | 82.1-84.6% | Robustness against spatially correlated device variation |
 | Retention drift | ~79% | Accuracy plateau after scale-recalibration recovery |

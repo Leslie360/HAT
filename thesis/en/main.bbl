@@ -1,9 +1,20 @@
-\begin{thebibliography}{6}
+\begin{thebibliography}{7}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
   \providecommand{\doi}[1]{doi: #1}\else
   \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Vincze et~al.(2026)Vincze, Hanic, Berki, and
+  Weis]{vincze2025dualplasticity}
+Tomas Vincze, Michal Hanic, Martin Berki, and Martin Weis.
+\newblock Simultaneous dual-plasticity organic synaptic transistor for
+  neuromorphic computing.
+\newblock \emph{Advanced Electronic Materials}, 12\penalty0 (1):\penalty0
+  e00515, 2026.
+\newblock \doi{10.1002/aelm.202500515}.
+\newblock URL \url{https://doi.org/10.1002/aelm.202500515}.
+\newblock Published online 2025-12-03.
 
 \bibitem[{Sandia National Laboratories}(2024)]{crosssim2026}
 {Sandia National Laboratories}.

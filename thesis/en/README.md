@@ -26,5 +26,5 @@ This directory is the active English thesis source lane after the 2026-05-10 wor
 ## Data discipline
 
 - Paper1-derived claims should trace back to `../paper1` provenance and release manifests.
-- Paper2/107 material remains provisional until corrected-noise evidence tables are locked.
+- Paper2/107 material remains provisional and audit-only until a signed manifest or minimal corrected-noise rerun passes the evidence gate.
 - Keep thesis-only assets in `thesis/`; do not write thesis-only material into Paper1 release paths.

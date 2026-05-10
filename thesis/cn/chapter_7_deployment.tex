@@ -118,8 +118,7 @@ $0.5$~LSB INL 无影响；
 
 标准 HAT（固定掩膜，fixed-mask）在训练时阵列上可达 $87.95\pm0.27\%$，
 但在 $10$ 个全新硬件实例上的 fresh-instance 评估中，
-精度 deterministic 地崩塌至 $10.00\pm0.00\%$
-（见 \texttt{fresh\_instance\_eval\_v4\_standard\_noamp.json}）。
+精度 deterministic 地崩塌至 $10.00\pm0.00\%$。
 该结果已在 AMP 关闭的 FP32 推理路径上独立复现，
 确认其为优化器耦合到特定空间失配图 $M_0$ 的结构性后果，
 而非数值 artifact。
@@ -127,8 +126,7 @@ $0.5$~LSB INL 无影响；
 该崩塌是\textbf{绝对的}：
 它不因 D2D 幅度降低而改善。
 在文献标定的 OPECT 低噪声代理（$\sigma_{\mathrm{D2D}}=3\%$，$\sigma_{\mathrm{C2C}}=2\%$）下，
-标准 HAT 检查点同样崩塌至 $10.00\%$
-（见 \texttt{literature\_profile\_eval.json}）。
+标准 HAT 检查点同样崩塌至 $10.00\%$。
 因此，对于任何要求跨实例鲁棒性的有机 RRAM 工艺，
 \textbf{固定掩膜 HAT 不可作为部署候选}。
 
@@ -140,8 +138,7 @@ Ensemble HAT 通过每轮epoch重采样 D2D 失配图，
 
 \begin{itemize}
     \item \textbf{Canonical 均匀噪声}（$\sigma_{\mathrm{D2D}}=10\%$，i.i.d.）：
-    $86.37\pm1.54\%$
-    （见 \texttt{fresh\_instance\_eval.json}）。
+    $86.16\pm0.19\%$（见 canonical fresh-instance 评估记录）。
     \item \textbf{中度空间相关 D2D}（$\rho=0.3$，可分 AR(1) 模型，zone 3A 免疫协议，NL=1.0，AMP 关闭）：
     $84.57\pm2.39\%$
     （见 \texttt{fresh\_instance\_eval\_v4\_ensemble\_correlated\_d2d.json}）。
@@ -161,7 +158,7 @@ Ensemble HAT 通过每轮epoch重采样 D2D 失配图，
 \toprule
 \textbf{D2D 条件} & \textbf{标准 HAT} & \textbf{Ensemble HAT} & \textbf{差值} \\
 \midrule
-i.i.d.~$10\%$ D2D & $10.00\pm0.00$ & $86.37\pm1.54$ & $+76.37$~pp \\
+i.i.d.~$10\%$ D2D & $10.00\pm0.00$ & $86.16\pm0.19$ & $+76.16$~pp \\
 OPECT 代理 $3\%$ D2D & $10.00\pm0.00$ & $88.53\pm0.08$ & $+78.53$~pp \\
 空间相关 $\rho=0.3$ & $10.00$（外推） & $84.57\pm2.39$ & $+74.57$~pp \\
 空间相关 $\rho=0.5$ & $10.00$（外推） & $82.12\pm3.95$ & $+72.12$~pp \\
@@ -173,7 +170,7 @@ OPECT 代理 $3\%$ D2D & $10.00\pm0.00$ & $88.53\pm0.08$ & $+78.53$~pp \\
 Ensemble HAT 的精度优势不依赖于 $10\%$ D2D 的特定假设：
 在低噪声文献代理和高空间相关性两种极端条件下，
 排序均稳定保持，且跨实例标准差随相关性增强而增大
-（$1.54$~pp $\to$ $3.95$~pp），均值相应下降。
+（$0.19$~pp $\to$ $3.95$~pp），均值相应下降。
 
 
 \section{噪声--非线性权衡}
@@ -202,13 +199,13 @@ Ensemble HAT 的精度优势不依赖于 $10\%$ D2D 的特定假设：
 6-bit ADC 点检显示 $-2.8$~pp 悬崖（zone 3C），再次确认 6-bit 为最小可行外围。
 
 \textbf{残余差距}：
-相对 $NL=1.0$ 基线（$86.37\%$），$NL=2.0$ 的系统性退化约 $5.7$~pp。
+相对 $NL=1.0$ 基线（$86.16\%$），$NL=2.0$ 的系统性退化约 $5.7$~pp。
 该差距源于状态依赖的 LTP/LTD 不对称缩放重塑了优化景观，使注意力通路的特征几何对 D2D 实现的变化更加敏感。
 然而，与先前基于未修订梯度缩放配方报告的 $\sim$$30\%$ 不同，当前修订配方下的 $\sim$$80$--$82\%$ 表明瓶颈是\emph{可量化的代理梯度近似误差}，而非不可逾越的结构壁垒。
 
 \subsection{从 $NL=1.0$ 到 $NL=2.0$ 的系统性退化}
 
-$NL=1.0$ 时 Ensemble HAT fresh-instance 精度为 $86.37\%$，
+$NL=1.0$ 时 Ensemble HAT fresh-instance 精度为 $86.16\%$，
 $NL=2.0$ 时降至约 $80.7\%$（Ensemble HAT，均匀噪声）。
 退化幅度约 $5.7$~pp，呈单调趋势。
 梯度缩放替代模型在 $NL$ 增大时产生状态依赖的 LTP/LTD 不对称缩放，
@@ -238,7 +235,7 @@ $88.53\%$ 距数字 FP32 基线（$98.06\%$）仍差约 $9.5$~pp，
 
 \subsection{内部实测器件：Doctor OECT}
 
-对内部实测的非易失 OECT 器件配置文件（源自博士论文 PPT 原始数据导出）
+对内部实测的非易失 OECT 器件配置文件（源自内部PPT原始数据导出）
 执行相同协议（见 \texttt{doctor\_measured\_profile\_eval.json}）：
 \begin{itemize}
     \item RC-16 配置（$16$ 态，动态范围 $5.75$）：
@@ -289,10 +286,10 @@ $81.63\%$ 与 CrossSim 的 $67.2\%$ 之间的 $14.4$~pp 差距
 
 \begin{table}[t]
 \centering
-\caption{TinyImageNet-200 跨架构比例噪声 HAT 验证（fresh-instance 均值，$n=10$ 实例 $\times$ $5$ MC 运行）}
+\caption{TinyImageNet-200 跨架构比例噪声 HAT 验证。}
 \label{tab:cross-arch-proportional}
-\small
-\begin{tabular}{@{}llrccc@{}}
+\footnotesize
+\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}Xrccc@{}}
 \toprule
 \textbf{架构} & \textbf{HAT} & \textbf{种子} & \textbf{源域 (\%)} & \textbf{Fresh (\%)} & \textbf{Std (\%)} \\
 \midrule
@@ -310,7 +307,7 @@ ViT-Small & proportional & 456 & 54.06 & 53.90 & 0.13 \\
 ViT-Small & digital & 789 & 50.86 & 50.86 & 0.00 \\
 ViT-Small & proportional & 789 & 55.85 & 55.41 & 0.10 \\
 \bottomrule
-\end{tabular}
+\end{tabularx}
 \end{table}
 
 \textbf{第一，比例噪声 HAT 消除了 fresh-instance 模态崩溃。}
@@ -345,7 +342,7 @@ CIFAR-10 上的规范排序在单架构单数据集上导出；TinyImageNet-200 
 \caption{按器件成熟度等级的部署决策矩阵}
 \label{tab:maturity-matrix}
 \small
-\begin{tabular}{@{}llll@{}}
+\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{0.17\textwidth}>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}X@{}}
 \toprule
 \textbf{参数} & \textbf{研究级} & \textbf{中试级} & \textbf{量产级} \\
 \midrule
@@ -358,7 +355,7 @@ ADC 位宽 & $\le 5$ bit（未标定） & $6$--$8$ bit（已标定） & $\ge 8$ 
 \textbf{预期精度} & $<15\%$（ADC $<$ 6-bit 悬崖主导） & $84$--$89\%$ & $88$--$90\%$ \\
 \textbf{首要投资方向} & 外围读出 & 前端补偿 + 刷新策略 & 良率规划 \\
 \bottomrule
-\end{tabular}
+\end{tabularx}
 \end{table}
 
 \textbf{研究级}（表~\ref{tab:maturity-matrix}）不应部署 ViT：
@@ -368,7 +365,7 @@ ADC 位宽 & $\le 5$ bit（未标定） & $6$--$8$ bit（已标定） & $\ge 8$ 
 用该鸿沟指导工艺改进。
 \textbf{中试级}可部署：
 6-bit ADC 已越过悬崖，OPECT 代理给出 $88.53\pm0.08\%$，
-canonical $10\%$ D2D 给出 $86.37\pm1.54\%$，均处于商用可行区间。
+canonical $10\%$ D2D 给出 $86.16\pm0.19\%$，均处于原型级可行区间。
 \textbf{量产级}应将 Ensemble HAT 视为\emph{保险而非救援}：
 即使噪声极低，标准 HAT 仍存在跨实例崩塌风险。
 
@@ -393,7 +390,7 @@ canonical $10\%$ D2D 给出 $86.37\pm1.54\%$，均处于商用可行区间。
     \item \textbf{D2D 均匀性（可协商，影响均值与方差）}。
     在 ADC $\ge$ 6 bit 且 $NL=1.0$ 时，
     D2D 从 $3\%$ 恶化至 $20\%$ 仅使 Ensemble HAT 均值从 $88.5\%$ 降至 $74.5\%$，
-    不会导致崩塌。空间相关性 $\rho$ 增大主要加宽方差（$1.54$~pp $\to$ $3.95$~pp），
+    不会导致崩塌。空间相关性 $\rho$ 增大主要加宽方差（$0.19$~pp $\to$ $3.95$~pp），
     可经由良率规划吸收。
     
     \item \textbf{C2C 重复性（弱可协商）}。
@@ -456,7 +453,7 @@ canonical $10\%$ D2D 给出 $86.37\pm1.54\%$，均处于商用可行区间。
 \begin{itemize}
     \item ADC 分辨率存在\textbf{6-bit 悬崖}，Sobol 分解确认全网格 $S_{\mathrm{ADC}}=0.976$；
     越过悬崖后 D2D 主导剩余方差（$S_{\mathrm{D2D}}=0.922$）。
-    \item D2D 失配包络显示 Ensemble HAT 在 $10\%$ i.i.d.、$\rho=0.5$ 相关、OPECT $3\%$ 代理下分别保持 $86.37\%$、$82.12\%$、$88.53\%$，
+    \item D2D 失配包络显示 Ensemble HAT 在 $10\%$ i.i.d.、$\rho=0.5$ 相关、OPECT $3\%$ 代理下分别保持 $86.16\%$、$82.12\%$、$88.53\%$，
     而标准 HAT 全部崩塌至 $10\%$。
     \item 噪声--非线性权衡表明 $NL=2.0$ 下存在\textbf{恢复带}：
     修订配方后 fresh-instance 精度达 $80$--$82\%$（Standard HAT $81.2\%$，Ensemble HAT $80.7\%$），残余差距至 $NL=1.0$ 基线约 $5.7$~pp。

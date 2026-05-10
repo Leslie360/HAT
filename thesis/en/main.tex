@@ -13,6 +13,7 @@
 \graphicspath{{../latex_gpt/figures/}}
 \usepackage{booktabs}
 \usepackage{array}
+\usepackage{tabularx}
 \usepackage{amsmath,amssymb}
 \usepackage{algorithm}
 \usepackage{algpseudocode}
@@ -35,7 +36,7 @@
 \setlength{\intextsep}{8pt plus 2pt minus 2pt}
 \setlength{\abovecaptionskip}{5pt}
 \setlength{\belowcaptionskip}{0pt}
-\setlength{\emergencystretch}{1.5em}
+\setlength{\emergencystretch}{3em}
 \setlist[enumerate]{topsep=3pt,itemsep=2pt,leftmargin=1.4em}
 
 % ---------------------------------------------------------------
@@ -50,11 +51,13 @@
 \newcommand{\SuppTableFlowers}{S7}
 
 % ---------------------------------------------------------------
-% Title-page metadata (user placeholders)
+\newcommand{\ThesisTitle}{Profile-Driven Simulation and Hardware-Aware Training for Organic Optoelectronic Compute-in-Memory Vision}
+
+% Title-page metadata. Formal advisor/department fields still need user confirmation.
 % ---------------------------------------------------------------
-\title{\textbf{[THESIS TITLE]}}
+\title{\textbf{\ThesisTitle}}
 \author{Li Songqiao}
-\date{[Date]}
+\date{May 2026}
 
 % ---------------------------------------------------------------
 % Document
@@ -65,26 +68,28 @@
 \begin{titlepage}
     \centering
     \vspace*{2cm}
-    {\Huge\bfseries [THESIS TITLE]\par}
+    {\Huge\bfseries \ThesisTitle\par}
     \vspace{2cm}
     {\LARGE by\par}
     \vspace{1cm}
     {\LARGE Li Songqiao\par}
     \vspace{2cm}
-    {\Large A dissertation submitted in partial fulfillment\\
-     of the requirements for the degree of [Degree]\par}
+    {\Large Master's thesis draft\par}
     \vspace{2cm}
-    {\Large [Department]\\{[University]}\par}
+    {\Large Formal advisor, department, degree, and university metadata\\to be confirmed before official submission.\par}
     \vfill
-    {\Large [Date]\par}
+    {\Large May 2026\par}
 \end{titlepage}
 
-% Abstract (placeholder)
-% \input{abstract}
-% Uncomment the line above and create abstract.tex when ready.
 \chapter*{Abstract}
 \addcontentsline{toc}{chapter}{Abstract}
-[Abstract text goes here.]
+Compute-in-memory (CIM) architectures reduce the data-movement bottleneck of conventional digital systems by performing matrix--vector multiplications directly inside memory arrays. Among emerging device routes, organic optoelectronic devices offer a distinctive physical substrate for neuromorphic vision systems through multi-level conductance tunability, low-voltage operation, and intrinsic photosensitivity. Translating these device-level advantages into system-level visual performance, however, remains constrained by device variability, limited analog-to-digital converter (ADC) resolution, retention drift, and transfer across fresh hardware instances.
+
+This thesis develops a reusable hardware-aware training (HAT) simulation framework for organic optoelectronic CIM arrays supporting vision transformers and convolutional neural networks under realistic device non-idealities. The framework maps literature-reported device characteristics, including conductance window, cycle-to-cycle variability, device-to-device mismatch, retention dynamics, photoresponse nonlinearity, and write nonlinearity, into task-level visual accuracy.
+
+The experiments first evaluate ResNet-18, ConvNeXt-Tiny, and Tiny-ViT-5M across CIFAR-10, CIFAR-100, Flowers-102, and ImageNet-1k baselines. Building on these baselines, the thesis introduces a taxonomy of HAT regimes and identifies hardware-instance overfitting: standard fixed-mask HAT can perform well on the training-time hardware instance yet collapse to near-chance accuracy on fresh mismatch realizations. Ensemble HAT addresses this failure by resampling structured device-to-device mismatch fields at epoch boundaries, recovering CIFAR-10 fresh-instance accuracy to \(86.16\pm0.19\%\) across three training seeds.
+
+The thesis further constructs a failure-mode atlas for organic optoelectronic CIM deployment, covering hardware-instance overfitting, severe write-nonlinearity collapse, the limited diagnostic ceiling of MLP-only linearization, bounded degradation under spatially correlated mismatch, and retention-drift plateaus. These results provide system-level decision support for algorithm--device co-design and clarify which training interventions transfer to new hardware instances and which remain constrained by physical modeling assumptions.
 
 % Table of contents
 \tableofcontents

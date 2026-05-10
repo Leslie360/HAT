@@ -66,13 +66,13 @@
     提出了 HAT 训练范式的系统分类学，并发现\emph{硬件实例过拟合}（hardware-instance overfitting, 硬件实例过拟合）现象——
     即固定掩膜训练产生的模型会记忆特定的器件失配实现，并在全新硬件实例上崩溃至随机水平。
     在 CIFAR-10 上，固定掩膜标准 HAT 的 fresh-instance 精度为~$10.00\%$（参见~\texttt{fresh\_instance\_eval.json}），
-    而 Ensemble HAT 将其提升至~$86.37\pm1.54\%$。
+    而 Ensemble HAT 将其提升至~$86.16\pm0.19\%$。
     
     \item \textbf{部署包络与结构性泛化边界的建立}：
     系统映射了哪些噪声模型与训练干预组合能够迁移至新硬件实例、哪些不能，
     包括严格的负结果（negative results）以证伪自然的缓解假设，从而确立结构性泛化障碍而非优化缺口。
     例如，在严重写入非线性（$NL=2.0$）条件下，源域救援精度可达~$87.79\%$（MLP-only 线性补偿）和~$87.49\%$（全线性补偿），
-    但 fresh-instance 迁移仍停留在~$32.60\pm9.18\%$（参见~\texttt{nl\_mitigation\_summary\_20260418.json}、\texttt{nl\_fresh\_instance\_controls\_all\_only\_20260418.json}）。
+    但 fresh-instance 迁移仍停留在~$32.60\pm9.18\%$；对应的非线性缓解与 fresh-instance 控制实验记录在论文源数据的 JSON 汇总文件中。
 \end{enumerate}
 
 \section{``10\,\% 崩溃''现象}
@@ -82,7 +82,7 @@
 决定本研究走向的实验观察十分简洁：
 采用单张固定 D2D 掩膜训练的标准 HAT 模型，在训练时实例上可达较高的源域精度（Tiny-ViT V4 在 CIFAR-10 上最佳测试精度为~$91.94\%$，参见~\texttt{noise\_sweep\_results\_gpt.json}），
 然而其全新实例精度崩溃至约~$10.00\%$——即 CIFAR-10 的单类基线水平。
-相比之下，Ensemble HAT 变体将 fresh-instance 精度提升至~$86.37\pm1.54\%$（$n=10$ 个全新实例，每实例 5 次蒙特卡罗运行，参见~\texttt{fresh\_instance\_eval.json}）。
+相比之下，Ensemble HAT 变体在三种子汇总协议下将 fresh-instance 精度提升至~$86.16\pm0.19\%$；单个检查点的全新实例评估仍采用 $10$ 个硬件实例、每实例 $5$ 次蒙特卡罗运行的协议。
 这一差距过于悬殊，无法以普通随机波动解释；它反映了训练目标在部署偏移下的结构性失效。
 
 图~\ref{fig:thesis-fresh-instance}~复用了论文中的 fresh-instance 迁移可视化，展示了标准 HAT 与重采样替代方案之间的差异。
@@ -160,8 +160,8 @@ Ensemble HAT 则在每个训练轮次（epoch）边界重采样结构化 D2D 失
 
 为使上述论断可证伪，本章后续将引入贯穿全文的仿真框架。
 后续章节将界定严重非线性（severe nonlinearity）源域救援的上界：
-MLP-only 线性补偿可达~$87.79\%$，全线性补偿可达~$87.49\%$（参见~\texttt{nl\_mitigation\_summary\_20260418.json}），
-而 fresh-instance 迁移仍停留在~$32.60\pm9.18\%$（参见~\texttt{nl\_fresh\_instance\_controls\_all\_only\_20260418.json}）。
+MLP-only 线性补偿可达~$87.79\%$，全线性补偿可达~$87.49\%$（见 NL 缓解汇总记录），
+而 fresh-instance 迁移仍停留在~$32.60\pm9.18\%$（见 NL fresh-instance 控制评估记录）。
 
 第~3~章将系统阐述 HAT 范式的分类学，形式化定义固定掩膜、轮次级和每批次三种 canonical 协议，
 并将重采样频率解释为隐式的迁移保证。

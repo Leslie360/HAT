@@ -20,7 +20,7 @@
 在此基础上，本研究提出 HAT 训练范式的系统分类学，并发现\emph{硬件实例过拟合}现象：
 标准固定掩膜 HAT 在训练时硬件实例上表现良好，但在全新器件失配实例上崩溃至接近随机水平（CIFAR-10 上 $10.00\pm0.00\%$）。
 为应对此问题，本研究提出 Ensemble HAT——在每个训练轮次边界重采样结构化器件到器件（Device-to-Device, D2D）失配场——
-将 fresh-instance 精度恢复至 $86.37\pm1.54\%$。
+将 fresh-instance 精度恢复至 $86.16\pm0.19\%$。
 
 进一步地，本研究构建了面向有机光电子 CIM 部署的\emph{失效模式图谱}（failure mode atlas），
 系统刻画了五种可复现的失效模式及其边界：
@@ -58,7 +58,7 @@ The framework adopts a profile-driven design that maps literature-reported devic
 Experiments first systematically evaluate ResNet-18, ConvNeXt-Tiny, and Tiny-ViT-5M on CIFAR-10, CIFAR-100, Flowers-102, and ImageNet-1k.
 Building on these baselines, the thesis introduces a taxonomy of HAT regimes and discovers \emph{hardware-instance overfitting}:
 standard fixed-mask HAT performs well on the training-time hardware instance yet collapses to near-chance level on fresh mismatch realizations ($10.00\pm0.00\%$ on CIFAR-10).
-To address this, the thesis proposes Ensemble HAT, which resamples structured D2D mismatch fields at epoch boundaries during training, recovering fresh-instance accuracy to $86.37\pm1.54\%$.
+To address this, the thesis proposes Ensemble HAT, which resamples structured D2D mismatch fields at epoch boundaries during training, recovering fresh-instance accuracy to $86.16\pm0.19\%$.
 
 Furthermore, the thesis constructs a \emph{failure mode atlas} for organic optoelectronic CIM deployment,
 systematically cataloguing five reproducible breakdown patterns and their boundaries:
@@ -86,15 +86,15 @@ These results provide system-level decision support for algorithm--device co-des
 \chapter*{致\ \ 谢}
 \addcontentsline{toc}{chapter}{致谢}
 
-本研究得到[基金名称]资助（项目编号：[编号]）。
+本研究在课题组的持续讨论、计算资源支持与多轮论文审阅中逐步完成。
 
-衷心感谢导师[导师姓名]教授在整个研究过程中给予的悉心指导与学术启发。
+衷心感谢导师在整个研究过程中给予的悉心指导与学术启发。
 感谢实验室同门在器件表征、仿真调试与论文写作中提供的宝贵建议与无私帮助。
-感谢[合作机构/实验室名称]在有机光电子器件制备与测量方面的支持。
+感谢相关合作团队在有机光电子器件制备、测量与建模讨论方面提供的支持。
 
 最后，感谢家人在求学期间给予的持续理解与鼓励。
 
 \vspace{2em}
 \noindent
-[作者姓名]\\
-[日期]
+{李松桥}\\
+{2026年5月}

@@ -41,7 +41,7 @@
 
 \textbf{已知数据（zone 3A）}：Tiny-ViT V4 Standard HAT在$NL=1.0$、$\sigma_{\mathrm{D2D}}=10\%$、$\sigma_{\mathrm{C2C}}=5\%$下，训练最优$87.95\pm0.27\,\%$，新鲜实例$10.00\pm0.00\,\%$（$n=10$实例$\times5$ MC运行）。
 
-\textbf{干预}：Ensemble HAT（每轮D2D重采样）将新鲜实例准确率恢复至$86.37\pm1.54\,\%$（zone 3A）。
+\textbf{干预}：Ensemble HAT（每轮D2D重采样）将新鲜实例准确率恢复至$86.16\pm0.19\,\%$（zone 3A）。
 
 \subsection{模式二：尺度掩蔽区（Scale-Masking Regime）}
 \label{subsec:failure_scale_masking}
@@ -82,7 +82,7 @@
 
 \textbf{诊断测试}：从晶圆图或实测数据估计空间协方差核。若存在显著非对角元素，则计算等效$\rho$并插值至已知AR(1)表。
 
-\textbf{已知数据（zone 3A）}：$\rho=0$时$86.33\pm1.61\,\%$；$\rho=0.3$时$84.57\pm2.39\,\%$（$-1.76$~pp）；$\rho=0.5$时$82.12\pm3.95\,\%$（$-4.20$~pp）。最差实例$73.7\,\%$（instance 4, $\rho=0.5$）。单调退化，排名保持。
+\textbf{已知数据（zone 3A）}：三种子主口径下 $\rho=0$ 基线为 $86.16\pm0.19\,\%$；相关失配扫描给出 $\rho=0.3$ 时 $84.57\pm2.39\,\%$（$-1.76$~pp）与 $\rho=0.5$ 时 $82.12\pm3.95\,\%$（$-4.20$~pp）。最差实例$73.7\,\%$（instance 4, $\rho=0.5$）。单调退化，排名保持。
 
 \textbf{设计规则}：若晶圆图显示$\rho\approx0.3$，将$84.57\,\%$作为保守准确率下限；$\rho\approx0.5$时以$82.12\,\%$为应力测试边界。
 
@@ -112,7 +112,7 @@
 
 \textbf{诊断测试}：在$NL\in\{1.0, 1.5, 2.0\}$上扫描，同时保持其他参数恒定。若退化单调且跨训练种子可重复，则归因于NL失真。
 
-\textbf{已知数据（zone 3C）}：M系列6次训练（Standard/Ensemble$\times$Uniform/Proportional$\times$2种子）全部收敛至$\sim$80--82\%带。Standard与Ensemble均值差$<$1~pp，比例噪声与均匀噪声差$<$0.1~pp。8bit ADC-on hook diagnostic仅比ADC-off低$\sim$0.10~pp（基于训练时代理想电导阵列校准的推断时钩子，非物理ADC边界）。
+\textbf{已知数据（zone 3C）}：M系列6次训练全部收敛至$\sim$80--82\%带。Standard 与 Ensemble 均值差$<$1~pp，比例噪声与均匀噪声差$<$0.1~pp。8bit ADC-on hook diagnostic 仅比 ADC-off 低$\sim$0.10~pp（基于训练时代理想电导阵列校准的推断时钩子，非物理 ADC 边界）。
 
 \textbf{干预}：设备层面线性化（降低$|NL|$）可恢复$\sim$5~pp；算法层面高阶梯度修正或更大批量训练可能进一步缩小残余差距。
 
@@ -233,7 +233,7 @@
 
 \textbf{干预}：Ensemble HAT（每轮D2D重采样）。
 
-\textbf{结果}：新鲜实例恢复至$86.37\pm1.54\,\%$（zone 3A）。跨实例标准差$1.54$~pp，远小于$10$~pp的崩溃阈值。
+\textbf{结果}：新鲜实例恢复至$86.16\pm0.19\,\%$（zone 3A）。这里的$0.19$~pp为三种子汇总标准差，远小于$10$~pp量级的崩溃阈值。
 
 \textbf{启示}：实例过拟合是\emph{训练目标}问题，不是物理模型问题。改变目标（从单实例记忆到分布期望）即可治愈。
 
@@ -292,7 +292,8 @@
 \centering
 \caption{失效模式速查表}
 \label{tab:failure_mode_cheatsheet}
-\begin{tabular}{@{}lllll@{}}
+\small
+\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{0.16\textwidth}>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}p{0.16\textwidth}>{\raggedright\arraybackslash}X@{}}
 \toprule
 \textbf{模式} & \textbf{触发} & \textbf{签名} & \textbf{主导参数} & \textbf{干预} \\
 \midrule
@@ -304,7 +305,7 @@ ADC悬崖 & $<$6bit ADC & $>$5~pp跳跃 & ADC位宽 & $>$6bit \\
 严重NL & $|NL|\gg1$ & 系统性$\sim$5~pp降 & $NL$ & 设备线性化/高阶修正 \\
 精度--漂移权衡 & PCM 4-bit + 时间 & 源域近8-bit，1d后$\gg$3~pp & 电导态数/保持 & 刷新或升精度 \\
 \bottomrule
-\end{tabular}
+\end{tabularx}
 \end{table}
 
 关键结论是\emph{层级性的}：

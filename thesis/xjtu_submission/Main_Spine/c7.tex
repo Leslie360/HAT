@@ -48,20 +48,23 @@
     \label{fig:full42-layer-sensitivity}
 \end{figure}
 
-为检验该排序是否能转化为部署保护策略，本研究追加了一个 P1 上界型保护 pilot：
-在 $2048$ 张 CIFAR-10 子集与 $3$ 个种子上，将所有模拟层重采样为 fresh D2D 实例，
+为检验该排序是否能转化为部署保护策略，本研究追加了一个 full-test provisional 保护曲线：
+在完整 $10{,}000$ 张 CIFAR-10 测试集与 $3$ 个种子上，将所有模拟层重采样为 fresh D2D 实例，
 然后把 full42 排名前 $K$ 的敏感层保留在 checkpoint D2D（\texttt{freeze\_topK\_d2d}），其余层仍使用 fresh D2D。
-结果如图~\ref{fig:protection-map-p1} 所示。
-完全 fresh 的全模拟模型仅为 $8.89\%$；保护前 $10$ 层提高到 $26.22\pm3.62\%$，保护前 $13$ 层提高到 $39.34\pm6.16\%$。
-这说明 full42 排序确实携带救援信号，但只保护少数 outlier 仍不足以恢复接近 checkpoint 的 $92.58\%$ 源域子集精度。
-另外，简单把 top-$10/13$ 层设为无噪声高精度上界并不能救回 fresh 全层失配，提示失配补偿不是局部旁路即可解决的线性叠加问题。
-因此，混合精度策略在本文中只能作为候选设计方向；最终部署级证据仍需要 full-test 或 fresh-instance 协议验证，并可能需要与 Ensemble HAT 训练期重采样联合，而非仅做推理期层保护。
+结果如图~\ref{fig:protection-map-fulltest} 所示。
+完全 fresh 的全模拟模型为 $10.00\%$，对应随机猜测；保护前 $10$ 层提高到 $22.44\pm3.74\%$，
+前 $13$ 层提高到 $34.81\pm3.09\%$，前 $20$ 层提高到 $65.93\pm2.88\%$，
+前 $30$ 层达到 $86.06\pm0.23\%$，距离全 checkpoint D2D 的 $91.96\pm0.20\%$ 仅约 $5.90$~pp。
+这说明 full42 排序确实携带强定位信号：风险集中在一个长尾子集内，而非平均分布于全部 $42$ 个阵列层。
+但该协议仍是推理期 D2D 保留/重采样诊断，不等同于真实工艺中的混合精度实现，也不是多硬件实例 fresh-instance 训练评估。
+因此，混合精度策略在本文中应定位为候选部署设计：若外围或工艺预算允许优先保护约 $30/42$ 个高敏感层，
+则有望接近源域性能；若只保护前 $10$--$13$ 个 catastrophic outlier，则仍不足以解除固定掩膜模型的部署崩溃。
 
 \begin{figure}[t]
     \centering
-    \includegraphics[width=0.95\textwidth]{fig_protection_map_pilot_p1_20260510}
-    \caption{基于 full42 排序的 P1 保护策略 pilot。\texttt{freeze\_topK\_d2d} 将排名前 $K$ 的敏感层保留为 checkpoint D2D，其余层重采样为 fresh D2D；\texttt{noiseless\_topK\_hp\_upper} 为乐观高精度/无噪声上界。结果显示前 $13$ 层保护可产生明显救援，但仍远低于源域 checkpoint 精度。}
-    \label{fig:protection-map-p1}
+    \includegraphics[width=0.95\textwidth]{fig_protection_map_fulltest_p1_20260510}
+    \caption{基于 full42 排序的完整 CIFAR-10 测试集保护曲线。\texttt{freeze\_topK\_d2d} 将排名前 $K$ 的敏感层保留为 checkpoint D2D，其余层重采样为 fresh D2D。结果显示 top-$30$ 保护可恢复到 $86.06\pm0.23\%$，但该图仍为推理期定位诊断，不是最终 fresh-instance 部署验证。}
+    \label{fig:protection-map-fulltest}
 \end{figure}
 
 外围读出电路的能效约束通过一阶解析模型估算。

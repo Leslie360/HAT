@@ -30,7 +30,39 @@
 层敏感度扫描（冻结数据，见 \texttt{layer\_sensitivity\_results\_gpt.json}）表明，
 在标准 HAT 检查点上对各层组单独注入 $5\%$ C2C 噪声时，
 各组孤立精度均维持在 $91.61\%$--$91.72\%$ 区间，
-差异小于 $0.11$~pp，说明在 canonical 均匀噪声下没有单一模拟层构成明显的精度瓶颈。
+差异小于 $0.11$~pp，说明在 canonical 均匀噪声下没有单一\emph{层组}构成明显的精度瓶颈。
+
+进一步的全 $42$ 层单层 D2D 重采样 pilot 扫描显示，逐层风险并非均匀分布。
+该扫描冻结 V4 检查点与其余层的 D2D 缓冲，仅对一个目标模拟层重新采样 $\sigma_{\mathrm{D2D}}=10\%$ 失配，
+并在 $512$ 张 CIFAR-10 子集、$3$ 个随机种子上估计精度掉点（见
+\texttt{layer\_sensitivity\_full42\_summary\_20260510.tsv}）。
+结果呈现明显 heavy-tail：末级 MLP 输出层 \texttt{stages.3.blocks.0.mlp.fc2} 的平均掉点达到 $83.59$~pp，
+而第二敏感层为 $26.24$~pp，多数 attention projection 与后段 attention 层低于 $1$~pp。
+该证据仍为 \texttt{pilot/provisional}，不能替代完整测试集或 fresh-instance 协议；
+但它提示混合精度或冗余保护不应平均分配到所有阵列，而应优先覆盖少数 catastrophic outlier。
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=0.95\textwidth]{../figures/mixed_precision/fig_layer_sensitivity_full42_20260510}
+    \caption{全 $42$ 个可映射模拟层的单层 D2D 重采样敏感度 pilot。每次仅重采样一个目标层，其余层恢复到 V4 检查点 D2D 缓冲；精度掉点在 $512$ 张 CIFAR-10 子集与 $3$ 个种子上统计。该图用于定位混合精度保护候选，不作为最终 claim-bearing 验证。}
+    \label{fig:full42-layer-sensitivity}
+\end{figure}
+
+为检验该排序是否能转化为部署保护策略，本研究追加了一个 P1 上界型保护 pilot：
+在 $2048$ 张 CIFAR-10 子集与 $3$ 个种子上，将所有模拟层重采样为 fresh D2D 实例，
+然后把 full42 排名前 $K$ 的敏感层保留在 checkpoint D2D（\texttt{freeze\_topK\_d2d}），其余层仍使用 fresh D2D。
+结果如图~\ref{fig:protection-map-p1} 所示。
+完全 fresh 的全模拟模型仅为 $8.89\%$；保护前 $10$ 层提高到 $26.22\pm3.62\%$，保护前 $13$ 层提高到 $39.34\pm6.16\%$。
+这说明 full42 排序确实携带救援信号，但只保护少数 outlier 仍不足以恢复接近 checkpoint 的 $92.58\%$ 源域子集精度。
+另外，简单把 top-$10/13$ 层设为无噪声高精度上界并不能救回 fresh 全层失配，提示失配补偿不是局部旁路即可解决的线性叠加问题。
+因此，混合精度策略在本文中只能作为候选设计方向；最终部署级证据仍需要 full-test 或 fresh-instance 协议验证，并可能需要与 Ensemble HAT 训练期重采样联合，而非仅做推理期层保护。
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=0.95\textwidth]{../figures/mixed_precision/fig_protection_map_pilot_p1_20260510}
+    \caption{基于 full42 排序的 P1 保护策略 pilot。\texttt{freeze\_topK\_d2d} 将排名前 $K$ 的敏感层保留为 checkpoint D2D，其余层重采样为 fresh D2D；\texttt{noiseless\_topK\_hp\_upper} 为乐观高精度/无噪声上界。结果显示前 $13$ 层保护可产生明显救援，但仍远低于源域 checkpoint 精度。}
+    \label{fig:protection-map-p1}
+\end{figure}
 
 外围读出电路的能效约束通过一阶解析模型估算。
 在 $8$~bit ADC、$100$ 个阵列、$1000$ 次转换的基准假设下，

@@ -387,7 +387,7 @@ D2D 场具有空间结构性，对给定硬件实例固定不变；C2C 项在多
 
 \begin{figure}[t]
     \centering
-    \includegraphics[width=0.78\linewidth]{../latex_gpt/figures/figS3_ensemble_hat}
+    \includegraphics[width=0.78\linewidth]{figS3_ensemble_hat}
     \caption{固定掩膜与轮次级重采样 HAT 的概念对比（复用自论文补充材料）。左图：单张失配图贯穿所有轮次；右图：每轮次一张新图。每批次重采样（未示出）将在每个 mini-batch 边界替换图。}
     \label{fig:cadence-visual}
 \end{figure}
@@ -486,7 +486,7 @@ batch size 64，4 位差分电导映射。
 
 \begin{figure}[t]
     \centering
-    \includegraphics[width=0.96\textwidth]{../latex_gpt/figures/fig_fresh_instance_ablation}
+    \includegraphics[width=0.96\textwidth]{fig_fresh_instance_ablation}
     \caption{Fresh-instance 鲁棒性与 D2D 重采样频率消融（复用自论文补充材料）。\textbf{左图：}标准 HAT 在每张全新阵列上均崩溃至随机水平，而 Ensemble HAT 保持鲁棒精度。\textbf{右图：}50 轮次扫描下不同重采样频率的 held-out 精度。轮次级重采样达到 88.41\%，超过固定掩膜（87.18\%）和每批次（86.16\%）对照。}
     \label{fig:fresh-instance-ablation}
 \end{figure}

@@ -111,6 +111,7 @@ tmp/bak_cleanup_*/
 
 # Embedded template repo managed separately
 thesis/xjtu_template/
+thesis/xjtu_submission/Build/
 
 # GitHub slimming: keep generated/redundant release packages local-only
 *.tar.gz

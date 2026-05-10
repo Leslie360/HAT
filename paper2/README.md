@@ -34,8 +34,11 @@ Current repository-local Paper2 evidence is sufficient for infrastructure proven
 
 - `results/w2_scoped_probe_summary_20260425.json` and `results/W2_SCOPED_PROBE_SUMMARY_20260425.tsv` summarize earlier scoped smoke/probe runs.
 - These rows use small smoke text batches and archived source logs; they are useful for debugging trends, not for final Paper2 PPL claims.
-- The Remote-107 P8 corrected-noise deliverable is still missing: `REMOTE_107_PHASE_P8_CORRECTED_NOISE_REPORT_YYYYMMDD.md` plus compact CSV/JSON tables.
-- Required claim-bearing tables remain: corrected-noise summary, fresh-D2D summary, old-vs-corrected comparison, and metadata completeness.
+- `../coordination/remote_tasks/107/REMOTE_107_PHASE_P8_CORRECTED_NOISE_REPORT_20260510.md` and `results/FRESH_D2D_SUMMARY_107_20260510.tsv` are strict-review candidate indexes, not locked claim-bearing evidence.
+- `results/fig_107_*.png` and `results/fig_107_*.pdf` are draft audit visualizations generated from the candidate index; they are visual QA aids only, not manuscript figures.
+- The 2026-05-10 strict review rejected the earlier claim-lock wording because the first aggregation mixed distinct checkpoints/conditions and the raw JSON lacks required commit, command, config, dataset, evaluation-protocol, and checkpoint-hash metadata.
+- Required claim-bearing tables remain: corrected-noise summary with complete metadata, fresh-D2D summary, old-vs-corrected comparison, and metadata completeness; current `results/METADATA_COMPLETENESS_107_20260510.tsv` is a failure inventory showing what is missing, not a pass certificate.
+
 ## Provenance
 
 - 107/Paper2 provenance map: `PROVENANCE_107_20260510.tsv`

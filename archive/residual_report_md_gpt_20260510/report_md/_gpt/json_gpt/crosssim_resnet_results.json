@@ -1,0 +1,10 @@
+{
+  "model": "resnet18",
+  "dataset": "cifar10",
+  "crosssim": {
+    "accuracy": 6.0,
+    "weight_bits": 4,
+    "c2c_noise": 0.05,
+    "d2d_noise": 0.1
+  }
+}

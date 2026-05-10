@@ -1,0 +1,9 @@
+file	status	role	next_action
+CANONICAL_RESULT_LOCK_gpt.md	compat_symlink	Compatibility link to paper1/provenance/reference_locks/CANONICAL_RESULT_LOCK_gpt.md	Prefer paper1/provenance/reference_locks/CANONICAL_RESULT_LOCK_gpt.md in new docs/scripts
+CREDIT.md	compat_symlink	Compatibility link to paper1/provenance/reference_locks/CREDIT.md	Prefer paper1/provenance/reference_locks/CREDIT.md in new docs/scripts
+FIGURE_CAPTION_LOCK_gpt.md	compat_symlink	Compatibility link to paper1/provenance/reference_locks/FIGURE_CAPTION_LOCK_gpt.md	Prefer paper1/provenance/reference_locks/FIGURE_CAPTION_LOCK_gpt.md in new docs/scripts
+FIGURE_PLAN.md	compat_symlink	Compatibility link to paper1/provenance/reference_locks/FIGURE_PLAN.md	Prefer paper1/provenance/reference_locks/FIGURE_PLAN.md in new docs/scripts
+fix_plots.py	compat_symlink	Compatibility link to tools/plotting/fix_plots.py	Prefer tools/plotting/fix_plots.py in new docs/scripts
+plot_paper_figures.py	compat_symlink	Compatibility link to tools/plotting/plot_paper_figures.py	Prefer tools/plotting/plot_paper_figures.py in new docs/scripts
+generate_schematic_figures_gpt.py	compat_symlink	Compatibility link to tools/plotting/generate_schematic_figures_gpt.py	Prefer tools/plotting/generate_schematic_figures_gpt.py in new docs/scripts
+README.md	compat_index	Explains paper/ is compatibility shell	Keep

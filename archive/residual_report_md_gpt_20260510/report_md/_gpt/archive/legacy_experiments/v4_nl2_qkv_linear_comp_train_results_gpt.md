@@ -1,0 +1,11 @@
+# Tiny-ViT Results (GPT)
+
+| Mode | Exp | Name | Dataset | Primary Metric | Checkpoint |
+|:-----|:----|:-----|:--------|:---------------|:-----------|
+| train | V4 | V4_hybrid_standard_noise_hat_nl2_qkv_linear_comp | cifar10 | best_acc=18.72% @ epoch 2 | `/home/qiaosir/projects/compute_vit/checkpoints/_gpt/nl_mitigation/v4_nl2_qkv_linear_comp/V4_hybrid_standard_noise_hat_nl2_qkv_linear_comp_best.pt` |
+
+## Notes
+
+- `eval` mode reports repeated-run statistics for noisy experiments when `--eval-runs > 1`.
+- `retention-sweep` reuses the ConvNeXt-style time grid and Monte Carlo summary format.
+- These result files are GPT-scoped scratch artifacts and do not replace the canonical experiment reports.

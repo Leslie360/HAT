@@ -17,8 +17,10 @@ from pathlib import Path
 from typing import Iterable, Sequence
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
-if str(PROJECT_ROOT) not in sys.path:
-    sys.path.insert(0, str(PROJECT_ROOT))
+SRC = PROJECT_ROOT / "src" / "compute_vit"
+for path in (str(SRC), str(PROJECT_ROOT)):
+    if path not in sys.path:
+        sys.path.insert(0, path)
 
 from paper2.src.analog_kv_cache import AnalogKVCache, AnalogKVCacheConfig
 

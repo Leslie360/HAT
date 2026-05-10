@@ -1,0 +1,60 @@
+{
+  "checkpoint": "paper2_aihwkit_baseline/checkpoints/best.pt",
+  "n_fresh": 10,
+  "device": "cuda",
+  "mean": 87.282,
+  "std": 0.1286,
+  "instances": [
+    {
+      "instance": 0,
+      "seed": 1000,
+      "accuracy": 87.44
+    },
+    {
+      "instance": 1,
+      "seed": 1001,
+      "accuracy": 87.12
+    },
+    {
+      "instance": 2,
+      "seed": 1002,
+      "accuracy": 87.26
+    },
+    {
+      "instance": 3,
+      "seed": 1003,
+      "accuracy": 87.44
+    },
+    {
+      "instance": 4,
+      "seed": 1004,
+      "accuracy": 87.34
+    },
+    {
+      "instance": 5,
+      "seed": 1005,
+      "accuracy": 87.29
+    },
+    {
+      "instance": 6,
+      "seed": 1006,
+      "accuracy": 87.05
+    },
+    {
+      "instance": 7,
+      "seed": 1007,
+      "accuracy": 87.21
+    },
+    {
+      "instance": 8,
+      "seed": 1008,
+      "accuracy": 87.29
+    },
+    {
+      "instance": 9,
+      "seed": 1009,
+      "accuracy": 87.38
+    }
+  ],
+  "time": "2026-04-26T17:41:37.714269"
+}

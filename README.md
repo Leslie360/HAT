@@ -17,7 +17,7 @@
 | Correlated D2D | 82.1-84.6% | Robustness against spatially correlated device variation |
 | Retention drift | ~79% | Accuracy plateau after scale-recalibration recovery |
 
-See [`CHECKPOINT_INVENTORY_20260418.md`](CHECKPOINT_INVENTORY_20260418.md) for model weights and provenance.
+See [`WORKSPACE_LAYOUT.md`](WORKSPACE_LAYOUT.md) for the active workspace map and [`PAPER_DIRECTORY_MAP_20260510.md`](PAPER_DIRECTORY_MAP_20260510.md) for why multiple paper-related directories still exist. Old root-level protocol/checklist/reproducibility snapshots are isolated under `archive/reorg_20260509/legacy_root_docs_20260510/`.
 
 ---
 
@@ -27,11 +27,12 @@ See [`CHECKPOINT_INVENTORY_20260418.md`](CHECKPOINT_INVENTORY_20260418.md) for m
 # 1. Install dependencies
 conda env create -f environment.yml && conda activate LLM
 
-# 2. Run a sanity check
-python scripts/_gpt/check_locked_numbers.py   # Expected: 16/16 passed
+# 2. Review the active workspace map
+less WORKSPACE_LAYOUT.md
 
-# 3. Reproduce the Ensemble HAT result
-python train_tinyvit_ensemble.py --config configs/tinyvit_v4_ensemble.json
+# 3. Run a small evaluation or training job from the project root
+python cli/eval_fresh_instances.py --help
+python cli/train_tinyvit_ensemble.py --help
 ```
 
 ---
@@ -63,26 +64,26 @@ pip install -r requirements.txt
 
 ```
 compute_vit/
-├── analog_layers.py               # Mixed analog–digital layer library
-├── analog_layers_ensemble.py      # Ensemble HAT extensions
-├── physical_noise_pipeline.py     # Frontend photoresponse + shot noise
-├── inference_analysis_utils.py    # Evaluation and profiling utilities
-├── device_profile_utils.py        # Profile loading and validation
-├── train_tinyvit.py               # Tiny-ViT training script
-├── train_tinyvit_ensemble.py      # Ensemble HAT training
-├── train_convnext.py              # ConvNeXt-Tiny training
-├── train_resnet18.py              # ResNet-18 training
-├── eval_measured_profile.py       # Zero-shot literature profile evaluation
-├── run_a23_experiments.py         # Inverse-gamma frontend sweep
-├── device_profiles/               # Literature-calibrated device profiles
-├── checkpoints/                   # Pre-trained model weights
+├── cli/                           # Train/eval command wrappers
+├── src/compute_vit/               # Python implementation package
+├── configs/                       # Stable configs
+├── device_profiles/               # Literature/calibrated device profiles
+├── manuscripts/                   # Compatibility links to manuscript sources
+├── paper/                         # Legacy Paper1 compatibility shell
+├── paper1/                        # Paper-1 manuscript, release, provenance, reports
+├── paper2/                        # Paper-2 / 107 KV-cache research
+├── paper2_aihwkit_baseline/       # Paper-2 AIHWKit/PCM baseline
+├── thesis/                        # Degree thesis sources and template
+├── coordination/                  # Active dispatches, audits, agent reports
+├── tools/                         # Validation, plotting, LaTeX, maintenance tools
 ├── scripts/                       # Experiment orchestration
-├── report_md/                     # Result manifests and JSON profiles
-├── paper/                         # Manuscript source
-├── data/                          # Datasets (auto-downloaded)
+├── experiments/                   # Exploratory experiments and manifests
+├── archive/                       # Isolated old files and restore scripts
+├── data/                          # Datasets (auto-downloaded/local)
+├── checkpoints/                   # Protected local model weights
 ├── requirements.txt               # pip dependencies
 ├── environment.yml                # Conda environment
-└── REPRODUCIBILITY.md             # Detailed reproducibility notes
+└── WORKSPACE_LAYOUT.md            # Workspace map
 ```
 
 ---
@@ -110,7 +111,7 @@ This project is licensed under the MIT License — see [LICENSE](LICENSE) for de
 
 ## Contributing
 
-We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on bug reports, feature requests, and pull requests.
+Issues and improvements should preserve the root layout in [`WORKSPACE_LAYOUT.md`](WORKSPACE_LAYOUT.md) and keep old or deprecated files isolated under `archive/`.
 
 ---
 
@@ -120,4 +121,4 @@ This work was supported in part by the NVIDIA Academic Partnership Award (Apamay
 
 ---
 
-*Last updated: 2026-04-18*
+*Last updated: 2026-05-10*

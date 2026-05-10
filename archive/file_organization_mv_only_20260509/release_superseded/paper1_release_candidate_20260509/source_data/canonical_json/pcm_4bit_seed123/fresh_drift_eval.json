@@ -1,0 +1,902 @@
+{
+  "checkpoint": "paper2_aihwkit_baseline/checkpoints/r11d_7_pcm_4bit_seed123/best.pt",
+  "drift_times_seconds": [
+    0.0,
+    3600.0,
+    86400.0
+  ],
+  "n_fresh": 5,
+  "mc_repeats": 3,
+  "fresh_seed_base": 7000,
+  "rpu_config_spec": {
+    "forward_inp_res": 0.0625,
+    "forward_out_res": 0.0625,
+    "modifier_type": "ADD_NORMAL",
+    "modifier_std_dev": 0.1,
+    "modifier_enable_during_test": true,
+    "pcm_preset": "PCMPresetUnitCell"
+  },
+  "results": [
+    {
+      "t_inference_seconds": 0.0,
+      "t_label": "0s",
+      "n_drifted_layers": 0,
+      "mean": 76.662,
+      "std": 0.0347,
+      "instances": [
+        {
+          "instance": 0,
+          "seed_base": 7000,
+          "accuracy": 76.6733,
+          "mc_std": 0.1002,
+          "mc_runs": [
+            {
+              "mc": 0,
+              "seed": 7000,
+              "accuracy": 76.68
+            },
+            {
+              "mc": 1,
+              "seed": 7001,
+              "accuracy": 76.77
+            },
+            {
+              "mc": 2,
+              "seed": 7002,
+              "accuracy": 76.57
+            }
+          ]
+        },
+        {
+          "instance": 1,
+          "seed_base": 7100,
+          "accuracy": 76.67,
+          "mc_std": 0.0608,
+          "mc_runs": [
+            {
+              "mc": 0,
+              "seed": 7100,
+              "accuracy": 76.64
+            },
+            {
+              "mc": 1,
+              "seed": 7101,
+              "accuracy": 76.63
+            },
+            {
+              "mc": 2,
+              "seed": 7102,
+              "accuracy": 76.74
+            }
+          ]
+        },
+        {
+          "instance": 2,
+          "seed_base": 7200,
+          "accuracy": 76.71,
+          "mc_std": 0.05,
+          "mc_runs": [
+            {
+              "mc": 0,
+              "seed": 7200,
+              "accuracy": 76.66
+            },
+            {
+              "mc": 1,
+              "seed": 7201,
+              "accuracy": 76.76
+            },
+            {
+              "mc": 2,
+              "seed": 7202,
+              "accuracy": 76.71
+            }
+          ]
+        },
+        {
+          "instance": 3,
+          "seed_base": 7300,
+          "accuracy": 76.6333,
+          "mc_std": 0.1002,
+          "mc_runs": [
+            {
+              "mc": 0,
+              "seed": 7300,
+              "accuracy": 76.67
+            },
+            {
+              "mc": 1,
+              "seed": 7301,
+              "accuracy": 76.52
+            },
+            {
+              "mc": 2,
+              "seed": 7302,
+              "accuracy": 76.71
+            }
+          ]
+        },
+        {
+          "instance": 4,
+          "seed_base": 7400,
+          "accuracy": 76.6233,
+          "mc_std": 0.1155,
+          "mc_runs": [
+            {
+              "mc": 0,
+              "seed": 7400,
+              "accuracy": 76.49
+            },
+            {
+              "mc": 1,
+              "seed": 7401,
+              "accuracy": 76.69
+            },
+            {
+              "mc": 2,
+              "seed": 7402,
+              "accuracy": 76.69
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "t_inference_seconds": 3600.0,
+      "t_label": "1h",
+      "n_drifted_layers": 41,
+      "mean": 74.4086,
+      "std": 0.066,
+      "instances": [
+        {
+          "instance": 0,
+          "seed_base": 17000,
+          "accuracy": 74.3233,
+          "mc_std": 0.0862,
+          "mc_runs": [
+            {
+              "mc": 0,
+              "seed": 17000,
+              "accuracy": 74.34
+            },
+            {
+              "mc": 1,
+              "seed": 17001,
+              "accuracy": 74.23
+            },
+            {
+              "mc": 2,
+              "seed": 17002,
+              "accuracy": 74.4
+            }
+          ]
+        },
+        {
+          "instance": 1,
+          "seed_base": 17100,
+          "accuracy": 74.4933,
+          "mc_std": 0.0462,
+          "mc_runs": [
+            {
+              "mc": 0,
+              "seed": 17100,
+              "accuracy": 74.44
+            },
+            {
+              "mc": 1,
+              "seed": 17101,
+              "accuracy": 74.52
+            },
+            {
+              "mc": 2,
+              "seed": 17102,
+              "accuracy": 74.52
+            }
+          ]
+        },
+        {
+          "instance": 2,
+          "seed_base": 17200,
+          "accuracy": 74.39,
+          "mc_std": 0.01,
+          "mc_runs": [
+            {
+              "mc": 0,
+              "seed": 17200,
+              "accuracy": 74.39
+            },
+            {
+              "mc": 1,
+              "seed": 17201,
+              "accuracy": 74.4
+            },
+            {
+              "mc": 2,
+              "seed": 17202,
+              "accuracy": 74.38
+            }
+          ]
+        },
+        {
+          "instance": 3,
+          "seed_base": 17300,
+          "accuracy": 74.4533,
+          "mc_std": 0.0907,
+          "mc_runs": [
+            {
+              "mc": 0,
+              "seed": 17300,
+              "accuracy": 74.37
+            },
+            {
+              "mc": 1,
+              "seed": 17301,
+              "accuracy": 74.44
+            },
+            {
+              "mc": 2,
+              "seed": 17302,
+              "accuracy": 74.55
+            }
+          ]
+        },
+        {
+          "instance": 4,
+          "seed_base": 17400,
+          "accuracy": 74.3833,
+          "mc_std": 0.1266,
+          "mc_runs": [
+            {
+              "mc": 0,
+              "seed": 17400,
+              "accuracy": 74.24
+            },
+            {
+              "mc": 1,
+              "seed": 17401,
+              "accuracy": 74.48
+            },
+            {
+              "mc": 2,
+              "seed": 17402,
+              "accuracy": 74.43
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "t_inference_seconds": 86400.0,
+      "t_label": "1d",
+      "n_drifted_layers": 41,
+      "mean": 72.22,
+      "std": 0.076,
+      "instances": [
+        {
+          "instance": 0,
+          "seed_base": 27000,
+          "accuracy": 72.2167,
+          "mc_std": 0.1002,
+          "mc_runs": [
+            {
+              "mc": 0,
+              "seed": 27000,
+              "accuracy": 72.12
+            },
+            {
+              "mc": 1,
+              "seed": 27001,
+              "accuracy": 72.21
+            },
+            {
+              "mc": 2,
+              "seed": 27002,
+              "accuracy": 72.32
+            }
+          ]
+        },
+        {
+          "instance": 1,
+          "seed_base": 27100,
+          "accuracy": 72.19,
+          "mc_std": 0.0872,
+          "mc_runs": [
+            {
+              "mc": 0,
+              "seed": 27100,
+              "accuracy": 72.29
+            },
+            {
+              "mc": 1,
+              "seed": 27101,
+              "accuracy": 72.13
+            },
+            {
+              "mc": 2,
+              "seed": 27102,
+              "accuracy": 72.15
+            }
+          ]
+        },
+        {
+          "instance": 2,
+          "seed_base": 27200,
+          "accuracy": 72.3467,
+          "mc_std": 0.0451,
+          "mc_runs": [
+            {
+              "mc": 0,
+              "seed": 27200,
+              "accuracy": 72.39
+            },
+            {
+              "mc": 1,
+              "seed": 27201,
+              "accuracy": 72.3
+            },
+            {
+              "mc": 2,
+              "seed": 27202,
+              "accuracy": 72.35
+            }
+          ]
+        },
+        {
+          "instance": 3,
+          "seed_base": 27300,
+          "accuracy": 72.1433,
+          "mc_std": 0.0208,
+          "mc_runs": [
+            {
+              "mc": 0,
+              "seed": 27300,
+              "accuracy": 72.15
+            },
+            {
+              "mc": 1,
+              "seed": 27301,
+              "accuracy": 72.12
+            },
+            {
+              "mc": 2,
+              "seed": 27302,
+              "accuracy": 72.16
+            }
+          ]
+        },
+        {
+          "instance": 4,
+          "seed_base": 27400,
+          "accuracy": 72.2033,
+          "mc_std": 0.1447,
+          "mc_runs": [
+            {
+              "mc": 0,
+              "seed": 27400,
+              "accuracy": 72.11
+            },
+            {
+              "mc": 1,
+              "seed": 27401,
+              "accuracy": 72.37
+            },
+            {
+              "mc": 2,
+              "seed": 27402,
+              "accuracy": 72.13
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "tile_audit": [
+    {
+      "name": "stages.1.blocks.0.attn.qkv",
+      "tile_idx": 0,
+      "modifier_type": "WeightModifierType.ADD_NORMAL",
+      "modifier_std_dev": 0.1,
+      "modifier_enable_during_test": true,
+      "device": "IdealDevice"
+    },
+    {
+      "name": "stages.1.blocks.0.attn.proj",
+      "tile_idx": 0,
+      "modifier_type": "WeightModifierType.ADD_NORMAL",
+      "modifier_std_dev": 0.1,
+      "modifier_enable_during_test": true,
+      "device": "IdealDevice"
+    },
+    {
+      "name": "stages.1.blocks.0.mlp.fc1",
+      "tile_idx": 0,
+      "modifier_type": "WeightModifierType.ADD_NORMAL",
+      "modifier_std_dev": 0.1,
+      "modifier_enable_during_test": true,
+      "device": "IdealDevice"
+    },
+    {
+      "name": "stages.1.blocks.0.mlp.fc2",
+      "tile_idx": 0,
+      "modifier_type": "WeightModifierType.ADD_NORMAL",
+      "modifier_std_dev": 0.1,
+      "modifier_enable_during_test": true,
+      "device": "IdealDevice"
+    },
+    {
+      "name": "stages.1.blocks.1.attn.qkv",
+      "tile_idx": 0,
+      "modifier_type": "WeightModifierType.ADD_NORMAL",
+      "modifier_std_dev": 0.1,
+      "modifier_enable_during_test": true,
+      "device": "IdealDevice"
+    },
+    {
+      "name": "stages.1.blocks.1.attn.proj",
+      "tile_idx": 0,
+      "modifier_type": "WeightModifierType.ADD_NORMAL",
+      "modifier_std_dev": 0.1,
+      "modifier_enable_during_test": true,
+      "device": "IdealDevice"
+    },
+    {
+      "name": "stages.1.blocks.1.mlp.fc1",
+      "tile_idx": 0,
+      "modifier_type": "WeightModifierType.ADD_NORMAL",
+      "modifier_std_dev": 0.1,
+      "modifier_enable_during_test": true,
+      "device": "IdealDevice"
+    },
+    {
+      "name": "stages.1.blocks.1.mlp.fc2",
+      "tile_idx": 0,
+      "modifier_type": "WeightModifierType.ADD_NORMAL",
+      "modifier_std_dev": 0.1,
+      "modifier_enable_during_test": true,
+      "device": "IdealDevice"
+    },
+    {
+      "name": "stages.2.blocks.0.attn.qkv",
+      "tile_idx": 0,
+      "modifier_type": "WeightModifierType.ADD_NORMAL",
+      "modifier_std_dev": 0.1,
+      "modifier_enable_during_test": true,
+      "device": "IdealDevice"
+    },
+    {
+      "name": "stages.2.blocks.0.attn.proj",
+      "tile_idx": 0,
+      "modifier_type": "WeightModifierType.ADD_NORMAL",
+      "modifier_std_dev": 0.1,
+      "modifier_enable_during_test": true,
+      "device": "IdealDevice"
+    },
+    {
+      "name": "stages.2.blocks.0.mlp.fc1",
+      "tile_idx": 0,
+      "modifier_type": "WeightModifierType.ADD_NORMAL",
+      "modifier_std_dev": 0.1,
+      "modifier_enable_during_test": true,
+      "device": "IdealDevice"
+    },
+    {
+      "name": "stages.2.blocks.0.mlp.fc1",
+      "tile_idx": 1,
+      "modifier_type": "WeightModifierType.ADD_NORMAL",
+      "modifier_std_dev": 0.1,
+      "modifier_enable_during_test": true,
+      "device": "IdealDevice"
+    },
+    {
+      "name": "stages.2.blocks.0.mlp.fc2",
+      "tile_idx": 0,
+      "modifier_type": "WeightModifierType.ADD_NORMAL",
+      "modifier_std_dev": 0.1,
+      "modifier_enable_during_test": true,
+      "device": "IdealDevice"
+    },
+    {
+      "name": "stages.2.blocks.0.mlp.fc2",
+      "tile_idx": 1,
+      "modifier_type": "WeightModifierType.ADD_NORMAL",
+      "modifier_std_dev": 0.1,
+      "modifier_enable_during_test": true,
+      "device": "IdealDevice"
+    },
+    {
+      "name": "stages.2.blocks.1.attn.qkv",
+      "tile_idx": 0,
+      "modifier_type": "WeightModifierType.ADD_NORMAL",
+      "modifier_std_dev": 0.1,
+      "modifier_enable_during_test": true,
+      "device": "IdealDevice"
+    },
+    {
+      "name": "stages.2.blocks.1.attn.proj",
+      "tile_idx": 0,
+      "modifier_type": "WeightModifierType.ADD_NORMAL",
+      "modifier_std_dev": 0.1,
+      "modifier_enable_during_test": true,
+      "device": "IdealDevice"
+    },
+    {
+      "name": "stages.2.blocks.1.mlp.fc1",
+      "tile_idx": 0,
+      "modifier_type": "WeightModifierType.ADD_NORMAL",
+      "modifier_std_dev": 0.1,
+      "modifier_enable_during_test": true,
+      "device": "IdealDevice"
+    },
+    {
+      "name": "stages.2.blocks.1.mlp.fc1",
+      "tile_idx": 1,
+      "modifier_type": "WeightModifierType.ADD_NORMAL",
+      "modifier_std_dev": 0.1,
+      "modifier_enable_during_test": true,
+      "device": "IdealDevice"
+    },
+    {
+      "name": "stages.2.blocks.1.mlp.fc2",
+      "tile_idx": 0,
+      "modifier_type": "WeightModifierType.ADD_NORMAL",
+      "modifier_std_dev": 0.1,
+      "modifier_enable_during_test": true,
+      "device": "IdealDevice"
+    },
+    {
+      "name": "stages.2.blocks.1.mlp.fc2",
+      "tile_idx": 1,
+      "modifier_type": "WeightModifierType.ADD_NORMAL",
+      "modifier_std_dev": 0.1,
+      "modifier_enable_during_test": true,
+      "device": "IdealDevice"
+    },
+    {
+      "name": "stages.2.blocks.2.attn.qkv",
+      "tile_idx": 0,
+      "modifier_type": "WeightModifierType.ADD_NORMAL",
+      "modifier_std_dev": 0.1,
+      "modifier_enable_during_test": true,
+      "device": "IdealDevice"
+    },
+    {
+      "name": "stages.2.blocks.2.attn.proj",
+      "tile_idx": 0,
+      "modifier_type": "WeightModifierType.ADD_NORMAL",
+      "modifier_std_dev": 0.1,
+      "modifier_enable_during_test": true,
+      "device": "IdealDevice"
+    },
+    {
+      "name": "stages.2.blocks.2.mlp.fc1",
+      "tile_idx": 0,
+      "modifier_type": "WeightModifierType.ADD_NORMAL",
+      "modifier_std_dev": 0.1,
+      "modifier_enable_during_test": true,
+      "device": "IdealDevice"
+    },
+    {
+      "name": "stages.2.blocks.2.mlp.fc1",
+      "tile_idx": 1,
+      "modifier_type": "WeightModifierType.ADD_NORMAL",
+      "modifier_std_dev": 0.1,
+      "modifier_enable_during_test": true,
+      "device": "IdealDevice"
+    },
+    {
+      "name": "stages.2.blocks.2.mlp.fc2",
+      "tile_idx": 0,
+      "modifier_type": "WeightModifierType.ADD_NORMAL",
+      "modifier_std_dev": 0.1,
+      "modifier_enable_during_test": true,
+      "device": "IdealDevice"
+    },
+    {
+      "name": "stages.2.blocks.2.mlp.fc2",
+      "tile_idx": 1,
+      "modifier_type": "WeightModifierType.ADD_NORMAL",
+      "modifier_std_dev": 0.1,
+      "modifier_enable_during_test": true,
+      "device": "IdealDevice"
+    },
+    {
+      "name": "stages.2.blocks.3.attn.qkv",
+      "tile_idx": 0,
+      "modifier_type": "WeightModifierType.ADD_NORMAL",
+      "modifier_std_dev": 0.1,
+      "modifier_enable_during_test": true,
+      "device": "IdealDevice"
+    },
+    {
+      "name": "stages.2.blocks.3.attn.proj",
+      "tile_idx": 0,
+      "modifier_type": "WeightModifierType.ADD_NORMAL",
+      "modifier_std_dev": 0.1,
+      "modifier_enable_during_test": true,
+      "device": "IdealDevice"
+    },
+    {
+      "name": "stages.2.blocks.3.mlp.fc1",
+      "tile_idx": 0,
+      "modifier_type": "WeightModifierType.ADD_NORMAL",
+      "modifier_std_dev": 0.1,
+      "modifier_enable_during_test": true,
+      "device": "IdealDevice"
+    },
+    {
+      "name": "stages.2.blocks.3.mlp.fc1",
+      "tile_idx": 1,
+      "modifier_type": "WeightModifierType.ADD_NORMAL",
+      "modifier_std_dev": 0.1,
+      "modifier_enable_during_test": true,
+      "device": "IdealDevice"
+    },
+    {
+      "name": "stages.2.blocks.3.mlp.fc2",
+      "tile_idx": 0,
+      "modifier_type": "WeightModifierType.ADD_NORMAL",
+      "modifier_std_dev": 0.1,
+      "modifier_enable_during_test": true,
+      "device": "IdealDevice"
+    },
+    {
+      "name": "stages.2.blocks.3.mlp.fc2",
+      "tile_idx": 1,
+      "modifier_type": "WeightModifierType.ADD_NORMAL",
+      "modifier_std_dev": 0.1,
+      "modifier_enable_during_test": true,
+      "device": "IdealDevice"
+    },
+    {
+      "name": "stages.2.blocks.4.attn.qkv",
+      "tile_idx": 0,
+      "modifier_type": "WeightModifierType.ADD_NORMAL",
+      "modifier_std_dev": 0.1,
+      "modifier_enable_during_test": true,
+      "device": "IdealDevice"
+    },
+    {
+      "name": "stages.2.blocks.4.attn.proj",
+      "tile_idx": 0,
+      "modifier_type": "WeightModifierType.ADD_NORMAL",
+      "modifier_std_dev": 0.1,
+      "modifier_enable_during_test": true,
+      "device": "IdealDevice"
+    },
+    {
+      "name": "stages.2.blocks.4.mlp.fc1",
+      "tile_idx": 0,
+      "modifier_type": "WeightModifierType.ADD_NORMAL",
+      "modifier_std_dev": 0.1,
+      "modifier_enable_during_test": true,
+      "device": "IdealDevice"
+    },
+    {
+      "name": "stages.2.blocks.4.mlp.fc1",
+      "tile_idx": 1,
+      "modifier_type": "WeightModifierType.ADD_NORMAL",
+      "modifier_std_dev": 0.1,
+      "modifier_enable_during_test": true,
+      "device": "IdealDevice"
+    },
+    {
+      "name": "stages.2.blocks.4.mlp.fc2",
+      "tile_idx": 0,
+      "modifier_type": "WeightModifierType.ADD_NORMAL",
+      "modifier_std_dev": 0.1,
+      "modifier_enable_during_test": true,
+      "device": "IdealDevice"
+    },
+    {
+      "name": "stages.2.blocks.4.mlp.fc2",
+      "tile_idx": 1,
+      "modifier_type": "WeightModifierType.ADD_NORMAL",
+      "modifier_std_dev": 0.1,
+      "modifier_enable_during_test": true,
+      "device": "IdealDevice"
+    },
+    {
+      "name": "stages.2.blocks.5.attn.qkv",
+      "tile_idx": 0,
+      "modifier_type": "WeightModifierType.ADD_NORMAL",
+      "modifier_std_dev": 0.1,
+      "modifier_enable_during_test": true,
+      "device": "IdealDevice"
+    },
+    {
+      "name": "stages.2.blocks.5.attn.proj",
+      "tile_idx": 0,
+      "modifier_type": "WeightModifierType.ADD_NORMAL",
+      "modifier_std_dev": 0.1,
+      "modifier_enable_during_test": true,
+      "device": "IdealDevice"
+    },
+    {
+      "name": "stages.2.blocks.5.mlp.fc1",
+      "tile_idx": 0,
+      "modifier_type": "WeightModifierType.ADD_NORMAL",
+      "modifier_std_dev": 0.1,
+      "modifier_enable_during_test": true,
+      "device": "IdealDevice"
+    },
+    {
+      "name": "stages.2.blocks.5.mlp.fc1",
+      "tile_idx": 1,
+      "modifier_type": "WeightModifierType.ADD_NORMAL",
+      "modifier_std_dev": 0.1,
+      "modifier_enable_during_test": true,
+      "device": "IdealDevice"
+    },
+    {
+      "name": "stages.2.blocks.5.mlp.fc2",
+      "tile_idx": 0,
+      "modifier_type": "WeightModifierType.ADD_NORMAL",
+      "modifier_std_dev": 0.1,
+      "modifier_enable_during_test": true,
+      "device": "IdealDevice"
+    },
+    {
+      "name": "stages.2.blocks.5.mlp.fc2",
+      "tile_idx": 1,
+      "modifier_type": "WeightModifierType.ADD_NORMAL",
+      "modifier_std_dev": 0.1,
+      "modifier_enable_during_test": true,
+      "device": "IdealDevice"
+    },
+    {
+      "name": "stages.3.blocks.0.attn.qkv",
+      "tile_idx": 0,
+      "modifier_type": "WeightModifierType.ADD_NORMAL",
+      "modifier_std_dev": 0.1,
+      "modifier_enable_during_test": true,
+      "device": "IdealDevice"
+    },
+    {
+      "name": "stages.3.blocks.0.attn.qkv",
+      "tile_idx": 1,
+      "modifier_type": "WeightModifierType.ADD_NORMAL",
+      "modifier_std_dev": 0.1,
+      "modifier_enable_during_test": true,
+      "device": "IdealDevice"
+    },
+    {
+      "name": "stages.3.blocks.0.attn.proj",
+      "tile_idx": 0,
+      "modifier_type": "WeightModifierType.ADD_NORMAL",
+      "modifier_std_dev": 0.1,
+      "modifier_enable_during_test": true,
+      "device": "IdealDevice"
+    },
+    {
+      "name": "stages.3.blocks.0.mlp.fc1",
+      "tile_idx": 0,
+      "modifier_type": "WeightModifierType.ADD_NORMAL",
+      "modifier_std_dev": 0.1,
+      "modifier_enable_during_test": true,
+      "device": "IdealDevice"
+    },
+    {
+      "name": "stages.3.blocks.0.mlp.fc1",
+      "tile_idx": 1,
+      "modifier_type": "WeightModifierType.ADD_NORMAL",
+      "modifier_std_dev": 0.1,
+      "modifier_enable_during_test": true,
+      "device": "IdealDevice"
+    },
+    {
+      "name": "stages.3.blocks.0.mlp.fc1",
+      "tile_idx": 2,
+      "modifier_type": "WeightModifierType.ADD_NORMAL",
+      "modifier_std_dev": 0.1,
+      "modifier_enable_during_test": true,
+      "device": "IdealDevice"
+    },
+    {
+      "name": "stages.3.blocks.0.mlp.fc2",
+      "tile_idx": 0,
+      "modifier_type": "WeightModifierType.ADD_NORMAL",
+      "modifier_std_dev": 0.1,
+      "modifier_enable_during_test": true,
+      "device": "IdealDevice"
+    },
+    {
+      "name": "stages.3.blocks.0.mlp.fc2",
+      "tile_idx": 1,
+      "modifier_type": "WeightModifierType.ADD_NORMAL",
+      "modifier_std_dev": 0.1,
+      "modifier_enable_during_test": true,
+      "device": "IdealDevice"
+    },
+    {
+      "name": "stages.3.blocks.0.mlp.fc2",
+      "tile_idx": 2,
+      "modifier_type": "WeightModifierType.ADD_NORMAL",
+      "modifier_std_dev": 0.1,
+      "modifier_enable_during_test": true,
+      "device": "IdealDevice"
+    },
+    {
+      "name": "stages.3.blocks.1.attn.qkv",
+      "tile_idx": 0,
+      "modifier_type": "WeightModifierType.ADD_NORMAL",
+      "modifier_std_dev": 0.1,
+      "modifier_enable_during_test": true,
+      "device": "IdealDevice"
+    },
+    {
+      "name": "stages.3.blocks.1.attn.qkv",
+      "tile_idx": 1,
+      "modifier_type": "WeightModifierType.ADD_NORMAL",
+      "modifier_std_dev": 0.1,
+      "modifier_enable_during_test": true,
+      "device": "IdealDevice"
+    },
+    {
+      "name": "stages.3.blocks.1.attn.proj",
+      "tile_idx": 0,
+      "modifier_type": "WeightModifierType.ADD_NORMAL",
+      "modifier_std_dev": 0.1,
+      "modifier_enable_during_test": true,
+      "device": "IdealDevice"
+    },
+    {
+      "name": "stages.3.blocks.1.mlp.fc1",
+      "tile_idx": 0,
+      "modifier_type": "WeightModifierType.ADD_NORMAL",
+      "modifier_std_dev": 0.1,
+      "modifier_enable_during_test": true,
+      "device": "IdealDevice"
+    },
+    {
+      "name": "stages.3.blocks.1.mlp.fc1",
+      "tile_idx": 1,
+      "modifier_type": "WeightModifierType.ADD_NORMAL",
+      "modifier_std_dev": 0.1,
+      "modifier_enable_during_test": true,
+      "device": "IdealDevice"
+    },
+    {
+      "name": "stages.3.blocks.1.mlp.fc1",
+      "tile_idx": 2,
+      "modifier_type": "WeightModifierType.ADD_NORMAL",
+      "modifier_std_dev": 0.1,
+      "modifier_enable_during_test": true,
+      "device": "IdealDevice"
+    },
+    {
+      "name": "stages.3.blocks.1.mlp.fc2",
+      "tile_idx": 0,
+      "modifier_type": "WeightModifierType.ADD_NORMAL",
+      "modifier_std_dev": 0.1,
+      "modifier_enable_during_test": true,
+      "device": "IdealDevice"
+    },
+    {
+      "name": "stages.3.blocks.1.mlp.fc2",
+      "tile_idx": 1,
+      "modifier_type": "WeightModifierType.ADD_NORMAL",
+      "modifier_std_dev": 0.1,
+      "modifier_enable_during_test": true,
+      "device": "IdealDevice"
+    },
+    {
+      "name": "stages.3.blocks.1.mlp.fc2",
+      "tile_idx": 2,
+      "modifier_type": "WeightModifierType.ADD_NORMAL",
+      "modifier_std_dev": 0.1,
+      "modifier_enable_during_test": true,
+      "device": "IdealDevice"
+    },
+    {
+      "name": "head.fc",
+      "tile_idx": 0,
+      "modifier_type": "WeightModifierType.ADD_NORMAL",
+      "modifier_std_dev": 0.1,
+      "modifier_enable_during_test": true,
+      "device": "IdealDevice"
+    }
+  ],
+  "tile_audit_all_enabled": true,
+  "device": "cuda",
+  "time": "2026-04-29T20:09:33.668888"
+}

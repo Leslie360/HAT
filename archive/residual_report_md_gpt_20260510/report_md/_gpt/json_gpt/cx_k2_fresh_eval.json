@@ -1,0 +1,193 @@
+{
+  "checkpoint_path": "checkpoints/_gpt/second_order_ste/V4_hybrid_standard_noise_hat_second_order_ste_best.pt",
+  "train_best_acc": 91.02,
+  "fresh_instances": 30,
+  "mc_runs_per_instance": 5,
+  "cross_instance_mean": 38.94533333333333,
+  "cross_instance_std": 9.850631225471282,
+  "instance_means": [
+    27.51,
+    47.65,
+    47.22,
+    28.03,
+    42.21,
+    33.879999999999995,
+    51.62,
+    44.594,
+    50.988,
+    41.604,
+    22.95,
+    49.79,
+    38.99,
+    40.17,
+    26.72,
+    22.034,
+    54.876,
+    46.152,
+    25.704,
+    30.828,
+    36.092,
+    38.482,
+    38.92,
+    41.282,
+    35.602,
+    43.606,
+    31.592,
+    36.02,
+    61.693999999999996,
+    31.55
+  ],
+  "instances": [
+    {
+      "instance_index": 0,
+      "seed": 42,
+      "mean_acc": 27.51
+    },
+    {
+      "instance_index": 1,
+      "seed": 142,
+      "mean_acc": 47.65
+    },
+    {
+      "instance_index": 2,
+      "seed": 242,
+      "mean_acc": 47.22
+    },
+    {
+      "instance_index": 3,
+      "seed": 342,
+      "mean_acc": 28.03
+    },
+    {
+      "instance_index": 4,
+      "seed": 442,
+      "mean_acc": 42.21
+    },
+    {
+      "instance_index": 5,
+      "seed": 542,
+      "mean_acc": 33.879999999999995
+    },
+    {
+      "instance_index": 6,
+      "seed": 642,
+      "mean_acc": 51.62
+    },
+    {
+      "instance_index": 7,
+      "seed": 742,
+      "mean_acc": 44.594
+    },
+    {
+      "instance_index": 8,
+      "seed": 842,
+      "mean_acc": 50.988
+    },
+    {
+      "instance_index": 9,
+      "seed": 942,
+      "mean_acc": 41.604
+    },
+    {
+      "instance_index": 10,
+      "seed": 1042,
+      "mean_acc": 22.95
+    },
+    {
+      "instance_index": 11,
+      "seed": 1142,
+      "mean_acc": 49.79
+    },
+    {
+      "instance_index": 12,
+      "seed": 1242,
+      "mean_acc": 38.99
+    },
+    {
+      "instance_index": 13,
+      "seed": 1342,
+      "mean_acc": 40.17
+    },
+    {
+      "instance_index": 14,
+      "seed": 1442,
+      "mean_acc": 26.72
+    },
+    {
+      "instance_index": 15,
+      "seed": 1542,
+      "mean_acc": 22.034
+    },
+    {
+      "instance_index": 16,
+      "seed": 1642,
+      "mean_acc": 54.876
+    },
+    {
+      "instance_index": 17,
+      "seed": 1742,
+      "mean_acc": 46.152
+    },
+    {
+      "instance_index": 18,
+      "seed": 1842,
+      "mean_acc": 25.704
+    },
+    {
+      "instance_index": 19,
+      "seed": 1942,
+      "mean_acc": 30.828
+    },
+    {
+      "instance_index": 20,
+      "seed": 2042,
+      "mean_acc": 36.092
+    },
+    {
+      "instance_index": 21,
+      "seed": 2142,
+      "mean_acc": 38.482
+    },
+    {
+      "instance_index": 22,
+      "seed": 2242,
+      "mean_acc": 38.92
+    },
+    {
+      "instance_index": 23,
+      "seed": 2342,
+      "mean_acc": 41.282
+    },
+    {
+      "instance_index": 24,
+      "seed": 2442,
+      "mean_acc": 35.602
+    },
+    {
+      "instance_index": 25,
+      "seed": 2542,
+      "mean_acc": 43.606
+    },
+    {
+      "instance_index": 26,
+      "seed": 2642,
+      "mean_acc": 31.592
+    },
+    {
+      "instance_index": 27,
+      "seed": 2742,
+      "mean_acc": 36.02
+    },
+    {
+      "instance_index": 28,
+      "seed": 2842,
+      "mean_acc": 61.693999999999996
+    },
+    {
+      "instance_index": 29,
+      "seed": 2942,
+      "mean_acc": 31.55
+    }
+  ],
+  "note": "Instances 1-10 from CX-J1d (seeds 42-942); instances 11-15 from partial K2 (seeds 1042-1442); instances 16-30 from resumed K2 (seeds 1542-2942)"
+}

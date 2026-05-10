@@ -1,0 +1,186 @@
+{
+  "checkpoint_path": "/home/qiaosir/projects/compute_vit/checkpoints/_gpt/r1_clean_anchor/V4_hybrid_standard_noise_hat_r1_clean_anchor_first_order_best.pt",
+  "train_best_acc": 91.5,
+  "train_best_epoch": 96,
+  "fresh_instances": 10,
+  "mc_runs_per_instance": 5,
+  "dataset": "cifar10",
+  "num_classes": 10,
+  "eval_batch_size": 256,
+  "cross_instance_mean": 34.5612,
+  "cross_instance_std": 8.787805247424789,
+  "instance_means": [
+    34.608000000000004,
+    30.362,
+    22.986,
+    38.094,
+    38.296,
+    49.614,
+    46.498,
+    27.98,
+    24.512,
+    32.662
+  ],
+  "instances": [
+    {
+      "instance_index": 0,
+      "seed": 42,
+      "resampled_modules": 42,
+      "eval_runs": 5,
+      "test_loss_mean": 5.66186308681488,
+      "test_acc_mean": 34.608000000000004,
+      "test_acc_std": 0.9230222099169663,
+      "test_acc_raw": [
+        33.28,
+        35.31,
+        35.64,
+        34.45,
+        34.36
+      ]
+    },
+    {
+      "instance_index": 1,
+      "seed": 142,
+      "resampled_modules": 42,
+      "eval_runs": 5,
+      "test_loss_mean": 5.736310915985108,
+      "test_acc_mean": 30.362,
+      "test_acc_std": 1.0603867219085676,
+      "test_acc_raw": [
+        28.94,
+        31.18,
+        29.57,
+        30.74,
+        31.38
+      ]
+    },
+    {
+      "instance_index": 2,
+      "seed": 242,
+      "resampled_modules": 42,
+      "eval_runs": 5,
+      "test_loss_mean": 6.720688639068603,
+      "test_acc_mean": 22.986,
+      "test_acc_std": 0.8036665975390543,
+      "test_acc_raw": [
+        22.63,
+        22.78,
+        23.06,
+        24.3,
+        22.16
+      ]
+    },
+    {
+      "instance_index": 3,
+      "seed": 342,
+      "resampled_modules": 42,
+      "eval_runs": 5,
+      "test_loss_mean": 4.736984986114502,
+      "test_acc_mean": 38.094,
+      "test_acc_std": 1.386174592178055,
+      "test_acc_raw": [
+        38.56,
+        36.49,
+        39.9,
+        38.6,
+        36.92
+      ]
+    },
+    {
+      "instance_index": 4,
+      "seed": 442,
+      "resampled_modules": 42,
+      "eval_runs": 5,
+      "test_loss_mean": 4.90454031829834,
+      "test_acc_mean": 38.296,
+      "test_acc_std": 2.2464149216028653,
+      "test_acc_raw": [
+        41.39,
+        37.53,
+        36.16,
+        36.55,
+        39.85
+      ]
+    },
+    {
+      "instance_index": 5,
+      "seed": 542,
+      "resampled_modules": 42,
+      "eval_runs": 5,
+      "test_loss_mean": 3.6108660264396666,
+      "test_acc_mean": 49.614,
+      "test_acc_std": 1.2023435449155122,
+      "test_acc_raw": [
+        48.83,
+        51.65,
+        49.46,
+        48.62,
+        49.51
+      ]
+    },
+    {
+      "instance_index": 6,
+      "seed": 642,
+      "resampled_modules": 42,
+      "eval_runs": 5,
+      "test_loss_mean": 3.7334850143432616,
+      "test_acc_mean": 46.498,
+      "test_acc_std": 1.5013727052267851,
+      "test_acc_raw": [
+        45.2,
+        46.11,
+        46.9,
+        48.9,
+        45.38
+      ]
+    },
+    {
+      "instance_index": 7,
+      "seed": 742,
+      "resampled_modules": 42,
+      "eval_runs": 5,
+      "test_loss_mean": 6.118101744613647,
+      "test_acc_mean": 27.98,
+      "test_acc_std": 1.4084211018015886,
+      "test_acc_raw": [
+        28.97,
+        29.96,
+        27.11,
+        26.74,
+        27.12
+      ]
+    },
+    {
+      "instance_index": 8,
+      "seed": 842,
+      "resampled_modules": 42,
+      "eval_runs": 5,
+      "test_loss_mean": 6.5025511112213135,
+      "test_acc_mean": 24.512,
+      "test_acc_std": 1.0497237731898805,
+      "test_acc_raw": [
+        24.65,
+        25.73,
+        23.85,
+        25.22,
+        23.11
+      ]
+    },
+    {
+      "instance_index": 9,
+      "seed": 942,
+      "resampled_modules": 42,
+      "eval_runs": 5,
+      "test_loss_mean": 5.453273003997802,
+      "test_acc_mean": 32.662,
+      "test_acc_std": 1.802434464828055,
+      "test_acc_raw": [
+        31.59,
+        30.29,
+        32.98,
+        35.01,
+        33.44
+      ]
+    }
+  ]
+}

@@ -1,0 +1,349 @@
+{
+  "checkpoint": "paper2_aihwkit_baseline/checkpoints/r11d_1_4bit/best.pt",
+  "n_fresh": 10,
+  "mc_repeats": 5,
+  "fresh_seed_base": 1000,
+  "device": "cuda",
+  "rpu_config_spec": {
+    "forward_inp_res": 0.0625,
+    "forward_out_res": 0.0625,
+    "modifier_type": "ADD_NORMAL",
+    "modifier_std_dev": 0.1,
+    "modifier_enable_during_test": true
+  },
+  "mean": 14.6368,
+  "std": 0.1059,
+  "instances": [
+    {
+      "instance": 0,
+      "seed_base": 1000,
+      "accuracy": 14.822,
+      "mc_std": 0.2097,
+      "mc_runs": [
+        {
+          "mc": 0,
+          "seed": 1000,
+          "accuracy": 14.9
+        },
+        {
+          "mc": 1,
+          "seed": 1001,
+          "accuracy": 14.48
+        },
+        {
+          "mc": 2,
+          "seed": 1002,
+          "accuracy": 14.77
+        },
+        {
+          "mc": 3,
+          "seed": 1003,
+          "accuracy": 14.99
+        },
+        {
+          "mc": 4,
+          "seed": 1004,
+          "accuracy": 14.97
+        }
+      ]
+    },
+    {
+      "instance": 1,
+      "seed_base": 1100,
+      "accuracy": 14.624,
+      "mc_std": 0.3424,
+      "mc_runs": [
+        {
+          "mc": 0,
+          "seed": 1100,
+          "accuracy": 14.7
+        },
+        {
+          "mc": 1,
+          "seed": 1101,
+          "accuracy": 15.08
+        },
+        {
+          "mc": 2,
+          "seed": 1102,
+          "accuracy": 14.33
+        },
+        {
+          "mc": 3,
+          "seed": 1103,
+          "accuracy": 14.24
+        },
+        {
+          "mc": 4,
+          "seed": 1104,
+          "accuracy": 14.77
+        }
+      ]
+    },
+    {
+      "instance": 2,
+      "seed_base": 1200,
+      "accuracy": 14.508,
+      "mc_std": 0.3942,
+      "mc_runs": [
+        {
+          "mc": 0,
+          "seed": 1200,
+          "accuracy": 14.67
+        },
+        {
+          "mc": 1,
+          "seed": 1201,
+          "accuracy": 14.0
+        },
+        {
+          "mc": 2,
+          "seed": 1202,
+          "accuracy": 15.06
+        },
+        {
+          "mc": 3,
+          "seed": 1203,
+          "accuracy": 14.33
+        },
+        {
+          "mc": 4,
+          "seed": 1204,
+          "accuracy": 14.48
+        }
+      ]
+    },
+    {
+      "instance": 3,
+      "seed_base": 1300,
+      "accuracy": 14.656,
+      "mc_std": 0.2757,
+      "mc_runs": [
+        {
+          "mc": 0,
+          "seed": 1300,
+          "accuracy": 14.38
+        },
+        {
+          "mc": 1,
+          "seed": 1301,
+          "accuracy": 14.81
+        },
+        {
+          "mc": 2,
+          "seed": 1302,
+          "accuracy": 15.0
+        },
+        {
+          "mc": 3,
+          "seed": 1303,
+          "accuracy": 14.72
+        },
+        {
+          "mc": 4,
+          "seed": 1304,
+          "accuracy": 14.37
+        }
+      ]
+    },
+    {
+      "instance": 4,
+      "seed_base": 1400,
+      "accuracy": 14.62,
+      "mc_std": 0.3706,
+      "mc_runs": [
+        {
+          "mc": 0,
+          "seed": 1400,
+          "accuracy": 14.43
+        },
+        {
+          "mc": 1,
+          "seed": 1401,
+          "accuracy": 15.14
+        },
+        {
+          "mc": 2,
+          "seed": 1402,
+          "accuracy": 14.3
+        },
+        {
+          "mc": 3,
+          "seed": 1403,
+          "accuracy": 14.88
+        },
+        {
+          "mc": 4,
+          "seed": 1404,
+          "accuracy": 14.35
+        }
+      ]
+    },
+    {
+      "instance": 5,
+      "seed_base": 1500,
+      "accuracy": 14.718,
+      "mc_std": 0.464,
+      "mc_runs": [
+        {
+          "mc": 0,
+          "seed": 1500,
+          "accuracy": 14.55
+        },
+        {
+          "mc": 1,
+          "seed": 1501,
+          "accuracy": 14.89
+        },
+        {
+          "mc": 2,
+          "seed": 1502,
+          "accuracy": 15.42
+        },
+        {
+          "mc": 3,
+          "seed": 1503,
+          "accuracy": 14.54
+        },
+        {
+          "mc": 4,
+          "seed": 1504,
+          "accuracy": 14.19
+        }
+      ]
+    },
+    {
+      "instance": 6,
+      "seed_base": 1600,
+      "accuracy": 14.592,
+      "mc_std": 0.4439,
+      "mc_runs": [
+        {
+          "mc": 0,
+          "seed": 1600,
+          "accuracy": 14.22
+        },
+        {
+          "mc": 1,
+          "seed": 1601,
+          "accuracy": 14.71
+        },
+        {
+          "mc": 2,
+          "seed": 1602,
+          "accuracy": 14.28
+        },
+        {
+          "mc": 3,
+          "seed": 1603,
+          "accuracy": 14.44
+        },
+        {
+          "mc": 4,
+          "seed": 1604,
+          "accuracy": 15.31
+        }
+      ]
+    },
+    {
+      "instance": 7,
+      "seed_base": 1700,
+      "accuracy": 14.478,
+      "mc_std": 0.4319,
+      "mc_runs": [
+        {
+          "mc": 0,
+          "seed": 1700,
+          "accuracy": 14.75
+        },
+        {
+          "mc": 1,
+          "seed": 1701,
+          "accuracy": 14.79
+        },
+        {
+          "mc": 2,
+          "seed": 1702,
+          "accuracy": 14.27
+        },
+        {
+          "mc": 3,
+          "seed": 1703,
+          "accuracy": 14.77
+        },
+        {
+          "mc": 4,
+          "seed": 1704,
+          "accuracy": 13.81
+        }
+      ]
+    },
+    {
+      "instance": 8,
+      "seed_base": 1800,
+      "accuracy": 14.754,
+      "mc_std": 0.2185,
+      "mc_runs": [
+        {
+          "mc": 0,
+          "seed": 1800,
+          "accuracy": 14.97
+        },
+        {
+          "mc": 1,
+          "seed": 1801,
+          "accuracy": 14.99
+        },
+        {
+          "mc": 2,
+          "seed": 1802,
+          "accuracy": 14.72
+        },
+        {
+          "mc": 3,
+          "seed": 1803,
+          "accuracy": 14.55
+        },
+        {
+          "mc": 4,
+          "seed": 1804,
+          "accuracy": 14.54
+        }
+      ]
+    },
+    {
+      "instance": 9,
+      "seed_base": 1900,
+      "accuracy": 14.596,
+      "mc_std": 0.1339,
+      "mc_runs": [
+        {
+          "mc": 0,
+          "seed": 1900,
+          "accuracy": 14.62
+        },
+        {
+          "mc": 1,
+          "seed": 1901,
+          "accuracy": 14.78
+        },
+        {
+          "mc": 2,
+          "seed": 1902,
+          "accuracy": 14.62
+        },
+        {
+          "mc": 3,
+          "seed": 1903,
+          "accuracy": 14.55
+        },
+        {
+          "mc": 4,
+          "seed": 1904,
+          "accuracy": 14.41
+        }
+      ]
+    }
+  ],
+  "time": "2026-04-26T18:21:06.590639"
+}

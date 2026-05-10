@@ -1,0 +1,125 @@
+% fig2_weight_mapping.tex
+\documentclass[tikz,border=12pt]{standalone}
+\usepackage{amsmath}
+\renewcommand{\familydefault}{\sfdefault}
+\usepackage{tikz}
+\usetikzlibrary{positioning,arrows.meta,shapes.geometric,fit,backgrounds,calc,decorations.pathreplacing}
+
+% Professional, muted color palette (Nature/Science style)
+\definecolor{lineColor}{RGB}{50,50,50}
+\definecolor{boxBg}{RGB}{250,250,250}
+\definecolor{accentBlue}{RGB}{0,114,178}
+\definecolor{accentRed}{RGB}{213,94,0}
+
+\begin{document}
+\begin{tikzpicture}[
+  scale=1.0, transform shape,
+  font=\sffamily,
+  stagebox/.style={draw=lineColor, fill=boxBg, line width=1.5pt, rounded corners=6pt, inner sep=12pt, align=center, text width=3.8cm, minimum width=4.8cm, minimum height=5.5cm},
+  arrowstyle/.style={->, >=Stealth, line width=2.5pt, draw=lineColor},
+  steplabel/.style={font=\Large\bfseries, text=lineColor},
+  mathlabel/.style={font=\Large, text=lineColor},
+]
+
+\def\dx{6.8} % Horizontal exact spacing
+\def\dy{-8.5} % Vertical exact spacing
+
+% ================= ROW 1 (Left to Right) =================
+
+% 1. Input
+\node[stagebox] (S1) at (0, 0) {
+  \textbf{\Large Software Weight}\\[16pt]
+  \begin{tikzpicture}[scale=0.65]
+    \foreach \r in {0,1,2,3} {
+      \foreach \c in {0,1,2,3} {
+        \pgfmathsetmacro{\pct}{int(min(100, 30 + 15*\r + 12*\c))}
+        \fill[black!\pct] (\c*0.7, -\r*0.7) rectangle + (0.6, 0.6);
+      }
+    }
+  \end{tikzpicture}\\[16pt]
+  \Large $W$ (FP32)
+};
+\node[steplabel, above=0.6cm] at (S1.north) {1. Input};
+
+% 2. Quantize
+\node[stagebox] (S2) at (\dx, 0) {
+  \textbf{\Large Quantization}\\[16pt]
+  \begin{tikzpicture}[scale=0.65]
+    \foreach \r in {0,1,2,3} {
+      \foreach \c in {0,1,2,3} {
+        \pgfmathsetmacro{\val}{int(2+1.5*\r+1.2*\c)}
+        \pgfmathsetmacro{\pct}{int(100*min(1,\val/15))}
+        \fill[black!\pct] (\c*0.7, -\r*0.7) rectangle + (0.6, 0.6);
+      }
+    }
+  \end{tikzpicture}\\[16pt]
+  \Large $W_q$ (4-bit)
+};
+\node[steplabel, above=0.6cm] at (S2.north) {2. Quantize};
+\draw[arrowstyle] (S1.east) -- (S2.west) node[midway, above, mathlabel] {4-bit};
+
+% 3. Map
+\node[stagebox] (S3) at (2*\dx, 0) {
+  \textbf{\Large Diff.\ Pair}\\[16pt]
+  \Large $G^+_{ij} = g_0 + \alpha q_{ij}$\\[10pt]
+  \Large $G^-_{ij} = g_0 - \alpha q_{ij}$\\[16pt]
+  \Large $G^+ \!- G^- \propto W_q$
+};
+\node[steplabel, above=0.6cm] at (S3.north) {3. Map};
+\draw[arrowstyle] (S2.east) -- (S3.west) node[midway, above, mathlabel] {encode};
+
+% 4. Noise
+\node[stagebox, draw=accentRed, line width=2.5pt] (S4) at (3*\dx, 0) {
+  \textbf{\Large Device Noise}\\[16pt]
+  \Large $W_{\text{eff}} = W_q \!\cdot\! G$\\[10pt]
+  \Large $\odot(1 \!+\! M_{\text{D2D}})$\\[10pt]
+  \Large $+ \,\xi_{\text{C2C}}$\\[16pt]
+  \textcolor{accentRed}{\Large $\sigma_{\text{D2D}}\!=\!0.10$}\\[8pt]
+  \textcolor{accentRed}{\Large $\sigma_{\text{C2C}}\!=\!0.05$}
+};
+\node[steplabel, above=0.6cm] at (S4.north) {4. Noise};
+\draw[arrowstyle] (S3.east) -- (S4.west) node[midway, above, mathlabel] {D2D+C2C};
+
+% ================= ROW 2 (Right to Left) =================
+
+% 5. Compute
+\node[stagebox] (S5) at (3*\dx, \dy) {
+  \textbf{\Large Analog MAC}\\[16pt]
+  \Large $I_{\text{out}} = W_{\text{eff}} \cdot x$\\[16pt]
+  \Large Crossbar\\[10pt]
+  \textcolor{accentBlue}{\Large $\mathcal{O}(n^2)$ in $\mathcal{O}(1)$}
+};
+\node[steplabel, below=0.6cm] at (S5.south) {5. Compute};
+\draw[arrowstyle] (S4.south) -- (S5.north) node[midway, right=0.4cm, font=\huge\bfseries, text=lineColor] {$V_{\text{in}}$};
+
+% 6. Digitize
+\node[stagebox] (S6) at (2*\dx, \dy) {
+  \textbf{\Large ADC}\\[16pt]
+  \Large $I_{\text{out}} \!\rightarrow\! d_{\text{out}}$\\[16pt]
+  \Large 6-bit\\[10pt]
+  \Large DNL $\approx$ 0.5 LSB
+};
+\node[steplabel, below=0.6cm] at (S6.south) {6. Digitize};
+\draw[arrowstyle] (S5.west) -- (S6.east) node[midway, above, mathlabel] {$I_{\text{out}}$};
+
+% 7. Recover
+\node[stagebox] (S7) at (\dx, \dy) {
+  \textbf{\Large Scale Recovery}\\[16pt]
+  \Large $y = \frac{d_{\text{out}}}{G_{\text{ref}}} \cdot s$\\[16pt]
+  \Large Calibrated\\[10pt]
+  \Large Activation
+};
+\node[steplabel, below=0.6cm] at (S7.south) {7. Recover};
+\draw[arrowstyle] (S6.west) -- (S7.east) node[midway, above, mathlabel] {$d_{\text{out}}$};
+
+% 8. Output
+\node[stagebox, draw=accentBlue, line width=2.5pt, fill=white] (S8) at (0, \dy) {
+  \textbf{\Large Output Activation}\\[16pt]
+  \Large $y$\\[16pt]
+  \Large (Digital Domain)
+};
+\node[steplabel, below=0.6cm] at (S8.south) {8. Output};
+\draw[arrowstyle] (S7.west) -- (S8.east) node[midway, above, font=\huge\bfseries, text=lineColor] {$y$};
+
+\end{tikzpicture}
+\end{document}

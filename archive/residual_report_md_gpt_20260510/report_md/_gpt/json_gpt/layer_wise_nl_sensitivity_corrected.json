@@ -1,0 +1,9 @@
+{
+  "baseline_linear": 90.61,
+  "patch_embed": 90.57,
+  "blocks.0": 90.79,
+  "blocks.2": 90.94,
+  "blocks.5": 90.74,
+  "head": 90.68,
+  "all": 90.74
+}

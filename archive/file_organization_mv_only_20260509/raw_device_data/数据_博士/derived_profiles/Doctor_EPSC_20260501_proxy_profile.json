@@ -1,0 +1,48 @@
+{
+  "profile_name": "Doctor_EPSC_20260501_proxy_profile",
+  "description": "Noise proxy profile derived from Doctor EPSC peak amplitude measurements. EPSC peak current CV is used as a proxy for conductance-domain D2D/C2C noise. This is a proxy, not a direct hardware profile.",
+  "date": "2026-05-01",
+  "source_data": [
+    "EPSC_ANALYSIS_READY.csv",
+    "EPSC_DEVICE_SUMMARY_CODEX.csv",
+    "EPSC_D9_REPEAT_SUMMARY_CODEX.csv"
+  ],
+  "device_type": "synaptic_transistor_EPSC",
+  "n_devices": 8,
+  "measurements_per_device": 5,
+  "repeat_measurements_device_9": 24,
+  "signal_domain": "current_peak_nA",
+  "proxy_limitations": [
+    "EPSC peak amplitude is a current measurement, not conductance. Multiple factors (voltage, kinetics, single-ended read) cause current-domain CV to overstate conductance-domain CV.",
+    "HAT noise model uses differential read (G_pos - G_neg) which rejects common-mode noise not captured in single-ended EPSC.",
+    "EPSC measurements at ms timescale may include synaptic noise sources absent in fast analog memory read."
+  ],
+  "noise_model": "HAT_uniform",
+  "sigma_c2c": {
+    "description": "Cycle-to-cycle noise (fraction of G_range). Proxy: detrended within-device CV of EPSC peak amplitude.",
+    "estimate": 0.10,
+    "plausible_range": [0.05, 0.15],
+    "source_statistic": "device_9_detrended_cv_pct",
+    "source_value": 14.0,
+    "mapping_formula": "sigma_c2c = CV_EPSC_detrended / 100 * discount_factor",
+    "discount_factor_applied": 0.7,
+    "discount_rationale": "Current-domain CV overstates conductance-domain CV (see proxy_limitations)"
+  },
+  "sigma_d2d": {
+    "description": "Device-to-device noise (fraction of G_range). Proxy: between-device CV of mean EPSC peak amplitude.",
+    "estimate": 0.10,
+    "plausible_range": [0.05, 0.15],
+    "source_statistic": "between_device_cv_pct",
+    "source_value": 14.3,
+    "mapping_formula": "sigma_d2d = CV_between_device / 100 * discount_factor",
+    "discount_factor_applied": 0.7,
+    "discount_rationale": "Current-domain CV overstates conductance-domain CV (see proxy_limitations)"
+  },
+  "other_statistics": {
+    "c2_mean_nA_range": [-25.0, -14.9],
+    "peak_amp_min_nA": 17.37,
+    "peak_amp_max_nA": 37.65,
+    "d9_trend_slope_nA_per_run": 0.19,
+    "d9_trend_r2": 0.08
+  }
+}

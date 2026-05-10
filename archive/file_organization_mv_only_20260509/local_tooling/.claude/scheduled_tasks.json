@@ -1,0 +1,15 @@
+{
+  "tasks": [
+    {
+      "id": "d9d49a2d",
+      "cron": "35 3,5,7,9 * * *",
+      "prompt": "Check R11D fair comparison training progress. Read the latest training logs from paper2_aihwkit_baseline/logs/ for r11d_6_pure_baseline, r11d_7_pcm_4bit, and r11d_8_hat_pcm. Report the most recent epoch and best accuracy for each log that has data. If all 3 runs are complete (look for \"training complete\" in the master runner output at /tmp/claude-1000/-home-qiaosir-projects-compute-vit/66eb087a-58f7-475a-a591-8fec51a5273e/tasks/bh90c8zgd.output), then: (1) run fresh-eval for all 3 checkpoints using paper2_aihwkit_baseline/eval_aihwkit_fresh.py, (2) run drift-eval for all 3 using paper2_aihwkit_baseline/eval_aihwkit_drift.py, (3) write the final report to outputs/r11d_fair_comparison_experiments_20260428-011225.md.",
+      "createdAt": 1777310383660,
+      "lastFiredAt": 1777341900123,
+      "recurring": true,
+      "createdBySessionId": "66eb087a-58f7-475a-a591-8fec51a5273e",
+      "createdByPid": 47338,
+      "createdByProcStart": "2355771"
+    }
+  ]
+}

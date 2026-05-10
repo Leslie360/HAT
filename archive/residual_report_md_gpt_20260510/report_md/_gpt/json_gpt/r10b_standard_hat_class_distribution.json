@@ -1,0 +1,621 @@
+{
+  "generated_at": "2026-04-26T01:17:59.192260",
+  "script": "scripts/_gpt/run_r10b.py",
+  "mode": "canonical",
+  "warning": "Use canonical_* entries for the paper's 10% fresh-instance collapse mechanism. postfix_mseries_* entries are diagnostic controls and must not be cited as canonical collapse evidence.",
+  "probes": {
+    "canonical_standard_hat": {
+      "spec": {
+        "key": "canonical_standard_hat",
+        "label": "Canonical Standard HAT",
+        "exp_id": "V4",
+        "checkpoint": "checkpoints/V4_hybrid_standard_noise_hat_best.pt",
+        "family": "canonical",
+        "expected": "fresh-instance collapse near 10%"
+      },
+      "checkpoint_meta": {
+        "checkpoint_path": "/home/qiaosir/projects/compute_vit/checkpoints/V4_hybrid_standard_noise_hat_best.pt",
+        "checkpoint_epoch": 99,
+        "checkpoint_best_epoch": 99,
+        "checkpoint_best_acc": 91.94,
+        "checkpoint_seed": null,
+        "checkpoint_exp_cfg": {
+          "name": "V4_hybrid_standard_noise_hat",
+          "use_hybrid": true,
+          "n_states": 16,
+          "sigma_c2c": 0.05,
+          "sigma_d2d": 0.1,
+          "noise_enabled": true,
+          "hat_training": true,
+          "use_physical_frontend": false,
+          "retention_enabled": false,
+          "inference_time": 0.0,
+          "physical_gamma": 1.0,
+          "physical_I_dark": 1e-10,
+          "adc_bits": 8,
+          "epochs": 100,
+          "batch_size": 64,
+          "lr": 0.0005,
+          "weight_decay": 0.05
+        }
+      },
+      "eval_protocol": {
+        "device": "cpu",
+        "num_instances": 5,
+        "batch_size": 64,
+        "num_workers": 0,
+        "max_batches": null,
+        "sigma_c2c": 0.05,
+        "sigma_d2d": 0.1,
+        "noise_mode": "uniform",
+        "eval_nl_ltp": 1.0,
+        "eval_nl_ltd": -1.0
+      },
+      "instances": [
+        {
+          "instance": 0,
+          "seed": 42,
+          "num_examples": 10000,
+          "overall_acc": 0.1,
+          "overall_acc_percent": 10.0,
+          "pred_counts": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            10000,
+            0,
+            0
+          ],
+          "pred_freq": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0
+          ],
+          "max_class": 7,
+          "max_freq": 1.0,
+          "entropy": -1.000088900581841e-12,
+          "entropy_fraction_of_uniform": -4.343330909353833e-13,
+          "class_accs": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "instance": 1,
+          "seed": 142,
+          "num_examples": 10000,
+          "overall_acc": 0.1,
+          "overall_acc_percent": 10.0,
+          "pred_counts": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            10000,
+            0,
+            0
+          ],
+          "pred_freq": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0
+          ],
+          "max_class": 7,
+          "max_freq": 1.0,
+          "entropy": -1.000088900581841e-12,
+          "entropy_fraction_of_uniform": -4.343330909353833e-13,
+          "class_accs": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "instance": 2,
+          "seed": 242,
+          "num_examples": 10000,
+          "overall_acc": 0.1,
+          "overall_acc_percent": 10.0,
+          "pred_counts": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            10000,
+            0,
+            0
+          ],
+          "pred_freq": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0
+          ],
+          "max_class": 7,
+          "max_freq": 1.0,
+          "entropy": -1.000088900581841e-12,
+          "entropy_fraction_of_uniform": -4.343330909353833e-13,
+          "class_accs": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "instance": 3,
+          "seed": 342,
+          "num_examples": 10000,
+          "overall_acc": 0.1,
+          "overall_acc_percent": 10.0,
+          "pred_counts": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            10000,
+            0,
+            0
+          ],
+          "pred_freq": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0
+          ],
+          "max_class": 7,
+          "max_freq": 1.0,
+          "entropy": -1.000088900581841e-12,
+          "entropy_fraction_of_uniform": -4.343330909353833e-13,
+          "class_accs": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "instance": 4,
+          "seed": 442,
+          "num_examples": 10000,
+          "overall_acc": 0.1,
+          "overall_acc_percent": 10.0,
+          "pred_counts": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            10000,
+            0,
+            0
+          ],
+          "pred_freq": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0
+          ],
+          "max_class": 7,
+          "max_freq": 1.0,
+          "entropy": -1.000088900581841e-12,
+          "entropy_fraction_of_uniform": -4.343330909353833e-13,
+          "class_accs": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0
+          ]
+        }
+      ],
+      "summary": {
+        "overall_acc_percent": {
+          "mean": 10.0,
+          "std": 0.0,
+          "min": 10.0,
+          "max": 10.0
+        },
+        "entropy": {
+          "mean": -1.000088900581841e-12,
+          "std": 0.0,
+          "min": -1.000088900581841e-12,
+          "max": -1.000088900581841e-12
+        },
+        "max_freq": {
+          "mean": 1.0,
+          "std": 0.0,
+          "min": 1.0,
+          "max": 1.0
+        }
+      }
+    },
+    "canonical_ensemble_hat": {
+      "spec": {
+        "key": "canonical_ensemble_hat",
+        "label": "Canonical Ensemble HAT",
+        "exp_id": "V4",
+        "checkpoint": "checkpoints/_ensemble/V4_hybrid_standard_noise_hat_best.pt",
+        "family": "canonical",
+        "expected": "fresh-instance robust near 86%"
+      },
+      "checkpoint_meta": {
+        "checkpoint_path": "/home/qiaosir/projects/compute_vit/checkpoints/_ensemble/V4_hybrid_standard_noise_hat_best.pt",
+        "checkpoint_epoch": 94,
+        "checkpoint_best_epoch": 94,
+        "checkpoint_best_acc": 91.13,
+        "checkpoint_seed": null,
+        "checkpoint_exp_cfg": {
+          "name": "V4_hybrid_standard_noise_hat",
+          "use_hybrid": true,
+          "n_states": 16,
+          "nl_ltp": 1.0,
+          "nl_ltd": -1.0,
+          "sigma_c2c": 0.05,
+          "sigma_d2d": 0.1,
+          "noise_mode": "uniform",
+          "noise_enabled": true,
+          "hat_training": true,
+          "use_physical_frontend": false,
+          "retention_enabled": false,
+          "inference_time": 0.0,
+          "physical_gamma": 1.0,
+          "physical_I_dark": 1e-10,
+          "adc_bits": 8,
+          "epochs": 100,
+          "batch_size": 64,
+          "lr": 0.0005,
+          "weight_decay": 0.05
+        }
+      },
+      "eval_protocol": {
+        "device": "cpu",
+        "num_instances": 5,
+        "batch_size": 64,
+        "num_workers": 0,
+        "max_batches": null,
+        "sigma_c2c": 0.05,
+        "sigma_d2d": 0.1,
+        "noise_mode": "uniform",
+        "eval_nl_ltp": 1.0,
+        "eval_nl_ltd": -1.0
+      },
+      "instances": [
+        {
+          "instance": 0,
+          "seed": 42,
+          "num_examples": 10000,
+          "overall_acc": 0.8601,
+          "overall_acc_percent": 86.00999999999999,
+          "pred_counts": [
+            1529,
+            1022,
+            1050,
+            786,
+            961,
+            801,
+            980,
+            905,
+            1049,
+            917
+          ],
+          "pred_freq": [
+            0.1529,
+            0.1022,
+            0.105,
+            0.0786,
+            0.0961,
+            0.0801,
+            0.098,
+            0.0905,
+            0.1049,
+            0.0917
+          ],
+          "max_class": 0,
+          "max_freq": 0.1529,
+          "entropy": 2.284779144174848,
+          "entropy_fraction_of_uniform": 0.9922669746827706,
+          "class_accs": [
+            0.976,
+            0.951,
+            0.844,
+            0.665,
+            0.861,
+            0.726,
+            0.909,
+            0.864,
+            0.928,
+            0.877
+          ]
+        },
+        {
+          "instance": 1,
+          "seed": 142,
+          "num_examples": 10000,
+          "overall_acc": 0.8229,
+          "overall_acc_percent": 82.28999999999999,
+          "pred_counts": [
+            1939,
+            989,
+            728,
+            569,
+            1047,
+            774,
+            1172,
+            995,
+            978,
+            809
+          ],
+          "pred_freq": [
+            0.1939,
+            0.0989,
+            0.0728,
+            0.0569,
+            0.1047,
+            0.0774,
+            0.1172,
+            0.0995,
+            0.0978,
+            0.0809
+          ],
+          "max_class": 0,
+          "max_freq": 0.1939,
+          "entropy": 2.2467194079458803,
+          "entropy_fraction_of_uniform": 0.9757378412558367,
+          "class_accs": [
+            0.988,
+            0.929,
+            0.682,
+            0.525,
+            0.894,
+            0.703,
+            0.938,
+            0.896,
+            0.885,
+            0.789
+          ]
+        },
+        {
+          "instance": 2,
+          "seed": 242,
+          "num_examples": 10000,
+          "overall_acc": 0.8705,
+          "overall_acc_percent": 87.05000000000001,
+          "pred_counts": [
+            1306,
+            977,
+            1030,
+            844,
+            957,
+            740,
+            1192,
+            979,
+            1024,
+            951
+          ],
+          "pred_freq": [
+            0.1306,
+            0.0977,
+            0.103,
+            0.0844,
+            0.0957,
+            0.074,
+            0.1192,
+            0.0979,
+            0.1024,
+            0.0951
+          ],
+          "max_class": 0,
+          "max_freq": 0.1306,
+          "entropy": 2.2912419324641955,
+          "entropy_fraction_of_uniform": 0.9950737279745432,
+          "class_accs": [
+            0.969,
+            0.935,
+            0.851,
+            0.7,
+            0.87,
+            0.688,
+            0.963,
+            0.901,
+            0.924,
+            0.904
+          ]
+        },
+        {
+          "instance": 3,
+          "seed": 342,
+          "num_examples": 10000,
+          "overall_acc": 0.8636,
+          "overall_acc_percent": 86.36,
+          "pred_counts": [
+            1529,
+            1108,
+            1066,
+            712,
+            853,
+            928,
+            970,
+            949,
+            996,
+            889
+          ],
+          "pred_freq": [
+            0.1529,
+            0.1108,
+            0.1066,
+            0.0712,
+            0.0853,
+            0.0928,
+            0.097,
+            0.0949,
+            0.0996,
+            0.0889
+          ],
+          "max_class": 0,
+          "max_freq": 0.1529,
+          "entropy": 2.2829481257061417,
+          "entropy_fraction_of_uniform": 0.9914717734655485,
+          "class_accs": [
+            0.982,
+            0.977,
+            0.862,
+            0.639,
+            0.811,
+            0.798,
+            0.903,
+            0.9,
+            0.907,
+            0.857
+          ]
+        },
+        {
+          "instance": 4,
+          "seed": 442,
+          "num_examples": 10000,
+          "overall_acc": 0.8816,
+          "overall_acc_percent": 88.16000000000001,
+          "pred_counts": [
+            1332,
+            1024,
+            837,
+            844,
+            1022,
+            906,
+            981,
+            1094,
+            1042,
+            918
+          ],
+          "pred_freq": [
+            0.1332,
+            0.1024,
+            0.0837,
+            0.0844,
+            0.1022,
+            0.0906,
+            0.0981,
+            0.1094,
+            0.1042,
+            0.0918
+          ],
+          "max_class": 0,
+          "max_freq": 0.1332,
+          "entropy": 2.293517980317234,
+          "entropy_fraction_of_uniform": 0.9960622029976656,
+          "class_accs": [
+            0.979,
+            0.959,
+            0.782,
+            0.725,
+            0.901,
+            0.795,
+            0.914,
+            0.943,
+            0.933,
+            0.885
+          ]
+        }
+      ],
+      "summary": {
+        "overall_acc_percent": {
+          "mean": 85.974,
+          "std": 1.982852490731478,
+          "min": 82.28999999999999,
+          "max": 88.16000000000001
+        },
+        "entropy": {
+          "mean": 2.2798413181216604,
+          "std": 0.017018345450660142,
+          "min": 2.2467194079458803,
+          "max": 2.293517980317234
+        },
+        "max_freq": {
+          "mean": 0.1527,
+          "std": 0.022654712534040236,
+          "min": 0.1306,
+          "max": 0.1939
+        }
+      }
+    }
+  }
+}

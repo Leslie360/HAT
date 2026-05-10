@@ -1,0 +1,65 @@
+{
+  "checkpoint_path": "checkpoints/_gpt/hybrid_attention_cim_mlp_digital.pt",
+  "train_best_acc": 91.5,
+  "train_best_epoch": 96,
+  "fresh_instances": 3,
+  "mc_runs_per_instance": 3,
+  "resample_scope": "none",
+  "dataset": "cifar10",
+  "num_classes": 10,
+  "eval_batch_size": 256,
+  "cross_instance_mean": 10.093333333333334,
+  "cross_instance_std": 0.03756475889861521,
+  "instance_means": [
+    10.07,
+    10.136666666666667,
+    10.073333333333334
+  ],
+  "instances": [
+    {
+      "instance_index": 0,
+      "seed": 42,
+      "resampled_modules": 0,
+      "resample_scope": "none",
+      "eval_runs": 3,
+      "test_loss_mean": 3.3274925441741945,
+      "test_acc_mean": 10.07,
+      "test_acc_std": 0.45923850012820094,
+      "test_acc_raw": [
+        9.55,
+        10.42,
+        10.24
+      ]
+    },
+    {
+      "instance_index": 1,
+      "seed": 142,
+      "resampled_modules": 0,
+      "resample_scope": "none",
+      "eval_runs": 3,
+      "test_loss_mean": 3.39161568514506,
+      "test_acc_mean": 10.136666666666667,
+      "test_acc_std": 0.13503086067019376,
+      "test_acc_raw": [
+        10.0,
+        10.14,
+        10.27
+      ]
+    },
+    {
+      "instance_index": 2,
+      "seed": 242,
+      "resampled_modules": 0,
+      "resample_scope": "none",
+      "eval_runs": 3,
+      "test_loss_mean": 3.3657169645945233,
+      "test_acc_mean": 10.073333333333334,
+      "test_acc_std": 0.12055427546683337,
+      "test_acc_raw": [
+        10.06,
+        9.96,
+        10.2
+      ]
+    }
+  ]
+}

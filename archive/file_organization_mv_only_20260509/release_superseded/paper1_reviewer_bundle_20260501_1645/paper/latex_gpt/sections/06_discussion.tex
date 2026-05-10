@@ -1,0 +1,62 @@
+\section{Discussion}
+\label{sec:discussion}
+
+% =============================================================================
+\subsection{Diagnosis: hardware-instance overfitting as the leading tested failure mode}
+\label{subsec:diagnosis}
+
+Once hardware-aware training (HAT) and scale recovery are available, standard cycle-to-cycle (C2C) and device-to-device (D2D) variability do not dominate the error budget. Three constraints dominate instead.
+
+A quantitative decomposition supports this ordering: designers should first secure 6-bit readout, then invest the remaining error budget in reducing device-to-device mismatch.
+
+The first is ADC resolution. Below 6 bits, transformer inference degrades substantially, indicating that conductance control remains gated by readout precision.
+
+The second is hardware-instance overfitting. The collapse of V4 under fresh-instance transfer (10.00\%) shows that standard HAT readily fits a single fixed D2D realization. Replacing the fixed-mask objective (Eq.~\ref{eq:hat-standard}) with the mismatch-distributed objective (Eq.~\ref{eq:hat-ensemble-distribution}) raises fresh-instance accuracy to $86.16\pm0.19\%$ across three training seeds. Mechanistically, Ensemble HAT changes the mismatch map across epochs rather than merely perturbing one nominal instance.
+
+A residual gap to the 98.06\% digital baseline persists; part may reflect regularization from per-epoch D2D resampling. Capacity-aware Ensemble HAT schedules remain an open problem.
+
+The third is the scale-masking regime in V2. When the recovered-weight law (Eq.~\ref{eq:scale-recovery}) maps analog perturbations below the 4-bit quantization step, many realizations remain in the same recovered weight bin. This protection disappears under state-dependent noise.
+
+% =============================================================================
+\subsection{Treatment: Ensemble HAT mitigation across scenarios}
+\label{subsec:treatment}
+
+The main-text evidence supports a narrow but useful treatment claim. Ensemble HAT is appropriate when the leading observed failure mode is fresh-instance transfer under an idealized low-precision noise model: in that regime, resampling D2D mismatch during training converts a 4-bit collapse into 8-bit-like fresh-instance accuracy. It should not be read as a complete device-physics solution. Once the training objective is robust to fresh instances, realistic PCM simulation exposes a separate precision-retention frontier: the 4-bit model remains trainable but drifts over the tested 24-hour window, whereas the 6-bit and 8-bit models are effectively drift-flat. The practical rule is therefore sequential in this framework: first address cross-instance generalization with distribution-level HAT, then choose the analog precision from the retention frontier.
+
+% =============================================================================
+\subsection{Mechanism: theory and empirical landscape}
+\label{subsec:mechanism}
+
+Supplementary Note S-Theory derives that the per-epoch resampling objective is, to second order, equivalent to a weighted gradient-$L_2$ regularizer (analogous to dropout-as-$L_2$, Wager et al.\ 2013) and, structurally, to a stochastic Sharpness-Aware Minimization along the device-mismatch direction (analogous to SAM, Foret et al.\ 2021). A PAC-Bayes argument provides a generalization-bound rationale for why fresh hardware-instance accuracy tracks the training-distribution average.
+
+Empirical diagnostics support this interpretation. Loss-landscape interpolation from the training D2D mask toward fresh masks (Supplementary Note~S-Mechanism, E2) shows that Ensemble HAT maintains $88.39\%$ accuracy when evaluated on a fresh mismatch map, whereas Standard HAT collapses to $10.00\%$---a gap of $78.39$~pp. Under extrapolated mismatch ($3\times$ amplitude), Ensemble HAT still outperforms Standard HAT by $17.5$~pp, indicating that the robustness extends beyond the training distribution. Per-layer sensitivity analysis (Supplementary Note~S-Mechanism, E4) is retained as supplementary context for earlier severe-nonlinear-write diagnostics; it is not used here as a main-text localization claim under the revised precision-ladder narrative.
+
+Full-parameter-space Hessian spectra (Supplementary Note~S-Mechanism, E1) reveal a more nuanced picture: Standard HAT exhibits lower top eigenvalues at its training mask than Ensemble HAT, yet this ``flatness'' is mask-specific and does not transfer to fresh instances. The relevant robustness metric is therefore D2D-directional sensitivity rather than global curvature, aligning with the theoretical regularizer derived in Supplementary Note~S-Theory.
+
+% =============================================================================
+\subsection{Implications: design rules for deployment}
+\label{subsec:implications}
+
+\input{supplementary/design_rules_box}
+
+The design rules in Box~1 are intentionally conservative: each threshold is chosen at the point where the accuracy--cost trade-off begins to degrade rapidly, not at the theoretical optimum. The 6-bit ADC threshold is the \emph{cliff} observed in the iso-accuracy sweep, not the minimum ADC that could work under ideal calibration. The 15\% D2D ceiling marks the boundary beyond which rank ordering between HAT variants destabilizes. Taken together, the rules frame deployment as sequential thresholding---readout first, then mismatch, then objective.
+
+% =============================================================================
+\subsection{Comparison to established analog HAT primitives}
+\label{subsec:aihwkit-comparison}
+
+At realistic deployment precision (4-bit, the canonical setting of our main analysis), we find that AIHWKit \citep{rasch2021aihwkit} per-batch noise injection achieves cross-instance robustness at 8-bit ($87.28\pm0.13\%$, fresh-instance) but collapses at 4-bit ($14.64\pm0.11\%$, fresh-instance). Ensemble HAT, by contrast, maintains $86.16\pm0.19\%$ at 4-bit (canonical three-seed aggregate). The 8-bit AIHWKit result is statistically comparable to the 4-bit Ensemble HAT result, indicating parity at higher precision. The advantage of Ensemble HAT in this comparison is therefore specific to the 4-bit regime---the practically relevant operating point where per-batch noise injection alone does not overcome mismatch variability. The collapse at this precision supports the importance of epoch-level D2D resampling as a structural analogue of distribution-matching objectives. When transitioning from idealized noise baselines to realistic phase-change memory simulation, the device model introduces a precision-dependent deployment frontier. Under the tested PCM UnitCell regime, 4-bit, 6-bit, and 8-bit models all converge, but retention behavior is precision dependent. The degradation is not uniform: 8-bit and 6-bit models remain drift-flat over the tested retention window, whereas the 4-bit model incurs a measurable 4.01~pp time-dependent drift. This frames the physical precision-retention tradeoff as a distinct engineering constraint alongside the algorithmic challenge of cross-instance generalization, positioning 6-bit as the best observed Pareto midpoint in the tested sweep.
+
+% =============================================================================
+\subsection{Limitations and outlook}
+\label{subsec:limitations}
+
+\paragraph{Scope and limitations.} The conclusions above should be read against the boundaries of the present simulation stack. All experiments rest on device profiles calibrated from literature values or a single fabrication batch, so the accuracy projections do not extend to cross-batch variability, temperature drift, or aging. The severity of analog-induced degradation also scales with task complexity and data scarcity, which remains a fundamental limitation.
+
+The framework is intentionally \textbf{behavioral, not circuit-accurate}: we simulate deployment-relevant non-idealities (quantization, D2D/C2C variability, ADC precision, write nonlinearity, retention) but defer SPICE-level phenomena (parasitic IR drop, sneak paths, pulse-faithful programming) to follow-on work. This scope choice mirrors established analog-CIM tooling \citep{rasch2021aihwkit}, where behavioral fidelity suffices to \textbf{rank deployment risks} pre-fabrication. The profile-agnostic ingest interface accepts any measured device statistics (Supplementary Note S-HW); hardware-calibrated re-evaluation is anticipated once partner-array measurements are released.
+
+The energy estimates are \textbf{first-order analytical projections} derived from literature-proxy per-operation constants ($E_{\text{cell}}=100$~fJ, $E_{\text{ADC},8b}=25$~fJ, $E_{\text{DAC},8b}=30$~fJ; Section~\ref{subsec:sensitivity-energy}). They bound deployment risk to within an order of magnitude rather than predicting silicon performance. We deliberately avoid silicon-grade energy claims because the framework's contribution is \textbf{risk-ranking under realistic device profiles}, not chip-level optimization. A complete energy validation depends on partner-array characterization not yet available.
+
+The present evaluation focuses on CIFAR-10/100 and Flowers-102 to enable systematic non-ideality and HAT-method ablation across three backbones within a tractable compute budget. \textbf{ImageNet-scale extension is the subject of an in-progress cross-architecture sweep} (ViT-Small/16, DeiT-Small/16 on TinyImageNet) on a separate compute infrastructure; preliminary results will appear in an extended companion study or supplementary erratum. The ablation matrix presented here intentionally trades dataset breadth for non-ideality coverage, motivating dataset-scale priorities for hardware validation.
+
+\paragraph{Outlook.} Three extensions follow naturally. First, measured-array calibration should replace the present UnitCell presets with device-specific noise and drift parameters and test whether the 6-bit Pareto midpoint persists. Second, cross-architecture validation on ViT-Small and DeiT-Small should determine whether the same robustness pattern holds beyond the Tiny-ViT setting before being elevated to a main-text claim. Third, memory-bound inference components such as analog KV-cache form a separate follow-on direction that should be evaluated with parity checks, held-out perplexity, and explicit train/eval noise separation before being merged into this framework. These extensions do not alter the present conclusion: the paper-1 evidence separates the algorithmic need for cross-instance resampling from the physical precision-retention frontier of PCM deployment.

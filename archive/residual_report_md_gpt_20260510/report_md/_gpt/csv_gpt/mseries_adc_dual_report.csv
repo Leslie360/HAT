@@ -1,0 +1,7 @@
+run_id,config,seed,train_best_acc,fresh_adc_off_mean,fresh_adc_off_std,fresh_adc_8bit_mean,fresh_adc_8bit_std,fresh_adc_6bit_mean,fresh_adc_6bit_std,delta_6bit_vs_off,delta_8bit_vs_off
+CX-M1,V3 Standard,123,82.89,82.0282,0.9416,81.8704,0.9755,79.0090,1.7983,-3.0192,-0.1578
+CX-M2,V4 Ensemble,123,80.97,80.4538,0.5835,80.3878,0.5966,,,,-0.0660
+CX-M3,V4 Proportional,123,80.88,80.7132,0.1370,80.6490,0.1511,78.1036,0.7738,-2.6096,-0.0642
+CX-M4,V4 Proportional,456,81.39,80.7532,0.4271,80.6640,0.4078,,,,-0.0892
+CX-M5,V3 Standard,456,80.69,80.4674,0.0936,80.3746,0.1104,,,,-0.0928
+CX-M6,V4 Ensemble,456,81.87,81.1850,1.6847,81.0426,1.7556,,,,-0.1424

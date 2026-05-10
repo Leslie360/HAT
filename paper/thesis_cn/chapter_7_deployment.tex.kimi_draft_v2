@@ -1,8 +1,0 @@
-% K-DRAFT-6b: chapter_7_deployment.tex — contamination warning + placeholder update
-% Original file retains live contamination at lines 183, 198.
-% This draft flags the issue; full rewrite deferred to CLAUDE-FC.
-
-\chapter{部署风险评估与案例研究}
-\label{ch:deployment}
-
-\noindent\textbf{勘误声明（2026-04-24）}：本章第\ref{sec:nl2_deploy}节中的 severe-NL 部署评估基于 bug 污染的数据（`analog_layers.py` STE 反向传播在 NL≠1 时存在分支映射翻转 + 额外 nl 乘数，已于 commit 9cdbe77 修复）。27.72±0.82\% 和 30.53±7.07\% 的结果已失效。修复后的重训练显示 Standard HAT 在 NL=2.0 下可达 \textbf{82.03±0.94\%}（M1，seed 123），seed 456 复现为 80.47±0.09\%（M5）。本章保留作为历史记录，但不应作为论文证据引用。

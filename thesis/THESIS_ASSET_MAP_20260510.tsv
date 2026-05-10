@@ -1,0 +1,9 @@
+category	status	active_path	provenance_or_manifest	producer_or_validator	consumer_or_output	notes
+thesis_lane	active	thesis/; manuscripts/thesis/	thesis/README.md; WORKSPACE_LAYOUT.md	thesis writing workflow	degree thesis	Thesis lane is separate from Paper1/Paper2 but may reuse Paper1 assets traceably.
+english_thesis	active	thesis/en/	thesis/en/README.md	manual thesis writing	English thesis PDF/source	Current EN thesis draft/source.
+chinese_thesis	active	thesis/cn/	thesis/README.md	manual thesis writing	Chinese thesis PDF/source	Current CN thesis draft/source.
+xjtu_template	active_template	thesis/xjtu_template/	thesis/xjtu_template/README.md	template import	degree thesis build template	Template contains source and build artifacts; preserve until thesis build policy is finalized.
+paper1_reused_figures	active_reference	paper1/manuscript/figures/	paper1/provenance/manifests/thesis_used_figures_20260510.tsv	LaTeX dependency manifest pass	thesis figures	Reuse through compatibility paths, not random copies.
+paper1_reused_data	active_reference	paper1/manuscript/source_data/	paper1/provenance/paper1_active_provenance_index_20260510.tsv	Paper1 evidence workflow	thesis source-data references	Cite/trace back to Paper1 source data manifests.
+thesis_only_assets	planned	thesis/assets/ or thesis/source_data/	not yet created	thesis writing workflow	thesis-only figures/tables	Create when thesis-only assets appear.
+old_thesis_agent_notes	archived	archive/stale_markdown_202604_review_20260510/thesis_cn_agent_notes/	archive/stale_markdown_202604_review_20260510/MANIFEST.md	old Kimi template survey	provenance only	Not active thesis source.

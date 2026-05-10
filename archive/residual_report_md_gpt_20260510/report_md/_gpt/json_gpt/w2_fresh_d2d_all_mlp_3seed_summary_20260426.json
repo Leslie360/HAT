@@ -1,0 +1,544 @@
+{
+  "date": "2026-04-26",
+  "protocol": {
+    "model": "EleutherAI/pythia-410m-deduped",
+    "train_scope": "last_block",
+    "steps": 1000,
+    "eval_repeats": 5,
+    "seeds": [
+      1234,
+      456,
+      789
+    ],
+    "fresh_d2d_instances_per_seed": 10,
+    "fresh_d2d_repeats_per_instance": 5,
+    "analog_precision": "high_precision_analog",
+    "sigma_d2d": 0.005,
+    "sigma_c2c": 0.002,
+    "resample_every": 10,
+    "lr": 5e-06,
+    "limitation": "fixed smoke texts, not held-out perplexity"
+  },
+  "summary_by_scope": {
+    "all": {
+      "n_seeds": 3,
+      "total_fresh_d2d_instances": 30,
+      "eval_delta_mean": -0.6132424354553221,
+      "eval_delta_sample_std": 0.32055431975675625,
+      "fresh_d2d_seed_mean_loss": 6.530945962270101,
+      "fresh_d2d_seed_mean_sample_std": 0.05495548553702316,
+      "fresh_d2d_within_seed_std_mean": 0.19193729014116379,
+      "fresh_d2d_all_instance_mean_loss": 6.530945962270101,
+      "fresh_d2d_all_instance_sample_std": 0.2011226355646072,
+      "seed_rows": {
+        "1234": {
+          "eval_delta": -0.3623195648193356,
+          "fresh_d2d_mean_loss": 6.497804880142212,
+          "fresh_d2d_std_loss": 0.21403469775285583
+        },
+        "456": {
+          "eval_delta": -0.5030487060546873,
+          "fresh_d2d_mean_loss": 6.594381809234619,
+          "fresh_d2d_std_loss": 0.18348552680058886
+        },
+        "789": {
+          "eval_delta": -0.9743590354919434,
+          "fresh_d2d_mean_loss": 6.500651197433472,
+          "fresh_d2d_std_loss": 0.17829164587004667
+        }
+      }
+    },
+    "mlp": {
+      "n_seeds": 3,
+      "total_fresh_d2d_instances": 30,
+      "eval_delta_mean": -0.45885101954142254,
+      "eval_delta_sample_std": 0.18097345610890886,
+      "fresh_d2d_seed_mean_loss": 5.845929390589396,
+      "fresh_d2d_seed_mean_sample_std": 0.021497875059051534,
+      "fresh_d2d_within_seed_std_mean": 0.1012387524031798,
+      "fresh_d2d_all_instance_mean_loss": 5.845929390589396,
+      "fresh_d2d_all_instance_sample_std": 0.10770596793456859,
+      "seed_rows": {
+        "1234": {
+          "eval_delta": -0.2950625419616699,
+          "fresh_d2d_mean_loss": 5.86765386581421,
+          "fresh_d2d_std_loss": 0.0991979691097317
+        },
+        "456": {
+          "eval_delta": -0.6531347274780268,
+          "fresh_d2d_mean_loss": 5.845468788146972,
+          "fresh_d2d_std_loss": 0.13359003623359667
+        },
+        "789": {
+          "eval_delta": -0.42835578918457085,
+          "fresh_d2d_mean_loss": 5.824665517807007,
+          "fresh_d2d_std_loss": 0.07092825186621102
+        }
+      }
+    }
+  },
+  "jobs": [
+    {
+      "seed": 1234,
+      "scope": "all",
+      "log": "logs/_gpt/w2_freshd2d_all_n005002_lb1000_seed1234_20260426_111403.log",
+      "eval_before_mean": 6.938035011291504,
+      "eval_after_mean": 6.575715446472168,
+      "eval_delta": -0.3623195648193356,
+      "fresh_d2d_mean_loss": 6.497804880142212,
+      "fresh_d2d_std_loss": 0.21403469775285583,
+      "fresh_d2d_instances": 10,
+      "fresh_d2d_repeats": 5,
+      "fresh_instance_means": [
+        {
+          "instance": 0,
+          "mean_loss": 6.329279804229737,
+          "std_loss": 0.061113984222267104,
+          "resampled_modules": 96
+        },
+        {
+          "instance": 1,
+          "mean_loss": 6.729229164123535,
+          "std_loss": 0.06470146994422561,
+          "resampled_modules": 96
+        },
+        {
+          "instance": 2,
+          "mean_loss": 6.79165620803833,
+          "std_loss": 0.09192597614889786,
+          "resampled_modules": 96
+        },
+        {
+          "instance": 3,
+          "mean_loss": 6.663677024841308,
+          "std_loss": 0.09110311038636118,
+          "resampled_modules": 96
+        },
+        {
+          "instance": 4,
+          "mean_loss": 6.8028332710266115,
+          "std_loss": 0.10033232567306063,
+          "resampled_modules": 96
+        },
+        {
+          "instance": 5,
+          "mean_loss": 6.2480134010314945,
+          "std_loss": 0.15662680807646268,
+          "resampled_modules": 96
+        },
+        {
+          "instance": 6,
+          "mean_loss": 6.339273452758789,
+          "std_loss": 0.1229137091076608,
+          "resampled_modules": 96
+        },
+        {
+          "instance": 7,
+          "mean_loss": 6.331295013427734,
+          "std_loss": 0.0525325359500107,
+          "resampled_modules": 96
+        },
+        {
+          "instance": 8,
+          "mean_loss": 6.476357746124267,
+          "std_loss": 0.09165459355912742,
+          "resampled_modules": 96
+        },
+        {
+          "instance": 9,
+          "mean_loss": 6.2664337158203125,
+          "std_loss": 0.10202114957259492,
+          "resampled_modules": 96
+        }
+      ],
+      "trainable_params": 12592128,
+      "peak_cuda_mem_gb": 3.7608118057250977,
+      "elapsed_s": 151.8500952720642
+    },
+    {
+      "seed": 1234,
+      "scope": "mlp",
+      "log": "logs/_gpt/w2_freshd2d_mlp_n005002_lb1000_seed1234_20260426_111403.log",
+      "eval_before_mean": 6.213568592071534,
+      "eval_after_mean": 5.918506050109864,
+      "eval_delta": -0.2950625419616699,
+      "fresh_d2d_mean_loss": 5.86765386581421,
+      "fresh_d2d_std_loss": 0.0991979691097317,
+      "fresh_d2d_instances": 10,
+      "fresh_d2d_repeats": 5,
+      "fresh_instance_means": [
+        {
+          "instance": 0,
+          "mean_loss": 5.8102740287780765,
+          "std_loss": 0.021131199165870116,
+          "resampled_modules": 48
+        },
+        {
+          "instance": 1,
+          "mean_loss": 5.914925193786621,
+          "std_loss": 0.024680946710065686,
+          "resampled_modules": 48
+        },
+        {
+          "instance": 2,
+          "mean_loss": 5.986879920959472,
+          "std_loss": 0.044459689893268775,
+          "resampled_modules": 48
+        },
+        {
+          "instance": 3,
+          "mean_loss": 5.954660892486572,
+          "std_loss": 0.04391490543160541,
+          "resampled_modules": 48
+        },
+        {
+          "instance": 4,
+          "mean_loss": 6.007979679107666,
+          "std_loss": 0.03353222561748377,
+          "resampled_modules": 48
+        },
+        {
+          "instance": 5,
+          "mean_loss": 5.810135364532471,
+          "std_loss": 0.015364488202844515,
+          "resampled_modules": 48
+        },
+        {
+          "instance": 6,
+          "mean_loss": 5.921099472045898,
+          "std_loss": 0.008035154893833036,
+          "resampled_modules": 48
+        },
+        {
+          "instance": 7,
+          "mean_loss": 5.688572120666504,
+          "std_loss": 0.05211055341560972,
+          "resampled_modules": 48
+        },
+        {
+          "instance": 8,
+          "mean_loss": 5.76441593170166,
+          "std_loss": 0.02567531521771988,
+          "resampled_modules": 48
+        },
+        {
+          "instance": 9,
+          "mean_loss": 5.817596054077148,
+          "std_loss": 0.013601989744141296,
+          "resampled_modules": 48
+        }
+      ],
+      "trainable_params": 8393728,
+      "peak_cuda_mem_gb": 3.0104455947875977,
+      "elapsed_s": 126.11030888557434
+    },
+    {
+      "seed": 456,
+      "scope": "all",
+      "log": "logs/_gpt/w2_freshd2d_all_n005002_lb1000_seed456_20260426_111745.log",
+      "eval_before_mean": 6.78249568939209,
+      "eval_after_mean": 6.279446983337403,
+      "eval_delta": -0.5030487060546873,
+      "fresh_d2d_mean_loss": 6.594381809234619,
+      "fresh_d2d_std_loss": 0.18348552680058886,
+      "fresh_d2d_instances": 10,
+      "fresh_d2d_repeats": 5,
+      "fresh_instance_means": [
+        {
+          "instance": 0,
+          "mean_loss": 6.531975650787354,
+          "std_loss": 0.10007462320770229,
+          "resampled_modules": 96
+        },
+        {
+          "instance": 1,
+          "mean_loss": 6.825186824798584,
+          "std_loss": 0.10560356124483947,
+          "resampled_modules": 96
+        },
+        {
+          "instance": 2,
+          "mean_loss": 6.549563980102539,
+          "std_loss": 0.08564722009801018,
+          "resampled_modules": 96
+        },
+        {
+          "instance": 3,
+          "mean_loss": 6.510297203063965,
+          "std_loss": 0.08664340367591643,
+          "resampled_modules": 96
+        },
+        {
+          "instance": 4,
+          "mean_loss": 6.812183380126953,
+          "std_loss": 0.11031965004524215,
+          "resampled_modules": 96
+        },
+        {
+          "instance": 5,
+          "mean_loss": 6.374059391021729,
+          "std_loss": 0.09333709295739757,
+          "resampled_modules": 96
+        },
+        {
+          "instance": 6,
+          "mean_loss": 6.621535110473633,
+          "std_loss": 0.1044791265743182,
+          "resampled_modules": 96
+        },
+        {
+          "instance": 7,
+          "mean_loss": 6.325515651702881,
+          "std_loss": 0.16936486048521754,
+          "resampled_modules": 96
+        },
+        {
+          "instance": 8,
+          "mean_loss": 6.4961755752563475,
+          "std_loss": 0.11316833816515123,
+          "resampled_modules": 96
+        },
+        {
+          "instance": 9,
+          "mean_loss": 6.897325325012207,
+          "std_loss": 0.07619545353534421,
+          "resampled_modules": 96
+        }
+      ],
+      "trainable_params": 12592128,
+      "peak_cuda_mem_gb": 3.7608118057250977,
+      "elapsed_s": 304.3850736618042
+    },
+    {
+      "seed": 456,
+      "scope": "mlp",
+      "log": "logs/_gpt/w2_freshd2d_mlp_n005002_lb1000_seed456_20260426_111745.log",
+      "eval_before_mean": 6.561723327636718,
+      "eval_after_mean": 5.908588600158692,
+      "eval_delta": -0.6531347274780268,
+      "fresh_d2d_mean_loss": 5.845468788146972,
+      "fresh_d2d_std_loss": 0.13359003623359667,
+      "fresh_d2d_instances": 10,
+      "fresh_d2d_repeats": 5,
+      "fresh_instance_means": [
+        {
+          "instance": 0,
+          "mean_loss": 5.67476863861084,
+          "std_loss": 0.020959142072640245,
+          "resampled_modules": 48
+        },
+        {
+          "instance": 1,
+          "mean_loss": 6.059450149536133,
+          "std_loss": 0.04028272560881493,
+          "resampled_modules": 48
+        },
+        {
+          "instance": 2,
+          "mean_loss": 5.912214756011963,
+          "std_loss": 0.05040570594681366,
+          "resampled_modules": 48
+        },
+        {
+          "instance": 3,
+          "mean_loss": 5.793509864807129,
+          "std_loss": 0.04364065684057775,
+          "resampled_modules": 48
+        },
+        {
+          "instance": 4,
+          "mean_loss": 5.984749221801758,
+          "std_loss": 0.032314737978343,
+          "resampled_modules": 48
+        },
+        {
+          "instance": 5,
+          "mean_loss": 5.792781162261963,
+          "std_loss": 0.04726900846906112,
+          "resampled_modules": 48
+        },
+        {
+          "instance": 6,
+          "mean_loss": 5.712364196777344,
+          "std_loss": 0.03180276102064852,
+          "resampled_modules": 48
+        },
+        {
+          "instance": 7,
+          "mean_loss": 5.901383304595948,
+          "std_loss": 0.039645196641171936,
+          "resampled_modules": 48
+        },
+        {
+          "instance": 8,
+          "mean_loss": 5.971556949615478,
+          "std_loss": 0.03458560036952165,
+          "resampled_modules": 48
+        },
+        {
+          "instance": 9,
+          "mean_loss": 5.651909637451172,
+          "std_loss": 0.055607809582852975,
+          "resampled_modules": 48
+        }
+      ],
+      "trainable_params": 8393728,
+      "peak_cuda_mem_gb": 3.0104455947875977,
+      "elapsed_s": 253.17617464065552
+    },
+    {
+      "seed": 789,
+      "scope": "all",
+      "log": "logs/_gpt/w2_freshd2d_all_n005002_lb1000_seed789_20260426_111745.log",
+      "eval_before_mean": 7.159328746795654,
+      "eval_after_mean": 6.184969711303711,
+      "eval_delta": -0.9743590354919434,
+      "fresh_d2d_mean_loss": 6.500651197433472,
+      "fresh_d2d_std_loss": 0.17829164587004667,
+      "fresh_d2d_instances": 10,
+      "fresh_d2d_repeats": 5,
+      "fresh_instance_means": [
+        {
+          "instance": 0,
+          "mean_loss": 6.363056278228759,
+          "std_loss": 0.059530505721780314,
+          "resampled_modules": 96
+        },
+        {
+          "instance": 1,
+          "mean_loss": 6.802811622619629,
+          "std_loss": 0.043581293925217715,
+          "resampled_modules": 96
+        },
+        {
+          "instance": 2,
+          "mean_loss": 6.186994934082032,
+          "std_loss": 0.05934323416638192,
+          "resampled_modules": 96
+        },
+        {
+          "instance": 3,
+          "mean_loss": 6.323881721496582,
+          "std_loss": 0.09582397570515391,
+          "resampled_modules": 96
+        },
+        {
+          "instance": 4,
+          "mean_loss": 6.462182521820068,
+          "std_loss": 0.08649554111502301,
+          "resampled_modules": 96
+        },
+        {
+          "instance": 5,
+          "mean_loss": 6.531099700927735,
+          "std_loss": 0.05233364487383912,
+          "resampled_modules": 96
+        },
+        {
+          "instance": 6,
+          "mean_loss": 6.440340995788574,
+          "std_loss": 0.05616500620614194,
+          "resampled_modules": 96
+        },
+        {
+          "instance": 7,
+          "mean_loss": 6.699436187744141,
+          "std_loss": 0.14060952066937454,
+          "resampled_modules": 96
+        },
+        {
+          "instance": 8,
+          "mean_loss": 6.516602230072022,
+          "std_loss": 0.088536021043168,
+          "resampled_modules": 96
+        },
+        {
+          "instance": 9,
+          "mean_loss": 6.680105781555175,
+          "std_loss": 0.1052410673942998,
+          "resampled_modules": 96
+        }
+      ],
+      "trainable_params": 12592128,
+      "peak_cuda_mem_gb": 3.7608118057250977,
+      "elapsed_s": 305.05839586257935
+    },
+    {
+      "seed": 789,
+      "scope": "mlp",
+      "log": "logs/_gpt/w2_freshd2d_mlp_n005002_lb1000_seed789_20260426_111745.log",
+      "eval_before_mean": 6.247114849090576,
+      "eval_after_mean": 5.8187590599060055,
+      "eval_delta": -0.42835578918457085,
+      "fresh_d2d_mean_loss": 5.824665517807007,
+      "fresh_d2d_std_loss": 0.07092825186621102,
+      "fresh_d2d_instances": 10,
+      "fresh_d2d_repeats": 5,
+      "fresh_instance_means": [
+        {
+          "instance": 0,
+          "mean_loss": 5.776772975921631,
+          "std_loss": 0.0525366165689252,
+          "resampled_modules": 48
+        },
+        {
+          "instance": 1,
+          "mean_loss": 5.890603923797608,
+          "std_loss": 0.03220432349270077,
+          "resampled_modules": 48
+        },
+        {
+          "instance": 2,
+          "mean_loss": 5.931510925292969,
+          "std_loss": 0.026166198631172675,
+          "resampled_modules": 48
+        },
+        {
+          "instance": 3,
+          "mean_loss": 5.9087347984313965,
+          "std_loss": 0.03754809101966737,
+          "resampled_modules": 48
+        },
+        {
+          "instance": 4,
+          "mean_loss": 5.739937210083008,
+          "std_loss": 0.03593880287135719,
+          "resampled_modules": 48
+        },
+        {
+          "instance": 5,
+          "mean_loss": 5.885149765014648,
+          "std_loss": 0.041409416474521434,
+          "resampled_modules": 48
+        },
+        {
+          "instance": 6,
+          "mean_loss": 5.834969711303711,
+          "std_loss": 0.03614677364271353,
+          "resampled_modules": 48
+        },
+        {
+          "instance": 7,
+          "mean_loss": 5.747150039672851,
+          "std_loss": 0.03917870668858588,
+          "resampled_modules": 48
+        },
+        {
+          "instance": 8,
+          "mean_loss": 5.791673564910889,
+          "std_loss": 0.05375493413862444,
+          "resampled_modules": 48
+        },
+        {
+          "instance": 9,
+          "mean_loss": 5.740152263641358,
+          "std_loss": 0.021734350492913546,
+          "resampled_modules": 48
+        }
+      ],
+      "trainable_params": 8393728,
+      "peak_cuda_mem_gb": 3.0104455947875977,
+      "elapsed_s": 252.42589664459229
+    }
+  ]
+}

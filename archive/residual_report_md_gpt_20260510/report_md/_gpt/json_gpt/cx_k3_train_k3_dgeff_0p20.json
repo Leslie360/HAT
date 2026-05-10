@@ -1,0 +1,28 @@
+[
+  {
+    "mode": "train",
+    "experiment": "V4",
+    "experiment_name": "V4_hybrid_standard_noise_hat_k3_dgeff_0p20",
+    "dataset": "cifar10",
+    "num_classes": 10,
+    "use_hybrid": true,
+    "noise_enabled": true,
+    "sigma_c2c": 0.05,
+    "sigma_d2d": 0.1,
+    "hat_training": true,
+    "use_physical_frontend": false,
+    "retention_enabled": false,
+    "inference_time": 0.0,
+    "epochs": 100,
+    "batch_size": 128,
+    "lr": 0.0005,
+    "weight_decay": 0.05,
+    "best_test_acc": 91.5,
+    "best_epoch": 93,
+    "final_train_loss": 0.0010115287685382645,
+    "final_train_acc": 99.966,
+    "final_test_loss": 0.49504688017368315,
+    "final_test_acc": 91.24,
+    "checkpoint_path": "/home/qiaosir/projects/compute_vit/checkpoints/_gpt/cx_k3_dgeff/k3_dgeff_0p20/V4_hybrid_standard_noise_hat_k3_dgeff_0p20_best.pt"
+  }
+]

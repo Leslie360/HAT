@@ -1,0 +1,92 @@
+% !TeX root = ../main.tex
+\section{Methodology}
+\label{sec:methodology}
+
+\subsection{Hybrid Analog/Digital Deployment}
+\label{subsec:hybrid-deployment}
+
+We adopt a hybrid analog/digital inference stack: dense linear operators execute on differential-pair crossbars; control-heavy operators remain digital. Concretely, the analog partition contains patch embeddings, query/key/value (Q/K/V) and output projections, and feed-forward layers; the digital partition contains softmax, layer normalization, GELU activation, positional encoding, residual additions, and the class token, following established practice in heterogeneous CIM accelerators \citep{wu2023bwq,wang2024epim,ge2024allspark,wang2025hemlet,liu2024hardsea}.
+
+Under this mapping, approximately 88\% of parameters execute on analog arrays while roughly 60\% of estimated energy remains digital, largely because attention operations stay in the digital domain---a pattern consistent with recent heterogeneous CIM accelerators for Vision Transformers \citep{liu2024hardsea,wang2024epim,ge2024allspark,wang2025hemlet}.
+
+\subsection{Modeling Physical Non-Idealities}
+\label{subsec:modeling-nonidealities}
+
+The framework injects quantization, cycle-to-cycle (C2C) and device-to-device (D2D) variability, ADC distortion, retention drift, and nonlinear-write surrogates directly into the forward path. Each analog-mapped weight is decomposed into positive and negative branches, mapped to the conductance window $[G_{\min}, G_{\max}]$, and quantized to $n_{\mathrm{states}}$ levels via a straight-through estimator (STE) quantizer $Q_{n}(\cdot)$. Differential readout recovers $G_{\mathrm{eff}}=\tilde{G}^{+}-\tilde{G}^{-}$, and the downstream digital weight is
+\begin{equation}
+    \hat{W}_{ij}=s_{\ell}\,G_{\mathrm{eff},ij},
+    \qquad
+    s_{\ell}=
+    \begin{cases}
+        \dfrac{w_{\max}}{G_{\max}-G_{\min}}, & \text{standard calibration} \\[6pt]
+        \dfrac{w_{\max}}{\max_{i,j}|G_{\mathrm{eff},ij}|+\epsilon}, & \text{retention-time recalibration}
+    \end{cases}
+\label{eq:scale-recovery}
+\end{equation}
+with layer index $\ell$ omitted. Unless otherwise stated, we use the standard-calibration branch; the retention-recalibration branch is used only for the V8 retention-drift experiments. The recovered weight step is $\Delta_{\hat{W}}=s_{\ell}(G_{\max}-G_{\min})/(n_{\mathrm{states}}-1)$, so perturbations smaller than half a step are masked. The differential-pair scheme suppresses common-mode noise \citep{wei2020voltagedifferential,kim2024sttmram}.
+
+Hardware-aware training (HAT) injects forward perturbations while back-propagating through a straight-through estimator. Standard HAT fixes one D2D mismatch field $M_{0}$,
+\begin{equation}
+    \theta_{\mathrm{std}}^{\star}=\arg\min_{\theta}\frac{1}{N}\sum_{n=1}^{N}\ell\!\left(f(x_{n};\theta,M_{0}),y_{n}\right),
+\label{eq:hat-standard}
+\end{equation}
+\paragraph{Ensemble HAT as distribution matching.}
+Ensemble HAT treats the mismatch map as a random variable resampled each epoch:
+\begin{equation}
+    \theta_{\text{ens}}^{\star} = \arg\min_{\theta}\;\mathbb{E}_{M\sim\mathcal{D}_{\text{D2D}}}\Bigl[\frac{1}{N}\sum_{n=1}^{N}\ell\bigl(f(x_n;\theta,M),y_n\bigr)\Bigr],
+    \label{eq:hat-ensemble-distribution}
+\end{equation}
+where the expectation is Monte-Carlo estimated with one fresh draw $M^{(e)}\sim\mathcal{D}_{\text{D2D}}$ held constant across all mini-batches in epoch $e$. Expanding Eq.~\ref{eq:hat-ensemble-distribution} (Supplementary Note S-Theory) reveals an implicit Fisher-weighted gradient-squared regularizer that pushes the optimizer toward flat regions in the $M$-direction, explaining the fresh-instance transferability without extra hyperparameters. Epoch-level (not per-batch) resampling is load-bearing, giving the optimizer enough consistent signal to fit each instance before resampling \citep{tobin2017domain}.
+Fresh-instance transfer evaluates on unseen draws $M'\sim p(M)$:
+\begin{equation}
+    \mathrm{Acc}_{\mathrm{fresh}}=\mathbb{E}_{M'\sim p(M)}\!\left[\mathrm{Acc}\!\left(f(\cdot;\theta_{\mathrm{ens}}^{\star},M')\right)\right].
+\label{eq:fresh-instance}
+\end{equation}
+Each fresh array is an i.i.d. Gaussian draw $M' \sim \mathcal{N}(0, \sigma_{\mathrm{D2D}}^2)$ held constant over the evaluation pass, distinct from per-forward-pass C2C noise. For a single checkpoint, the reported fresh-instance spread is the standard deviation across ten fresh-instance means (each averaged over five forward passes); for the R10A reproducibility headline, the uncertainty is the sample standard deviation across three seed-level fresh-instance means.
+
+\subsection{Training Protocol}
+\label{subsec:training-protocol}
+
+All Tiny-ViT experiments use AdamW ($lr = 5\times10^{-4}$, weight decay $0.05$), 100 epochs, batch size 64, cosine annealing ($T_{\max}=100$). Images are resized to $224\times224$ with standard augmentation. The default analog resolution is $n_{\mathrm{states}}=16$ levels. V1 is digital; V2 is hybrid without noise; V3 is hybrid with fixed D2D ($\sigma_{\mathrm{D2D}}=10\%$); V4--V7 use full HAT with epoch-resampled D2D and per-forward C2C ($\sigma_{\mathrm{C2C}}=5\%$ or $10\%$). V6 adds the photoresponse front end; V7 is a legacy retention-aware model excluded from canonical claims; V8 is the corrected retention-aware follow-up used for retention checks.
+
+Nonlinear-write and retention surrogates are anchored to measured DNTT transients \citep{vincze2025dualplasticity}. Nonlinear write modifies the STE backward pass by scaling the straight-through gradient with a state-dependent factor proportional to the present conductance magnitude raised to $NL-1$\footnote{The absence of an explicit $NL$ prefactor is intentional: this is a behavioral proxy for position-dependent update difficulty, not the strict derivative of a power-law $f(G)=G^{NL}$.}; ideal write is recovered when $NL_{\mathrm{LTP}}=1$ (long-term potentiation) and $|NL_{\mathrm{LTD}}|=1$ (long-term depression). For optoelectronic sensing, we incorporate a physical front-end model (V6) that first applies inverse-gamma preprocessing to the normalized input $X \in [0,1]$,
+\begin{equation}
+    P_{\mathrm{in}} = X^{1/\gamma_{\mathrm{phys}}},
+\label{eq:inverse-gamma}
+\end{equation}
+and then propagates it through a photocurrent response model,
+\begin{equation}
+    I_{\mathrm{photo}}
+    =
+    \alpha P_{\mathrm{in}}^{\gamma_{\mathrm{phys}}}
+    +
+    I_{\mathrm{dark}}
+    +
+    \varepsilon_{\mathrm{shot}}
+    \approx
+    \alpha X + I_{\mathrm{dark}} + \varepsilon_{\mathrm{shot}},
+\label{eq:frontend-photoresponse}
+\end{equation}
+with $\mathrm{Var}[\varepsilon_{\mathrm{shot}}] \propto I_{\mathrm{photo}}$; the proportionality coefficient is absorbed into per-profile calibration. The simulated photocurrent is renormalized per sample,
+\begin{equation}
+    X_{\mathrm{norm}}
+    =
+    \frac{I_{\mathrm{photo}}-I_{\min}}{I_{\max}-I_{\min}+\epsilon},
+\label{eq:frontend-renorm}
+\end{equation}
+before dataset normalization.
+
+\subsection{Profile-Driven Substitution Interface}
+\label{subsec:profile-interface}
+
+The profile interface packages technology-specific assumptions into a replaceable JSON parameter bundle. Deployment holds the digital backbone and training recipe fixed while substituting the profile, enabling literature priors today and measured-device calibration later without code changes.
+
+\subsection{Sensitivity and Energy Metrics}
+\label{subsec:sensitivity-energy}
+
+For the joint D2D--ADC sweep, first-order factor importance is quantified with Sobol indices
+\begin{equation}
+    S_{i} = \frac{\mathrm{Var}_{X_{i}}\!\left(\mathbb{E}[Y \mid X_{i}]\right)}{\mathrm{Var}(Y)},
+\label{eq:sobol-first-order}
+\end{equation}
+estimated from the $7 \times 9$ grid of Monte Carlo means. Energy is estimated via a first-order analytical model (Supplementary Methods) from operator counts and literature-proxy constants ($E_{\text{cell}}=100$~fJ, $E_{\text{ADC},8b}=25$~fJ, $E_{\text{DAC},8b}=30$~fJ); these are analytical placeholders for relative comparison, not measured silicon values.

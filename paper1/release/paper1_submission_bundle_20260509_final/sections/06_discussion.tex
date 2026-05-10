@@ -1,0 +1,43 @@
+% !TeX root = ../main.tex
+\section{Discussion}
+\label{sec:discussion}
+
+These findings should be read as a separation of deployment decisions: training must first avoid hardware-instance overfitting, after which physical precision, drift, and readout limits determine the usable operating point.
+
+\subsection{Separating Algorithmic and Physical Frontiers}
+\label{subsec:separating-frontiers}
+
+The primary finding of this behavioral simulation study is the clear separation between algorithmic generalization risks and physical device limits in analog CIM deployment. Standard fixed-mask hardware-aware training, while effective at higher precisions, fails fundamentally at extreme low precision (4-bit) because the network overfits to a single hardware instance's mismatch field. Ensemble HAT resolves this by treating hardware variability as a distribution-level regularizer during training, effectively "rescuing" the 4-bit regime for hardware instances unseen during training.
+
+This rescue, however, does not eliminate physical constraints; it merely reveals them. Once algorithmic convergence is secured, the system is bounded by the precision-retention frontier of the underlying memory technology. In our tested PCM UnitCell models, 8-bit precision emerges as the strongest practical operating point, combining high fresh accuracy (77.60\%) with drift stability. 6-bit precision, while drift-stable, enters a D2D-sensitive regime where device mismatch degrades mean accuracy (68.44\%) and introduces high seed-to-seed variance (std 6.03\%)---a transition zone between the quantization-dominated 4-bit regime and the noise-absorbed 8-bit regime.
+
+\subsection{Hard Cliffs and Operational Envelopes}
+\label{subsec:hard-cliffs}
+
+The joint ADC--D2D sensitivity analysis identifies a hierarchical set of hardware requirements. ADC resolution serves as a "hard gate": below 6 bits, classification accuracy collapses regardless of device quality. Above this threshold, device-to-device variability becomes the primary determinant of accuracy. This hierarchy suggests a clear hardware roadmap for vision transformer deployment: prioritize a high-precision (6-bit or greater) readout interface before attempting to minimize device-level mismatch.
+
+\subsection{Limitations and outlook}
+\label{subsec:limitations}
+
+\paragraph{Scope.} The conclusions are bounded by the present behavioral simulation stack. Device profiles are calibrated from literature values or a single fabrication batch, so the numbers do not claim cross-batch, temperature, aging, or circuit-layout coverage. We model quantization, D2D/C2C variability, ADC precision, write nonlinearity, and retention, but defer parasitic IR drop, sneak paths, and pulse-faithful programming to follow-on hardware-calibrated studies.
+
+\paragraph{Energy and scale.} The energy estimates are first-order analytical projections from literature-proxy constants ($E_{\text{cell}}=100$~fJ, $E_{\text{ADC},8b}=25$~fJ, $E_{\text{DAC},8b}=30$~fJ; Section~\ref{subsec:sensitivity-energy}). They rank deployment risks rather than predict silicon performance. The current ablation matrix also prioritizes non-ideality coverage over dataset breadth; cross-architecture TinyImageNet sweeps (see Supplementary Information) are treated as validation, not as main-text claims.
+
+\begin{table}[htbp]
+\centering
+\caption{\textbf{Deployment Risk Ranking and Mitigation Strategies.} Factors are ranked by their impact on categorical accuracy as identified by Sobol sensitivity analysis and precision-ladder sweeps.}
+\label{tab:deployment_risks}
+\begin{tabular}{lll}
+\toprule
+\textbf{Factor} & \textbf{Impact Rank} & \textbf{Mitigation Strategy} \\
+\midrule
+ADC Resolution & High (Hard Gate) & Secure $\geq$6-bit readout precision \\
+Stochastic D2D & High (Generalization) & Ensemble HAT (distribution matching) \\
+PCM Drift & Moderate (Time-bound) & 8-bit for stability; refresh 4-bit periodically \\
+Write Nonlinearity & Moderate (Optimization) & STE gradient scaling \\
+Shot Noise & Low (Transduction) & Front-end inverse-gamma compensation \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Outlook.} The next tests are straightforward: replace UnitCell presets with measured-array statistics, verify whether the non-monotonic precision-accuracy curve and 6-bit transition-zone behavior persist under measured-device statistics, and evaluate memory-bound inference components such as analog KV-cache with explicit train/eval noise separation. These extensions do not alter the present conclusion: algorithmic cross-instance resampling and physical precision-retention selection are separate deployment decisions.

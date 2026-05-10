@@ -37,6 +37,10 @@ paper/latex_gpt/supplementary_main.pdf
 # generated reports that should be curated before release
 report_md/_gpt/json_gpt/
 report_md/_gpt/csv_gpt/
+report_md/_gpt/FILE_PURPOSE_INVENTORY_*.tsv
+*.pptx
+report_md/*.pptx
+.claude/
 
 # local archive / scratch outputs
 internal/
@@ -97,3 +101,21 @@ tmp/
 
 # Backup retention dirs
 tmp/bak_cleanup_*/
+
+# GitHub slimming: keep generated/redundant release packages local-only
+*.tar.gz
+*.tgz
+*.zip
+*.7z
+archive/**/*.png
+archive/**/*.jpg
+archive/**/*.jpeg
+archive/**/*.pdf
+paper1/provenance/paper1_provenance_archive_20260509/**/*.png
+paper1/provenance/paper1_provenance_archive_20260509/**/*.jpg
+paper1/provenance/paper1_provenance_archive_20260509/**/*.jpeg
+paper1/provenance/paper1_provenance_archive_20260509/**/*.pdf
+paper1/provenance/asset_archive/unused_figures_candidates/**/*.png
+paper1/provenance/asset_archive/unused_figures_candidates/**/*.jpg
+paper1/provenance/asset_archive/unused_figures_candidates/**/*.jpeg
+paper1/provenance/asset_archive/unused_figures_candidates/**/*.pdf

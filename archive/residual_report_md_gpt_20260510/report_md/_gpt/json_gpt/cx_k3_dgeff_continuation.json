@@ -1,0 +1,63 @@
+{
+  "stage": "K3_continuation",
+  "warm_start_from": "checkpoints/_gpt/second_order_ste/V4_hybrid_standard_noise_hat_second_order_ste_best.pt",
+  "epochs": 100,
+  "batch_size": 128,
+  "num_workers": 0,
+  "fresh_instances": 10,
+  "eval_runs": 5,
+  "results": {
+    "k3_dgeff_0p05": {
+      "delta_g_eff": 0.05,
+      "train_best_acc": 91.52,
+      "train_best_epoch": 72,
+      "fresh_mean": 36.2118,
+      "fresh_std": 9.613163218559572,
+      "fresh_instances": 10,
+      "mc_runs_per_instance": 5,
+      "checkpoint_path": "/home/qiaosir/projects/compute_vit/checkpoints/_gpt/cx_k3_dgeff/k3_dgeff_0p05/V4_hybrid_standard_noise_hat_k3_dgeff_0p05_best.pt"
+    },
+    "k3_dgeff_0p10": {
+      "delta_g_eff": 0.1,
+      "train_best_acc": 90.97,
+      "train_best_epoch": 92,
+      "fresh_mean": 30.7934,
+      "fresh_std": 11.5895997074005,
+      "fresh_instances": 10,
+      "mc_runs_per_instance": 5,
+      "checkpoint_path": "/home/qiaosir/projects/compute_vit/checkpoints/_gpt/cx_k3_dgeff/k3_dgeff_0p10/V4_hybrid_standard_noise_hat_k3_dgeff_0p10_best.pt"
+    },
+    "k3_dgeff_0p15": {
+      "delta_g_eff": 0.15,
+      "train_best_acc": 91.27,
+      "train_best_epoch": 82,
+      "fresh_mean": 27.8508,
+      "fresh_std": 7.365293639767527,
+      "fresh_instances": 10,
+      "mc_runs_per_instance": 5,
+      "checkpoint_path": "/home/qiaosir/projects/compute_vit/checkpoints/_gpt/cx_k3_dgeff/k3_dgeff_0p15/V4_hybrid_standard_noise_hat_k3_dgeff_0p15_best.pt"
+    },
+    "k3_dgeff_0p20": {
+      "delta_g_eff": 0.2,
+      "train_best_acc": 91.5,
+      "train_best_epoch": 93,
+      "fresh_mean": 33.248400000000004,
+      "fresh_std": 10.2938015782962,
+      "fresh_instances": 10,
+      "mc_runs_per_instance": 5,
+      "checkpoint_path": "/home/qiaosir/projects/compute_vit/checkpoints/_gpt/cx_k3_dgeff/k3_dgeff_0p20/V4_hybrid_standard_noise_hat_k3_dgeff_0p20_best.pt"
+    },
+    "k3_dgeff_0p25": {
+      "delta_g_eff": 0.25,
+      "train_best_acc": 91.24,
+      "train_best_epoch": 76,
+      "fresh_mean": 30.0756,
+      "fresh_std": 9.067994892906468,
+      "fresh_instances": 10,
+      "mc_runs_per_instance": 5,
+      "checkpoint_path": "/home/qiaosir/projects/compute_vit/checkpoints/_gpt/cx_k3_dgeff/k3_dgeff_0p25/V4_hybrid_standard_noise_hat_k3_dgeff_0p25_best.pt"
+    }
+  },
+  "best_tag": "k3_dgeff_0p05",
+  "mean_of_means": 31.636
+}

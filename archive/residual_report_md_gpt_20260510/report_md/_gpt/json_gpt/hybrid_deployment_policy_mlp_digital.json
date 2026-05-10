@@ -1,0 +1,706 @@
+{
+  "compiler_config": {
+    "mlp_vulnerability": 0.93,
+    "qkv_vulnerability": 0.04,
+    "attn_proj_vulnerability": 0.02,
+    "accuracy_budget_pp": 1.0
+  },
+  "policies": [
+    {
+      "layer_name": "patch_embed.conv1.conv.weight",
+      "action": "cim_keep",
+      "cim_ratio": 1.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "patch_embed.conv1.bn.weight",
+      "action": "cim_keep",
+      "cim_ratio": 1.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "patch_embed.conv2.conv.weight",
+      "action": "cim_keep",
+      "cim_ratio": 1.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "patch_embed.conv2.bn.weight",
+      "action": "cim_keep",
+      "cim_ratio": 1.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.0.blocks.0.conv1.conv.weight",
+      "action": "cim_keep",
+      "cim_ratio": 1.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.0.blocks.0.conv1.bn.weight",
+      "action": "cim_keep",
+      "cim_ratio": 1.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.0.blocks.0.conv2.conv.weight",
+      "action": "cim_keep",
+      "cim_ratio": 1.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.0.blocks.0.conv2.bn.weight",
+      "action": "cim_keep",
+      "cim_ratio": 1.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.0.blocks.0.conv3.conv.weight",
+      "action": "cim_keep",
+      "cim_ratio": 1.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.0.blocks.0.conv3.bn.weight",
+      "action": "cim_keep",
+      "cim_ratio": 1.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.0.blocks.1.conv1.conv.weight",
+      "action": "cim_keep",
+      "cim_ratio": 1.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.0.blocks.1.conv1.bn.weight",
+      "action": "cim_keep",
+      "cim_ratio": 1.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.0.blocks.1.conv2.conv.weight",
+      "action": "cim_keep",
+      "cim_ratio": 1.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.0.blocks.1.conv2.bn.weight",
+      "action": "cim_keep",
+      "cim_ratio": 1.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.0.blocks.1.conv3.conv.weight",
+      "action": "cim_keep",
+      "cim_ratio": 1.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.0.blocks.1.conv3.bn.weight",
+      "action": "cim_keep",
+      "cim_ratio": 1.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.1.downsample.conv1.conv.weight",
+      "action": "cim_keep",
+      "cim_ratio": 1.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.1.downsample.conv1.bn.weight",
+      "action": "cim_keep",
+      "cim_ratio": 1.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.1.downsample.conv2.conv.weight",
+      "action": "cim_keep",
+      "cim_ratio": 1.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.1.downsample.conv2.bn.weight",
+      "action": "cim_keep",
+      "cim_ratio": 1.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.1.downsample.conv3.conv.weight",
+      "action": "cim_keep",
+      "cim_ratio": 1.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.1.downsample.conv3.bn.weight",
+      "action": "cim_keep",
+      "cim_ratio": 1.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.1.blocks.0.attn.norm.weight",
+      "action": "cim_keep",
+      "cim_ratio": 1.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.1.blocks.0.attn.qkv.weight",
+      "action": "cim_keep",
+      "cim_ratio": 1.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.1.blocks.0.attn.proj.weight",
+      "action": "cim_keep",
+      "cim_ratio": 1.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.1.blocks.0.mlp.norm.weight",
+      "action": "cim_keep",
+      "cim_ratio": 1.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.1.blocks.0.mlp.fc1.weight",
+      "action": "digital_fallback",
+      "cim_ratio": 0.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.1.blocks.0.mlp.fc2.weight",
+      "action": "digital_fallback",
+      "cim_ratio": 0.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.1.blocks.0.local_conv.conv.weight",
+      "action": "cim_keep",
+      "cim_ratio": 1.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.1.blocks.0.local_conv.bn.weight",
+      "action": "cim_keep",
+      "cim_ratio": 1.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.1.blocks.1.attn.norm.weight",
+      "action": "cim_keep",
+      "cim_ratio": 1.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.1.blocks.1.attn.qkv.weight",
+      "action": "cim_keep",
+      "cim_ratio": 1.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.1.blocks.1.attn.proj.weight",
+      "action": "cim_keep",
+      "cim_ratio": 1.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.1.blocks.1.mlp.norm.weight",
+      "action": "cim_keep",
+      "cim_ratio": 1.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.1.blocks.1.mlp.fc1.weight",
+      "action": "digital_fallback",
+      "cim_ratio": 0.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.1.blocks.1.mlp.fc2.weight",
+      "action": "digital_fallback",
+      "cim_ratio": 0.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.1.blocks.1.local_conv.conv.weight",
+      "action": "cim_keep",
+      "cim_ratio": 1.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.1.blocks.1.local_conv.bn.weight",
+      "action": "cim_keep",
+      "cim_ratio": 1.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.2.downsample.conv1.conv.weight",
+      "action": "cim_keep",
+      "cim_ratio": 1.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.2.downsample.conv1.bn.weight",
+      "action": "cim_keep",
+      "cim_ratio": 1.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.2.downsample.conv2.conv.weight",
+      "action": "cim_keep",
+      "cim_ratio": 1.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.2.downsample.conv2.bn.weight",
+      "action": "cim_keep",
+      "cim_ratio": 1.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.2.downsample.conv3.conv.weight",
+      "action": "cim_keep",
+      "cim_ratio": 1.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.2.downsample.conv3.bn.weight",
+      "action": "cim_keep",
+      "cim_ratio": 1.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.2.blocks.0.attn.norm.weight",
+      "action": "cim_keep",
+      "cim_ratio": 1.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.2.blocks.0.attn.qkv.weight",
+      "action": "cim_keep",
+      "cim_ratio": 1.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.2.blocks.0.attn.proj.weight",
+      "action": "cim_keep",
+      "cim_ratio": 1.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.2.blocks.0.mlp.norm.weight",
+      "action": "cim_keep",
+      "cim_ratio": 1.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.2.blocks.0.mlp.fc1.weight",
+      "action": "digital_fallback",
+      "cim_ratio": 0.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.2.blocks.0.mlp.fc2.weight",
+      "action": "digital_fallback",
+      "cim_ratio": 0.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.2.blocks.0.local_conv.conv.weight",
+      "action": "cim_keep",
+      "cim_ratio": 1.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.2.blocks.0.local_conv.bn.weight",
+      "action": "cim_keep",
+      "cim_ratio": 1.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.2.blocks.1.attn.norm.weight",
+      "action": "cim_keep",
+      "cim_ratio": 1.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.2.blocks.1.attn.qkv.weight",
+      "action": "cim_keep",
+      "cim_ratio": 1.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.2.blocks.1.attn.proj.weight",
+      "action": "cim_keep",
+      "cim_ratio": 1.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.2.blocks.1.mlp.norm.weight",
+      "action": "cim_keep",
+      "cim_ratio": 1.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.2.blocks.1.mlp.fc1.weight",
+      "action": "digital_fallback",
+      "cim_ratio": 0.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.2.blocks.1.mlp.fc2.weight",
+      "action": "digital_fallback",
+      "cim_ratio": 0.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.2.blocks.1.local_conv.conv.weight",
+      "action": "cim_keep",
+      "cim_ratio": 1.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.2.blocks.1.local_conv.bn.weight",
+      "action": "cim_keep",
+      "cim_ratio": 1.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.2.blocks.2.attn.norm.weight",
+      "action": "cim_keep",
+      "cim_ratio": 1.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.2.blocks.2.attn.qkv.weight",
+      "action": "cim_keep",
+      "cim_ratio": 1.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.2.blocks.2.attn.proj.weight",
+      "action": "cim_keep",
+      "cim_ratio": 1.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.2.blocks.2.mlp.norm.weight",
+      "action": "cim_keep",
+      "cim_ratio": 1.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.2.blocks.2.mlp.fc1.weight",
+      "action": "digital_fallback",
+      "cim_ratio": 0.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.2.blocks.2.mlp.fc2.weight",
+      "action": "digital_fallback",
+      "cim_ratio": 0.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.2.blocks.2.local_conv.conv.weight",
+      "action": "cim_keep",
+      "cim_ratio": 1.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.2.blocks.2.local_conv.bn.weight",
+      "action": "cim_keep",
+      "cim_ratio": 1.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.2.blocks.3.attn.norm.weight",
+      "action": "cim_keep",
+      "cim_ratio": 1.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.2.blocks.3.attn.qkv.weight",
+      "action": "cim_keep",
+      "cim_ratio": 1.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.2.blocks.3.attn.proj.weight",
+      "action": "cim_keep",
+      "cim_ratio": 1.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.2.blocks.3.mlp.norm.weight",
+      "action": "cim_keep",
+      "cim_ratio": 1.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.2.blocks.3.mlp.fc1.weight",
+      "action": "digital_fallback",
+      "cim_ratio": 0.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.2.blocks.3.mlp.fc2.weight",
+      "action": "digital_fallback",
+      "cim_ratio": 0.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.2.blocks.3.local_conv.conv.weight",
+      "action": "cim_keep",
+      "cim_ratio": 1.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.2.blocks.3.local_conv.bn.weight",
+      "action": "cim_keep",
+      "cim_ratio": 1.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.2.blocks.4.attn.norm.weight",
+      "action": "cim_keep",
+      "cim_ratio": 1.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.2.blocks.4.attn.qkv.weight",
+      "action": "cim_keep",
+      "cim_ratio": 1.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.2.blocks.4.attn.proj.weight",
+      "action": "cim_keep",
+      "cim_ratio": 1.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.2.blocks.4.mlp.norm.weight",
+      "action": "cim_keep",
+      "cim_ratio": 1.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.2.blocks.4.mlp.fc1.weight",
+      "action": "digital_fallback",
+      "cim_ratio": 0.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.2.blocks.4.mlp.fc2.weight",
+      "action": "digital_fallback",
+      "cim_ratio": 0.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.2.blocks.4.local_conv.conv.weight",
+      "action": "cim_keep",
+      "cim_ratio": 1.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.2.blocks.4.local_conv.bn.weight",
+      "action": "cim_keep",
+      "cim_ratio": 1.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.2.blocks.5.attn.norm.weight",
+      "action": "cim_keep",
+      "cim_ratio": 1.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.2.blocks.5.attn.qkv.weight",
+      "action": "cim_keep",
+      "cim_ratio": 1.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.2.blocks.5.attn.proj.weight",
+      "action": "cim_keep",
+      "cim_ratio": 1.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.2.blocks.5.mlp.norm.weight",
+      "action": "cim_keep",
+      "cim_ratio": 1.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.2.blocks.5.mlp.fc1.weight",
+      "action": "digital_fallback",
+      "cim_ratio": 0.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.2.blocks.5.mlp.fc2.weight",
+      "action": "digital_fallback",
+      "cim_ratio": 0.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.2.blocks.5.local_conv.conv.weight",
+      "action": "cim_keep",
+      "cim_ratio": 1.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.2.blocks.5.local_conv.bn.weight",
+      "action": "cim_keep",
+      "cim_ratio": 1.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.3.downsample.conv1.conv.weight",
+      "action": "cim_keep",
+      "cim_ratio": 1.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.3.downsample.conv1.bn.weight",
+      "action": "cim_keep",
+      "cim_ratio": 1.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.3.downsample.conv2.conv.weight",
+      "action": "cim_keep",
+      "cim_ratio": 1.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.3.downsample.conv2.bn.weight",
+      "action": "cim_keep",
+      "cim_ratio": 1.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.3.downsample.conv3.conv.weight",
+      "action": "cim_keep",
+      "cim_ratio": 1.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.3.downsample.conv3.bn.weight",
+      "action": "cim_keep",
+      "cim_ratio": 1.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.3.blocks.0.attn.norm.weight",
+      "action": "cim_keep",
+      "cim_ratio": 1.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.3.blocks.0.attn.qkv.weight",
+      "action": "cim_keep",
+      "cim_ratio": 1.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.3.blocks.0.attn.proj.weight",
+      "action": "cim_keep",
+      "cim_ratio": 1.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.3.blocks.0.mlp.norm.weight",
+      "action": "cim_keep",
+      "cim_ratio": 1.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.3.blocks.0.mlp.fc1.weight",
+      "action": "digital_fallback",
+      "cim_ratio": 0.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.3.blocks.0.mlp.fc2.weight",
+      "action": "digital_fallback",
+      "cim_ratio": 0.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.3.blocks.0.local_conv.conv.weight",
+      "action": "cim_keep",
+      "cim_ratio": 1.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.3.blocks.0.local_conv.bn.weight",
+      "action": "cim_keep",
+      "cim_ratio": 1.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.3.blocks.1.attn.norm.weight",
+      "action": "cim_keep",
+      "cim_ratio": 1.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.3.blocks.1.attn.qkv.weight",
+      "action": "cim_keep",
+      "cim_ratio": 1.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.3.blocks.1.attn.proj.weight",
+      "action": "cim_keep",
+      "cim_ratio": 1.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.3.blocks.1.mlp.norm.weight",
+      "action": "cim_keep",
+      "cim_ratio": 1.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.3.blocks.1.mlp.fc1.weight",
+      "action": "digital_fallback",
+      "cim_ratio": 0.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.3.blocks.1.mlp.fc2.weight",
+      "action": "digital_fallback",
+      "cim_ratio": 0.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.3.blocks.1.local_conv.conv.weight",
+      "action": "cim_keep",
+      "cim_ratio": 1.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "stages.3.blocks.1.local_conv.bn.weight",
+      "action": "cim_keep",
+      "cim_ratio": 1.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "head.norm.weight",
+      "action": "cim_keep",
+      "cim_ratio": 1.0,
+      "calibration_interval": null
+    },
+    {
+      "layer_name": "head.fc.weight",
+      "action": "digital_fallback",
+      "cim_ratio": 0.0,
+      "calibration_interval": null
+    }
+  ]
+}

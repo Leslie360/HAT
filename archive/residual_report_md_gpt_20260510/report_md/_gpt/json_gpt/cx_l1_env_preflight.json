@@ -1,0 +1,83 @@
+{
+  "experiment": "cx_l1_env_preflight",
+  "generated_at": "2026-04-23T20:06:21+08:00",
+  "python": "/home/qiaosir/miniconda3/envs/LLM/bin/python",
+  "python_version": "3.11.6 | packaged by conda-forge | (main, Oct  3 2023, 10:40:35) [GCC 12.3.0]",
+  "platform": "Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.35",
+  "required_modules": {
+    "torch": {
+      "present": true,
+      "version": "2.10.0+cu128"
+    },
+    "transformers": {
+      "present": true,
+      "version": "5.6.1"
+    },
+    "datasets": {
+      "present": true,
+      "version": "4.8.4"
+    },
+    "accelerate": {
+      "present": true,
+      "version": "1.13.0"
+    },
+    "evaluate": {
+      "present": true,
+      "version": "0.4.6"
+    },
+    "numpy": {
+      "present": true,
+      "version": "2.4.2"
+    }
+  },
+  "optional_modules": {
+    "sentencepiece": {
+      "present": true,
+      "version": "0.2.1"
+    },
+    "safetensors": {
+      "present": true,
+      "version": "0.7.0"
+    },
+    "tokenizers": {
+      "present": true,
+      "version": "0.22.2"
+    }
+  },
+  "missing_required": [],
+  "hf_cache": {
+    "hf_home": "/home/qiaosir/.cache/huggingface",
+    "hub_exists": true,
+    "models": {
+      "TinyLlama/TinyLlama-1.1B-intermediate": {
+        "cache_dir": "/home/qiaosir/.cache/huggingface/hub/models--TinyLlama--TinyLlama-1.1B-intermediate",
+        "exists": false,
+        "snapshot_count": 0
+      },
+      "TinyLlama/TinyLlama-1.1B-Chat-v1.0": {
+        "cache_dir": "/home/qiaosir/.cache/huggingface/hub/models--TinyLlama--TinyLlama-1.1B-Chat-v1.0",
+        "exists": false,
+        "snapshot_count": 0
+      },
+      "gpt2-medium": {
+        "cache_dir": "/home/qiaosir/.cache/huggingface/hub/models--gpt2-medium",
+        "exists": false,
+        "snapshot_count": 0
+      }
+    }
+  },
+  "gpu": {
+    "nvidia_smi": "/usr/local/bin/nvidia-smi",
+    "returncode": 0,
+    "output": "0, NVIDIA GeForce RTX 5070 Ti, 4653, 16303, 49",
+    "available": true
+  },
+  "download_free": true,
+  "ready_for_cx_l1": true,
+  "recommended_install_command": "/home/qiaosir/miniconda3/envs/LLM/bin/python -m pip install transformers datasets accelerate evaluate sentencepiece safetensors",
+  "notes": [
+    "Do not launch CX-L1 while Work 1 R2 or other CX-K GPU tasks own the GPU.",
+    "If TinyLlama cannot be loaded or baseline perplexity is bad, fall back to gpt2-medium per Claude rule.",
+    "This preflight does not download model weights or datasets."
+  ]
+}

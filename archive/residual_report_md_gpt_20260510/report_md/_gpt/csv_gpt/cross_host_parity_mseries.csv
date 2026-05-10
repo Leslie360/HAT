@@ -1,0 +1,15 @@
+run_id,host,model,hat_type,seed,batch_size,nl,train_best,fresh_mean,fresh_std,fresh_range
+CX-M1,local,V3,Standard,123,64,2.0,82.89,82.0282,0.9416,79.51-82.86
+CX-M2,local,V4,Ensemble,123,64,2.0,80.97,80.4538,0.5835,79.26-81.14
+CX-M3,local,V4,Proportional,123,64,2.0,80.88,80.7132,0.1370,80.46-81.00
+CX-M4,local,V4,Proportional,456,64,2.0,81.39,80.7532,0.4271,79.94-81.26
+CX-M5,local,V3,Standard,456,64,2.0,80.69,80.4674,0.0936,80.33-80.58
+CX-M6,local,V4,Ensemble,456,64,2.0,81.87,81.1850,1.6847,78.07-82.54
+R-M1,remote,V3,Standard,123,512,2.0,83.75,83.64,0.10,range_width=0.42
+R-M2 s123,remote,V4,Proportional,123,512,2.0,84.79,84.80,0.08,range_width=0.32
+R-M2 s222,remote,V4,Proportional,222,512,2.0,84.71,84.79,0.07,range_width=0.23
+R-M2 s333,remote,V4,Proportional,333,512,2.0,83.23,TBD,TBD,TBD
+R-M2 s789,remote,V4,Proportional,789,512,2.0,83.38,TBD,TBD,TBD
+R-M2 s999,remote,V4,Proportional,999,512,2.0,83.72,TBD,TBD,TBD
+R-M5 s567,remote,V3,Standard,567,512,2.0,83.67,TBD,TBD,TBD
+R-M5 s890,remote,V3,Standard,890,512,2.0,82.20,TBD,TBD,TBD

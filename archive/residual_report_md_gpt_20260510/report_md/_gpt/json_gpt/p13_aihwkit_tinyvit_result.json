@@ -1,0 +1,8 @@
+{
+  "experiment": "AIHWKIT Tiny-ViT Benchmark",
+  "status": "CONVERSION_FAILED",
+  "error": "ValueError: Only one group is supported",
+  "interpretation": "AIHWKIT cannot natively map Tiny-ViT attention layers, demonstrating the need for our custom framework.",
+  "digital_baseline_acc": 10.0,
+  "paper_analog_acc": 91.94
+}

@@ -1,0 +1,45 @@
+{
+  "code_sha256": "3d45a1dab258eb31c1fa3f564fbf282897773330c251111472fc95b1360c45b7",
+  "commit_hash": "cbb5db0759cf981d59f702343097c17fe6d944a1",
+  "cuda_device_name": "NVIDIA GeForce RTX 5070 Ti",
+  "figures": [
+    "paper/figures/figS_hessian_spectrum.png",
+    "paper/figures/figS_hessian_spectrum.pdf"
+  ],
+  "git_worktree_dirty": true,
+  "gpu_resize_eval": true,
+  "gpu_resize_protocol": "CIFAR32 ToTensor -> GPU bilinear resize 224 -> GPU normalize",
+  "job": "E1_HESSIAN_EIGENSPECTRUM_COMBINED",
+  "pytorch_version": "2.10.0+cu128",
+  "results": {
+    "canonical_ensemble": {
+      "json": "report_md/_gpt/json_gpt/hessian_eigenspectrum_canonical_ensemble.json",
+      "top1_abs_eigenvalue": 221.29839904698557
+    },
+    "canonical_standard": {
+      "json": "report_md/_gpt/json_gpt/hessian_eigenspectrum_canonical_standard.json",
+      "top1_abs_eigenvalue": 23.276485333510635
+    },
+    "cx_m1": {
+      "json": "report_md/_gpt/json_gpt/hessian_eigenspectrum_cx_m1.json",
+      "top1_abs_eigenvalue": 30058.396397537144
+    },
+    "cx_m2": {
+      "json": "report_md/_gpt/json_gpt/hessian_eigenspectrum_cx_m2.json",
+      "top1_abs_eigenvalue": 5705.596646820567
+    },
+    "cx_m3": {
+      "json": "report_md/_gpt/json_gpt/hessian_eigenspectrum_cx_m3.json",
+      "top1_abs_eigenvalue": 1764.965291452813
+    }
+  },
+  "run_ids": [
+    "canonical_ensemble",
+    "canonical_standard",
+    "cx_m1",
+    "cx_m3",
+    "cx_m2"
+  ],
+  "script": "scripts/_gpt/empirical_mechanism_20260425.py",
+  "timestamp_unix": 1777092328.3958952
+}

@@ -1,0 +1,109 @@
+{
+  "checkpoint_path": "/home/qiaosir/projects/compute_vit/checkpoints/_gpt/r1_clean_anchor/V4_hybrid_standard_noise_hat_r1_clean_anchor_first_order_best.pt",
+  "train_best_acc": 91.5,
+  "fresh_instances": 5,
+  "mc_runs_per_instance": 3,
+  "num_calib_samples": 0,
+  "apply_mlp_digital": false,
+  "calib_target": "all_blocks",
+  "resample_scope": "all",
+  "dataset": "cifar10",
+  "num_classes": 10,
+  "eval_batch_size": 256,
+  "cross_instance_mean": 32.828,
+  "cross_instance_std": 6.5780517210223,
+  "instance_means": [
+    34.74333333333333,
+    29.89666666666667,
+    22.823333333333334,
+    38.31666666666667,
+    38.36
+  ],
+  "instances": [
+    {
+      "instance_index": 0,
+      "seed": 42,
+      "resampled_modules": 42,
+      "resample_scope": "all",
+      "eval_runs": 3,
+      "calib_samples": 0,
+      "calib_blocks": 0,
+      "test_loss_mean": 5.641363748041789,
+      "test_acc_mean": 34.74333333333333,
+      "test_acc_std": 1.2779801772067254,
+      "test_acc_raw": [
+        33.28,
+        35.31,
+        35.64
+      ]
+    },
+    {
+      "instance_index": 1,
+      "seed": 142,
+      "resampled_modules": 42,
+      "resample_scope": "all",
+      "eval_runs": 3,
+      "calib_samples": 0,
+      "calib_blocks": 0,
+      "test_loss_mean": 5.813567783610027,
+      "test_acc_mean": 29.89666666666667,
+      "test_acc_std": 1.1551767541520785,
+      "test_acc_raw": [
+        28.94,
+        31.18,
+        29.57
+      ]
+    },
+    {
+      "instance_index": 2,
+      "seed": 242,
+      "resampled_modules": 42,
+      "resample_scope": "all",
+      "eval_runs": 3,
+      "calib_samples": 0,
+      "calib_blocks": 0,
+      "test_loss_mean": 6.735130051676432,
+      "test_acc_mean": 22.823333333333334,
+      "test_acc_std": 0.2182506204649443,
+      "test_acc_raw": [
+        22.63,
+        22.78,
+        23.06
+      ]
+    },
+    {
+      "instance_index": 3,
+      "seed": 342,
+      "resampled_modules": 42,
+      "resample_scope": "all",
+      "eval_runs": 3,
+      "calib_samples": 0,
+      "calib_blocks": 0,
+      "test_loss_mean": 4.724733993403117,
+      "test_acc_mean": 38.31666666666667,
+      "test_acc_std": 1.7179736125253287,
+      "test_acc_raw": [
+        38.56,
+        36.49,
+        39.9
+      ]
+    },
+    {
+      "instance_index": 4,
+      "seed": 442,
+      "resampled_modules": 42,
+      "resample_scope": "all",
+      "eval_runs": 3,
+      "calib_samples": 0,
+      "calib_blocks": 0,
+      "test_loss_mean": 4.943936064402262,
+      "test_acc_mean": 38.36,
+      "test_acc_std": 2.7119918878934737,
+      "test_acc_raw": [
+        41.39,
+        37.53,
+        36.16
+      ]
+    }
+  ]
+}

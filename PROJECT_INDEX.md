@@ -28,7 +28,8 @@ These rules apply to anything created from now on. We are deliberately **not** r
 
 ```
 compute_vit/
-├── README.md, MASTER_PLAN.md, RELEASE_CHECKLIST.md, EXPERIMENT_PROTOCOL.md   live root docs
+├── README.md, PROJECT_INDEX.md, WORKSPACE_LAYOUT.md                            root entry docs
+├── archive/reorg_20260509/legacy_root_docs_20260510/                           isolated old root docs
 ├── <81 .py at root>                                                            code (see §4)
 ├── AGENT_SYNC/             deprecated, replaced by report_md/_gpt/AGENT_SYNC_gpt.md
 ├── _archive/               ← everything retired goes here (§8)
@@ -50,95 +51,76 @@ compute_vit/
 - **frozen** — authoritative snapshot, do not edit (e.g., `CANONICAL_RESULT_LOCK_gpt.md`).
 - **draft-superseded** — older markdown draft that has a canonical `.tex` replacement. Keep for history, never edit.
 - **scratch** — gitignored or throwaway.
-- **archive** — moved to `_archive/`. Reversible via `mv`.
+- **archive** — moved to archive storage. Reversible only when a restore script or manifest says so; see `archive/README.md`.
 
 ---
 
-## 3. Root markdown (4 live files)
+## 3. Root markdown and isolated legacy docs
 
 | Path | Purpose | Status |
 |:--|:--|:--|
 | `README.md` | Project entry point, reproducibility quickstart | live |
-| `MASTER_PLAN.md` | 36-task plan, all marked ✅ or optional | frozen |
-| `RELEASE_CHECKLIST.md` | Submission gate: numbers, figures, text locks | live |
-| `EXPERIMENT_PROTOCOL.md` | Canonical experiment definitions (R1–R6, C1–C9, V1–V6) | frozen |
+| `PROJECT_INDEX.md` | Root registry and path policy | live |
+| `WORKSPACE_LAYOUT.md` | Current workspace map | live |
+| `archive/reorg_20260509/legacy_root_docs_20260510/project/MASTER_PLAN.md` | Old task plan snapshot | archive |
+| `archive/reorg_20260509/legacy_root_docs_20260510/project/RELEASE_CHECKLIST.md` | Old submission checklist snapshot | archive |
+| `archive/reorg_20260509/legacy_root_docs_20260510/project/EXPERIMENT_PROTOCOL.md` | Old experiment protocol snapshot | archive |
+| `archive/reorg_20260509/legacy_root_docs_20260510/reproducibility/REPRODUCIBILITY.md` | Old reproducibility notes | archive |
+| `archive/reorg_20260509/legacy_root_docs_20260510/reproducibility/README_REPRODUCIBILITY_PAPER1.md` | Old Paper-1 reproducibility quick reference | archive |
+| `archive/reorg_20260509/legacy_root_docs_20260510/workspace/ROOT_REORG_PLAN_20260509.md` | Old reorganization plan | archive |
+| `archive/reorg_20260509/legacy_root_docs_20260510/workspace/WORKSPACE_LAYOUT_V2_20260509.md` | Old target layout v2 | archive |
+| `archive/reorg_20260509/legacy_root_docs_20260510/workspace/WORKSPACE_FINAL_CLEAN_STATUS_20260510.md` | Old cleanup status snapshot | archive |
 
 ---
 
-## 4. Root Python — grouped
+## 4. Python code layout
 
-### 4.1 Training entry points (4) — **live**
+Python implementation files now live under `src/compute_vit/`; user-facing train/eval wrappers live under `cli/`. The root directory should not contain implementation `.py` files.
 
-| Path | Purpose |
-|:--|:--|
-| `train_resnet18.py` | ResNet-18 R1–R6 trainer |
-| `train_convnext.py` | ConvNeXt-Tiny C1–C9 trainer |
-| `train_tinyvit.py` | Tiny-ViT V1–V6 trainer |
-| `train_tinyvit_ensemble.py` | Ensemble HAT trainer (paper Fig. 8 driver) |
-
-### 4.2 Evaluation entry points (5) — **live**
+### 4.1 Training wrappers — **live**
 
 | Path | Purpose |
 |:--|:--|
-| `eval_imagenet_analog.py` | ImageNet-1k analog evaluation |
-| `eval_measured_profile.py` | Evaluate checkpoints against a user-supplied measured profile |
-| `eval_literature_profile.py` | Evaluate against literature (Zhang 2025) profile |
-| `eval_fresh_instances.py` | Instance-variation sweep for Fig. 10 |
-| `eval_resnet18_checkpoints.py` | Bulk eval over `checkpoints/R*` |
+| `cli/train_resnet18.py` | ResNet-18 R1–R6 trainer wrapper |
+| `cli/train_convnext.py` | ConvNeXt-Tiny C1–C9 trainer wrapper |
+| `cli/train_tinyvit.py` | Tiny-ViT V1–V6 trainer wrapper |
+| `cli/train_tinyvit_ensemble.py` | Ensemble HAT trainer wrapper |
 
-### 4.3 Experiment drivers — `run_*.py` (39 files, live whitelist)
-
-All are canonical entry points invoked from `scripts/` or documented in `EXPERIMENT_PROTOCOL.md`.
-
-Representative families (see `EXPERIMENT_PROTOCOL.md` for the exact mapping):
-- `run_crosssim_*`: CrossSim comparisons
-- `run_adc_*`, `run_convnext_adc_sweep.py`, `run_resnet18_adc_sweep.py`, `run_pure_digital_adc_sweep.py`: ADC-bit sweeps
-- `run_nl_*`, `run_layer_*`, `run_layer_wise_nl_sensitivity.py`: nonlinearity / layer sensitivity
-- `run_ensemble_*`, `run_ensemble_hat_ablation_FIXED.py`, `run_ensemble_hat_fixed.py`: HAT ablations
-- `run_ir_drop_sensitivity_v3.py`, `run_retention_sensitivity.py`, `run_noise_sweep.py`, `run_device_comparison.py`, `run_contour_sweep.py`, `run_combined_nonideality.py`, `run_energy_sensitivity.py`, `run_zhang_sensitivity.py`, `run_sobol_analysis.py`, `run_statistical_validation.py`, `run_spatial_ablation.py`: physical/statistical sweeps
-- `run_svhn_training.py`, `run_flowers102_training.py`, `run_cifar100_fast.py`, `run_a23_experiments.py`, `run_framework_comparison.py`, `run_visualization_suite.py`, `run_error_analysis.py`, `run_adc_cliff_analysis.py`: dataset / framework / misc
-
-### 4.4 Plotting & reporting (5) — **live**
+### 4.2 Evaluation wrappers — **live**
 
 | Path | Purpose |
 |:--|:--|
-| `plot_convnext_results.py` | Per-architecture result plots |
-| `plot_resnet18_results.py` | Per-architecture result plots |
-| `visualize_attention.py` | Fig. 7 attention-map visualization |
-| `generate_final_report.py` | Aggregates experiment JSONs into report |
-| `report_asset_paths.py` | Enumerates asset → section mapping |
+| `cli/eval_imagenet_analog.py` | ImageNet-1k analog evaluation wrapper |
+| `cli/eval_measured_profile.py` | Evaluate checkpoints against a user-supplied measured profile |
+| `cli/eval_literature_profile.py` | Evaluate against literature profile |
+| `cli/eval_fresh_instances.py` | Instance-variation sweep wrapper |
+| `cli/eval_fresh_instances_postfix.py` | Post-fix-aware fresh instance eval wrapper |
+| `cli/eval_resnet18_checkpoints.py` | Bulk eval over `checkpoints/R*` wrapper |
 
-### 4.5 Utilities (9) — **live, library code**
+### 4.3 Core implementation modules — **live**
 
 | Path | Purpose |
 |:--|:--|
-| `analog_layers.py` | Core analog layer primitive (CIM simulation) |
-| `analog_layers_ensemble.py` | Ensemble variant for HAT |
-| `amp_utils.py` | Mixed-precision helpers |
-| `device_profile_utils.py` | JSON profile loader/validator |
-| `generate_synthetic_device_profiles_gpt.py` | Synthetic profile generator (keep name — called by notebooks) |
-| `inference_analysis_utils.py` | Post-inference stats |
-| `physical_noise_pipeline.py` | Noise-injection pipeline |
-| `model_profiling.py` | Layer-wise profiling pass |
-| `tinyvit_hybrid_utils.py` | Hybrid Tiny-ViT helpers |
+| `src/compute_vit/analog_layers.py` | Core analog layer primitive |
+| `src/compute_vit/analog_layers_ensemble.py` | Ensemble HAT primitives |
+| `src/compute_vit/amp_utils.py` | Mixed-precision helpers |
+| `src/compute_vit/device_profile_utils.py` | JSON profile loader/validator |
+| `src/compute_vit/inference_analysis_utils.py` | Post-inference stats and calibration |
+| `src/compute_vit/physical_noise_pipeline.py` | Noise-injection pipeline |
+| `src/compute_vit/model_profiling.py` | Layer-wise profiling pass |
+| `src/compute_vit/tinyvit_hybrid_utils.py` | Hybrid Tiny-ViT helpers |
+| `src/compute_vit/report_asset_paths.py` | Enumerates asset paths |
+| `src/compute_vit/hybrid_calibration.py` | Hybrid calibration helpers |
+| `src/compute_vit/hybrid_runtime_compiler.py` | Runtime compiler entry/helper |
 
-### 4.6 Preparation / legacy-named helpers kept at root (7) — **live**
+### 4.4 Experiment drivers — archived/relocated
 
-| Path | Purpose | Kept because |
-|:--|:--|:--|
-| `download_imagenet_val.py` | Pulls ImageNet val split | Reproducibility step in README |
-| `prepare_imagenet_val.py` | Preprocesses ImageNet val | Same |
-| `probe_resnet_ckpts.py` | Sanity-checks `checkpoints/R*` | Referenced by release checklist |
-| `make_appendix.py` | Builds `paper/08_appendix.md` | Still called by paper build |
-| `proxy_sensitivity_sweep_gpt.py` | Proxy-parameter sweep | Cited in Discussion |
-| `experiment_nonideality_sweep.py` | Legacy-named nonideality sweep wrapper | Kept for backwards-compatible experiment entry |
-| `ablation_ensemble_hat_vs_iid.py` | Legacy-named HAT-vs-IID ablation | Kept because rebuttal-side evidence still references it |
+All `run_*.py`-style one-shot drivers should live under `scripts/`, `experiments/scripts/`, or archive with manifests. See the archived protocol snapshot at `archive/reorg_20260509/legacy_root_docs_20260510/project/EXPERIMENT_PROTOCOL.md` for old mappings.
 
-### 4.7 Tests (12) — **live**
+### 4.5 Tests — **live**
 
-All `test_*.py` at root are the actual pytest suite. Do not move.
+Tests live under `tests/`. `tests/conftest.py` adds `src/compute_vit` to `sys.path` for current bare-import compatibility.
 
-`test_additional_datasets.py`, `test_analog_layers.py`, `test_checkpoint_behavior.py`, `test_device_profile_utils_gpt.py`, `test_eval_imagenet_analog.py`, `test_generate_synthetic_device_profiles_gpt.py`, `test_inference_analysis_utils.py`, `test_run_device_comparison.py`, `test_run_layer_sensitivity.py`, `test_train_convnext.py`, `test_train_tinyvit.py`, `test_visualize_attention.py`.
 
 ---
 
@@ -185,16 +167,15 @@ All `test_*.py` at root are the actual pytest suite. Do not move.
 | `paper/01_introduction.md` … `paper/07_conclusion.md` | Pre-LaTeX markdown drafts | **draft-superseded** (do not edit; LaTeX is source of truth) |
 | `paper/08_appendix.md` | Appendix draft — still regenerated by `make_appendix.py` | draft-superseded-but-regenerated |
 | `paper/PAPER_OUTLINE.md` | Outline | frozen |
-| `paper/CANONICAL_RESULT_LOCK_gpt.md` | Locked numeric results (86.37, 27.72, 88.53, S_ADC=0.976, …) | **frozen — single source of truth for numbers** |
-| `paper/FIGURE_CAPTION_LOCK_gpt.md` | Authoritative captions | frozen |
-| `paper/FIGURE_PLAN.md` | Figure plan, referenced by `plot_paper_figures.py` | live |
-| `paper/FIG1_FIG2_BRIEF_gpt.md` | Fig 1/2 design notes | frozen |
-| `paper/FIGURE_CAPTION_DRAFTS_gpt.md` | Caption drafts | frozen |
-| `paper/参考文献库.md` | Chinese bibliography notes (superseded by `refs_gpt.bib`) | frozen |
-| `paper/plot_paper_figures.py` | Canonical plotter for paper figures | live |
-| `paper/fix_plots.py` | One-shot plot fix | live (referenced) |
-| `paper/generate_schematic_figures_gpt.py` | Fig 1/2 schematic generator | live |
-| `paper/figures/` (43 files) | Source PNG/PDF before latex_gpt/figures/ copy | live |
+| `paper1/provenance/reference_locks/CANONICAL_RESULT_LOCK_gpt.md` | Locked numeric results (86.37, 27.72, 88.53, S_ADC=0.976, …); `paper/CANONICAL_RESULT_LOCK_gpt.md` is a compatibility symlink | **frozen — single source of truth for numbers** |
+| `paper1/provenance/reference_locks/FIGURE_CAPTION_LOCK_gpt.md` | Authoritative captions; `paper/FIGURE_CAPTION_LOCK_gpt.md` is a compatibility symlink | frozen |
+| `paper1/provenance/reference_locks/FIGURE_PLAN.md` | Figure plan; `paper/FIGURE_PLAN.md` is a compatibility symlink | frozen/legacy |
+| `paper1/provenance/reference_locks/CREDIT.md` | Credit/authorship note; `paper/CREDIT.md` is a compatibility symlink | frozen |
+| `tools/plotting/plot_paper_figures.py` | Legacy Paper1 quantitative figure plotter; `paper/plot_paper_figures.py` is a compatibility symlink | legacy compatibility |
+| `tools/plotting/fix_plots.py` | One-shot repair helper for legacy plot script; `paper/fix_plots.py` is a compatibility symlink | legacy one-shot |
+| `tools/plotting/generate_schematic_figures_gpt.py` | Fig 1/2 schematic generator; `paper/generate_schematic_figures_gpt.py` is a compatibility symlink | legacy compatibility |
+| `paper/figures/` | Compatibility symlink pool to `paper1/provenance/asset_archive/legacy_parallel_paper_figures/` | compatibility |
+| `paper/paper2/` | Legacy drafts archived to `archive/reorg_20260509/paper2_legacy_drafts_20260510/paper/paper2/` | archived |
 | `_archive/paper-drafts/BANANA_JOURNAL_SCHEMATIC_PROMPTS_20260408_gpt.md`, `NANOBANANA_SCHEMATIC_PROMPTS_gpt.md`, `PERPLEXITY_TARGETED_CITATION_PROMPTS_gpt.md` | Archived prompt-only figure ideation notes | archive |
 
 ---
@@ -328,7 +309,7 @@ All reversible via `mv`. Nothing here is on the submission path.
 - `compute_vit/run_*.py` count = **39** (experiment driver whitelist).
 - `paper/latex_gpt/main.pdf` = 16 pages, `supplementary_main.pdf` = 16 pages, `cover_letter.pdf` = 2 pages.
 - `paper/latex_gpt/refs_gpt.bib` is the only bibliography. Do not create a second `.bib`.
-- `paper/CANONICAL_RESULT_LOCK_gpt.md` holds the one source of truth for all numbers in the paper. Never edit a number in `.tex` without updating the lock file first.
+- `paper1/provenance/reference_locks/CANONICAL_RESULT_LOCK_gpt.md` holds the one source of truth for all numbers in the paper; `paper/CANONICAL_RESULT_LOCK_gpt.md` remains a compatibility symlink. Never edit a number in `.tex` without updating the lock file first.
 - `_archive/` content is append-only. Never delete from it without user sign-off.
 - `checkpoints/` and `data/` contents: never moved or renamed by agents during active experiments.
 

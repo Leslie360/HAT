@@ -1,0 +1,186 @@
+{
+  "checkpoint_path": "/home/qiaosir/projects/compute_vit/checkpoints/_gpt/cx_k4_alpha/k4_alpha_0p25/V4_hybrid_standard_noise_hat_k4_alpha_0p25_best.pt",
+  "train_best_acc": 91.32,
+  "train_best_epoch": 75,
+  "fresh_instances": 10,
+  "mc_runs_per_instance": 5,
+  "dataset": "cifar10",
+  "num_classes": 10,
+  "eval_batch_size": 256,
+  "cross_instance_mean": 44.291,
+  "cross_instance_std": 13.783051242578894,
+  "instance_means": [
+    57.426,
+    29.733999999999998,
+    63.244,
+    21.666,
+    58.09,
+    39.425999999999995,
+    50.45,
+    31.878,
+    40.744,
+    50.252
+  ],
+  "instances": [
+    {
+      "instance_index": 0,
+      "seed": 42,
+      "resampled_modules": 42,
+      "eval_runs": 5,
+      "test_loss_mean": 2.4793670936584475,
+      "test_acc_mean": 57.426,
+      "test_acc_std": 0.5549144078143923,
+      "test_acc_raw": [
+        57.13,
+        58.3,
+        57.45,
+        57.44,
+        56.81
+      ]
+    },
+    {
+      "instance_index": 1,
+      "seed": 142,
+      "resampled_modules": 42,
+      "eval_runs": 5,
+      "test_loss_mean": 5.775315669708252,
+      "test_acc_mean": 29.733999999999998,
+      "test_acc_std": 0.5453714330619088,
+      "test_acc_raw": [
+        30.11,
+        30.15,
+        29.72,
+        28.81,
+        29.88
+      ]
+    },
+    {
+      "instance_index": 2,
+      "seed": 242,
+      "resampled_modules": 42,
+      "eval_runs": 5,
+      "test_loss_mean": 2.0694999436569215,
+      "test_acc_mean": 63.244,
+      "test_acc_std": 0.8938288426762687,
+      "test_acc_raw": [
+        63.68,
+        63.32,
+        64.39,
+        62.02,
+        62.81
+      ]
+    },
+    {
+      "instance_index": 3,
+      "seed": 342,
+      "resampled_modules": 42,
+      "eval_runs": 5,
+      "test_loss_mean": 6.254498790435791,
+      "test_acc_mean": 21.666,
+      "test_acc_std": 0.21570813614697085,
+      "test_acc_raw": [
+        22.03,
+        21.57,
+        21.64,
+        21.46,
+        21.63
+      ]
+    },
+    {
+      "instance_index": 4,
+      "seed": 442,
+      "resampled_modules": 42,
+      "eval_runs": 5,
+      "test_loss_mean": 2.4705524532318117,
+      "test_acc_mean": 58.09,
+      "test_acc_std": 1.7597869189194475,
+      "test_acc_raw": [
+        55.58,
+        59.49,
+        59.97,
+        57.32,
+        58.09
+      ]
+    },
+    {
+      "instance_index": 5,
+      "seed": 542,
+      "resampled_modules": 42,
+      "eval_runs": 5,
+      "test_loss_mean": 4.082760121765137,
+      "test_acc_mean": 39.425999999999995,
+      "test_acc_std": 0.6881351611420541,
+      "test_acc_raw": [
+        40.15,
+        39.72,
+        38.3,
+        39.41,
+        39.55
+      ]
+    },
+    {
+      "instance_index": 6,
+      "seed": 642,
+      "resampled_modules": 42,
+      "eval_runs": 5,
+      "test_loss_mean": 3.4395976014709473,
+      "test_acc_mean": 50.45,
+      "test_acc_std": 1.4090777125481768,
+      "test_acc_raw": [
+        48.22,
+        50.34,
+        50.38,
+        51.5,
+        51.81
+      ]
+    },
+    {
+      "instance_index": 7,
+      "seed": 742,
+      "resampled_modules": 42,
+      "eval_runs": 5,
+      "test_loss_mean": 5.039337702941895,
+      "test_acc_mean": 31.878,
+      "test_acc_std": 1.2919636217788788,
+      "test_acc_raw": [
+        31.64,
+        29.73,
+        32.51,
+        32.57,
+        32.94
+      ]
+    },
+    {
+      "instance_index": 8,
+      "seed": 842,
+      "resampled_modules": 42,
+      "eval_runs": 5,
+      "test_loss_mean": 4.471305478668213,
+      "test_acc_mean": 40.744,
+      "test_acc_std": 1.4933619788919232,
+      "test_acc_raw": [
+        39.6,
+        43.31,
+        40.68,
+        40.29,
+        39.84
+      ]
+    },
+    {
+      "instance_index": 9,
+      "seed": 942,
+      "resampled_modules": 42,
+      "eval_runs": 5,
+      "test_loss_mean": 3.1914035175323487,
+      "test_acc_mean": 50.252,
+      "test_acc_std": 1.4368437632533322,
+      "test_acc_raw": [
+        48.24,
+        49.33,
+        50.85,
+        51.05,
+        51.79
+      ]
+    }
+  ]
+}

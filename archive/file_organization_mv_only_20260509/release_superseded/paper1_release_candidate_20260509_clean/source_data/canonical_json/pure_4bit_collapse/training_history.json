@@ -1,0 +1,254 @@
+{
+  "best_acc": 15.01,
+  "total_seconds": 1471.0967395305634,
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 2.5106,
+      "train_acc": 15.756,
+      "test_loss": 2.4026,
+      "test_acc": 15.01,
+      "lr": 0.0005,
+      "epoch_time_sec": 68.2
+    },
+    {
+      "epoch": 2,
+      "train_loss": 2.5655,
+      "train_acc": 12.704,
+      "test_loss": 2.5657,
+      "test_acc": 11.25,
+      "lr": 0.0005,
+      "epoch_time_sec": 66.9
+    },
+    {
+      "epoch": 3,
+      "train_loss": 2.7405,
+      "train_acc": 11.978,
+      "test_loss": 2.7726,
+      "test_acc": 12.27,
+      "lr": 0.000499,
+      "epoch_time_sec": 66.9
+    },
+    {
+      "epoch": 4,
+      "train_loss": 2.6526,
+      "train_acc": 11.536,
+      "test_loss": 2.4672,
+      "test_acc": 10.52,
+      "lr": 0.000498,
+      "epoch_time_sec": 67.1
+    },
+    {
+      "epoch": 5,
+      "train_loss": 2.5399,
+      "train_acc": 10.358,
+      "test_loss": 2.3849,
+      "test_acc": 10.19,
+      "lr": 0.000497,
+      "epoch_time_sec": 67.2
+    },
+    {
+      "epoch": 6,
+      "train_loss": 2.4539,
+      "train_acc": 10.062,
+      "test_loss": 2.3709,
+      "test_acc": 10.04,
+      "lr": 0.000496,
+      "epoch_time_sec": 66.3
+    },
+    {
+      "epoch": 7,
+      "train_loss": 2.4943,
+      "train_acc": 10.21,
+      "test_loss": 2.5029,
+      "test_acc": 10.47,
+      "lr": 0.000494,
+      "epoch_time_sec": 66.4
+    },
+    {
+      "epoch": 8,
+      "train_loss": 2.6865,
+      "train_acc": 10.584,
+      "test_loss": 2.8078,
+      "test_acc": 10.6,
+      "lr": 0.000492,
+      "epoch_time_sec": 66.5
+    },
+    {
+      "epoch": 9,
+      "train_loss": 2.7414,
+      "train_acc": 10.75,
+      "test_loss": 2.8401,
+      "test_acc": 11.69,
+      "lr": 0.00049,
+      "epoch_time_sec": 66.6
+    },
+    {
+      "epoch": 10,
+      "train_loss": 2.7553,
+      "train_acc": 10.816,
+      "test_loss": 2.8329,
+      "test_acc": 11.3,
+      "lr": 0.000488,
+      "epoch_time_sec": 66.8
+    },
+    {
+      "epoch": 11,
+      "train_loss": 2.7255,
+      "train_acc": 10.87,
+      "test_loss": 2.6472,
+      "test_acc": 10.57,
+      "lr": 0.000485,
+      "epoch_time_sec": 67.3
+    },
+    {
+      "epoch": 12,
+      "train_loss": 2.6737,
+      "train_acc": 10.482,
+      "test_loss": 2.7302,
+      "test_acc": 10.66,
+      "lr": 0.000482,
+      "epoch_time_sec": 67.3
+    },
+    {
+      "epoch": 13,
+      "train_loss": 2.6299,
+      "train_acc": 10.396,
+      "test_loss": 2.6549,
+      "test_acc": 10.08,
+      "lr": 0.000479,
+      "epoch_time_sec": 67.4
+    },
+    {
+      "epoch": 14,
+      "train_loss": 2.6079,
+      "train_acc": 10.388,
+      "test_loss": 2.4844,
+      "test_acc": 10.01,
+      "lr": 0.000476,
+      "epoch_time_sec": 67.2
+    },
+    {
+      "epoch": 15,
+      "train_loss": 2.346,
+      "train_acc": 9.964,
+      "test_loss": 2.3184,
+      "test_acc": 10.02,
+      "lr": 0.000473,
+      "epoch_time_sec": 67.0
+    },
+    {
+      "epoch": 16,
+      "train_loss": 2.3576,
+      "train_acc": 10.032,
+      "test_loss": 2.422,
+      "test_acc": 10.15,
+      "lr": 0.000469,
+      "epoch_time_sec": 67.0
+    },
+    {
+      "epoch": 17,
+      "train_loss": 2.3544,
+      "train_acc": 9.908,
+      "test_loss": 2.3692,
+      "test_acc": 10.0,
+      "lr": 0.000465,
+      "epoch_time_sec": 67.8
+    },
+    {
+      "epoch": 18,
+      "train_loss": 2.3527,
+      "train_acc": 10.07,
+      "test_loss": 2.3471,
+      "test_acc": 10.04,
+      "lr": 0.000461,
+      "epoch_time_sec": 67.7
+    },
+    {
+      "epoch": 19,
+      "train_loss": 2.3462,
+      "train_acc": 9.954,
+      "test_loss": 2.345,
+      "test_acc": 10.1,
+      "lr": 0.000457,
+      "epoch_time_sec": 70.0
+    },
+    {
+      "epoch": 20,
+      "train_loss": 2.3493,
+      "train_acc": 10.142,
+      "test_loss": 2.3381,
+      "test_acc": 10.18,
+      "lr": 0.000452,
+      "epoch_time_sec": 99.4
+    },
+    {
+      "epoch": 21,
+      "train_loss": 2.3662,
+      "train_acc": 10.144,
+      "test_loss": 2.3417,
+      "test_acc": 10.09,
+      "lr": 0.000448,
+      "epoch_time_sec": 94.0
+    }
+  ],
+  "args": {
+    "seed": 42,
+    "epochs": 100,
+    "batch_size": 64,
+    "lr": 0.0005,
+    "wd": 0.05,
+    "workers": 0,
+    "device": "cuda",
+    "save_dir": "paper2_aihwkit_baseline/checkpoints/r11d_1_4bit",
+    "log_interval": 1,
+    "inp_res": 0.0625,
+    "out_res": 0.0625,
+    "modifier_std_dev": 0.1,
+    "early_stop_patience": 20,
+    "early_stop_min_delta": 0.0,
+    "run_id": "r11d_1_4bit"
+  },
+  "aihwkit_version": "1.1.0",
+  "rpu_config": "InferenceRPUConfig(\n    runtime=RuntimeParameter(),\n    pre_post=PrePostProcessingParameter(input_range=InputRangeParameter(enable=False)),\n    mapping=MappingParameter(),\n    forward=IOParameters(inp_res=0.0625, out_res=0.0625),\n    backward=IOParameters(is_perfect=True),\n    update=UpdateParameters(pulse_type=PulseType.NONE),\n    noise_model=PCMLikeNoiseModel(g_converter=SinglePairConductanceConverter(g_max=25.00, g_min=0.00), g_max=25.0, prog_coeff_g_max_reference=25.0, prog_coeff=[0.26348, 1.965, -1.1731], t_0=20.0, t_read=2.5e-07, prog_noise_scale=1.0, read_noise_scale=1.0, drift_scale=1.0),\n    drift_compensation=GlobalDriftCompensation(),\n    clip=WeightClipParameter(type=WeightClipType.NONE),\n    remap=WeightRemapParameter(type=WeightRemapType.NONE),\n    modifier=WeightModifierParameter(std_dev=0.1, type=WeightModifierType.ADD_NORMAL),\n    device=IdealDevice()\n)",
+  "rpu_config_spec": {
+    "forward_inp_res": 0.0625,
+    "forward_out_res": 0.0625,
+    "modifier_type": "ADD_NORMAL",
+    "modifier_std_dev": 0.1,
+    "modifier_enable_during_test": false
+  },
+  "provenance": {
+    "run_id": "r11d_1_4bit",
+    "commit_hash": "ba2ea2a6596b9e84c7fc37e6c8bcadbc2a1b9db5",
+    "code_sha256": "aac59cbbdc892b426c03afd81ba561a185baf4bdd4d7259e4d3dcfa73bbc0db7",
+    "cuda_device_name": "NVIDIA GeForce RTX 5070 Ti",
+    "pytorch_version": "2.11.0+cu130",
+    "exp_cfg": {
+      "seed": 42,
+      "epochs": 100,
+      "batch_size": 64,
+      "lr": 0.0005,
+      "wd": 0.05,
+      "workers": 0,
+      "device": "cuda",
+      "save_dir": "paper2_aihwkit_baseline/checkpoints/r11d_1_4bit",
+      "log_interval": 1,
+      "inp_res": 0.0625,
+      "out_res": 0.0625,
+      "modifier_std_dev": 0.1,
+      "early_stop_patience": 20,
+      "early_stop_min_delta": 0.0,
+      "run_id": "r11d_1_4bit"
+    },
+    "rpu_config_spec": {
+      "forward_inp_res": 0.0625,
+      "forward_out_res": 0.0625,
+      "modifier_type": "ADD_NORMAL",
+      "modifier_std_dev": 0.1,
+      "modifier_enable_during_test": false
+    }
+  },
+  "device": "cuda",
+  "finish_time": "2026-04-26T18:13:54.179794"
+}

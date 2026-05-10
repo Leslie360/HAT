@@ -1,0 +1,52 @@
+\definecolor{lineColor}{RGB}{50,50,50}
+\definecolor{boxBg}{RGB}{250,250,250}
+\definecolor{accentBlue}{RGB}{0,114,178}
+\definecolor{accentGreen}{RGB}{0,158,115}
+\definecolor{accentRed}{RGB}{213,94,0}
+
+\begin{tikzpicture}[
+  font=\sffamily,
+  box/.style={draw=lineColor, fill=boxBg, line width=2.0pt, rounded corners=6pt, inner sep=10pt, align=center, minimum width=6.5cm, minimum height=2.5cm, font=\Large\bfseries, text=lineColor},
+  note/.style={align=center, font=\Large\bfseries, text=lineColor},
+  mathnote/.style={align=center, font=\LARGE, text=lineColor},
+  arrow/.style={-{Latex[length=5.0mm]}, line width=3.0pt, draw=lineColor}
+]
+
+% Title
+\node[font=\huge\bfseries, text=lineColor] at (6.0, 7.8) {Differential-pair asymmetry};
+\node[draw=lineColor, fill=white, line width=2.0pt, rounded corners=6pt, inner xsep=12pt, inner ysep=8pt, font=\Large\bfseries, text=lineColor] at (14.0, 7.8) {$\alpha \in [0,0.20]$};
+
+% Row 1
+\begin{scope}[yshift=0cm]
+\node[note, anchor=west] at (-3.5, 6.0) {(A) Symmetric baseline ($\alpha=0$)};
+\node[box, fill=accentGreen!10, draw=accentGreen] (p0) at (0, 3.5) {Positive branch\\[8pt] \large $G^+$};
+\node[box, fill=accentBlue!10, draw=accentBlue] (n0) at (0, 0.5) {Negative branch\\[8pt] \large $G^-$};
+
+\node[mathnote, anchor=west] (eff0) at (6.0, 2.0) {$G_{\mathrm{eff}} = G^+ - G^-$};
+
+\coordinate (merge0) at (4.5, 2.0);
+\draw[arrow] (p0.east) -| (merge0);
+\draw[arrow] (n0.east) -| (merge0);
+\draw[arrow] (merge0) -- (eff0.west);
+\end{scope}
+
+\draw[dashed, lineColor!40, line width=2.0pt] (-3.5, -1.5) -- (16.5, -1.5);
+
+% Row 2
+\begin{scope}[yshift=-8.5cm]
+\node[note, anchor=west] at (-3.5, 6.0) {(B) Asymmetric mapping ($\alpha=0.10$)};
+\node[box, fill=accentGreen!20, draw=accentGreen] (p1) at (0, 3.5) {Positive branch\\[8pt] \large $(1+\alpha)G^+$};
+\node[box, fill=accentBlue!20, draw=accentBlue] (n1) at (0, 0.5) {Negative branch\\[8pt] \large $(1-\alpha)G^-$};
+
+\node[mathnote, anchor=west] (eff1) at (6.0, 2.0) {$G_{\mathrm{eff}}^{(\alpha)} = (1+\alpha)G^+ - (1-\alpha)G^- - 2\alpha G_{\min}$};
+
+\coordinate (merge1) at (4.5, 2.0);
+\draw[arrow] (p1.east) -| (merge1);
+\draw[arrow] (n1.east) -| (merge1);
+\draw[arrow] (merge1) -- (eff1.west);
+\end{scope}
+
+% Add invisible padding at the bottom to match the caption spacing of other figures
+\path (0, -10.5);
+
+\end{tikzpicture}

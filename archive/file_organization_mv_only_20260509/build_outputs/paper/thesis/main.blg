@@ -1,0 +1,58 @@
+This is BibTeX, Version 0.99d (TeX Live 2022/dev/Debian)
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: main.aux
+A level-1 auxiliary file: chapter_1_hat_instance_overfitting.aux
+A level-1 auxiliary file: chapter_2_framework.aux
+A level-1 auxiliary file: chapter_3_hat_taxonomy.aux
+A level-1 auxiliary file: chapter_4_failure_modes.aux
+A level-1 auxiliary file: chapter_5_mitigation.aux
+A level-1 auxiliary file: chapter_6_physical_realism.aux
+A level-1 auxiliary file: chapter_7_deployment.aux
+A level-1 auxiliary file: chapter_8_outlook.aux
+The style file: unsrtnat.bst
+Database file #1: ../latex_gpt/refs_gpt.bib
+Warning--I didn't find a database entry for "vincze2026dualplasticity"
+Warning--I didn't find a database entry for "organicvariability2025"
+Warning--I didn't find a database entry for "organicthermal2025"
+You've used 6 entries,
+            2481 wiz_defined-function locations,
+            608 strings with 6510 characters,
+and the built_in function-call counts, 2660 in all, are:
+= -- 213
+> -- 184
+< -- 2
++ -- 68
+- -- 56
+* -- 224
+:= -- 458
+add.period$ -- 27
+call.type$ -- 6
+change.case$ -- 13
+chr.to.int$ -- 6
+cite$ -- 6
+duplicate$ -- 113
+empty$ -- 205
+format.name$ -- 62
+if$ -- 544
+int.to.chr$ -- 1
+int.to.str$ -- 7
+missing$ -- 4
+newline$ -- 47
+num.names$ -- 18
+pop$ -- 44
+preamble$ -- 1
+purify$ -- 6
+quote$ -- 0
+skip$ -- 71
+stack$ -- 0
+substring$ -- 92
+swap$ -- 19
+text.length$ -- 1
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 42
+warning$ -- 0
+while$ -- 19
+width$ -- 0
+write$ -- 101
+(There were 3 warnings)

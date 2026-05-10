@@ -12,11 +12,15 @@ Author: Kimi (2026-04-11)
 """
 
 import sys
+from pathlib import Path
+
+SRC = Path(__file__).resolve().parents[1] / "src" / "compute_vit"
+if str(SRC) not in sys.path:
+    sys.path.insert(0, str(SRC))
+
 import torch
 import torch.nn as nn
 from pathlib import Path
-
-sys.path.insert(0, str(Path(__file__).parent))
 
 from train_tinyvit import get_tinyvit_model, evaluate_model, get_cifar10_loaders
 from analog_layers import AnalogLinear, AnalogConv2d, AnalogLinearConfig

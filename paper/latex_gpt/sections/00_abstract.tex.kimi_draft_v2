@@ -1,6 +1,0 @@
-% K-DRAFT-3: Abstract rewrite
-% Status: M-series complete — placeholder filled (2026-04-24)
-
-\begin{abstract}
-We present \texttt{compute-ViT}, a framework for training vision transformers on organic optoelectronic crossbar arrays with severe write nonlinearity. A post-hoc code audit identified two bugs in the analog surrogate-gradient engine (fixed at commit \texttt{9cdbe77}); post-fix hardware-aware training recovers 82.03$\pm$0.94\% fresh-instance accuracy under $NL=2.0$ severe nonlinearity, falsifying the previously reported $\\sim$30\% structural-ceiling claim. Under canonical $NL=1.0$, Ensemble HAT preserves 86.37$\\pm$1.54\% across 10 fresh device instances, and proportional-noise scaling reaches 97.37$\\pm$0.05\% (CIFAR-10). The framework links measured photodiode non-idealities to deployment risk through a calibrated crossbar simulator, enabling zero-shot transfer to literature device profiles at 88.53$\\pm$0.08\%. All training code, device models, and evaluation protocols are released.
-\end{abstract}

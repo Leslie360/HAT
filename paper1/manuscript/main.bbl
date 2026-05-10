@@ -1,0 +1,344 @@
+\begin{thebibliography}{34}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Horowitz(2014)]{horowitz2014computing}
+Mark Horowitz.
+\newblock Computing's energy problem (and what we can do about it).
+\newblock In \emph{IEEE International Solid-State Circuits Conference (ISSCC)},
+  pages 10--14, 2014.
+\newblock \doi{10.1109/ISSCC.2014.6757323}.
+\newblock URL \url{https://doi.org/10.1109/ISSCC.2014.6757323}.
+
+\bibitem[Peng et~al.(2021)Peng, Huang, Jiang, Lu, and Yu]{peng2020dnnneurosim}
+Xiaochen Peng, Shanshi Huang, Hongwu Jiang, Anni Lu, and Shimeng Yu.
+\newblock {DNN\allowbreak+\allowbreak NeuroSim} v2.0: An end-to-end
+  benchmarking framework for compute-in-memory accelerators for on-chip
+  training.
+\newblock \emph{IEEE Transactions on Computer-Aided Design of Integrated
+  Circuits and Systems}, 40\penalty0 (11):\penalty0 2306--2319, 2021.
+\newblock \doi{10.1109/TCAD.2020.3043731}.
+\newblock URL \url{https://doi.org/10.1109/TCAD.2020.3043731}.
+
+\bibitem[Lanza et~al.(2025)]{lanza2025memristor}
+Mario Lanza et~al.
+\newblock The growing memristor industry.
+\newblock \emph{Nature}, 640:\penalty0 613--622, 2025.
+\newblock \doi{10.1038/s41586-025-08733-5}.
+
+\bibitem[Rasch et~al.(2021)Rasch, Moreda, Gokmen, Gallo, Carta, Goldberg,
+  Maghraoui, Sebastian, and Narayanan]{rasch2021aihwkit}
+Malte~J. Rasch, Diego Moreda, Tayfun Gokmen, Manuel~Le Gallo, Fabio Carta,
+  Cindy Goldberg, Kaoutar~El Maghraoui, Abu Sebastian, and Vijay Narayanan.
+\newblock A flexible and fast {PyTorch} toolkit for simulating training and
+  inference on analog crossbar arrays, 2021.
+\newblock URL \url{https://arxiv.org/abs/2104.02184}.
+
+\bibitem[{Sandia National Laboratories}(2024)]{crosssim2024}
+{Sandia National Laboratories}.
+\newblock Crosssim: Sandia's simulator for analog ai accelerators.
+\newblock Technical report, Sandia National Laboratories, 2024.
+\newblock URL \url{https://doi.org/10.2172/2585829}.
+
+\bibitem[Xu et~al.(2025)Xu, He, Shan, Zeng, and Ni]{xu2025emerging}
+Yunchao Xu, Yuan He, Dongyong Shan, Biao Zeng, and Qian-Xi Ni.
+\newblock Emerging artificial synaptic devices based on organic semiconductors:
+  Molecular design, structure and applications.
+\newblock \emph{ACS Applied Materials \& Interfaces}, 2025.
+\newblock \doi{10.1021/acsami.4c17455}.
+\newblock URL \url{https://doi.org/10.1021/acsami.4c17455}.
+
+\bibitem[Guo et~al.(2024{\natexlab{a}})Guo, Guo, Wang, Wang, Cheng, Wang, Miao,
+  and Xu]{guo2024organic}
+Haotian Guo, Jing Guo, Yujing Wang, Hezhen Wang, Simin Cheng, Zehao Wang, Qian
+  Miao, and Xiaomin Xu.
+\newblock An organic optoelectronic synapse with multilevel memory enabled by
+  gate modulation.
+\newblock \emph{ACS Applied Materials \& Interfaces}, 2024{\natexlab{a}}.
+\newblock \doi{10.1021/acsami.3c19624}.
+\newblock URL \url{https://doi.org/10.1021/acsami.3c19624}.
+
+\bibitem[Zhang et~al.(2025{\natexlab{a}})Zhang, Chen, and
+  Xu]{photonics2025organicreview}
+Li~Zhang, Wei Chen, and Jing Xu.
+\newblock Recent progress in organic optoelectronic synaptic devices.
+\newblock \emph{Photonics}, 12\penalty0 (5):\penalty0 435, 2025{\natexlab{a}}.
+\newblock \doi{10.3390/photonics12050435}.
+\newblock URL \url{https://doi.org/10.3390/photonics12050435}.
+
+\bibitem[Lammie et~al.(2022)Lammie, Xiang, Linares-Barranco, and
+  Azghadi]{lammie2022memtorch}
+Corey Lammie, Wei Xiang, Bernab{\'e} Linares-Barranco, and Mostafa~Rahimi
+  Azghadi.
+\newblock Memtorch: An open-source simulation framework for memristive deep
+  learning systems.
+\newblock \emph{Neurocomputing}, 485:\penalty0 124--133, 2022.
+\newblock \doi{10.1016/j.neucom.2022.02.043}.
+\newblock URL \url{https://doi.org/10.1016/j.neucom.2022.02.043}.
+
+\bibitem[Zeng et~al.(2023)Zeng, Chen, Liu, Chen, and
+  Liu]{zeng2023organicmemristor}
+Jianmin Zeng, Xinhui Chen, Shuzhi Liu, Qilai Chen, and Gang Liu.
+\newblock Organic memristor with synaptic plasticity for neuromorphic computing
+  applications.
+\newblock \emph{Nanomaterials}, 13\penalty0 (5):\penalty0 803, 2023.
+\newblock \doi{10.3390/nano13050803}.
+\newblock URL \url{https://doi.org/10.3390/nano13050803}.
+
+\bibitem[Jung et~al.(2024)Jung, Kim, Jang, Bae, Kang, and
+  Lee]{jung2024organicfilaments}
+Uihoon Jung, Miseong Kim, Jaewon Jang, Jin-Hyuk Bae, In~Man Kang, and Sin-Hyung
+  Lee.
+\newblock Formation of cluster-structured metallic filaments in organic
+  memristors for wearable neuromorphic systems with bio-mimetic synaptic weight
+  distributions.
+\newblock \emph{Advanced Science}, 11\penalty0 (9):\penalty0 2307494, 2024.
+\newblock \doi{10.1002/advs.202307494}.
+\newblock URL \url{https://doi.org/10.1002/advs.202307494}.
+
+\bibitem[Lin et~al.(2016)Lin, Bennett, Cabaret, Vodenicarevic, Chabi, Querlioz,
+  Jousselme, Derycke, and Klein]{lin2016physical}
+Yu-Pu Lin, Christopher~H. Bennett, Th\'eo Cabaret, Damir Vodenicarevic, Djaafar
+  Chabi, Damien Querlioz, Bruno Jousselme, Vincent Derycke, and Jacques-Olivier
+  Klein.
+\newblock Physical realization of a supervised learning system built with
+  organic memristive synapses.
+\newblock \emph{Scientific Reports}, 2016.
+\newblock \doi{10.1038/srep31932}.
+\newblock URL \url{https://doi.org/10.1038/srep31932}.
+
+\bibitem[Joshi et~al.(2020)Joshi, Gallo, Haefeli, Boybat, Nandakumar, Piveteau,
+  Dazzi, Rajendran, Sebastian, and Eleftheriou]{joshi2020accurate}
+Vinay Joshi, Manuel~Le Gallo, Simon Haefeli, Irem Boybat, S.~R. Nandakumar,
+  Christophe Piveteau, Martino Dazzi, Bipin Rajendran, Abu Sebastian, and
+  Evangelos Eleftheriou.
+\newblock Accurate deep neural network inference using computational
+  phase-change memory.
+\newblock \emph{Nature Communications}, 11:\penalty0 2473, 2020.
+\newblock \doi{10.1038/s41467-020-16108-9}.
+\newblock URL \url{https://doi.org/10.1038/s41467-020-16108-9}.
+
+\bibitem[Choi et~al.(2018)Choi, Wang, Venkataramani, Chuang, Srinivasan, and
+  Gopalakrishnan]{choi2019pact}
+Jungwook Choi, Zhuo Wang, Swagath Venkataramani, Pierce I-Jen Chuang,
+  Vijayalakshmi Srinivasan, and Kailash Gopalakrishnan.
+\newblock {PACT}: Parameterized clipping activation for quantized neural
+  networks.
+\newblock In \emph{Proceedings of the 35th International Conference on Machine
+  Learning}, volume~80 of \emph{Proceedings of Machine Learning Research},
+  pages 1028--1037, 2018.
+\newblock \doi{10.48550/arXiv.1805.06085}.
+\newblock URL \url{http://proceedings.mlr.press/v80/choi18a.html}.
+
+\bibitem[Tobin et~al.(2017)Tobin, Fong, Ray, Schneider, Zaremba, and
+  Abbeel]{tobin2017domain}
+Josh Tobin, Rachel Fong, Alex Ray, Jonas Schneider, Wojciech Zaremba, and
+  Pieter Abbeel.
+\newblock Domain randomization for transferring deep neural networks from
+  simulation to the real world.
+\newblock In \emph{2017 IEEE/RSJ International Conference on Intelligent Robots
+  and Systems (IROS)}, pages 23--30, 2017.
+\newblock \doi{10.1109/IROS.2017.8202133}.
+\newblock URL \url{https://doi.org/10.1109/IROS.2017.8202133}.
+
+\bibitem[Belleri et~al.(2024)Belleri, i~Tarr{\`e}s, McCulloch, Blom,
+  Kov{\'a}cs-Vajna, Gkoupidenis, and Torricelli]{beller2024organicneurons}
+Pietro Belleri, Judith~Pons i~Tarr{\`e}s, Iain McCulloch, Paul W.~M. Blom,
+  Zsolt~M. Kov{\'a}cs-Vajna, Paschalis Gkoupidenis, and Fabrizio Torricelli.
+\newblock Unravelling the operation of organic artificial neurons for
+  neuromorphic bioelectronics.
+\newblock \emph{Nature Communications}, 15:\penalty0 5350, 2024.
+\newblock \doi{10.1038/s41467-024-49668-1}.
+\newblock URL \url{https://doi.org/10.1038/s41467-024-49668-1}.
+
+\bibitem[Ji et~al.(2025)Ji, Gao, Wu, Xiong, Stajkovic, Bovio, Yang, Santoro,
+  Tu, and Fabiano]{ji2025singleoectneuron}
+Junpeng Ji, Dace Gao, Han-Yan Wu, Miao Xiong, Nevena Stajkovic, Claudia~Latte
+  Bovio, Chi-Yuan Yang, Francesca Santoro, Deyu Tu, and Simone Fabiano.
+\newblock Single-transistor organic electrochemical neurons.
+\newblock \emph{Nature Communications}, 16:\penalty0 4334, 2025.
+\newblock \doi{10.1038/s41467-025-59587-4}.
+\newblock URL \url{https://doi.org/10.1038/s41467-025-59587-4}.
+
+\bibitem[Hu et~al.(2023)Hu, Fattori, Schilp, Verbeek, Kazemzadeh, van~de Burgt,
+  Kronemeijer, Gelinck, and Cantatore]{gebregiorgis2023organiccim}
+Lan~Shen Hu, Marco Fattori, Winston Schilp, Roy Verbeek, Setareh Kazemzadeh,
+  Yoeri van~de Burgt, Auke~Jisk Kronemeijer, Gerwin Gelinck, and Eugenio
+  Cantatore.
+\newblock An energy-efficient solid-state organic device array for neuromorphic
+  computing.
+\newblock \emph{IEEE Transactions on Electron Devices}, 70\penalty0
+  (12):\penalty0 6520--6525, 2023.
+\newblock \doi{10.1109/TED.2023.3327947}.
+\newblock URL \url{https://doi.org/10.1109/TED.2023.3327947}.
+
+\bibitem[Liu et~al.(2026)Liu, Dai, Jin, Zhang, Guo, Sun, Li, Guo, Gao, Liang,
+  Zhang, Xiong, Zhou, and Huang]{liu2026opect}
+Xu~Liu, Shilei Dai, Yiyang Jin, Junyao Zhang, Ziyi Guo, Tongrui Sun, Li~Li,
+  Pu~Guo, Huaiyu Gao, Haixia Liang, Shiqi Zhang, Lize Xiong, Yanmin Zhou, and
+  Jia Huang.
+\newblock Near-infrared organic photoelectrochemical synaptic transistors by
+  wafer-scale photolithography for neuromorphic visual system.
+\newblock \emph{Nature Communications}, 17:\penalty0 197, 2026.
+\newblock \doi{10.1038/s41467-025-66891-6}.
+\newblock URL \url{https://doi.org/10.1038/s41467-025-66891-6}.
+\newblock Published online 2025-12-08.
+
+\bibitem[Zhang et~al.(2025{\natexlab{b}})Zhang, Shan, Ji, Wang, Zhao, and
+  Wang]{zhang2025mooptoelectronic}
+Fanqing Zhang, Xinyi Shan, Zhenhua Ji, Yan Wang, Jing Zhao, and Zhongrui Wang.
+\newblock Large-scale high uniform optoelectronic synapses array for artificial
+  visual neural network.
+\newblock \emph{Microsystems \& Nanoengineering}, 11:\penalty0 42,
+  2025{\natexlab{b}}.
+\newblock \doi{10.1038/s41378-024-00859-2}.
+\newblock URL \url{https://doi.org/10.1038/s41378-024-00859-2}.
+
+\bibitem[Huang et~al.(2025)Huang, Liang, Wang, Tang, Li, Du, Sun, Zhang, Yao,
+  Mou, Xu, Zhang, Lu, Liu, Wang, Jiang, Hu, Wang, Zhang, Gao, Bai, Fang, Dai,
+  Yin, Qian, and Wu]{cui2025multimode}
+Heyi Huang, Xiangpeng Liang, Yuyan Wang, Jianshi Tang, Yuankun Li, Yiwei Du,
+  Wen Sun, Jianing Zhang, Peng Yao, Xing Mou, Feng Xu, Jinzhi Zhang, Yuyao Lu,
+  Zhengwu Liu, Jianlin Wang, Zhixing Jiang, Ruofei Hu, Ze~Wang, Qingtian Zhang,
+  Bin Gao, Xuedong Bai, Lu~Fang, Qionghai Dai, Huaxiang Yin, He~Qian, and
+  Huaqiang Wu.
+\newblock Fully integrated multi-mode optoelectronic memristor array for
+  diversified in-sensor computing.
+\newblock \emph{Nature Nanotechnology}, 20\penalty0 (1):\penalty0 93--103,
+  2025.
+\newblock \doi{10.1038/s41565-024-01794-z}.
+\newblock URL \url{https://doi.org/10.1038/s41565-024-01794-z}.
+
+\bibitem[Liu et~al.(2023)Liu, Wang, Wu, Huang, Lin, Xiang, Liu, Zhang, Zhu, and
+  Tao]{visionarch2023crosstalk}
+Ying Liu, Biao Wang, Lei Wu, Lulu Huang, Lu~Lin, Li~Xiang, Dongqing Liu, Shiguo
+  Zhang, Chenguang Zhu, and Yijie Tao.
+\newblock Artificial visual synaptic architecture with high-linearity
+  light-modulated weight for optoelectronic neuromorphic computing.
+\newblock \emph{ACS Applied Materials \& Interfaces}, 2023.
+\newblock \doi{10.1021/acsami.3c11495}.
+\newblock URL \url{https://doi.org/10.1021/acsami.3c11495}.
+
+\bibitem[Li et~al.(2024)Li, Chen, Ren, Tang, Zhang, Wang, Xing, Huang, Meng,
+  and Zhu]{amspa2024insensor}
+Dingwei Li, Yitong Chen, Huihui Ren, Yingjie Tang, Siyu Zhang, Yan Wang,
+  Lixiang Xing, Qi~Huang, Lei Meng, and Bowen Zhu.
+\newblock An active-matrix synaptic phototransistor array for in-sensor
+  spectral processing.
+\newblock \emph{Advanced Science}, 11, 2024.
+\newblock \doi{10.1002/advs.202406401}.
+\newblock URL \url{https://doi.org/10.1002/advs.202406401}.
+
+\bibitem[Wan et~al.(2023)Wan, Shao, Ma, Zhou, Li, and Chai]{jang2023insensor}
+Tianqing Wan, Bangjie Shao, Sijie Ma, Yue Zhou, Qiao Li, and Yang Chai.
+\newblock In-sensor computing: Materials, devices, and integration
+  technologies.
+\newblock \emph{Advanced Materials}, 35\penalty0 (37):\penalty0 2203830, 2023.
+\newblock \doi{10.1002/adma.202203830}.
+\newblock URL \url{https://doi.org/10.1002/adma.202203830}.
+
+\bibitem[Melianas et~al.(2020)Melianas, Quill, LeCroy, Tuchman, v.~Loo, Keene,
+  Giovannitti, Lee, Maria, McCulloch, and Salleo]{fuller2020tempresilient}
+A.~Melianas, T.~J. Quill, G.~LeCroy, Y.~Tuchman, H.~v.~Loo, S.~T. Keene,
+  A.~Giovannitti, H.~R. Lee, I.~P. Maria, I.~McCulloch, and A.~Salleo.
+\newblock Temperature-resilient solid-state organic artificial synapses for
+  neuromorphic computing.
+\newblock \emph{Science Advances}, 6:\penalty0 eabb2958, 2020.
+\newblock \doi{10.1126/sciadv.abb2958}.
+\newblock URL \url{https://doi.org/10.1126/sciadv.abb2958}.
+
+\bibitem[Guo et~al.(2024{\natexlab{b}})Guo, Zhang, Yang, Li, Liu, Xu, Wu, Guo,
+  Sun, Dai, Liang, Wang, Zou, Xiong, and Huang]{guo2024hightemp}
+Ziyi Guo, Junyao Zhang, Ben Yang, Li~Li, Xu~Liu, Yutong Xu, Yue Wu, Pu~Guo,
+  Tongrui Sun, Shilei Dai, Haixia Liang, Jun Wang, Yidong Zou, Lize Xiong, and
+  Jia Huang.
+\newblock Organic high-temperature synaptic phototransistors for
+  energy-efficient neuromorphic computing.
+\newblock \emph{Advanced Materials}, 36:\penalty0 2310155, 2024{\natexlab{b}}.
+\newblock \doi{10.1002/adma.202310155}.
+\newblock URL \url{https://doi.org/10.1002/adma.202310155}.
+
+\bibitem[Wu et~al.(2024)Wu, Hanson, Wang, Zheng, Yang, Yang, Li, Cheng, Pande,
+  and Doppa]{wu2023bwq}
+Xueying Wu, Edward Hanson, Nansu Wang, Qilin Zheng, Xiaoxuan Yang, Huanrui
+  Yang, Shiyu Li, Feng Cheng, Partha~Pratim Pande, and Janardhan~Rao Doppa.
+\newblock Block-wise mixed-precision quantization: Enabling high efficiency for
+  practical {ReRAM}-based {DNN} accelerators.
+\newblock \emph{IEEE Transactions on Computer-Aided Design of Integrated
+  Circuits and Systems}, 2024.
+\newblock \doi{10.1109/TCAD.2024.3409193}.
+\newblock URL \url{https://doi.org/10.1109/TCAD.2024.3409193}.
+
+\bibitem[Wang et~al.(2024{\natexlab{a}})Wang, Dong, Zhou, Zhu, Wang, Feng, and
+  Keutzer]{wang2024epim}
+Chenyu Wang, Zhen Dong, Daquan Zhou, Zhenhua Zhu, Yu~Wang, Jiashi Feng, and
+  Kurt Keutzer.
+\newblock {EPIM}: Efficient processing-in-memory accelerators based on epitome.
+\newblock In \emph{Proceedings of the 61st ACM/IEEE Design Automation
+  Conference (DAC)}, pages 1--6, 2024{\natexlab{a}}.
+\newblock \doi{10.1145/3649329.3657377}.
+\newblock URL \url{https://arxiv.org/abs/2311.07620}.
+
+\bibitem[Ge et~al.(2025)Ge, Wang, Chen, Zhong, Du, Chen, and
+  Kang]{ge2024allspark}
+Mengke Ge, Junpeng Wang, Binhan Chen, Yingjian Zhong, Haitao Du, Song Chen, and
+  Yi~Kang.
+\newblock Allspark: Workload orchestration for visual transformers on
+  processing in-memory systems.
+\newblock \emph{IEEE Transactions on Computers}, 2025.
+\newblock \doi{10.1109/TC.2024.3483633}.
+\newblock URL \url{https://doi.org/10.1109/TC.2024.3483633}.
+
+\bibitem[Wang et~al.(2025)Wang, Fu, Huang, and Huang]{wang2025hemlet}
+Cong Wang, Zexin Fu, Jiayi Huang, and Shanshi Huang.
+\newblock {Hemlet}: A heterogeneous compute-in-memory chiplet architecture for
+  vision transformers with group-level parallelism, 2025.
+\newblock URL \url{https://arxiv.org/abs/2511.15397}.
+
+\bibitem[Liu et~al.(2024)Liu, Mu, Jiang, Wang, Zhang, Lin, Zhou, Liu, and
+  Chen]{liu2024hardsea}
+Shiwei Liu, Chen Mu, Hao Jiang, Yunzhengmao Wang, Jinshan Zhang, Feng Lin, Keji
+  Zhou, Qi~Liu, and Chixiao Chen.
+\newblock {HARDSEA}: Hybrid analog-{ReRAM} clustering and digital-{SRAM}
+  in-memory computing accelerator for dynamic sparse self-attention in
+  transformer.
+\newblock \emph{IEEE Transactions on Very Large Scale Integration (VLSI)
+  Systems}, 32\penalty0 (2):\penalty0 269--282, 2024.
+\newblock \doi{10.1109/TVLSI.2023.3337777}.
+\newblock URL \url{https://doi.org/10.1109/TVLSI.2023.3337777}.
+
+\bibitem[Wan et~al.(2020)Wan, Kubendran, Gao, Joshi, Raina, Wu, Cauwenberghs,
+  and Wong]{wei2020voltagedifferential}
+W.~Wan, R.~Kubendran, B.~Gao, S.~Joshi, P.~Raina, H.~Wu, G.~Cauwenberghs, and
+  H.-S.~P. Wong.
+\newblock A voltage-mode sensing scheme with differential-row weight mapping
+  for energy-efficient {RRAM}-based in-memory computing.
+\newblock In \emph{2020 IEEE Symposium on {VLSI} Technology}, pages 1--2, 2020.
+\newblock \doi{10.1109/VLSITechnology18217.2020.9265066}.
+\newblock URL \url{https://doi.org/10.1109/VLSITechnology18217.2020.9265066}.
+
+\bibitem[Wang et~al.(2024{\natexlab{b}})Wang, Wei, Gao, Wu, and
+  Zhao]{kim2024sttmram}
+Xianggao Wang, Na~Wei, Shifan Gao, Wenhao Wu, and Yi~Zhao.
+\newblock Accuracy improvement with weight mapping strategy and output
+  transformation for {STT-MRAM}-based computing-in-memory.
+\newblock \emph{IEEE Journal on Exploratory Solid-State Computational Devices
+  and Circuits}, 10:\penalty0 75--81, 2024{\natexlab{b}}.
+\newblock \doi{10.1109/JXCDC.2024.3478360}.
+\newblock URL \url{https://doi.org/10.1109/JXCDC.2024.3478360}.
+
+\bibitem[Vincze et~al.(2026)Vincze, Hanic, Berki, and
+  Weis]{vincze2025dualplasticity}
+Tomas Vincze, Michal Hanic, Martin Berki, and Martin Weis.
+\newblock Simultaneous dual-plasticity organic synaptic transistor for
+  neuromorphic computing.
+\newblock \emph{Advanced Electronic Materials}, 12\penalty0 (1):\penalty0
+  e00515, 2026.
+\newblock \doi{10.1002/aelm.202500515}.
+\newblock URL \url{https://doi.org/10.1002/aelm.202500515}.
+\newblock Published online 2025-12-03.
+
+\end{thebibliography}

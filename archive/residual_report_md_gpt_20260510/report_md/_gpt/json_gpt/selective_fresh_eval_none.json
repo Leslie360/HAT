@@ -1,0 +1,97 @@
+{
+  "checkpoint_path": "checkpoints/_gpt/r1_clean_anchor/V4_hybrid_standard_noise_hat_r1_clean_anchor_first_order_best.pt",
+  "train_best_acc": 91.5,
+  "train_best_epoch": 96,
+  "fresh_instances": 5,
+  "mc_runs_per_instance": 3,
+  "resample_scope": "none",
+  "dataset": "cifar10",
+  "num_classes": 10,
+  "eval_batch_size": 256,
+  "cross_instance_mean": 91.31933333333333,
+  "cross_instance_std": 0.15519521756663587,
+  "instance_means": [
+    91.28,
+    91.44333333333333,
+    91.08333333333333,
+    91.31666666666666,
+    91.47333333333333
+  ],
+  "instances": [
+    {
+      "instance_index": 0,
+      "seed": 42,
+      "resampled_modules": 0,
+      "resample_scope": "none",
+      "eval_runs": 3,
+      "test_loss_mean": 0.4523100674410661,
+      "test_acc_mean": 91.28,
+      "test_acc_std": 0.19974984355438152,
+      "test_acc_raw": [
+        91.5,
+        91.11,
+        91.23
+      ]
+    },
+    {
+      "instance_index": 1,
+      "seed": 142,
+      "resampled_modules": 0,
+      "resample_scope": "none",
+      "eval_runs": 3,
+      "test_loss_mean": 0.4498289858818054,
+      "test_acc_mean": 91.44333333333333,
+      "test_acc_std": 0.5485739087245497,
+      "test_acc_raw": [
+        90.81,
+        91.75,
+        91.77
+      ]
+    },
+    {
+      "instance_index": 2,
+      "seed": 242,
+      "resampled_modules": 0,
+      "resample_scope": "none",
+      "eval_runs": 3,
+      "test_loss_mean": 0.4710548391024272,
+      "test_acc_mean": 91.08333333333333,
+      "test_acc_std": 0.5472050194701502,
+      "test_acc_raw": [
+        91.6,
+        91.14,
+        90.51
+      ]
+    },
+    {
+      "instance_index": 3,
+      "seed": 342,
+      "resampled_modules": 0,
+      "resample_scope": "none",
+      "eval_runs": 3,
+      "test_loss_mean": 0.4503934221903483,
+      "test_acc_mean": 91.31666666666666,
+      "test_acc_std": 0.37004504230341123,
+      "test_acc_raw": [
+        90.89,
+        91.51,
+        91.55
+      ]
+    },
+    {
+      "instance_index": 4,
+      "seed": 442,
+      "resampled_modules": 0,
+      "resample_scope": "none",
+      "eval_runs": 3,
+      "test_loss_mean": 0.45680711493492127,
+      "test_acc_mean": 91.47333333333333,
+      "test_acc_std": 0.3625373543972167,
+      "test_acc_raw": [
+        91.89,
+        91.23,
+        91.3
+      ]
+    }
+  ]
+}

@@ -1,0 +1,187 @@
+{
+  "generated_at": "2026-04-19T00:22:53.058882",
+  "protocol": "10 fresh D2D instances x 5 MC evaluations per instance on the paper-locked Tiny-ViT V4 standard-HAT checkpoint",
+  "result": {
+    "checkpoint_path": "checkpoints/V4_hybrid_standard_noise_hat_best.pt",
+    "train_best_acc": 91.94,
+    "train_best_epoch": 99,
+    "fresh_instances": 10,
+    "mc_runs_per_instance": 5,
+    "cross_instance_mean": 10.0,
+    "cross_instance_std": 0.0,
+    "instance_means": [
+      10.0,
+      10.0,
+      10.0,
+      10.0,
+      10.0,
+      10.0,
+      10.0,
+      10.0,
+      10.0,
+      10.0
+    ],
+    "instances": [
+      {
+        "instance_index": 0,
+        "seed": 42,
+        "resampled_modules": 42,
+        "eval_runs": 5,
+        "test_loss_mean": 7.471092924652099,
+        "test_acc_mean": 10.0,
+        "test_acc_std": 0.0,
+        "test_acc_raw": [
+          10.0,
+          10.0,
+          10.0,
+          10.0,
+          10.0
+        ]
+      },
+      {
+        "instance_index": 1,
+        "seed": 142,
+        "resampled_modules": 42,
+        "eval_runs": 5,
+        "test_loss_mean": 6.368218110961914,
+        "test_acc_mean": 10.0,
+        "test_acc_std": 0.0,
+        "test_acc_raw": [
+          10.0,
+          10.0,
+          10.0,
+          10.0,
+          10.0
+        ]
+      },
+      {
+        "instance_index": 2,
+        "seed": 242,
+        "resampled_modules": 42,
+        "eval_runs": 5,
+        "test_loss_mean": 6.706967902526856,
+        "test_acc_mean": 10.0,
+        "test_acc_std": 0.0,
+        "test_acc_raw": [
+          10.0,
+          10.0,
+          10.0,
+          10.0,
+          10.0
+        ]
+      },
+      {
+        "instance_index": 3,
+        "seed": 342,
+        "resampled_modules": 42,
+        "eval_runs": 5,
+        "test_loss_mean": 7.055034146728516,
+        "test_acc_mean": 10.0,
+        "test_acc_std": 0.0,
+        "test_acc_raw": [
+          10.0,
+          10.0,
+          10.0,
+          10.0,
+          10.0
+        ]
+      },
+      {
+        "instance_index": 4,
+        "seed": 442,
+        "resampled_modules": 42,
+        "eval_runs": 5,
+        "test_loss_mean": 6.742598522186279,
+        "test_acc_mean": 10.0,
+        "test_acc_std": 0.0,
+        "test_acc_raw": [
+          10.0,
+          10.0,
+          10.0,
+          10.0,
+          10.0
+        ]
+      },
+      {
+        "instance_index": 5,
+        "seed": 542,
+        "resampled_modules": 42,
+        "eval_runs": 5,
+        "test_loss_mean": 6.577547298736572,
+        "test_acc_mean": 10.0,
+        "test_acc_std": 0.0,
+        "test_acc_raw": [
+          10.0,
+          10.0,
+          10.0,
+          10.0,
+          10.0
+        ]
+      },
+      {
+        "instance_index": 6,
+        "seed": 642,
+        "resampled_modules": 42,
+        "eval_runs": 5,
+        "test_loss_mean": 6.835888873748779,
+        "test_acc_mean": 10.0,
+        "test_acc_std": 0.0,
+        "test_acc_raw": [
+          10.0,
+          10.0,
+          10.0,
+          10.0,
+          10.0
+        ]
+      },
+      {
+        "instance_index": 7,
+        "seed": 742,
+        "resampled_modules": 42,
+        "eval_runs": 5,
+        "test_loss_mean": 6.758045023498536,
+        "test_acc_mean": 10.0,
+        "test_acc_std": 0.0,
+        "test_acc_raw": [
+          10.0,
+          10.0,
+          10.0,
+          10.0,
+          10.0
+        ]
+      },
+      {
+        "instance_index": 8,
+        "seed": 842,
+        "resampled_modules": 42,
+        "eval_runs": 5,
+        "test_loss_mean": 6.887299182281494,
+        "test_acc_mean": 10.0,
+        "test_acc_std": 0.0,
+        "test_acc_raw": [
+          10.0,
+          10.0,
+          10.0,
+          10.0,
+          10.0
+        ]
+      },
+      {
+        "instance_index": 9,
+        "seed": 942,
+        "resampled_modules": 42,
+        "eval_runs": 5,
+        "test_loss_mean": 6.35664326675415,
+        "test_acc_mean": 10.0,
+        "test_acc_std": 0.0,
+        "test_acc_raw": [
+          10.0,
+          10.0,
+          10.0,
+          10.0,
+          10.0
+        ]
+      }
+    ]
+  }
+}

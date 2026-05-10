@@ -4,10 +4,13 @@ Math Consistency Debugger for analog_layers.py
 Verifies that every code path matches the mathematical formulas exactly.
 """
 import sys
+from pathlib import Path
 import torch
 import numpy as np
 
-sys.path.insert(0, ".")
+SRC = Path(__file__).resolve().parents[1] / "src" / "compute_vit"
+if str(SRC) not in sys.path:
+    sys.path.insert(0, str(SRC))
 from analog_layers import StraightThroughQuantize, AnalogLinear, AnalogLinearConfig
 
 def test_ste_forward_formula():

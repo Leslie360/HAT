@@ -1,0 +1,35 @@
+{
+  "checkpoint_path": "/home/qiaosir/projects/compute_vit/checkpoints/_gpt/r1_clean_anchor/V4_hybrid_standard_noise_hat_r1_clean_anchor_first_order_best.pt",
+  "train_best_acc": 91.5,
+  "train_best_epoch": 96,
+  "fresh_instances": 1,
+  "mc_runs_per_instance": 5,
+  "resample_scope": "all",
+  "dataset": "cifar10",
+  "num_classes": 10,
+  "eval_batch_size": 256,
+  "cross_instance_mean": 34.608000000000004,
+  "cross_instance_std": 0.0,
+  "instance_means": [
+    34.608000000000004
+  ],
+  "instances": [
+    {
+      "instance_index": 0,
+      "seed": 42,
+      "resampled_modules": 42,
+      "resample_scope": "all",
+      "eval_runs": 5,
+      "test_loss_mean": 5.66186308681488,
+      "test_acc_mean": 34.608000000000004,
+      "test_acc_std": 0.9230222099169663,
+      "test_acc_raw": [
+        33.28,
+        35.31,
+        35.64,
+        34.45,
+        34.36
+      ]
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+% !TeX root = ../main.tex
+\section{Related Work}
+\label{sec:related-work}
+
+\subsection{Hardware-Aware Training and Robustness}
+
+Hardware-aware training (HAT) mitigates analog non-idealities by injecting hardware perturbations into the forward path during optimization \citep{joshi2020accurate}. Although related in spirit to quantization-aware training \citep{choi2019pact} and to domain randomization in sim-to-real transfer \citep{tobin2017domain}, HAT for CIM faces an additional difficulty: device-to-device (D2D) mismatch is spatially structured and fixed for a given hardware instance. It is therefore different from independent thermal or sampling noise. Ensemble HAT resamples the static D2D mask at each training epoch, improving zero-shot transfer to fresh hardware instances. The connection to domain randomization is deliberate, but the analogy is incomplete because hardware-induced perturbations decompose into D2D mismatch---spatially structured and fixed for a given fabricated instance---and cycle-to-cycle (C2C) noise---stochastic per-read with zero mean.
+
+\subsection{Organic Neuromorphic and Optoelectronic Devices}
+\label{subsec:organic-devices}
+
+Organic synaptic and memristive devices offer optical sensitivity, multilevel conductance tuning, and flexible-substrate compatibility for neuromorphic hardware \citep{xu2025emerging,photonics2025organicreview,beller2024organicneurons,ji2025singleoectneuron}. Recent demonstrations include multilevel memory \citep{guo2024organic,jung2024organicfilaments}, long retention tails \citep{zeng2023organicmemristor}, and integrated optoelectronic arrays \citep{gebregiorgis2023organiccim,liu2026opect,zhang2025mooptoelectronic,cui2025multimode}. Array-level studies are beginning to treat active-matrix addressing, spatial optical response, and crosstalk as system constraints rather than purely materials observations \citep{visionarch2023crosstalk,amspa2024insensor,jang2023insensor}, while temperature-resilient organic synapses and high-temperature synaptic phototransistors suggest that thermal stability is also becoming deployment-relevant \citep{fuller2020tempresilient,guo2024hightemp}.
+
+\subsection{CIM Simulation Frameworks and Hybrid Mapping}
+\label{subsec:cim-frameworks-mapping}
+
+System-level CIM simulators such as DNN+NeuroSim established an effective template for connecting device assumptions, peripheral-circuit costs, and neural-network accuracy \citep{peng2020dnnneurosim}. MemTorch showed how memristive non-idealities can be embedded into PyTorch workflows for end-to-end evaluation \citep{lammie2022memtorch}, AIHWKIT exposed analog HAT and inference simulation in a practical mixed-signal software stack \citep{rasch2021aihwkit}, and CrossSim provides a GPU-accelerated crossbar-accuracy workflow with parasitic resistance, ADC, drift, and lookup-table-based training models \citep{crosssim2024}. These mature simulators were developed primarily around inorganic resistive memories, and they do not directly expose all profile-level effects of interest, such as inverse-gamma optoelectronic photoresponse or organic-specific double-exponential retention, as first-class device primitives. Our behavioral profile-driven approach therefore serves as a profile-level extension and deployment-risk ranking layer rather than as a replacement for established CIM toolkits.

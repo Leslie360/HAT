@@ -1,0 +1,58 @@
+{
+  "stage": "cx_parity_minimal_20260422",
+  "warm_start_from": "checkpoints/V4_hybrid_standard_noise_hat_best.pt",
+  "runs": {
+    "j1d_historical_auto": {
+      "protected_group": "mlp",
+      "use_second_order_ste": true,
+      "delta_g_eff": "-1.0",
+      "second_order_alpha": "1.0",
+      "best_test_acc": 46.75,
+      "best_epoch": 0,
+      "final_train_acc": 82.882,
+      "final_test_acc": 46.75,
+      "checkpoint_path": "/home/qiaosir/projects/compute_vit/checkpoints/_gpt/cx_parity_minimal/j1d_historical_auto/V4_hybrid_standard_noise_hat_j1d_historical_auto_best.pt",
+      "log_path": "/home/qiaosir/projects/compute_vit/logs/_gpt/cx_parity_j1d_historical_auto.log",
+      "results_json_path": "/home/qiaosir/projects/compute_vit/report_md/_gpt/json_gpt/cx_parity_j1d_historical_auto.json"
+    },
+    "j1d_literal_zero": {
+      "protected_group": "mlp",
+      "use_second_order_ste": true,
+      "delta_g_eff": "0.0",
+      "second_order_alpha": "1.0",
+      "best_test_acc": 57.0,
+      "best_epoch": 0,
+      "final_train_acc": 82.472,
+      "final_test_acc": 57.0,
+      "checkpoint_path": "/home/qiaosir/projects/compute_vit/checkpoints/_gpt/cx_parity_minimal/j1d_literal_zero/V4_hybrid_standard_noise_hat_j1d_literal_zero_best.pt",
+      "log_path": "/home/qiaosir/projects/compute_vit/logs/_gpt/cx_parity_j1d_literal_zero.log",
+      "results_json_path": "/home/qiaosir/projects/compute_vit/report_md/_gpt/json_gpt/cx_parity_j1d_literal_zero.json"
+    },
+    "mlp_noso2_fixed": {
+      "protected_group": "mlp",
+      "use_second_order_ste": false,
+      "delta_g_eff": null,
+      "second_order_alpha": null,
+      "best_test_acc": 55.65,
+      "best_epoch": 0,
+      "final_train_acc": 82.342,
+      "final_test_acc": 55.65,
+      "checkpoint_path": "/home/qiaosir/projects/compute_vit/checkpoints/_gpt/cx_parity_minimal/mlp_noso2_fixed/V4_hybrid_standard_noise_hat_mlp_noso2_fixed_best.pt",
+      "log_path": "/home/qiaosir/projects/compute_vit/logs/_gpt/cx_parity_mlp_noso2_fixed.log",
+      "results_json_path": "/home/qiaosir/projects/compute_vit/report_md/_gpt/json_gpt/cx_parity_mlp_noso2_fixed.json"
+    },
+    "all_so2_auto": {
+      "protected_group": "all",
+      "use_second_order_ste": true,
+      "delta_g_eff": "-1.0",
+      "second_order_alpha": "1.0",
+      "best_test_acc": 83.34,
+      "best_epoch": 0,
+      "final_train_acc": 88.326,
+      "final_test_acc": 83.34,
+      "checkpoint_path": "/home/qiaosir/projects/compute_vit/checkpoints/_gpt/cx_parity_minimal/all_so2_auto/V4_hybrid_standard_noise_hat_all_so2_auto_best.pt",
+      "log_path": "/home/qiaosir/projects/compute_vit/logs/_gpt/cx_parity_all_so2_auto.log",
+      "results_json_path": "/home/qiaosir/projects/compute_vit/report_md/_gpt/json_gpt/cx_parity_all_so2_auto.json"
+    }
+  }
+}

@@ -1,0 +1,82 @@
+# SUPP_TABLE_NL_ABLATION_SCAFFOLD.md
+--- SUPP_TABLE_NL_ABLATION_SCAFFOLD.md:before
++++ SUPP_TABLE_NL_ABLATION_SCAFFOLD.md:after
+@@ -1,7 +1,7 @@
+ # Supplementary Table Scaffold: Group-Wise Nonlinearity Ablation
+
+ **Target location:** Supplementary Information, new section SX.N (after retention / ADC sections)
+-**Status:** SCAFFOLD — numbers update as all-linear and attn_proj finish.
++**Status:** UPDATED — rows (a)–(f) now all have finalized source-domain values.
+ **Framing:** CLAUDE-A Option B (supplementary ablation, not main-paper contribution).
+
+ ---
+@@ -14,7 +14,7 @@
+ | (b) NL=2.0 global (baseline) | — | 2.0 | **27.72 ± 0.82%** | — | — | Unmitigated severe nonlinearity |
+ | (c) MLP-only linear | fc1, fc2 | 2.0 | **87.79%** | **+60.07 pp** | 73 | Primary recovery path |
+ | (d) QKV-only linear | attn.qkv | 2.0 | **18.72%** | **−9.00 pp** | 2 | Structural failure — attention nonlinearity is required |
+-| (e) attn_proj-only linear | attn.proj | 2.0 | **TBD** | TBD | TBD | 🔄 Just launched (GPU free after all-linear finished) |
++| (e) attn_proj-only linear | attn.proj | 2.0 | **18.86%** | **-8.86 pp** | 0 | ✅ Complete (Supports MLP-dominance) |
+ | (f) all-linear | all analog linear | 2.0 | **87.49%** | **+59.77 pp** | 59 | ✅ Complete (final 84.81%) |
+
+ ---
+@@ -66,6 +66,6 @@
+ ## Action items
+
+ 1. **When all-linear finishes:** paste final acc + epoch into row (f).
+-2. **When attn_proj finishes:** paste final acc + epoch into row (e).
++2. **attn_proj finalized:** row (e) locked at 18.86% @ epoch 0.
+ 3. **Add 3-seed error bars** for rows (c) and (d) if time permits (thesis defense).
+ 4. **Compile `supplementary_main.tex`** with new table and verify page count.
+
+
+# NL_LANE_RESULTS_20260418.md
+--- NL_LANE_RESULTS_20260418.md:before
++++ NL_LANE_RESULTS_20260418.md:after
+@@ -15,6 +15,7 @@
+ | MLP-only linear compensation | complete | 87.79 | 73 | 86.22 | `checkpoints/_gpt/nl_mitigation/v4_nl2_mlp_linear_comp/V4_hybrid_standard_noise_hat_nl2_mlp_linear_comp_best.pt` | `logs/_gpt/train_tinyvit_v4_nl2_mlp_linear_comp_TESTDEBUG.log` | Strong rescue. This is the key positive result. |
+ | QKV-only linear compensation | complete | 18.72 | 2 | 10.15 | `checkpoints/_gpt/nl_mitigation/v4_nl2_qkv_linear_comp/V4_hybrid_standard_noise_hat_nl2_qkv_linear_comp_best.pt` | `logs/_gpt/train_tinyvit_v4_nl2_qkv_linear_comp_20260418_130728_queue_qkv.log` | Collapse. This is the negative control against a generic “attention-side” explanation. |
+ | All-linear compensation | complete | 87.49 | 59 | 84.81 | `checkpoints/_gpt/nl_mitigation/v4_nl2_all_linear_comp/V4_hybrid_standard_noise_hat_nl2_all_linear_comp_best.pt` | `logs/_gpt/train_tinyvit_v4_nl2_all_linear_comp_20260418_144254_queue_all.log` | Upper-bound control. It does not materially outperform MLP-only. |
++| attn_proj-only linear compensation | complete | 18.86 | 0 | 11.41 | `checkpoints/_gpt/nl_mitigation/v4_nl2_attn_proj_linear_comp/V4_hybrid_standard_noise_hat_nl2_attn_proj_linear_comp_best.pt` | `logs/_gpt/train_tinyvit_v4_nl2_attn_proj_linear_comp_20260418_1700.log` | Control on the output projection path. Use this lane to test whether recovery extends beyond the MLP channel-mixing path. |
+
+ ## Canonical fresh-instance transfer baseline
+
+@@ -39,6 +40,7 @@
+   generic attention-side explanation.
+ - `All-linear` reaches `87.49%`, essentially matching `MLP-only` rather than
+   materially exceeding it.
++- `attn_proj-only` reaches `18.86%` (final `11.41%`), which does not challenge the current MLP-dominance reading.
+ - `MLP-only` does **not** inherit the canonical Ensemble-HAT transfer behavior:
+   its fresh-instance mean is only `32.12 ± 7.72%`.
+ - `QKV-only` remains collapsed under fresh-instance transfer as well
+
+
+# CLAUDE_A_DECISION_FINAL_20260418.md
+--- CLAUDE_A_DECISION_FINAL_20260418.md:before
++++ CLAUDE_A_DECISION_FINAL_20260418.md:after
+@@ -12,7 +12,7 @@
+ | MLP-only | **87.79%** | **+60.07 pp** | 73 | ✅ Complete |
+ | QKV-only | **18.72%** | **−9.00 pp** | 2 | ✅ Complete |
+ | all-linear | **87.49%** | **+59.77 pp** | 59 | ✅ Complete |
+-| attn_proj-only | TBD | TBD | TBD | 🔄 Running |
++| attn_proj-only | **18.86%** | **-8.86 pp** | 0 | ✅ Complete |
+
+ ---
+
+@@ -35,6 +35,9 @@
+    The main-paper contribution count stays at 4. NL mitigation is cited as a supplementary ablation with the sentence:
+    > "Group-wise ablation (Supplementary Table SX.N) shows that the MLP channel-mixing path is the dominant recoverable failure site under the present NL=2.0 surrogate."
+
++5. **attn_proj-only result does not change the placement decision.**
++   The output-projection control is informative for the supplementary lane table, but the locked placement remains Option B unless it materially overturns the current MLP-dominance readout.
++
+ ---
+
+ ## Unblocked Items
+@@ -42,7 +45,7 @@
+ - [x] K-B Cover Letter v2 — NL mitigation supplementary framing confirmed
+ - [x] R1–R4 .tex patches — already landed
+ - [x] Table SX.N — row (f) updated with 87.49%
+-- [ ] Table SX.N — row (e) pending attn_proj-only completion
++- [x] Table SX.N — row (e) updated with 18.86%
+
+ ---

@@ -1,0 +1,14 @@
+{
+  "status": "stub",
+  "checkpoint": "checkpoints/_ensemble/V4_hybrid_standard_noise_hat_best.pt",
+  "dataset": "cifar10",
+  "data_root": "./data",
+  "device": "cuda",
+  "fresh_instances": 10,
+  "eval_runs": 5,
+  "tail_family": "lognormal",
+  "tail_prob": 0.03,
+  "tail_scale": 2.0,
+  "seed": 20260420,
+  "todo": "Implement sample_heavy_tailed_d2d_mask() and wire into fresh-instance evaluation harness."
+}

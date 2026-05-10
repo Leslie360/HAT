@@ -1,0 +1,2 @@
+# CLAUDE-CE: Negative-Result Pivot Ratification
+Day 1. The negative-result framing is fully ratified. Thesis punchline is now a rigorous falsification of obvious mitigation strategies. Structural limit hypothesis accepted.

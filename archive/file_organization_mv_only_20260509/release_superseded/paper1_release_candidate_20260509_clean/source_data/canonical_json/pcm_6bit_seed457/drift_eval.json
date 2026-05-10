@@ -1,0 +1,36 @@
+{
+  "checkpoint": "paper2_aihwkit_baseline/checkpoints/r11d_6bit_pcm_seed457/best.pt",
+  "drift_times_seconds": [
+    0.0,
+    3600.0,
+    86400.0
+  ],
+  "results": [
+    {
+      "t_inference_seconds": 0.0,
+      "t_label": "0s (no drift)",
+      "accuracy": 76.63
+    },
+    {
+      "t_inference_seconds": 3600.0,
+      "t_label": "3600s",
+      "accuracy": 76.66
+    },
+    {
+      "t_inference_seconds": 86400.0,
+      "t_label": "86400s",
+      "accuracy": 76.68
+    }
+  ],
+  "config": {
+    "forward_inp_res": 0.015625,
+    "forward_out_res": 0.015625,
+    "modifier_type": "ADD_NORMAL",
+    "modifier_std_dev": 0.1,
+    "modifier_enable_during_test": false,
+    "pcm_preset": "PCMPresetUnitCell",
+    "resolved_pcm_preset": "PCMPresetUnitCell"
+  },
+  "device": "cuda",
+  "time": "2026-05-09T01:29:58.028557"
+}

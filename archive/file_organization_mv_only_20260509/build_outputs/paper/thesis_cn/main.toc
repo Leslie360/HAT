@@ -1,0 +1,231 @@
+\contentsline {chapter}{摘要}{i}{chapter*.1}%
+\contentsline {chapter}{Abstract}{iii}{chapter*.2}%
+\contentsline {chapter}{致谢}{v}{chapter*.3}%
+\contentsline {chapter}{\numberline {第一章\hspace {.3em}}引言：硬件感知训练与硬件实例过拟合}{1}{chapter.1}%
+\contentsline {section}{\numberline {1.1}研究背景}{1}{section.1.1}%
+\contentsline {subsection}{\numberline {1.1.1}有机光电子存内计算}{1}{subsection.1.1.1}%
+\contentsline {subsection}{\numberline {1.1.2}硬件感知训练}{1}{subsection.1.1.2}%
+\contentsline {subsection}{\numberline {1.1.3}视觉Transformer的混合部署}{1}{subsection.1.1.3}%
+\contentsline {section}{\numberline {1.2}问题陈述：从器件到系统的翻译鸿沟}{2}{section.1.2}%
+\contentsline {section}{\numberline {1.3}研究贡献}{2}{section.1.3}%
+\contentsline {section}{\numberline {1.4}``10\,\% 崩溃''现象}{3}{section.1.4}%
+\contentsline {subsection}{\numberline {1.4.1}核心实验观察}{3}{subsection.1.4.1}%
+\contentsline {subsection}{\numberline {1.4.2}方法论意义}{3}{subsection.1.4.2}%
+\contentsline {section}{\numberline {1.5}硬件实例过拟合的机制}{4}{section.1.5}%
+\contentsline {section}{\numberline {1.6}Ensemble HAT：分布级训练目标}{4}{section.1.6}%
+\contentsline {subsection}{\numberline {1.6.1}期望形式化}{4}{subsection.1.6.1}%
+\contentsline {subsection}{\numberline {1.6.2}优化稳定性与迁移保证的权衡}{4}{subsection.1.6.2}%
+\contentsline {section}{\numberline {1.7}对后续章节的启示}{5}{section.1.7}%
+\contentsline {chapter}{\numberline {第二章\hspace {.3em}}相关工作}{7}{chapter.2}%
+\contentsline {section}{\numberline {2.1}存内计算模拟器与混合映射}{7}{section.2.1}%
+\contentsline {subsection}{\numberline {2.1.1}系统级 CIM 评估层次}{7}{subsection.2.1.1}%
+\contentsline {subsection}{\numberline {2.1.2}IBM AIHWKIT 与批次级随机变异性}{7}{subsection.2.1.2}%
+\contentsline {subsection}{\numberline {2.1.3}MemTorch 与 PyTorch 原生嵌入}{7}{subsection.2.1.3}%
+\contentsline {subsection}{\numberline {2.1.4}CrossSim 与 GPU 加速查表训练}{8}{subsection.2.1.4}%
+\contentsline {section}{\numberline {2.2}有机神经形态与光电子器件}{8}{section.2.2}%
+\contentsline {subsection}{\numberline {2.2.1}器件特性与近期进展}{8}{subsection.2.2.1}%
+\contentsline {subsection}{\numberline {2.2.2}从器件到网络的鸿沟}{8}{subsection.2.2.2}%
+\contentsline {section}{\numberline {2.3}视觉Transformer与混合映射策略}{9}{section.2.3}%
+\contentsline {subsection}{\numberline {2.3.1}ViT 的模拟部署挑战}{9}{subsection.2.3.1}%
+\contentsline {subsection}{\numberline {2.3.2}低精度 ViT 量化的启示}{9}{subsection.2.3.2}%
+\contentsline {section}{\numberline {2.4}域随机化与 sim-to-real 迁移}{9}{section.2.4}%
+\contentsline {section}{\numberline {2.5}领域空白与本研究定位}{9}{section.2.5}%
+\contentsline {subsection}{\numberline {2.5.1}现有工具链的局限}{9}{subsection.2.5.1}%
+\contentsline {subsection}{\numberline {2.5.2}本研究的定位}{10}{subsection.2.5.2}%
+\contentsline {subsection}{\numberline {2.5.3}有机光电子 CIM 的系统级评估空白}{10}{subsection.2.5.3}%
+\contentsline {chapter}{\numberline {第三章\hspace {.3em}}方法论：配置文件驱动的硬件感知训练框架}{11}{chapter.3}%
+\contentsline {section}{\numberline {3.1}引言：HAT 作为设计空间}{11}{section.3.1}%
+\contentsline {section}{\numberline {3.2}配置文件驱动的仿真框架}{11}{section.3.2}%
+\contentsline {subsection}{\numberline {3.2.1}设计原则：从测量实验室到算法训练循环的桥梁}{11}{subsection.3.2.1}%
+\contentsline {subsection}{\numberline {3.2.2}器件配置文件作为结构化配置对象}{11}{subsection.3.2.2}%
+\contentsline {subsection}{\numberline {3.2.3}器件变异性：D2D 与 C2C}{12}{subsection.3.2.3}%
+\contentsline {subsection}{\numberline {3.2.4}非线性写入非对称性}{12}{subsection.3.2.4}%
+\contentsline {subsection}{\numberline {3.2.5}保留漂移}{13}{subsection.3.2.5}%
+\contentsline {subsection}{\numberline {3.2.6}光电子前端补偿}{13}{subsection.3.2.6}%
+\contentsline {subsection}{\numberline {3.2.7}ADC 量化与外围非理想性}{13}{subsection.3.2.7}%
+\contentsline {subsection}{\numberline {3.2.8}PCM 器件模型集成（AIHWKit）}{14}{subsection.3.2.8}%
+\contentsline {section}{\numberline {3.3}PyTorch 自动微分集成}{14}{section.3.3}%
+\contentsline {subsection}{\numberline {3.3.1}直通估计器量化器}{14}{subsection.3.3.1}%
+\contentsline {subsection}{\numberline {3.3.2}差分对电导映射}{15}{subsection.3.3.2}%
+\contentsline {subsection}{\numberline {3.3.3}前向路径噪声注入}{16}{subsection.3.3.3}%
+\contentsline {subsection}{\numberline {3.3.4}模型转换与层替换}{16}{subsection.3.3.4}%
+\contentsline {section}{\numberline {3.4}HAT 重采样频率的形式化定义}{16}{section.3.4}%
+\contentsline {subsection}{\numberline {3.4.1}固定掩膜 HAT}{17}{subsection.3.4.1}%
+\contentsline {subsection}{\numberline {3.4.2}Ensemble HAT（轮次级重采样）}{17}{subsection.3.4.2}%
+\contentsline {subsection}{\numberline {3.4.3}每批次重采样}{17}{subsection.3.4.3}%
+\contentsline {subsection}{\numberline {3.4.4}三种体制的可视化比较}{17}{subsection.3.4.4}%
+\contentsline {section}{\numberline {3.5}Ensemble 频率扫描：频率消融}{18}{section.3.5}%
+\contentsline {subsection}{\numberline {3.5.1}实验协议}{18}{subsection.3.5.1}%
+\contentsline {subsection}{\numberline {3.5.2}结果}{19}{subsection.3.5.2}%
+\contentsline {subsection}{\numberline {3.5.3}解读：为何轮次级重采样胜出}{19}{subsection.3.5.3}%
+\contentsline {section}{\numberline {3.6}噪声轮廓靶向：均匀、比例与混合}{20}{section.3.6}%
+\contentsline {subsection}{\numberline {3.6.1}均匀（加性）噪声}{20}{subsection.3.6.1}%
+\contentsline {subsection}{\numberline {3.6.2}比例（状态相关）噪声}{20}{subsection.3.6.2}%
+\contentsline {subsection}{\numberline {3.6.3}混合轮廓}{20}{subsection.3.6.3}%
+\contentsline {subsection}{\numberline {3.6.4}体制匹配训练与跨体制崩溃}{21}{subsection.3.6.4}%
+\contentsline {section}{\numberline {3.7}核心洞见：重采样频率作为隐式迁移保证}{21}{section.3.7}%
+\contentsline {subsection}{\numberline {3.7.1}固定掩膜 HAT：单例保证}{21}{subsection.3.7.1}%
+\contentsline {subsection}{\numberline {3.7.2}每批次 HAT：乘积分布保证}{21}{subsection.3.7.2}%
+\contentsline {subsection}{\numberline {3.7.3}轮次级 HAT：块平稳保证}{22}{subsection.3.7.3}%
+\contentsline {subsection}{\numberline {3.7.4}噪声轮廓匹配作为分布对齐条件}{22}{subsection.3.7.4}%
+\contentsline {section}{\numberline {3.8}评估协议}{22}{section.3.8}%
+\contentsline {subsection}{\numberline {3.8.1}源域评估（Source-domain evaluation）}{22}{subsection.3.8.1}%
+\contentsline {subsection}{\numberline {3.8.2}Fresh-instance 评估}{22}{subsection.3.8.2}%
+\contentsline {subsection}{\numberline {3.8.3}跨数据集评估（Cross-dataset evaluation）}{23}{subsection.3.8.3}%
+\contentsline {section}{\numberline {3.9}本章小结}{23}{section.3.9}%
+\contentsline {chapter}{\numberline {第四章\hspace {.3em}}基准实验}{27}{chapter.4}%
+\contentsline {section}{\numberline {4.1}引言}{27}{section.4.1}%
+\contentsline {section}{\numberline {4.2}实验设置与评估协议}{27}{section.4.2}%
+\contentsline {subsection}{\numberline {4.2.1}模型与数据集}{27}{subsection.4.2.1}%
+\contentsline {subsection}{\numberline {4.2.2}评估体制定义}{27}{subsection.4.2.2}%
+\contentsline {subsection}{\numberline {4.2.3}Fresh-Instance 协议}{28}{subsection.4.2.3}%
+\contentsline {section}{\numberline {4.3}CIFAR-10/100 基准结果}{28}{section.4.3}%
+\contentsline {subsection}{\numberline {4.3.1}ResNet-18}{28}{subsection.4.3.1}%
+\contentsline {subsection}{\numberline {4.3.2}ConvNeXt-Tiny}{29}{subsection.4.3.2}%
+\contentsline {subsection}{\numberline {4.3.3}Tiny-ViT V1--V6}{29}{subsection.4.3.3}%
+\contentsline {section}{\numberline {4.4}跨数据集评估}{30}{section.4.4}%
+\contentsline {subsection}{\numberline {4.4.1}Flowers-102：数据稀缺场景}{30}{subsection.4.4.1}%
+\contentsline {subsection}{\numberline {4.4.2}ImageNet-1k：大规模验证}{31}{subsection.4.4.2}%
+\contentsline {section}{\numberline {4.5}Fresh-Instance 评估}{31}{section.4.5}%
+\contentsline {subsection}{\numberline {4.5.1}Tiny-ViT V4：标准 HAT 的崩溃}{31}{subsection.4.5.1}%
+\contentsline {subsection}{\numberline {4.5.2}ConvNeXt C4 的 Fresh-Instance 行为}{32}{subsection.4.5.2}%
+\contentsline {section}{\numberline {4.6}PCM 器件真实感基准测试}{32}{section.4.6}%
+\contentsline {subsection}{\numberline {4.6.1}实验设置}{32}{subsection.4.6.1}%
+\contentsline {subsection}{\numberline {4.6.2}精度—保持阶梯（Precision--Retention Ladder）}{32}{subsection.4.6.2}%
+\contentsline {subsection}{\numberline {4.6.3}扩展验证：预设独立性与噪声必要性}{33}{subsection.4.6.3}%
+\contentsline {subsection}{\numberline {4.6.4}负面基线与消融}{33}{subsection.4.6.4}%
+\contentsline {subsection}{\numberline {4.6.5}扩展漂移评估}{33}{subsection.4.6.5}%
+\contentsline {section}{\numberline {4.7}讨论与小结}{34}{section.4.7}%
+\contentsline {subsection}{\numberline {4.7.1}架构比较的三条规律}{34}{subsection.4.7.1}%
+\contentsline {subsection}{\numberline {4.7.2}本章小结}{34}{subsection.4.7.2}%
+\contentsline {chapter}{\numberline {第五章\hspace {.3em}}失效模式与诊断框架}{37}{chapter.5}%
+\contentsline {section}{\numberline {5.1}引言：从症状到机制}{37}{section.5.1}%
+\contentsline {section}{\numberline {5.2}失效模式分类学}{37}{section.5.2}%
+\contentsline {subsection}{\numberline {5.2.1}模式一：硬件实例过拟合（Hardware-Instance Overfitting）}{37}{subsection.5.2.1}%
+\contentsline {subsection}{\numberline {5.2.2}模式二：尺度掩蔽区（Scale-Masking Regime）}{38}{subsection.5.2.2}%
+\contentsline {subsection}{\numberline {5.2.3}模式三：ADC精度悬崖}{38}{subsection.5.2.3}%
+\contentsline {subsection}{\numberline {5.2.4}模式四：空间相关D2D退化}{38}{subsection.5.2.4}%
+\contentsline {subsection}{\numberline {5.2.5}模式五：保持漂移}{39}{subsection.5.2.5}%
+\contentsline {subsection}{\numberline {5.2.6}模式六：严重非线性写入}{39}{subsection.5.2.6}%
+\contentsline {subsection}{\numberline {5.2.7}模式七：精度--漂移权衡（Precision--Retention Trade-off）}{40}{subsection.5.2.7}%
+\contentsline {subsection}{\numberline {5.2.8}模式间耦合与复合应力}{40}{subsection.5.2.8}%
+\contentsline {section}{\numberline {5.3}诊断协议}{40}{section.5.3}%
+\contentsline {subsection}{\numberline {5.3.1}协议A：快速实例级筛选}{40}{subsection.5.3.1}%
+\contentsline {subsection}{\numberline {5.3.2}协议B：模块级瓶颈定位}{41}{subsection.5.3.2}%
+\contentsline {subsection}{\numberline {5.3.3}协议C：参数敏感性排序}{41}{subsection.5.3.3}%
+\contentsline {subsection}{\numberline {5.3.4}协议D：时序退化特征提取}{41}{subsection.5.3.4}%
+\contentsline {section}{\numberline {5.4}案例研究}{42}{section.5.4}%
+\contentsline {subsection}{\numberline {5.4.1}案例一：从10\%到86\%——实例过拟合的治愈}{42}{subsection.5.4.1}%
+\contentsline {subsection}{\numberline {5.4.2}案例二：OPECT零样本迁移}{42}{subsection.5.4.2}%
+\contentsline {subsection}{\numberline {5.4.3}案例三：严重NL下的M系列证据}{42}{subsection.5.4.3}%
+\contentsline {subsection}{\numberline {5.4.4}案例四：比例噪声的体制特异性}{43}{subsection.5.4.4}%
+\contentsline {section}{\numberline {5.5}本章小结与向第六章的过渡}{43}{section.5.5}%
+\contentsline {chapter}{\numberline {第六章\hspace {.3em}}大语言模型KV缓存的有机光电存内计算映射}{45}{chapter.6}%
+\contentsline {section}{\numberline {6.1}研究动机}{45}{section.6.1}%
+\contentsline {subsection}{\numberline {6.1.1}大语言模型推理的存储瓶颈}{45}{subsection.6.1.1}%
+\contentsline {subsection}{\numberline {6.1.2}现有数字方案的固有折衷}{45}{subsection.6.1.2}%
+\contentsline {subsection}{\numberline {6.1.3}KV缓存与注意力机制的计算特征}{46}{subsection.6.1.3}%
+\contentsline {subsection}{\numberline {6.1.4}存内计算的技术机遇}{47}{subsection.6.1.4}%
+\contentsline {section}{\numberline {6.2}有机光电CIM的物理匹配性}{47}{section.6.2}%
+\contentsline {subsection}{\numberline {6.2.1}KV缓存的访问模式特征}{47}{subsection.6.2.1}%
+\contentsline {subsection}{\numberline {6.2.2}存储技术的保持时间—耐久性匹配分析}{48}{subsection.6.2.2}%
+\contentsline {subsection}{\numberline {6.2.3}光学刷新的独特优势}{49}{subsection.6.2.3}%
+\contentsline {section}{\numberline {6.3}问题定义与核心假设}{50}{section.6.3}%
+\contentsline {subsection}{\numberline {6.3.1}形式化问题陈述}{50}{subsection.6.3.1}%
+\contentsline {subsection}{\numberline {6.3.2}核心假设}{50}{subsection.6.3.2}%
+\contentsline {subsection}{\numberline {6.3.3}与现有工作的区别}{51}{subsection.6.3.3}%
+\contentsline {section}{\numberline {6.4}目标模型与评估框架}{52}{section.6.4}%
+\contentsline {subsection}{\numberline {6.4.1}目标模型选择}{52}{subsection.6.4.1}%
+\contentsline {subsubsection}{主模型：TinyLlama-1.1B}{52}{subsubsection*.21}%
+\contentsline {subsubsection}{次模型：LLaMA-2-7B（GQA）}{52}{subsubsection*.22}%
+\contentsline {subsubsection}{模型上下文扩展策略}{53}{subsubsection*.23}%
+\contentsline {subsubsection}{排除模型}{53}{subsubsection*.24}%
+\contentsline {subsection}{\numberline {6.4.2}评估指标}{53}{subsection.6.4.2}%
+\contentsline {subsubsection}{算法精度指标}{53}{subsubsection*.25}%
+\contentsline {subsubsection}{数据集选择 rationale}{53}{subsubsection*.26}%
+\contentsline {subsubsection}{下游任务指标}{54}{subsubsection*.27}%
+\contentsline {subsubsection}{系统效率指标}{54}{subsubsection*.28}%
+\contentsline {subsubsection}{评估协议与可复现性}{54}{subsubsection*.29}%
+\contentsline {subsection}{\numberline {6.4.3}对比基线}{54}{subsection.6.4.3}%
+\contentsline {section}{\numberline {6.5}实验设计详述}{55}{section.6.5}%
+\contentsline {subsection}{\numberline {6.5.1}实验一：注意力对模拟KV存储的噪声鲁棒性}{55}{subsection.6.5.1}%
+\contentsline {subsubsection}{科学问题}{55}{subsubsection*.31}%
+\contentsline {subsubsection}{实验设置}{55}{subsubsection*.32}%
+\contentsline {subsubsection}{参数扫描网格}{56}{subsubsection*.33}%
+\contentsline {subsubsection}{数据分析方法}{56}{subsubsection*.35}%
+\contentsline {subsubsection}{风险缓解与备选方案}{56}{subsubsection*.36}%
+\contentsline {subsubsection}{预期结果与分析}{56}{subsubsection*.37}%
+\contentsline {subsection}{\numberline {6.5.2}实验二：架构探索与帕累托分析}{57}{subsection.6.5.2}%
+\contentsline {subsubsection}{科学问题}{57}{subsubsection*.38}%
+\contentsline {subsubsection}{实验设置}{57}{subsubsection*.39}%
+\contentsline {subsubsection}{参数扫描网格}{57}{subsubsection*.40}%
+\contentsline {subsubsection}{与Work 1模拟器的衔接}{58}{subsubsection*.42}%
+\contentsline {subsubsection}{数据分析方法}{58}{subsubsection*.43}%
+\contentsline {subsubsection}{执行顺序与依赖关系}{58}{subsubsection*.44}%
+\contentsline {subsubsection}{预期结果与分析}{58}{subsubsection*.45}%
+\contentsline {subsection}{\numberline {6.5.3}实验三：KV缓存压缩与有机模拟协同设计}{58}{subsection.6.5.3}%
+\contentsline {subsubsection}{科学问题}{58}{subsubsection*.46}%
+\contentsline {subsubsection}{实验设置}{59}{subsubsection*.47}%
+\contentsline {subsubsection}{参数扫描网格}{59}{subsubsection*.48}%
+\contentsline {subsubsection}{数据分析方法}{59}{subsubsection*.50}%
+\contentsline {subsubsection}{预期结果与分析}{60}{subsubsection*.51}%
+\contentsline {subsection}{\numberline {6.5.4}实验四：时间动态与刷新策略}{60}{subsection.6.5.4}%
+\contentsline {subsubsection}{科学问题}{60}{subsubsection*.52}%
+\contentsline {subsubsection}{实验设置}{60}{subsubsection*.53}%
+\contentsline {subsubsection}{参数扫描网格}{60}{subsubsection*.54}%
+\contentsline {subsubsection}{数据分析方法}{60}{subsubsection*.56}%
+\contentsline {subsubsection}{预期结果与分析}{61}{subsubsection*.57}%
+\contentsline {subsection}{\numberline {6.5.5}实验结果：Remote\nobreakspace {}107阶段性验证}{61}{subsection.6.5.5}%
+\contentsline {subsubsection}{基准线与淘汰判定}{61}{subsubsection*.58}%
+\contentsline {subsubsection}{选择性终端层探测}{61}{subsubsection*.60}%
+\contentsline {subsubsection}{全层噪声敏感性扫描}{62}{subsubsection*.62}%
+\contentsline {subsubsection}{HAT全层预热诊断}{62}{subsubsection*.64}%
+\contentsline {subsubsection}{选择性终端层Fresh-D2D交叉实例验证}{62}{subsubsection*.65}%
+\contentsline {subsubsection}{研究路线}{63}{subsubsection*.67}%
+\contentsline {subsubsection}{与核心假设的对照}{63}{subsubsection*.68}%
+\contentsline {section}{\numberline {6.6}预期贡献与创新点}{63}{section.6.6}%
+\contentsline {subsection}{\numberline {6.6.1}首个面向有机CIM的KV缓存物理驱动基准}{64}{subsection.6.6.1}%
+\contentsline {subsection}{\numberline {6.6.2}保持时间—会话长度的物理匹配论证}{64}{subsection.6.6.2}%
+\contentsline {subsection}{\numberline {6.6.3}光学刷新作为差异化机制}{64}{subsection.6.6.3}%
+\contentsline {subsection}{\numberline {6.6.4}跨层次协同设计方法论}{64}{subsection.6.6.4}%
+\contentsline {subsection}{\numberline {6.6.5}与Work 1的互补关系}{64}{subsection.6.6.5}%
+\contentsline {section}{\numberline {6.7}范围边界与明确排除项}{65}{section.6.7}%
+\contentsline {subsection}{\numberline {6.7.1}边界界定的学术意义}{65}{subsection.6.7.1}%
+\contentsline {subsection}{\numberline {6.7.2}与硕士论文范围的适配性}{66}{subsection.6.7.2}%
+\contentsline {section}{\numberline {6.8}本章小结与向第七章的过渡}{66}{section.6.8}%
+\contentsline {subsection}{\numberline {6.8.1}研究展望的预演}{67}{subsection.6.8.1}%
+\contentsline {subsection}{\numberline {6.8.2}向第七章的过渡}{67}{subsection.6.8.2}%
+\contentsline {chapter}{\numberline {第七章\hspace {.3em}}部署包络}{69}{chapter.7}%
+\contentsline {section}{\numberline {7.1}部署场景定义}{69}{section.7.1}%
+\contentsline {subsection}{\numberline {7.1.1}目标应用：边缘视觉推理}{69}{subsection.7.1.1}%
+\contentsline {subsection}{\numberline {7.1.2}CIM 阵列规模与外围约束}{69}{subsection.7.1.2}%
+\contentsline {subsection}{\numberline {7.1.3}功耗约束与刷新策略}{69}{subsection.7.1.3}%
+\contentsline {section}{\numberline {7.2}ADC 分辨率包络}{70}{section.7.2}%
+\contentsline {subsection}{\numberline {7.2.1}6-bit 悬崖：量化主导区与 D2D 主导区的分界}{70}{subsection.7.2.1}%
+\contentsline {subsection}{\numberline {7.2.2}Sobol 全局敏感度分解}{70}{subsection.7.2.2}%
+\contentsline {subsection}{\numberline {7.2.3}ADC 非理想性的边际效应}{70}{subsection.7.2.3}%
+\contentsline {section}{\numberline {7.3}D2D 失配包络}{71}{section.7.3}%
+\contentsline {subsection}{\numberline {7.3.1}固定掩膜 HAT 的硬件实例过拟合}{71}{subsection.7.3.1}%
+\contentsline {subsection}{\numberline {7.3.2}Ensemble HAT 的跨实例统计}{71}{subsection.7.3.2}%
+\contentsline {section}{\numberline {7.4}噪声--非线性权衡}{72}{section.7.4}%
+\contentsline {subsection}{\numberline {7.4.1}严重非线性写入的恢复带}{72}{subsection.7.4.1}%
+\contentsline {subsection}{\numberline {7.4.2}从 $NL=1.0$ 到 $NL=2.0$ 的系统性退化}{72}{subsection.7.4.2}%
+\contentsline {section}{\numberline {7.5}跨器件零样本迁移}{72}{section.7.5}%
+\contentsline {subsection}{\numberline {7.5.1}文献标定器件：OPECT 代理}{72}{subsection.7.5.1}%
+\contentsline {subsection}{\numberline {7.5.2}内部实测器件：Doctor OECT}{73}{subsection.7.5.2}%
+\contentsline {subsection}{\numberline {7.5.3}跨仿真器验证：CrossSim 基准}{73}{subsection.7.5.3}%
+\contentsline {section}{\numberline {7.6}跨架构验证}{73}{section.7.6}%
+\contentsline {section}{\numberline {7.7}部署建议与风险排序}{75}{section.7.7}%
+\contentsline {subsection}{\numberline {7.7.1}三级成熟度决策矩阵}{75}{subsection.7.7.1}%
+\contentsline {subsection}{\numberline {7.7.2}风险排序：非协商项与可协商项}{75}{subsection.7.7.2}%
+\contentsline {subsection}{\numberline {7.7.3}对项目管理者的行动清单}{76}{subsection.7.7.3}%
+\contentsline {subsection}{\numberline {7.7.4}包络的显式边界}{76}{subsection.7.7.4}%
+\contentsline {chapter}{\numberline {第八章\hspace {.3em}}展望与结论}{79}{chapter.8}%
+\contentsline {section}{\numberline {8.1}研究总结}{79}{section.8.1}%
+\contentsline {section}{\numberline {8.2}未来研究方向}{79}{section.8.2}%
+\contentsline {subsection}{\numberline {8.2.1}数据集与模型规模的扩展}{79}{subsection.8.2.1}%
+\contentsline {subsection}{\numberline {8.2.2}物理实验验证}{80}{subsection.8.2.2}%
+\contentsline {subsection}{\numberline {8.2.3}系统级能效建模}{80}{subsection.8.2.3}%
+\contentsline {subsection}{\numberline {8.2.4}自适应编程与可靠性}{80}{subsection.8.2.4}%
+\contentsline {subsection}{\numberline {8.2.5}多芯片集成与封装}{81}{subsection.8.2.5}%
+\contentsline {section}{\numberline {8.3}结论}{81}{section.8.3}%

@@ -1,0 +1,10 @@
+{
+  "phase": "complete",
+  "run_id": "CX-M1..M6 ADC8 + CX-M1/CX-M3 ADC6",
+  "message": "adc_dual_report_complete",
+  "timestamp": "2026-04-24T20:39:36+08:00",
+  "log_timestamp": "20260424_170024",
+  "parallelism": 4,
+  "adc_bits": 8,
+  "adc_dnl_sigma": 0.5
+}

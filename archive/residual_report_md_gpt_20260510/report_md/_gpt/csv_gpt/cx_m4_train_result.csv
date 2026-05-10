@@ -1,0 +1,2 @@
+mode,experiment,experiment_name,dataset,num_classes,use_hybrid,noise_enabled,sigma_c2c,sigma_d2d,hat_training,use_physical_frontend,retention_enabled,inference_time,epochs,batch_size,lr,weight_decay,seed,best_test_acc,best_epoch,final_train_loss,final_train_acc,final_test_loss,final_test_acc,checkpoint_path
+train,V4,V4_hybrid_standard_noise_hat,cifar10,10,True,True,0.05,0.1,True,False,False,0.0,100,64,0.0005,0.05,456,81.39,36,0.07190421020746231,97.484,0.8711619167804718,80.64,checkpoints/_gpt/postfix_m_series/cx_m4_proportional_seed456/V4_hybrid_standard_noise_hat_best.pt

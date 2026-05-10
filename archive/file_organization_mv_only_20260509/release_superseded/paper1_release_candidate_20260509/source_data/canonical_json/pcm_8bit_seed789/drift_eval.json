@@ -1,0 +1,34 @@
+{
+  "checkpoint": "paper2_aihwkit_baseline/checkpoints/r11d_5a_pcm_seed789/best.pt",
+  "drift_times_seconds": [
+    0.0,
+    3600.0,
+    86400.0
+  ],
+  "results": [
+    {
+      "t_inference_seconds": 0.0,
+      "t_label": "0s (no drift)",
+      "accuracy": 77.52
+    },
+    {
+      "t_inference_seconds": 3600.0,
+      "t_label": "1h",
+      "accuracy": 77.33
+    },
+    {
+      "t_inference_seconds": 86400.0,
+      "t_label": "1d",
+      "accuracy": 77.49
+    }
+  ],
+  "config": {
+    "forward_inp_res": 0.00390625,
+    "forward_out_res": 0.00390625,
+    "modifier_type": "ADD_NORMAL",
+    "modifier_std_dev": 0.1,
+    "modifier_enable_during_test": false
+  },
+  "device": "cuda",
+  "time": "2026-04-29T17:46:03.252130"
+}

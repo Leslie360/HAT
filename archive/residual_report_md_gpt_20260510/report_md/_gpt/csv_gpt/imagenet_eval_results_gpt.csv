@@ -1,0 +1,4 @@
+dataset,condition,use_hybrid,noise_enabled,sigma_c2c,sigma_d2d,hat_training,device_profile,profile_source,dynamic_range,n_states,checkpoint_path,checkpoint_epoch,checkpoint_best_acc,eval_runs,test_loss_mean,test_acc_mean,test_acc_min,test_acc_max,test_acc_std
+imagenet1k,digital_fp32_pretrained,False,False,0.0,0.0,False,,,,,,,,1,6.930906640625,0.076,0.076,0.076,0.0
+imagenet1k,hybrid_quant_only,True,False,0.0,0.0,False,,,,,,,,1,6.921543671875,0.154,0.154,0.154,0.0
+imagenet1k,hybrid_standard_noise,True,True,0.05,0.1,False,,,,,,,,10,6.92272328125,0.076,0.076,0.076,0.0

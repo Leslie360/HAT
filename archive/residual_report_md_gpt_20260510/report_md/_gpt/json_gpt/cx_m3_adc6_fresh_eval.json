@@ -1,0 +1,63 @@
+{
+  "checkpoint_path": "checkpoints/_gpt/postfix_m_series/cx_m3_proportional_seed123/V4_hybrid_standard_noise_hat_best.pt",
+  "exp_id": "V4",
+  "fresh_instances": 10,
+  "mc_runs_per_instance": 5,
+  "nl_ltp": 2.0,
+  "nl_ltd": -2.0,
+  "noise_mode": "proportional",
+  "allow_eval_nl_override": false,
+  "eval_provenance_mismatches": [],
+  "adc_enabled": true,
+  "adc_bits": 6,
+  "adc_dnl_sigma": 0.5,
+  "adc_calibration_batches": 2,
+  "adc_calibrated_modules": 42,
+  "checkpoint_epoch": 13,
+  "checkpoint_best_epoch": 13,
+  "checkpoint_best_acc": 80.88,
+  "checkpoint_seed": 123,
+  "checkpoint_nl_ltp": 2.0,
+  "checkpoint_nl_ltd": -2.0,
+  "checkpoint_noise_mode": "proportional",
+  "checkpoint_experiment_name": "V4_hybrid_standard_noise_hat",
+  "commit_hash": "9cdbe77e1346eab4ed5ee828ca4b100255b7996d",
+  "git_worktree_dirty": true,
+  "cuda_device_name": "NVIDIA GeForce RTX 5070 Ti",
+  "pytorch_version": "2.10.0+cu128",
+  "cross_instance_mean": 78.1036,
+  "cross_instance_std": 0.7737972861156862,
+  "instance_means": [
+    78.512,
+    78.694,
+    78.232,
+    78.554,
+    78.234,
+    78.584,
+    77.94200000000001,
+    77.772,
+    75.946,
+    78.566
+  ],
+  "fresh_per_instance_mean": [
+    78.512,
+    78.694,
+    78.232,
+    78.554,
+    78.234,
+    78.584,
+    77.94200000000001,
+    77.772,
+    75.946,
+    78.566
+  ],
+  "fresh_aggregate": {
+    "mean": 78.1036,
+    "std": 0.7737972861156862,
+    "median": 78.37299999999999,
+    "range": [
+      75.946,
+      78.694
+    ]
+  }
+}

@@ -1,0 +1,26 @@
+% Supplementary Note S-Tooling: Comparative Positioning in the Analog CIM Ecosystem
+% Date: 2026-04-25
+
+\section*{Supplementary Note S-Tooling: Tooling Positioning in the Analog CIM Ecosystem}
+\label{supp:tooling}
+
+This note situates the present framework within the broader landscape of analog compute-in-memory (CIM) simulation and training tools. Given the rapid evolution of this field, it is critical to perform honest comparative positioning. Our work is intended to be complementary to existing, mature toolkits by addressing specific architectural needs for transformer-based vision models that are not currently covered by standard libraries. We also acknowledge and cite the conceptual lineage that informed our implementation choices.
+
+\subsection*{S-T.1 Quantitative cross-check}
+
+We performed a controlled cross-comparison on a 1000-image deterministic CIFAR-10 subset:
+
+\begin{itemize}
+    \item \textbf{Clean baseline:} Our framework reports 86.2\%; CrossSim reports 83.7\% at 8-bit ADC.
+    \item \textbf{Noisy 3-run Monte Carlo} ($\sigma_{\text{D2D}} = 5\%$): We report 81.63$\pm$0.56\%; CrossSim reports 67.20$\pm$2.67\%.
+\end{itemize}
+
+The 14.4~pp divergence should be interpreted as a convention mismatch rather than as an apples-to-apples benchmark. Our framework uses multiplicative D2D mismatch relative to each mapped conductance range, whereas the CrossSim configuration used here applies an additive programming-error/read-noise model in absolute conductance units. These two noise laws are not mathematically equivalent unless the conductance range and scaling conventions are explicitly reparameterized to match. We therefore use this experiment only as a sanity check that both simulators reproduce the same qualitative vulnerability to analog mismatch; we do not claim numerical superiority over CrossSim from this subset comparison. CrossSim is also substantially slower per evaluation for full parameter sweeps, so the present framework is used for design-space exploration while CrossSim remains a mature reference simulator for inorganic-array studies.
+
+\subsection*{S-T.2 Conceptual ancestry}
+
+We acknowledge AIHWKit (Rasch \emph{et al.}\ 2023) as the conceptual ancestor of the train-with-differentiable-surrogate / eval-with-ADC discipline and the per-epoch noise resampling primitives used in the present framework.
+
+\subsection*{S-T.3 AIHWKit head-to-head attempt}
+
+We attempted a direct head-to-head replication of the canonical Tiny-ViT V4 checkpoint in AIHWKit~v0.9.1. Conversion failed with \texttt{ValueError: Only one group is supported}, because Tiny-ViT's patch-embedding and stage-0 blocks employ grouped convolutions (depthwise-separable filters) that AIHWKit's \texttt{AnalogConv2d} does not currently map. A ResNet-18 equivalent (no grouped convolutions) converts successfully, but that architecture is outside the present study's scope. This limitation underscores why a custom framework was necessary for Vision-Transformer CIM evaluation: contemporary open-source analog-training toolkits are optimized for standard convolutions and fully-connected layers, not for the heterogeneous operator mix (grouped conv, attention, MLP) found in modern ViTs.

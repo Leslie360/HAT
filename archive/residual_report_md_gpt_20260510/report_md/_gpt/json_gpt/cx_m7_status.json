@@ -1,0 +1,16 @@
+{
+  "task": "CX_M7",
+  "phase": "training",
+  "message": "started",
+  "experiment": "V3",
+  "noise_mode": "uniform",
+  "seed": 789,
+  "num_workers": 0,
+  "gpu_resize": true,
+  "early_stop_patience": 10,
+  "save_dir": "checkpoints/_gpt/postfix_m_series/cx_m7_standard_seed789",
+  "train_log": "logs/_gpt/cx_m7_20260424_153222.log",
+  "eval_log": "logs/_gpt/cx_m7_fresh_eval_20260424_153222.log",
+  "fresh_json": "report_md/_gpt/json_gpt/cx_m7_fresh_eval.json",
+  "timestamp": "2026-04-24T15:32:22+08:00"
+}

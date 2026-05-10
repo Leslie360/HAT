@@ -1,0 +1,16 @@
+{
+  "task": "CX_M6",
+  "phase": "complete",
+  "message": "fresh_eval_complete",
+  "experiment": "V4",
+  "noise_mode": "uniform",
+  "seed": 456,
+  "num_workers": 0,
+  "gpu_resize": true,
+  "early_stop_patience": 10,
+  "save_dir": "checkpoints/_gpt/postfix_m_series/cx_m6_ensemble_seed456",
+  "train_log": "logs/_gpt/cx_m6_20260424_113250.log",
+  "eval_log": "logs/_gpt/cx_m6_fresh_eval_20260424_113250.log",
+  "fresh_json": "report_md/_gpt/json_gpt/cx_m6_fresh_eval.json",
+  "timestamp": "2026-04-24T14:33:16+08:00"
+}

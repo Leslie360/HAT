@@ -1,0 +1,39 @@
+{
+  "generated_at": "2026-04-16T23:22:50",
+  "device": "cuda",
+  "profile_json": "report_md/_gpt/json_gpt/literature_fitted_profile.json",
+  "results": [
+    {
+      "model": "tinyvit",
+      "experiment": "V4",
+      "dataset": "cifar10",
+      "checkpoint_path": "checkpoints/_ensemble/V4_hybrid_standard_noise_hat_best.pt",
+      "checkpoint_best_acc": 91.13,
+      "device_type": "Organic OPECT Zhang2025 Literature-Fitted",
+      "profile_kind": "literature",
+      "source": "Zhang et al., Nature Communications 17, 197 (2026), doi:10.1038/s41467-025-66891-6",
+      "dynamic_range": 47.3,
+      "G_min": 1.0,
+      "G_max": 47.3,
+      "n_states": 34,
+      "sigma_c2c": 0.02,
+      "sigma_d2d": 0.03,
+      "tau_1": null,
+      "tau_2": null,
+      "A_0": null,
+      "gamma_phys": null,
+      "I_dark": null,
+      "responsivity_alpha": null,
+      "NL_LTP": null,
+      "NL_LTD": null,
+      "pulse_count_max": 120,
+      "max_samples": 1000,
+      "eval_runs": 1,
+      "test_loss_mean": 0.6073407471179962,
+      "test_acc_mean": 89.7,
+      "test_acc_min": 89.7,
+      "test_acc_max": 89.7,
+      "test_acc_std": 0.0
+    }
+  ]
+}

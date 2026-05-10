@@ -1,0 +1,214 @@
+{
+  "generated_by": "scripts/_gpt/audit_latex_bib_keys.py",
+  "bib_file": "paper/latex_gpt/refs_gpt.bib",
+  "used_key_count": 43,
+  "bib_key_count": 67,
+  "missing_key_count": 0,
+  "unused_key_count": 24,
+  "missing_keys": [],
+  "unused_keys": [
+    "analogfm2025",
+    "ando2025transfer",
+    "bettayeb2024memristorattention",
+    "fastirdrop2025",
+    "harikesh2024oeneurons",
+    "iconniv2026",
+    "kirkpatrick2017overcoming",
+    "li2022qvit",
+    "lin2023vitptq",
+    "liu2021ptqvit",
+    "liu2024wearable",
+    "mia2026trilinear",
+    "qiu2025m3dattention",
+    "rasch2023ncomms",
+    "wager2013dropout",
+    "wang2025vant",
+    "wolters2024memory",
+    "wu2025halora",
+    "wu2025neurips_train",
+    "yan2025learningaware",
+    "yoshioka2024isscc",
+    "yoshioka2025jssc",
+    "yousuf2025lea",
+    "yu2025fullstack"
+  ],
+  "used_locations": {
+    "wu2023bwq": [
+      "paper/latex_gpt/supplementary.tex",
+      "paper/latex_gpt/sections/03_methodology.tex"
+    ],
+    "liu2024hardsea": [
+      "paper/latex_gpt/supplementary.tex",
+      "paper/latex_gpt/supplementary.tex",
+      "paper/latex_gpt/sections/03_methodology.tex",
+      "paper/latex_gpt/sections/03_methodology.tex"
+    ],
+    "wang2025hemlet": [
+      "paper/latex_gpt/supplementary.tex",
+      "paper/latex_gpt/sections/03_methodology.tex",
+      "paper/latex_gpt/sections/03_methodology.tex"
+    ],
+    "liu2026opect": [
+      "paper/latex_gpt/supplementary.tex",
+      "paper/latex_gpt/supplementary.tex",
+      "paper/latex_gpt/supplementary.tex",
+      "paper/latex_gpt/supplementary.tex",
+      "paper/latex_gpt/sections/02_related_work.tex"
+    ],
+    "vincze2025dualplasticity": [
+      "paper/latex_gpt/supplementary.tex",
+      "paper/latex_gpt/supplementary.tex",
+      "paper/latex_gpt/supplementary.tex",
+      "paper/latex_gpt/supplementary.tex",
+      "paper/latex_gpt/sections/03_methodology.tex"
+    ],
+    "peng2020dnnneurosim": [
+      "paper/latex_gpt/supplementary.tex",
+      "paper/latex_gpt/sections/01_introduction.tex",
+      "paper/latex_gpt/sections/01_introduction.tex",
+      "paper/latex_gpt/sections/02_related_work.tex"
+    ],
+    "crosssim2024": [
+      "paper/latex_gpt/supplementary.tex",
+      "paper/latex_gpt/sections/01_introduction.tex",
+      "paper/latex_gpt/sections/01_introduction.tex",
+      "paper/latex_gpt/sections/02_related_work.tex"
+    ],
+    "rasch2021aihwkit": [
+      "paper/latex_gpt/supplementary.tex",
+      "paper/latex_gpt/supplementary.tex",
+      "paper/latex_gpt/supplementary.tex",
+      "paper/latex_gpt/supplementary.tex",
+      "paper/latex_gpt/sections/01_introduction.tex",
+      "paper/latex_gpt/sections/01_introduction.tex",
+      "paper/latex_gpt/sections/02_related_work.tex",
+      "paper/latex_gpt/sections/06_discussion.tex",
+      "paper/latex_gpt/sections/06_discussion.tex"
+    ],
+    "horowitz2014computing": [
+      "paper/latex_gpt/sections/01_introduction.tex",
+      "paper/latex_gpt/supplementary/S_energy_provenance.tex",
+      "paper/latex_gpt/supplementary/S_energy_provenance.tex",
+      "paper/latex_gpt/supplementary/S_energy_provenance.tex",
+      "paper/latex_gpt/supplementary/S_energy_provenance.tex",
+      "paper/latex_gpt/supplementary/S_energy_provenance.tex"
+    ],
+    "lanza2025memristor": [
+      "paper/latex_gpt/sections/01_introduction.tex"
+    ],
+    "xu2025emerging": [
+      "paper/latex_gpt/sections/01_introduction.tex",
+      "paper/latex_gpt/sections/02_related_work.tex"
+    ],
+    "guo2024organic": [
+      "paper/latex_gpt/sections/01_introduction.tex",
+      "paper/latex_gpt/sections/02_related_work.tex"
+    ],
+    "photonics2025organicreview": [
+      "paper/latex_gpt/sections/01_introduction.tex",
+      "paper/latex_gpt/sections/02_related_work.tex"
+    ],
+    "lammie2022memtorch": [
+      "paper/latex_gpt/sections/01_introduction.tex",
+      "paper/latex_gpt/sections/02_related_work.tex"
+    ],
+    "zeng2023organicmemristor": [
+      "paper/latex_gpt/sections/01_introduction.tex",
+      "paper/latex_gpt/sections/02_related_work.tex"
+    ],
+    "jung2024organicfilaments": [
+      "paper/latex_gpt/sections/01_introduction.tex",
+      "paper/latex_gpt/sections/02_related_work.tex"
+    ],
+    "lin2016physical": [
+      "paper/latex_gpt/sections/01_introduction.tex"
+    ],
+    "joshi2020accurate": [
+      "paper/latex_gpt/sections/02_related_work.tex"
+    ],
+    "choi2019pact": [
+      "paper/latex_gpt/sections/02_related_work.tex"
+    ],
+    "tobin2017domain": [
+      "paper/latex_gpt/sections/02_related_work.tex",
+      "paper/latex_gpt/sections/03_methodology.tex",
+      "paper/latex_gpt/supplementary/S_theory_ensemble_hat.tex"
+    ],
+    "beller2024organicneurons": [
+      "paper/latex_gpt/sections/02_related_work.tex"
+    ],
+    "ji2025singleoectneuron": [
+      "paper/latex_gpt/sections/02_related_work.tex"
+    ],
+    "gebregiorgis2023organiccim": [
+      "paper/latex_gpt/sections/02_related_work.tex",
+      "paper/latex_gpt/supplementary/S_energy_provenance.tex",
+      "paper/latex_gpt/supplementary/S_energy_provenance.tex"
+    ],
+    "zhang2025mooptoelectronic": [
+      "paper/latex_gpt/sections/02_related_work.tex"
+    ],
+    "cui2025multimode": [
+      "paper/latex_gpt/sections/02_related_work.tex"
+    ],
+    "visionarch2023crosstalk": [
+      "paper/latex_gpt/sections/02_related_work.tex"
+    ],
+    "amspa2024insensor": [
+      "paper/latex_gpt/sections/02_related_work.tex"
+    ],
+    "jang2023insensor": [
+      "paper/latex_gpt/sections/02_related_work.tex"
+    ],
+    "fuller2020tempresilient": [
+      "paper/latex_gpt/sections/02_related_work.tex"
+    ],
+    "guo2024hightemp": [
+      "paper/latex_gpt/sections/02_related_work.tex"
+    ],
+    "wang2024epim": [
+      "paper/latex_gpt/sections/03_methodology.tex",
+      "paper/latex_gpt/sections/03_methodology.tex"
+    ],
+    "ge2024allspark": [
+      "paper/latex_gpt/sections/03_methodology.tex",
+      "paper/latex_gpt/sections/03_methodology.tex"
+    ],
+    "wei2020voltagedifferential": [
+      "paper/latex_gpt/sections/03_methodology.tex"
+    ],
+    "kim2024sttmram": [
+      "paper/latex_gpt/sections/03_methodology.tex"
+    ],
+    "roberts2022principles": [
+      "paper/latex_gpt/supplementary/S_theory_ensemble_hat.tex"
+    ],
+    "mcallester1999pac": [
+      "paper/latex_gpt/supplementary/S_theory_ensemble_hat.tex"
+    ],
+    "dziugaite2017computing": [
+      "paper/latex_gpt/supplementary/S_theory_ensemble_hat.tex"
+    ],
+    "mcallester1999some": [
+      "paper/latex_gpt/supplementary/S_theory_ensemble_hat.tex"
+    ],
+    "perez2021tighter": [
+      "paper/latex_gpt/supplementary/S_theory_ensemble_hat.tex"
+    ],
+    "foret2021sharpness": [
+      "paper/latex_gpt/supplementary/S_theory_ensemble_hat.tex",
+      "paper/latex_gpt/supplementary/S_theory_ensemble_hat.tex",
+      "paper/latex_gpt/supplementary/S_theory_ensemble_hat.tex"
+    ],
+    "keskar2017large": [
+      "paper/latex_gpt/supplementary/S_theory_ensemble_hat.tex"
+    ],
+    "andriushchenko2022understanding": [
+      "paper/latex_gpt/supplementary/S_theory_ensemble_hat.tex"
+    ],
+    "hochreiter1997flat": [
+      "paper/latex_gpt/supplementary/S_theory_ensemble_hat.tex"
+    ]
+  },
+  "scope_note": "This is a local consistency audit. It verifies citation-key coverage, not external DOI authenticity."
+}

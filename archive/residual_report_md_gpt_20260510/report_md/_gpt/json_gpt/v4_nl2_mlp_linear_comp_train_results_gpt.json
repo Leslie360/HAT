@@ -1,0 +1,28 @@
+[
+  {
+    "mode": "train",
+    "experiment": "V4",
+    "experiment_name": "V4_hybrid_standard_noise_hat_nl2_mlp_linear_comp",
+    "dataset": "cifar10",
+    "num_classes": 10,
+    "use_hybrid": true,
+    "noise_enabled": true,
+    "sigma_c2c": 0.05,
+    "sigma_d2d": 0.1,
+    "hat_training": true,
+    "use_physical_frontend": false,
+    "retention_enabled": false,
+    "inference_time": 0.0,
+    "epochs": 100,
+    "batch_size": 64,
+    "lr": 0.0005,
+    "weight_decay": 0.05,
+    "best_test_acc": 87.79,
+    "best_epoch": 73,
+    "final_train_loss": 0.04849229950428009,
+    "final_train_acc": 98.308,
+    "final_test_loss": 0.6326962173461914,
+    "final_test_acc": 86.22,
+    "checkpoint_path": "/home/qiaosir/projects/compute_vit/checkpoints/_gpt/nl_mitigation/v4_nl2_mlp_linear_comp/V4_hybrid_standard_noise_hat_nl2_mlp_linear_comp_best.pt"
+  }
+]

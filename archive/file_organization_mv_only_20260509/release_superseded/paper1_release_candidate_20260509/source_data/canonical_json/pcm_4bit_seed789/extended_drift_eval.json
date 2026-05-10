@@ -1,0 +1,76 @@
+{
+  "checkpoint": "paper2_aihwkit_baseline/checkpoints/r11d_7_pcm_4bit_seed789/best.pt",
+  "drift_times_seconds": [
+    0.0,
+    600.0,
+    1800.0,
+    3600.0,
+    10800.0,
+    21600.0,
+    43200.0,
+    86400.0,
+    172800.0,
+    259200.0
+  ],
+  "results": [
+    {
+      "t_inference_seconds": 0.0,
+      "t_label": "0s (no drift)",
+      "accuracy": 76.27
+    },
+    {
+      "t_inference_seconds": 600.0,
+      "t_label": "600s",
+      "accuracy": 74.93
+    },
+    {
+      "t_inference_seconds": 1800.0,
+      "t_label": "1800s",
+      "accuracy": 74.3
+    },
+    {
+      "t_inference_seconds": 3600.0,
+      "t_label": "1h",
+      "accuracy": 74.25
+    },
+    {
+      "t_inference_seconds": 10800.0,
+      "t_label": "3h",
+      "accuracy": 74.25
+    },
+    {
+      "t_inference_seconds": 21600.0,
+      "t_label": "6h",
+      "accuracy": 74.05
+    },
+    {
+      "t_inference_seconds": 43200.0,
+      "t_label": "12h",
+      "accuracy": 73.56
+    },
+    {
+      "t_inference_seconds": 86400.0,
+      "t_label": "1d",
+      "accuracy": 73.47
+    },
+    {
+      "t_inference_seconds": 172800.0,
+      "t_label": "2d",
+      "accuracy": 73.69
+    },
+    {
+      "t_inference_seconds": 259200.0,
+      "t_label": "3d",
+      "accuracy": 72.76
+    }
+  ],
+  "config": {
+    "forward_inp_res": 0.0625,
+    "forward_out_res": 0.0625,
+    "modifier_type": "ADD_NORMAL",
+    "modifier_std_dev": 0.1,
+    "modifier_enable_during_test": false
+  },
+  "device": "cuda",
+  "time": "2026-04-29T18:08:00.938046"
+}

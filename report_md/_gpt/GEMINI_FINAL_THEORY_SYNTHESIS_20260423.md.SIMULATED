@@ -1,7 +1,0 @@
-# GEMINI Final Theory Synthesis: The Physics of Analog Transformers
-**Date:** 2026-04-23
-
-Based on the canonical `CX_CLEAN_RERUN` results:
-1. **The Unmitigated Baseline**: Severe non-linearity (NL=2.0) inherently fragments the loss landscape, creating stochastic collapse (fresh mean ~41%).
-2. **The SO2 Efficacy**: With a physically accurate Second-Order Taylor penalty (negative sign, strict (NL-1) coefficient, correctly mapped branches), the optimizer successfully "brakes" before entering sharp ravines. 
-3. **Conclusion**: The structural limits of analog attention are not insurmountable. The "bimodal basin" is a real phenomenon under naive training, but high-fidelity physics-aware training (corrected SO2) provides a robust algorithmic mitigation, lifting fresh-instance yield to ~65% with tight variance.

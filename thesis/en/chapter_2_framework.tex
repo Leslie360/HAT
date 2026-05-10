@@ -1,0 +1,65 @@
+% Thesis Chapter 2 — Profile-driven simulation framework
+% Seeded from manuscript methodology (§3) and internal framework code.
+% Thesis-level emphasis: the framework itself as a reusable research instrument,
+% not merely an implementation detail of the NC experiments.
+%
+% Figures reused from manuscript package (paths relative to paper/thesis/):
+%   ../latex_gpt/figures/fig1_system_architecture.pdf
+%   ../latex_gpt/figures/fig2_weight_mapping.pdf
+%   ../latex_gpt/figures/figS2_nonideality.png
+%   ../latex_gpt/figures/fig6_physical_compensation.pdf
+%   ../latex_gpt/figures/fig7_retention_curve.pdf
+%   ../latex_gpt/figures/fig_nl_gradient_distortion.pdf
+%   ../latex_gpt/figures/fig11_energy_breakdown.pdf
+%
+% Cross-references:
+%   Chapter 1 (\ref{chap:hat-instance-overfitting}) — HAT and instance overfitting
+%   Chapter 3 (\ref{chap:severe-nl}) — severe nonlinearity boundary
+%   Manuscript: \citep{...} for device literature, \ref{sec:methodology} for methodology
+
+\chapter{Profile-driven simulation framework}
+\label{chap:framework}
+
+Organic optoelectronic compute-in-memory systems are usually judged by device-level figures of merit: conductance window, retention time, write asymmetry, and optical responsivity. Those metrics are necessary, but they are not sufficient to answer the system question that matters for deployment. What accuracy survives once a modern vision backbone is mapped to an analog array with structured mismatch, finite readout precision, and a sub-linear photoresponse? Answering that question requires a deliberate bridge between the measurement laboratory and the algorithm training loop.
+
+This chapter describes the simulation framework that provides that bridge. The design principle is \emph{profile-driven}: every physically relevant assumption enters through a single structured configuration object, so that a literature-derived prior and an in-house measured profile are interchangeable inputs to the same training or evaluation script. This is important because early device characterization rarely arrives as a single ``device score.'' Instead, it is distributed across several measurement modalities---multilevel programming, repeated same-state reads, cross-device statistics, retention fitting, and photoresponse characterization. The framework treats these measurements as structured calibration inputs rather than as informal narrative context.
+
+\section{Design principle and architecture}
+
+The framework is built around three design choices. First, a set of pluggable physical interfaces that let device parameters enter the forward path without changing model architecture code. Second, deep integration with PyTorch autograd that makes hardware-aware training a drop-in training-mode switch rather than a custom optimizer rewrite. Third, an external validation against the CrossSim crossbar simulator that confirms numerical consistency in a shared operating regime and highlights where organic-specific extensions diverge from generic RRAM models. Figure~\ref{fig:system-arch} shows the hybrid architecture: dense linear operators execute on differential-pair crossbar arrays, while control-heavy or utilization-poor operators remain on a digital coprocessor.
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=0.88\linewidth]{../latex_gpt/figures/fig1_system_architecture}
+    \caption{Hybrid system architecture reused from the manuscript. Dense linear operators execute on differential-pair crossbar arrays, while control-heavy or utilization-poor operators remain on a digital coprocessor.}
+    \label{fig:system-arch}
+\end{figure}
+
+\section{Physical model}
+
+The physical model combines five effects through a single profile object that specifies the conductance window $[G_{\min}, G_{\max}]$, the number of discrete states $n_{\text{states}}$, variability coefficients $(\sigma_{\text{C2C}}, \sigma_{\text{D2D}})$, retention time constants $(\tau_1, \tau_2, A_0)$, photoresponse nonlinearity $\gamma_{\text{phys}}$, and write-asymmetry exponents $(\mathrm{NL}_{\mathrm{LTP}}, \mathrm{NL}_{\mathrm{LTD}})$. Device-to-device mismatch is treated as a static Gaussian perturbation sampled once at initialization, $\boldsymbol{\epsilon}_{\text{D2D}} \sim \mathcal{N}(0, \sigma_{\text{D2D}}^{2} \Delta G^{2})$, while cycle-to-cycle variation is resampled on each forward pass, $\boldsymbol{\epsilon}_{\text{C2C}}^{(t)} \sim \mathcal{N}(0, \sigma_{\text{C2C}}^{2} \Delta G^{2})$. The noisy effective weight is $\widehat{\mathbf{W}}^{(t)} = (\widetilde{\mathbf{G}}^{+} - \widetilde{\mathbf{G}}^{-}) + \boldsymbol{\epsilon}_{\text{D2D}} + \boldsymbol{\epsilon}_{\text{C2C}}^{(t)}$. Nonlinear write asymmetry is injected into the straight-through estimator backward pass by scaling the surrogate gradient according to the current conductance position:
+\begin{equation}
+g_{\text{surrogate}} = \begin{cases}
+g \cdot \left(\dfrac{G_{\max} - G}{G_{\max} - G_{\min}}\right)^{\mathrm{NL}_{\mathrm{LTP}} - 1} & \text{if } g \ge 0, \\[1.2em]
+g \cdot \left(\dfrac{G - G_{\min}}{G_{\max} - G_{\min}}\right)^{|\mathrm{NL}_{\mathrm{LTD}}| - 1} & \text{if } g < 0,
+\end{cases}
+\label{eq:nl-gradient-scaling}
+\end{equation}
+where $g = \partial \mathcal{L} / \partial G$. When $\mathrm{NL}_{\mathrm{LTP}} = 1$ and $\mathrm{NL}_{\mathrm{LTD}} = -1$ this reduces to the identity STE; larger magnitudes suppress updates near the conductance boundaries. Post-programming drift follows a double-exponential retention law
+\begin{equation}
+G(t) = G_{\min} + \left(G - G_{\min}\right) \left[A_1 \exp\left(-t/\tau_1\right) + A_2 \exp\left(-t/\tau_2\right) + A_0\right],
+\label{eq:retention}
+\end{equation}
+with $A_1 = A_2 = (1-A_0)/2$, $A_0 = 0.6$, $\tau_1 = 140$~ms and $\tau_2 = 610$~ms from DNTT measurements \citep{vincze2025dualplasticity}. The optoelectronic front end is modeled by a sub-linear photocurrent $I_{\text{photo}} = \alpha P^{\gamma_{\text{phys}}}$ compensated with an inverse-gamma preprocessor $P_{\text{in}} = X^{1/\gamma_{\text{phys}}}$. ADC non-ideality is injected as per-step DNL noise, and the energy model is kept separate from the accuracy model so that Pareto analysis does not conflate physical fidelity with placeholder energy constants.
+
+\section{Training integration and validation}
+
+The PyTorch integration proceeds through custom autograd primitives and drop-in layer replacement. Each analog-mapped weight tensor is split into positive and negative parts, normalized by a detached scale factor $s_W = \lVert \mathbf{W} \rVert_{\infty}^{\mathrm{detach}}$, mapped to the conductance window, quantized with an STE, and recombined as a differential effective weight $\mathbf{W}_{\text{eff}} = \widetilde{\mathbf{G}}^{+} - \widetilde{\mathbf{G}}^{-}$. The forward path applies quantization, retention, mismatch noise, and optional digital scale recovery in that order, so the entire pipeline remains differentiable during hardware-aware training.
+
+For Tiny-ViT-5M, the analog-mapped layers are the patch-embedding convolutions, the attention projection matrices $\mathbf{W}_Q$, $\mathbf{W}_K$, $\mathbf{W}_V$, the attention output projection, and the two feed-forward matrices in each transformer block. MBConv blocks, downsampling paths, depthwise convolutions, dynamic attention products, and the classification head remain digital. This split sends $4{,}730{,}016$ parameters to the analog domain and leaves $662{,}748$ digital, an analog-mapped ratio of $87.7\,\%$. Under a $128 \times 128$ array constraint with differential-pair storage, this requires 812 arrays and $13{,}303{,}808$ individual devices. Pre-trained weights are copied into the analog replacements without re-initialization, enabling the fine-tuning experiments reported in later chapters.
+
+A cross-framework comparison against CrossSim \citep{crosssim2026} was performed in the shared regime (8-bit ADC, uniform noise, deterministic baseline, standard differential-pair mapping) on a 1\,000-image CIFAR-10 subset. The clean baseline accuracies were consistent: $86.2\,\%$ (ours) versus $83.7\,\%$ (CrossSim). Under uniform noise at $\sigma=5\,\%$, the predictions diverged substantially ($81.63\pm0.56\,\%$ versus $67.20\pm2.67\,\%$), highlighting that accuracy is highly sensitive to the exact noise-to-conductance mapping. The comparison serves as a sanity check on the baseline while confirming that the organic-specific extensions---photoresponse, retention, proportional noise, and ensemble resampling---represent genuine capability additions beyond the shared inorganic toolset.
+
+\section{Limitations}
+
+The framework is intentionally positioned as a research instrument rather than a chip-predictive emulator. Its limitations should be kept in mind when interpreting later results. Scale recovery is modeled as ideal floating-point rescaling, which assumes negligible peripheral quantization overhead. Position-dependent IR drop and sneak-path currents are not geometry-aware in the current version. Energy parameters are anchored to 28~nm handbook assumptions and should be treated as first-order estimates. Finally, the framework assumes ideal single-shot programming and excludes iterative write-verify overhead. Its purpose is to rank deployment risks, enable reproducible algorithm-device co-design, and preserve a clean pathway for recalibration when measured device data become available. With the instrument in place, the first question is how HAT behaves when training and deployment instances differ.

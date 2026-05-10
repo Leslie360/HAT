@@ -1,0 +1,338 @@
+{
+  "generated_at": "2026-05-09",
+  "supersedes": "manifest_canonical_json_20260501.json",
+  "count": 47,
+  "missing_count": 0,
+  "missing_optional": [],
+  "items": [
+    {
+      "label": "pcm_6bit_seed457",
+      "dest": "paper/latex_gpt/source_data/canonical_json/pcm_6bit_seed457/drift_eval.json",
+      "sha256": "7b477eab4463556feb94b2f13a24974ea0367b6a53fe99fb1fbac414e2b7662a",
+      "bytes": 815,
+      "status": "active"
+    },
+    {
+      "label": "pcm_6bit_seed457",
+      "dest": "paper/latex_gpt/source_data/canonical_json/pcm_6bit_seed457/training_history.json",
+      "sha256": "5bf994f3f99945a30419a2c1a8229f5ff09a2d661bc1c5bce4d76be67eb7ea61",
+      "bytes": 22202,
+      "status": "active"
+    },
+    {
+      "label": "pcm_6bit_seed457",
+      "dest": "paper/latex_gpt/source_data/canonical_json/pcm_6bit_seed457/fresh_eval.json",
+      "sha256": "924f5ac8f1847b2d531f476cb111d94d06bcdd5487c3f7cf05b196f335373dbf",
+      "bytes": 21411,
+      "status": "active"
+    },
+    {
+      "label": "pure_4bit_collapse",
+      "dest": "paper/latex_gpt/source_data/canonical_json/pure_4bit_collapse/training_history.json",
+      "sha256": "b7d64161a91c8b6db60f6f1f9002e73c482cb11ee26e4c9e4654867ff1b9c61b",
+      "bytes": 6600,
+      "status": "active"
+    },
+    {
+      "label": "pure_4bit_collapse",
+      "dest": "paper/latex_gpt/source_data/canonical_json/pure_4bit_collapse/fresh_eval.json",
+      "sha256": "bc02b808fb73356aebf0f00621d44f6ac7e4ab4c84627a57c3080a6a52537e49",
+      "bytes": 6394,
+      "status": "active"
+    },
+    {
+      "label": "pcm_4bit_seed456_clean",
+      "dest": "paper/latex_gpt/source_data/canonical_json/pcm_4bit_seed456_clean/drift_eval.json",
+      "sha256": "451a7685f1fef230c1bb3a3b6bc9a97a14892c3fb6dde2317522467014d33b7d",
+      "bytes": 725,
+      "status": "active"
+    },
+    {
+      "label": "pcm_4bit_seed456_clean",
+      "dest": "paper/latex_gpt/source_data/canonical_json/pcm_4bit_seed456_clean/training_history.json",
+      "sha256": "01c34ddd6ba6229e72147ccc0266aa617c17eda7e9c511940d65a519086e6fd1",
+      "bytes": 22269,
+      "status": "active"
+    },
+    {
+      "label": "pcm_4bit_seed456_clean",
+      "dest": "paper/latex_gpt/source_data/canonical_json/pcm_4bit_seed456_clean/fresh_eval.json",
+      "sha256": "01ec26488a405d091428d884a9a4e05852a469ccf67c0f327646c80afbdff5f5",
+      "bytes": 21414,
+      "status": "active"
+    },
+    {
+      "label": "pcm_4bit_seed456_clean",
+      "dest": "paper/latex_gpt/source_data/canonical_json/pcm_4bit_seed456_clean/extended_drift_eval.json",
+      "sha256": "7b8a6b5e9a49f4ff9fc662c61176493ba87569049732ee0894506e922d68df69",
+      "bytes": 1506,
+      "status": "active"
+    },
+    {
+      "label": "pcm_4bit_seed456_clean",
+      "dest": "paper/latex_gpt/source_data/canonical_json/pcm_4bit_seed456_clean/fresh_drift_eval.json",
+      "sha256": "8f610064a3e3e1ff11404d39ae40150d2100b9a9085319f5bd018ea8f533d054",
+      "bytes": 23638,
+      "status": "active"
+    },
+    {
+      "label": "pcm_8bit_seed123",
+      "dest": "paper/latex_gpt/source_data/canonical_json/pcm_8bit_seed123/drift_eval.json",
+      "sha256": "82077b5b4a9dab3e5238c273d167deb4596feb25bb8986d7100512bee021a0ce",
+      "bytes": 723,
+      "status": "active"
+    },
+    {
+      "label": "pcm_8bit_seed123",
+      "dest": "paper/latex_gpt/source_data/canonical_json/pcm_8bit_seed123/training_history.json",
+      "sha256": "81e5ac47b306de4dd31d392636c54bf663d3093e4eb4ec84d85c1ab938c0d4f0",
+      "bytes": 22282,
+      "status": "active"
+    },
+    {
+      "label": "pcm_8bit_seed123",
+      "dest": "paper/latex_gpt/source_data/canonical_json/pcm_8bit_seed123/fresh_eval.json",
+      "sha256": "1387d021694f524c005d02de6412c650947150b15c5be938864c86a91860fe78",
+      "bytes": 21408,
+      "status": "active"
+    },
+    {
+      "label": "pcm_8bit_seed123",
+      "dest": "paper/latex_gpt/source_data/canonical_json/pcm_8bit_seed123/extended_drift_eval.json",
+      "sha256": "f9e5a92c05e98bfd36f6807a46f4482af6e8d459ac327300c95147a018bc2264",
+      "bytes": 1504,
+      "status": "active"
+    },
+    {
+      "label": "pcm_8bit_seed123",
+      "dest": "paper/latex_gpt/source_data/canonical_json/pcm_8bit_seed123/fresh_drift_eval.json",
+      "sha256": "fc9f1cd6ffbd859546f0c82c07bea68d15612ef348817e9d39f9e4edad122435",
+      "bytes": 23642,
+      "status": "active"
+    },
+    {
+      "label": "pcm_4bit_seed789",
+      "dest": "paper/latex_gpt/source_data/canonical_json/pcm_4bit_seed789/drift_eval.json",
+      "sha256": "a411ad89728424af5bd9045df41de610810b9d7b3518adedfb0da9a4f2d9200b",
+      "bytes": 719,
+      "status": "active"
+    },
+    {
+      "label": "pcm_4bit_seed789",
+      "dest": "paper/latex_gpt/source_data/canonical_json/pcm_4bit_seed789/training_history.json",
+      "sha256": "acb204b6a10fc4d3fa57990682af082ae3451fb1499e0ce49e2e5eabea3adf55",
+      "bytes": 22235,
+      "status": "active"
+    },
+    {
+      "label": "pcm_4bit_seed789",
+      "dest": "paper/latex_gpt/source_data/canonical_json/pcm_4bit_seed789/fresh_eval.json",
+      "sha256": "9ff017ed7261053ccb428271a49b4122208342a74c78c3fa3b525782453a2bed",
+      "bytes": 21407,
+      "status": "active"
+    },
+    {
+      "label": "pcm_4bit_seed789",
+      "dest": "paper/latex_gpt/source_data/canonical_json/pcm_4bit_seed789/extended_drift_eval.json",
+      "sha256": "09ff89e5d8ec5d1e050bcc457edf54bd8a85a40b888d1e1fd689ee60c556e7a6",
+      "bytes": 1499,
+      "status": "active"
+    },
+    {
+      "label": "pcm_4bit_seed789",
+      "dest": "paper/latex_gpt/source_data/canonical_json/pcm_4bit_seed789/fresh_drift_eval.json",
+      "sha256": "3f86574dbbe39740a098df46195a338fb9de2e9c4591519c6b79f272d3988598",
+      "bytes": 23625,
+      "status": "active"
+    },
+    {
+      "label": "pcm_8bit_seed789",
+      "dest": "paper/latex_gpt/source_data/canonical_json/pcm_8bit_seed789/drift_eval.json",
+      "sha256": "e5f7c96b14b8fc4ecbfd6739a0a39ef444140e33d18e7ad4336b7e37f11a359a",
+      "bytes": 723,
+      "status": "active"
+    },
+    {
+      "label": "pcm_8bit_seed789",
+      "dest": "paper/latex_gpt/source_data/canonical_json/pcm_8bit_seed789/training_history.json",
+      "sha256": "a8d600c06f188449b49a4c226d8c1270efc46829e268058a8a880a3445165863",
+      "bytes": 22262,
+      "status": "active"
+    },
+    {
+      "label": "pcm_8bit_seed789",
+      "dest": "paper/latex_gpt/source_data/canonical_json/pcm_8bit_seed789/fresh_eval.json",
+      "sha256": "de88891eb323b27d080b22355cc135367a5275f3ebeaf90fd34517d8bbc067e9",
+      "bytes": 21413,
+      "status": "active"
+    },
+    {
+      "label": "pcm_8bit_seed789",
+      "dest": "paper/latex_gpt/source_data/canonical_json/pcm_8bit_seed789/extended_drift_eval.json",
+      "sha256": "082aa22703975ce5f57983c235b538382559fcc07f5df80161d7d8a5a0580526",
+      "bytes": 1501,
+      "status": "active"
+    },
+    {
+      "label": "pcm_8bit_seed789",
+      "dest": "paper/latex_gpt/source_data/canonical_json/pcm_8bit_seed789/fresh_drift_eval.json",
+      "sha256": "b82e1edb21acaab809802ba6333abb6cd27f10c2d71031c96911211cf5ac711a",
+      "bytes": 23630,
+      "status": "active"
+    },
+    {
+      "label": "pcm_6bit_seed789",
+      "dest": "paper/latex_gpt/source_data/canonical_json/pcm_6bit_seed789/drift_eval.json",
+      "sha256": "b04c67dcfaf94fb710e20c38ded371add11f40bc4ff353bf0aea2028d02ec08e",
+      "bytes": 815,
+      "status": "active"
+    },
+    {
+      "label": "pcm_6bit_seed789",
+      "dest": "paper/latex_gpt/source_data/canonical_json/pcm_6bit_seed789/training_history.json",
+      "sha256": "a3f56cb17d3aceb041d6b786f1c6445514254e58f31683cdb60bcb99d4f1e638",
+      "bytes": 13537,
+      "status": "active"
+    },
+    {
+      "label": "pcm_6bit_seed789",
+      "dest": "paper/latex_gpt/source_data/canonical_json/pcm_6bit_seed789/fresh_eval.json",
+      "sha256": "4664c5e820708d894cd46d36a7cd98a6f6c2f5caa95128902da7751ba2c953fb",
+      "bytes": 21407,
+      "status": "active"
+    },
+    {
+      "label": "ideal_8bit_sigma010_aihwkit_baseline",
+      "dest": "paper/latex_gpt/source_data/canonical_json/ideal_8bit_sigma010_aihwkit_baseline/training_history.json",
+      "sha256": "b4bc4ba04563a5193f3c6771ed0af86f28eb6b771b5d12ed357869dd8a196a87",
+      "bytes": 20232,
+      "status": "active"
+    },
+    {
+      "label": "ideal_8bit_sigma010_aihwkit_baseline",
+      "dest": "paper/latex_gpt/source_data/canonical_json/ideal_8bit_sigma010_aihwkit_baseline/fresh_eval.json",
+      "sha256": "1a0f9234677963522cd74cfcf8f47c8f30f6d2031aadbb3dfcbe643f912bb45a",
+      "bytes": 978,
+      "status": "active"
+    },
+    {
+      "label": "pcm_6bit_seed456",
+      "dest": "paper/latex_gpt/source_data/canonical_json/pcm_6bit_seed456/drift_eval.json",
+      "sha256": "3a32904431fcd08d5d4591c42f085a77cc9f60bf232574b5e7e7abb0ce3ca153",
+      "bytes": 815,
+      "status": "active"
+    },
+    {
+      "label": "pcm_6bit_seed456",
+      "dest": "paper/latex_gpt/source_data/canonical_json/pcm_6bit_seed456/training_history.json",
+      "sha256": "108023c1ab3d6b4006f888080b66e64058d1623add74d35fd07211421642158b",
+      "bytes": 10878,
+      "status": "active"
+    },
+    {
+      "label": "pcm_6bit_seed456",
+      "dest": "paper/latex_gpt/source_data/canonical_json/pcm_6bit_seed456/fresh_eval.json",
+      "sha256": "0e9251c1a586537d0444772479a559f4a9533d3f0da3673035e55f68402e5917",
+      "bytes": 21409,
+      "status": "active"
+    },
+    {
+      "label": "pcm_4bit_seed123",
+      "dest": "paper/latex_gpt/source_data/canonical_json/pcm_4bit_seed123/drift_eval.json",
+      "sha256": "29238ff42a7715a0e86fe79e355f955555f33df73c3d4ee9def628e8e34a122d",
+      "bytes": 719,
+      "status": "active"
+    },
+    {
+      "label": "pcm_4bit_seed123",
+      "dest": "paper/latex_gpt/source_data/canonical_json/pcm_4bit_seed123/training_history.json",
+      "sha256": "06387b9ee4d5efae243c13fe7bd28103f9c32d52e2b3bc45328eb989a616096d",
+      "bytes": 22251,
+      "status": "active"
+    },
+    {
+      "label": "pcm_4bit_seed123",
+      "dest": "paper/latex_gpt/source_data/canonical_json/pcm_4bit_seed123/fresh_eval.json",
+      "sha256": "e1308c05eb69bfe5075df087634f8ee64fc4b43852f942d95d512cfb023e0a5a",
+      "bytes": 21404,
+      "status": "active"
+    },
+    {
+      "label": "pcm_4bit_seed123",
+      "dest": "paper/latex_gpt/source_data/canonical_json/pcm_4bit_seed123/extended_drift_eval.json",
+      "sha256": "83aefc8264afa2a661ef6f07a3f45444a7a04acf70a9764388c83a848d39b01e",
+      "bytes": 1500,
+      "status": "active"
+    },
+    {
+      "label": "pcm_4bit_seed123",
+      "dest": "paper/latex_gpt/source_data/canonical_json/pcm_4bit_seed123/fresh_drift_eval.json",
+      "sha256": "a74fce7b5b2be29c4d3725368c64401266a837076a8d77e659960b6c53326657",
+      "bytes": 23631,
+      "status": "active"
+    },
+    {
+      "label": "ensemble_hat_4bit_3seed",
+      "dest": "paper/latex_gpt/source_data/canonical_json/ensemble_hat_4bit_3seed/r10a_canonical_ensemble_hat_3seed_fresh_eval.json",
+      "sha256": "5a9e0a22aac4fa66068d7a52f3b5b03b66b6f62ebfa19fcaa8c58299c1a2d22e",
+      "bytes": 2869,
+      "status": "active"
+    },
+    {
+      "label": "pcm_6bit_seed123",
+      "dest": "paper/latex_gpt/source_data/canonical_json/pcm_6bit_seed123/drift_eval.json",
+      "sha256": "78a3d468f9ebd1d324250fbc58992269d75dbf584d08296dfd606ba974fc5780",
+      "bytes": 784,
+      "status": "active"
+    },
+    {
+      "label": "pcm_6bit_seed123",
+      "dest": "paper/latex_gpt/source_data/canonical_json/pcm_6bit_seed123/fresh_eval.json",
+      "sha256": "021cb15e5feb1246d3ebfe871de09b72f6dd60b1f52d79cc686a9e930a4b4a1c",
+      "bytes": 21391,
+      "status": "active"
+    },
+    {
+      "label": "pcm_8bit_seed456",
+      "dest": "paper/latex_gpt/source_data/canonical_json/pcm_8bit_seed456/drift_eval.json",
+      "sha256": "24833d5d977e4b83467de6259da59d454749ab87076a3c139f72a78ff77dd859",
+      "bytes": 723,
+      "status": "active"
+    },
+    {
+      "label": "pcm_8bit_seed456",
+      "dest": "paper/latex_gpt/source_data/canonical_json/pcm_8bit_seed456/training_history.json",
+      "sha256": "bd699041c26af7c698be6edd913847fa5b4874fd69b4ba5cec0da626e74203c9",
+      "bytes": 22189,
+      "status": "active"
+    },
+    {
+      "label": "pcm_8bit_seed456",
+      "dest": "paper/latex_gpt/source_data/canonical_json/pcm_8bit_seed456/fresh_eval.json",
+      "sha256": "23b42a8cf363f7d67a8da010b189040d02ae5697573d6123ca139c7fa71a4800",
+      "bytes": 21411,
+      "status": "active"
+    },
+    {
+      "label": "pcm_8bit_seed456",
+      "dest": "paper/latex_gpt/source_data/canonical_json/pcm_8bit_seed456/extended_drift_eval.json",
+      "sha256": "c7d0e047ba7cfa83ace9ad69512029b32e513386dce61af15c57aaa8d8b410fb",
+      "bytes": 1501,
+      "status": "active"
+    },
+    {
+      "label": "pcm_8bit_seed456",
+      "dest": "paper/latex_gpt/source_data/canonical_json/pcm_8bit_seed456/fresh_drift_eval.json",
+      "sha256": "16886e4727e7f88a59b2f7c47139508ec0cf97f0e8f3929dd443b2f0b77542d3",
+      "bytes": 23640,
+      "status": "active"
+    },
+    {
+      "label": "pcm_6bit_seed123",
+      "dest": "paper/latex_gpt/source_data/canonical_json/pcm_6bit_seed123/training_history.json",
+      "sha256": "26dfd55230b41c71da619a6ed8ce870b1bf7027aa276e3298b5c5483f3b013f4",
+      "bytes": 14858,
+      "status": "active"
+    }
+  ]
+}

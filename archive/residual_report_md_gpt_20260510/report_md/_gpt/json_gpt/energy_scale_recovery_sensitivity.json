@@ -1,0 +1,100 @@
+{
+  "experiment": "Energy Scale-Recovery Sensitivity v2",
+  "date": "2026-04-23T14:08:27.386401",
+  "model": "Tiny-ViT-5M",
+  "dataset": "CIFAR-10",
+  "interpretation": {
+    "headline": "Digital scale-recovery adds <0.1% energy if E_mult < 1 fJ (optimized ASIC)",
+    "caveat": "If E_mult > 1000 fJ (FPGA), speedup drops from 11.45\u00d7 to ~10\u00d7 vs FP32",
+    "fair_comparison": "vs INT8 digital baseline, speedup is ~2.9\u00d7 (not 11.45\u00d7)",
+    "recommendation": "Report both: \"11.45\u00d7 vs FP32, ~2.9\u00d7 vs INT8\" with explicit first-order assumptions"
+  },
+  "paper_claim": {
+    "digital_FP32_uJ": 273.94,
+    "speedup": 11.45,
+    "analog_uJ": 23.924890829694323
+  },
+  "INT8_comparison": {
+    "digital_INT8_uJ": 68.485,
+    "speedup_vs_INT8": 2.8625
+  },
+  "sweep_results": [
+    {
+      "E_mult_fJ": 0.1,
+      "scale_recovery_energy_uJ": 1.6704000000000001e-06,
+      "total_energy_uJ": 23.924892500094323,
+      "speedup": 11.449999200578226,
+      "delta_from_claim": -7.9942177322323e-07
+    },
+    {
+      "E_mult_fJ": 0.5,
+      "scale_recovery_energy_uJ": 8.352e-06,
+      "total_energy_uJ": 23.92489918169432,
+      "speedup": 11.449996002892249,
+      "delta_from_claim": -3.997107750564055e-06
+    },
+    {
+      "E_mult_fJ": 1.0,
+      "scale_recovery_energy_uJ": 1.6704e-05,
+      "total_energy_uJ": 23.924907533694324,
+      "speedup": 11.449992005787285,
+      "delta_from_claim": -7.99421271402423e-06
+    },
+    {
+      "E_mult_fJ": 5.0,
+      "scale_recovery_energy_uJ": 8.352000000000001e-05,
+      "total_energy_uJ": 23.924974349694324,
+      "speedup": 11.449960029048055,
+      "delta_from_claim": -3.997095194385736e-05
+    },
+    {
+      "E_mult_fJ": 10.0,
+      "scale_recovery_energy_uJ": 0.00016704000000000003,
+      "total_energy_uJ": 23.925057869694324,
+      "speedup": 11.44992005837518,
+      "delta_from_claim": -7.994162481850253e-05
+    },
+    {
+      "E_mult_fJ": 50.0,
+      "scale_recovery_energy_uJ": 0.0008352,
+      "total_energy_uJ": 23.925726029694324,
+      "speedup": 11.449600303038322,
+      "delta_from_claim": -0.00039969696167752033
+    },
+    {
+      "E_mult_fJ": 100.0,
+      "scale_recovery_energy_uJ": 0.0016704,
+      "total_energy_uJ": 23.92656122969432,
+      "speedup": 11.44920063398094,
+      "delta_from_claim": -0.0007993660190592777
+    },
+    {
+      "E_mult_fJ": 500.0,
+      "scale_recovery_energy_uJ": 0.008352,
+      "total_energy_uJ": 23.933242829694322,
+      "speedup": 11.446004285725905,
+      "delta_from_claim": -0.003995714274093842
+    },
+    {
+      "E_mult_fJ": 1000.0,
+      "scale_recovery_energy_uJ": 0.016704,
+      "total_energy_uJ": 23.941594829694324,
+      "speedup": 11.442011359253193,
+      "delta_from_claim": -0.007988640746805942
+    },
+    {
+      "E_mult_fJ": 5000.0,
+      "scale_recovery_energy_uJ": 0.08352000000000001,
+      "total_energy_uJ": 24.008410829694323,
+      "speedup": 11.410167959187985,
+      "delta_from_claim": -0.03983204081201386
+    },
+    {
+      "E_mult_fJ": 10000.0,
+      "scale_recovery_energy_uJ": 0.16704000000000002,
+      "total_energy_uJ": 24.091930829694324,
+      "speedup": 11.37061209151229,
+      "delta_from_claim": -0.07938790848770871
+    }
+  ]
+}

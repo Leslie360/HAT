@@ -1,0 +1,71 @@
+% !TeX program = tectonic
+\documentclass[11pt,a4paper]{letter}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath}
+\usepackage[colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue]{hyperref}
+\usepackage{enumitem}
+\setlist{nosep}
+\setlength{\emergencystretch}{2em}
+
+\signature{Songqiao Li}
+
+\begin{document}
+
+\begin{letter}{Editorial Office\\Nature Electronics\\Springer Nature}
+
+\opening{Dear Editors,}
+
+\textbf{Submission:} Hardware-Aware Training and Precision-Retention Frontiers for Low-Precision Analog Vision
+
+\textbf{Article Type:} Article
+
+\textbf{Reviewer Information:} Suggested and excluded reviewers will be provided through the submission system.
+
+\vspace{0.5em}
+\textbf{Editorial Summary}
+
+We present a behavioural simulation framework for low-precision analog compute-in-memory vision that separates two deployment questions that are often conflated: whether a training objective generalizes across fresh hardware instances, and whether a physical memory substrate remains stable after programming. In an AIHWKit IdealDevice baseline, fixed-instance low-precision analog deployment is stable at 8-bit precision (87.28$\pm$0.13\% fresh-instance accuracy) but collapses at 4-bit precision (14.64$\pm$0.11\%). Ensemble Hardware-Aware Training (HAT), which resamples device-to-device mismatch during training, rescues this 4-bit pure-quantization regime and recovers 86.16$\pm$0.19\% fresh-instance accuracy across three seeds.
+
+We then test whether the algorithmic rescue survives a more realistic phase-change memory (PCM) simulation setting. Under the tested PCM UnitCell regime, 4-bit, 6-bit, and 8-bit models all converge, but retention behaviour becomes precision dependent. The 8-bit PCM model is drift-flat over the tested retention window and provides the strongest overall operating point; the 4-bit PCM model is trainable but incurs a measurable 4.01 percentage-point one-day drift; and the corrected 6-bit PCM model is drift-flat but seed-sensitive, with 68.55\% mean fresh-instance accuracy and 6.03~pp seed-to-seed standard deviation. The central message is therefore not simply that HAT improves accuracy, but that distribution-level HAT resolves the cross-instance robustness bottleneck and exposes the remaining physical precision-retention frontier.
+
+\vspace{0.5em}
+\textbf{Why Nature Electronics?}
+
+This work sits at the intersection of analog memory device modelling, mixed-signal system design, and machine-learning robustness. The paper provides a deployment-facing bridge between device-level non-idealities and task-level transformer accuracy, with explicit provenance for the numerical claims and a reproducibility bundle containing the manuscript source, source-data manifests, verification scripts, and canonical JSON evidence. We believe this hardware--algorithm co-design narrative is well aligned with Nature Electronics' readership because it frames low-precision analog deployment as a coupled algorithmic and physical design problem rather than as a pure neural-network training result.
+
+\vspace{0.5em}
+\textbf{Methodological Rigor}
+
+All locked numerical claims are backed by JSON artifacts and guard scripts. The release package includes checks for locked numbers, PCM precision-ladder consistency, bibliography key coverage, DOI/URL resolution, and LaTeX artifact provenance. The manuscript distinguishes canonical claims from diagnostic supplementary analyses and keeps remote cross-architecture and analog-KV-cache results out of the Paper-1 main claim set until their independent gates close.
+
+\vspace{0.5em}
+\textbf{Companion Work and Collaboration}
+
+A separate follow-on line will study analog KV-cache for large language model inference. That work is intentionally kept outside the present manuscript because its evaluation metrics, memory-access pattern, and noise model differ from the vision-training setting reported here.
+
+\vspace{0.5em}
+\textbf{Key Contributions}
+
+\begin{enumerate}
+    \item A behavioural analog-CIM vision workflow that separates cross-instance robustness from physical precision-retention limits.
+    \item Ensemble HAT, a distribution-matching training protocol that raises 4-bit fresh-instance accuracy from 14.64$\pm$0.11\% to 86.16$\pm$0.19\% in the tested pure-quantization regime.
+    \item A PCM precision ladder showing 8-bit drift-flat behaviour, trainable but drift-limited 4-bit behaviour, and a 6-bit D2D-sensitive transition regime in the tested UnitCell sweep.
+    \item A reproducibility package with canonical JSON evidence, source-data manifests, and guard scripts for locked-number and reference validation.
+\end{enumerate}
+
+\vspace{0.5em}
+\textbf{Transparency Disclosures}
+
+\begin{itemize}
+    \item \textbf{Preprint:} None; submitted exclusively to Nature Electronics.
+    \item \textbf{Prior Publication:} None; the framework was developed for this submission.
+    \item \textbf{Code Availability:} A reviewer-accessible archive will be provided at submission; a public release will follow at acceptance.
+    \item \textbf{Competing Interests:} The authors declare no competing interests.
+\end{itemize}
+
+The submission package includes a main manuscript and a supplementary information PDF. All datasets are publicly available, and all key claims carry error bars from multiple Monte Carlo runs or training seeds.
+
+\closing{Sincerely,}
+
+\end{letter}
+\end{document}

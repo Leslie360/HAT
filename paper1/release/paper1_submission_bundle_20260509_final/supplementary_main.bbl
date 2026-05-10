@@ -1,0 +1,194 @@
+\begin{thebibliography}{20}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Wu et~al.(2024)Wu, Hanson, Wang, Zheng, Yang, Yang, Li, Cheng, Pande,
+  and Doppa]{wu2023bwq}
+Xueying Wu, Edward Hanson, Nansu Wang, Qilin Zheng, Xiaoxuan Yang, Huanrui
+  Yang, Shiyu Li, Feng Cheng, Partha~Pratim Pande, and Janardhan~Rao Doppa.
+\newblock Block-wise mixed-precision quantization: Enabling high efficiency for
+  practical {ReRAM}-based {DNN} accelerators.
+\newblock \emph{IEEE Transactions on Computer-Aided Design of Integrated
+  Circuits and Systems}, 2024.
+\newblock \doi{10.1109/TCAD.2024.3409193}.
+\newblock URL \url{https://doi.org/10.1109/TCAD.2024.3409193}.
+
+\bibitem[Liu et~al.(2024)Liu, Mu, Jiang, Wang, Zhang, Lin, Zhou, Liu, and
+  Chen]{liu2024hardsea}
+Shiwei Liu, Chen Mu, Hao Jiang, Yunzhengmao Wang, Jinshan Zhang, Feng Lin, Keji
+  Zhou, Qi~Liu, and Chixiao Chen.
+\newblock {HARDSEA}: Hybrid analog-{ReRAM} clustering and digital-{SRAM}
+  in-memory computing accelerator for dynamic sparse self-attention in
+  transformer.
+\newblock \emph{IEEE Transactions on Very Large Scale Integration (VLSI)
+  Systems}, 32\penalty0 (2):\penalty0 269--282, 2024.
+\newblock \doi{10.1109/TVLSI.2023.3337777}.
+\newblock URL \url{https://doi.org/10.1109/TVLSI.2023.3337777}.
+
+\bibitem[Wang et~al.(2025)Wang, Fu, Huang, and Huang]{wang2025hemlet}
+Cong Wang, Zexin Fu, Jiayi Huang, and Shanshi Huang.
+\newblock {Hemlet}: A heterogeneous compute-in-memory chiplet architecture for
+  vision transformers with group-level parallelism, 2025.
+\newblock URL \url{https://arxiv.org/abs/2511.15397}.
+
+\bibitem[Liu et~al.(2026)Liu, Dai, Jin, Zhang, Guo, Sun, Li, Guo, Gao, Liang,
+  Zhang, Xiong, Zhou, and Huang]{liu2026opect}
+Xu~Liu, Shilei Dai, Yiyang Jin, Junyao Zhang, Ziyi Guo, Tongrui Sun, Li~Li,
+  Pu~Guo, Huaiyu Gao, Haixia Liang, Shiqi Zhang, Lize Xiong, Yanmin Zhou, and
+  Jia Huang.
+\newblock Near-infrared organic photoelectrochemical synaptic transistors by
+  wafer-scale photolithography for neuromorphic visual system.
+\newblock \emph{Nature Communications}, 17:\penalty0 197, 2026.
+\newblock \doi{10.1038/s41467-025-66891-6}.
+\newblock URL \url{https://doi.org/10.1038/s41467-025-66891-6}.
+\newblock Published online 2025-12-08.
+
+\bibitem[Vincze et~al.(2026)Vincze, Hanic, Berki, and
+  Weis]{vincze2025dualplasticity}
+Tomas Vincze, Michal Hanic, Martin Berki, and Martin Weis.
+\newblock Simultaneous dual-plasticity organic synaptic transistor for
+  neuromorphic computing.
+\newblock \emph{Advanced Electronic Materials}, 12\penalty0 (1):\penalty0
+  e00515, 2026.
+\newblock \doi{10.1002/aelm.202500515}.
+\newblock URL \url{https://doi.org/10.1002/aelm.202500515}.
+\newblock Published online 2025-12-03.
+
+\bibitem[Hu et~al.(2023)Hu, Fattori, Schilp, Verbeek, Kazemzadeh, van~de Burgt,
+  Kronemeijer, Gelinck, and Cantatore]{gebregiorgis2023organiccim}
+Lan~Shen Hu, Marco Fattori, Winston Schilp, Roy Verbeek, Setareh Kazemzadeh,
+  Yoeri van~de Burgt, Auke~Jisk Kronemeijer, Gerwin Gelinck, and Eugenio
+  Cantatore.
+\newblock An energy-efficient solid-state organic device array for neuromorphic
+  computing.
+\newblock \emph{IEEE Transactions on Electron Devices}, 70\penalty0
+  (12):\penalty0 6520--6525, 2023.
+\newblock \doi{10.1109/TED.2023.3327947}.
+\newblock URL \url{https://doi.org/10.1109/TED.2023.3327947}.
+
+\bibitem[Horowitz(2014)]{horowitz2014computing}
+Mark Horowitz.
+\newblock Computing's energy problem (and what we can do about it).
+\newblock In \emph{IEEE International Solid-State Circuits Conference (ISSCC)},
+  pages 10--14, 2014.
+\newblock \doi{10.1109/ISSCC.2014.6757323}.
+\newblock URL \url{https://doi.org/10.1109/ISSCC.2014.6757323}.
+
+\bibitem[Peng et~al.(2021)Peng, Huang, Jiang, Lu, and Yu]{peng2020dnnneurosim}
+Xiaochen Peng, Shanshi Huang, Hongwu Jiang, Anni Lu, and Shimeng Yu.
+\newblock {DNN\allowbreak+\allowbreak NeuroSim} v2.0: An end-to-end
+  benchmarking framework for compute-in-memory accelerators for on-chip
+  training.
+\newblock \emph{IEEE Transactions on Computer-Aided Design of Integrated
+  Circuits and Systems}, 40\penalty0 (11):\penalty0 2306--2319, 2021.
+\newblock \doi{10.1109/TCAD.2020.3043731}.
+\newblock URL \url{https://doi.org/10.1109/TCAD.2020.3043731}.
+
+\bibitem[{Sandia National Laboratories}(2024)]{crosssim2024}
+{Sandia National Laboratories}.
+\newblock Crosssim: Sandia's simulator for analog ai accelerators.
+\newblock Technical report, Sandia National Laboratories, 2024.
+\newblock URL \url{https://doi.org/10.2172/2585829}.
+
+\bibitem[Rasch et~al.(2021)Rasch, Moreda, Gokmen, Gallo, Carta, Goldberg,
+  Maghraoui, Sebastian, and Narayanan]{rasch2021aihwkit}
+Malte~J. Rasch, Diego Moreda, Tayfun Gokmen, Manuel~Le Gallo, Fabio Carta,
+  Cindy Goldberg, Kaoutar~El Maghraoui, Abu Sebastian, and Vijay Narayanan.
+\newblock A flexible and fast {PyTorch} toolkit for simulating training and
+  inference on analog crossbar arrays, 2021.
+\newblock URL \url{https://arxiv.org/abs/2104.02184}.
+
+\bibitem[Tobin et~al.(2017)Tobin, Fong, Ray, Schneider, Zaremba, and
+  Abbeel]{tobin2017domain}
+Josh Tobin, Rachel Fong, Alex Ray, Jonas Schneider, Wojciech Zaremba, and
+  Pieter Abbeel.
+\newblock Domain randomization for transferring deep neural networks from
+  simulation to the real world.
+\newblock In \emph{2017 IEEE/RSJ International Conference on Intelligent Robots
+  and Systems (IROS)}, pages 23--30, 2017.
+\newblock \doi{10.1109/IROS.2017.8202133}.
+\newblock URL \url{https://doi.org/10.1109/IROS.2017.8202133}.
+
+\bibitem[Roberts et~al.(2022)Roberts, Yaida, and Hanin]{roberts2022principles}
+Daniel~A. Roberts, Sho Yaida, and Boris Hanin.
+\newblock \emph{The Principles of Deep Learning Theory: An Effective Theory
+  Approach to Understanding Neural Networks}.
+\newblock Cambridge University Press, 2022.
+\newblock ISBN 9781009023405.
+\newblock \doi{10.1017/9781009023405}.
+\newblock URL \url{https://doi.org/10.1017/9781009023405}.
+\newblock Higher-order weight perturbation analysis.
+
+\bibitem[McAllester(1999{\natexlab{a}})]{mcallester1999pac}
+David~A. McAllester.
+\newblock Pac-bayesian model averaging.
+\newblock In \emph{Proceedings of the Twelfth Annual Conference on
+  Computational Learning Theory ({COLT})}, pages 164--170. ACM,
+  1999{\natexlab{a}}.
+\newblock \doi{10.1145/307400.307435}.
+\newblock URL \url{https://doi.org/10.1145/307400.307435}.
+
+\bibitem[Dziugaite and Roy(2017)]{dziugaite2017computing}
+Gintare~Karolina Dziugaite and Daniel~M. Roy.
+\newblock Computing nonvacuous generalization bounds for deep stochastic neural
+  networks with many more parameters than training data.
+\newblock In \emph{Conference on Uncertainty in Artificial Intelligence
+  ({UAI})}, 2017.
+\newblock URL
+  \url{https://mlanthology.org/uai/2017/dziugaite2017uai-computing/}.
+
+\bibitem[McAllester(1999{\natexlab{b}})]{mcallester1999some}
+David~A. McAllester.
+\newblock Some pac-bayesian theorems.
+\newblock \emph{Machine Learning}, 37\penalty0 (3):\penalty0 355--363,
+  1999{\natexlab{b}}.
+\newblock \doi{10.1023/A:1007618624809}.
+\newblock URL \url{https://doi.org/10.1023/A:1007618624809}.
+
+\bibitem[P{\'e}rez-Ortiz et~al.(2021)P{\'e}rez-Ortiz, Rivasplata, Shawe-Taylor,
+  and Szepesv{\'a}ri]{perez2021tighter}
+Mar{\'i}a P{\'e}rez-Ortiz, Omar Rivasplata, John Shawe-Taylor, and Csaba
+  Szepesv{\'a}ri.
+\newblock Tighter risk certificates for neural networks.
+\newblock \emph{Journal of Machine Learning Research}, 22\penalty0
+  (227):\penalty0 1--40, 2021.
+\newblock URL \url{https://jmlr.csail.mit.edu/papers/v22/20-879.html}.
+
+\bibitem[Foret et~al.(2021)Foret, Kleiner, Mobahi, and
+  Neyshabur]{foret2021sharpness}
+Pierre Foret, Ariel Kleiner, Hossein Mobahi, and Behnam Neyshabur.
+\newblock Sharpness-aware minimization for efficiently improving
+  generalization.
+\newblock In \emph{International Conference on Learning Representations
+  ({ICLR})}, 2021.
+\newblock URL \url{https://openreview.net/forum?id=6Tm1mposlrM}.
+
+\bibitem[Keskar et~al.(2017)Keskar, Mudigere, Nocedal, Smelyanskiy, and
+  Tang]{keskar2017large}
+Nitish~Shirish Keskar, Dheevatsa Mudigere, Jorge Nocedal, Mikhail Smelyanskiy,
+  and Ping Tak~Peter Tang.
+\newblock On large-batch training for deep learning: Generalization gap and
+  sharp minima.
+\newblock In \emph{International Conference on Learning Representations
+  ({ICLR})}, 2017.
+\newblock URL \url{https://openreview.net/forum?id=H1oyRlYgg}.
+
+\bibitem[Andriushchenko and Flammarion(2022)]{andriushchenko2022understanding}
+Maksym Andriushchenko and Nicolas Flammarion.
+\newblock Towards understanding sharpness-aware minimization.
+\newblock In \emph{Proceedings of the 39th International Conference on Machine
+  Learning}, volume 162 of \emph{Proceedings of Machine Learning Research},
+  pages 639--668, 2022.
+\newblock URL \url{https://proceedings.mlr.press/v162/andriushchenko22a.html}.
+
+\bibitem[Hochreiter and Schmidhuber(1997)]{hochreiter1997flat}
+Sepp Hochreiter and J{\"u}rgen Schmidhuber.
+\newblock Flat minima.
+\newblock \emph{Neural Computation}, 9\penalty0 (1):\penalty0 1--42, 1997.
+\newblock \doi{10.1162/neco.1997.9.1.1}.
+\newblock URL \url{https://doi.org/10.1162/neco.1997.9.1.1}.
+
+\end{thebibliography}

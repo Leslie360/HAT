@@ -1,0 +1,5 @@
+stage,condition,fresh_accuracy_pct,drift_drop_1d_pp,decision
+failure,IdealDevice 4-bit fixed-mask,14.6368,NA,reject fixed-mask 4-bit
+rescue,IdealDevice 4-bit Ensemble HAT,86.15873333333333,NA,distribution-level HAT works
+physical_frontier,PCM UnitCell 8-bit,77.59526666666666,0.03999999999999204,deployment-stable practical point
+transition,PCM UnitCell 6-bit,68.55375,0.06499999999999773,D2D-sensitive transition zone

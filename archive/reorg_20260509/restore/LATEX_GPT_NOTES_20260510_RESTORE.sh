@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -euo pipefail
+mkdir -p '/home/qiaosir/projects/compute_vit/paper/latex_gpt' && mv '/home/qiaosir/projects/archive/stale_markdown_20260510_wave4/compute_vit/paper/latex_gpt/CITATION_BACKLOG_gpt.md' '/home/qiaosir/projects/compute_vit/paper/latex_gpt/CITATION_BACKLOG_gpt.md'
+mkdir -p '/home/qiaosir/projects/compute_vit/paper/latex_gpt' && mv '/home/qiaosir/projects/archive/stale_markdown_20260510_wave4/compute_vit/paper/latex_gpt/CITATION_MAP_gpt.md' '/home/qiaosir/projects/compute_vit/paper/latex_gpt/CITATION_MAP_gpt.md'
+mkdir -p '/home/qiaosir/projects/compute_vit/paper/latex_gpt' && mv '/home/qiaosir/projects/archive/stale_markdown_20260510_wave4/compute_vit/paper/latex_gpt/CLOSEOUT_CHECKLIST_gpt.md' '/home/qiaosir/projects/compute_vit/paper/latex_gpt/CLOSEOUT_CHECKLIST_gpt.md'
+mkdir -p '/home/qiaosir/projects/compute_vit/paper/latex_gpt' && mv '/home/qiaosir/projects/archive/stale_markdown_20260510_wave4/compute_vit/paper/latex_gpt/CODEX_FINAL_REVIEW_20260423.md' '/home/qiaosir/projects/compute_vit/paper/latex_gpt/CODEX_FINAL_REVIEW_20260423.md'
+mkdir -p '/home/qiaosir/projects/compute_vit/paper/latex_gpt' && mv '/home/qiaosir/projects/archive/stale_markdown_20260510_wave4/compute_vit/paper/latex_gpt/SUBMISSION_PACKET_gpt.md' '/home/qiaosir/projects/compute_vit/paper/latex_gpt/SUBMISSION_PACKET_gpt.md'
+mkdir -p '/home/qiaosir/projects/compute_vit/paper/latex_gpt' && mv '/home/qiaosir/projects/archive/stale_markdown_20260510_wave4/compute_vit/paper/latex_gpt/TEMPLATE_MIGRATION_GUIDE_gpt.md' '/home/qiaosir/projects/compute_vit/paper/latex_gpt/TEMPLATE_MIGRATION_GUIDE_gpt.md'
+mkdir -p '/home/qiaosir/projects/compute_vit/paper/latex_gpt/report_md/_gpt' && mv '/home/qiaosir/projects/archive/stale_markdown_20260510_wave4/compute_vit/paper/latex_gpt/report_md/_gpt/CODEX_AUDIT_VERDICT_20260423.md' '/home/qiaosir/projects/compute_vit/paper/latex_gpt/report_md/_gpt/CODEX_AUDIT_VERDICT_20260423.md'

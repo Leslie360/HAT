@@ -1,0 +1,406 @@
+\contentsline {chapter}{摘\nobreakspace {}\nobreakspace {}\nobreakspace {}\nobreakspace {}要}{I}{section*.2}%
+\contentsline {chapter}{ABSTRACT}{III}{section*.5}%
+\contentsline {chapter}{主要符号表}{XIII}{section*.9}%
+\setcounter {tocdepth}{-5}
+\contentsline {chapter}{\numberline {1}硬件实例过拟合与集成硬件感知训练原理}{1}{section*.11}%
+\setcounter {tocdepth}{2}
+\contentsline {chapter}{\numberline {1}硬件实例过拟合与集成硬件感知训练原理}{1}{section*.12}%
+\setcounter {tocdepth}{-5}
+\contentsline {section}{\numberline {1.1}引言：模拟存内计算中的部署鸿沟}{1}{section*.14}%
+\setcounter {tocdepth}{2}
+\contentsline {section}{\numberline {1.1}引言：模拟存内计算中的部署鸿沟}{1}{section*.15}%
+\setcounter {tocdepth}{-5}
+\contentsline {section}{\numberline {1.2}经验特征：从源域救援到全新实例崩溃}{1}{section*.17}%
+\setcounter {tocdepth}{2}
+\contentsline {section}{\numberline {1.2}经验特征：从源域救援到全新实例崩溃}{1}{section*.18}%
+\setcounter {tocdepth}{-5}
+\contentsline {subsection}{\numberline {1.2.1}三种评估范式}{1}{section*.20}%
+\setcounter {tocdepth}{2}
+\contentsline {subsection}{\numberline {1.2.1}三种评估范式}{1}{section*.21}%
+\setcounter {tocdepth}{-5}
+\contentsline {subsection}{\numberline {1.2.2}$10\,\%$ 的崩溃}{2}{section*.23}%
+\setcounter {tocdepth}{2}
+\contentsline {subsection}{\numberline {1.2.2}$10\,\%$ 的崩溃}{2}{section*.24}%
+\setcounter {tocdepth}{-5}
+\contentsline {subsection}{\numberline {1.2.3}为什么崩溃具有方法论价值}{2}{section*.26}%
+\setcounter {tocdepth}{2}
+\contentsline {subsection}{\numberline {1.2.3}为什么崩溃具有方法论价值}{2}{section*.27}%
+\setcounter {tocdepth}{-5}
+\contentsline {section}{\numberline {1.3}硬件实例过拟合的机制}{2}{section*.29}%
+\setcounter {tocdepth}{2}
+\contentsline {section}{\numberline {1.3}硬件实例过拟合的机制}{2}{section*.30}%
+\setcounter {tocdepth}{-5}
+\contentsline {subsection}{\numberline {1.3.1}固定掩膜训练作为域记忆}{2}{section*.32}%
+\setcounter {tocdepth}{2}
+\contentsline {subsection}{\numberline {1.3.1}固定掩膜训练作为域记忆}{2}{section*.33}%
+\setcounter {tocdepth}{-5}
+\contentsline {subsection}{\numberline {1.3.2}记忆化的几何解释}{3}{section*.35}%
+\setcounter {tocdepth}{2}
+\contentsline {subsection}{\numberline {1.3.2}记忆化的几何解释}{3}{section*.36}%
+\setcounter {tocdepth}{-5}
+\contentsline {section}{\numberline {1.4}集成 HAT 作为分布训练目标}{3}{section*.38}%
+\setcounter {tocdepth}{2}
+\contentsline {section}{\numberline {1.4}集成 HAT 作为分布训练目标}{3}{section*.39}%
+\setcounter {tocdepth}{-5}
+\contentsline {subsection}{\numberline {1.4.1}为什么采用轮次级重采样}{3}{section*.41}%
+\setcounter {tocdepth}{2}
+\contentsline {subsection}{\numberline {1.4.1}为什么采用轮次级重采样}{3}{section*.42}%
+\setcounter {tocdepth}{-5}
+\contentsline {subsection}{\numberline {1.4.2}定量结果}{3}{section*.44}%
+\setcounter {tocdepth}{2}
+\contentsline {subsection}{\numberline {1.4.2}定量结果}{3}{section*.45}%
+\setcounter {tocdepth}{-5}
+\contentsline {subsection}{\numberline {1.4.3}超越训练分布的泛化}{3}{section*.47}%
+\setcounter {tocdepth}{2}
+\contentsline {subsection}{\numberline {1.4.3}超越训练分布的泛化}{3}{section*.48}%
+\setcounter {tocdepth}{-5}
+\contentsline {section}{\numberline {1.5}跨场景证据支柱}{4}{section*.50}%
+\setcounter {tocdepth}{2}
+\contentsline {section}{\numberline {1.5}跨场景证据支柱}{4}{section*.51}%
+\setcounter {tocdepth}{-5}
+\contentsline {section}{\numberline {1.6}对本论文其余部分的启示}{4}{section*.53}%
+\setcounter {tocdepth}{2}
+\contentsline {section}{\numberline {1.6}对本论文其余部分的启示}{4}{section*.54}%
+\setcounter {tocdepth}{-5}
+\contentsline {chapter}{\numberline {2}配置文件驱动的仿真框架}{5}{section*.56}%
+\setcounter {tocdepth}{2}
+\contentsline {chapter}{\numberline {2}配置文件驱动的仿真框架}{5}{section*.57}%
+\setcounter {tocdepth}{-5}
+\contentsline {section}{\numberline {2.1}设计原则与架构}{5}{section*.59}%
+\setcounter {tocdepth}{2}
+\contentsline {section}{\numberline {2.1}设计原则与架构}{5}{section*.60}%
+\setcounter {tocdepth}{-5}
+\contentsline {section}{\numberline {2.2}物理模型}{5}{section*.64}%
+\setcounter {tocdepth}{2}
+\contentsline {section}{\numberline {2.2}物理模型}{5}{section*.65}%
+\setcounter {tocdepth}{-5}
+\contentsline {section}{\numberline {2.3}训练集成与验证}{6}{section*.67}%
+\setcounter {tocdepth}{2}
+\contentsline {section}{\numberline {2.3}训练集成与验证}{6}{section*.68}%
+\setcounter {tocdepth}{-5}
+\contentsline {section}{\numberline {2.4}局限性}{7}{section*.70}%
+\setcounter {tocdepth}{2}
+\contentsline {section}{\numberline {2.4}局限性}{7}{section*.71}%
+\setcounter {tocdepth}{-5}
+\contentsline {chapter}{\numberline {3}硬件感知训练：重采样频率、噪声轮廓与迁移保证的分类学}{8}{section*.73}%
+\setcounter {tocdepth}{2}
+\contentsline {chapter}{\numberline {3}硬件感知训练：重采样频率、噪声轮廓与迁移保证的分类学}{8}{section*.74}%
+\setcounter {tocdepth}{-5}
+\contentsline {section}{\numberline {3.1}引言：作为设计空间的硬件感知训练}{8}{section*.76}%
+\setcounter {tocdepth}{2}
+\contentsline {section}{\numberline {3.1}引言：作为设计空间的硬件感知训练}{8}{section*.77}%
+\setcounter {tocdepth}{-5}
+\contentsline {section}{\numberline {3.2}每批级、轮次级与固定掩膜 HAT 的形式化定义}{8}{section*.79}%
+\setcounter {tocdepth}{2}
+\contentsline {section}{\numberline {3.2}每批级、轮次级与固定掩膜 HAT 的形式化定义}{8}{section*.80}%
+\setcounter {tocdepth}{-5}
+\contentsline {subsection}{\numberline {3.2.1}固定掩膜 HAT}{9}{section*.82}%
+\setcounter {tocdepth}{2}
+\contentsline {subsection}{\numberline {3.2.1}固定掩膜 HAT}{9}{section*.83}%
+\setcounter {tocdepth}{-5}
+\contentsline {subsection}{\numberline {3.2.2}集成 HAT（轮次级重采样）}{9}{section*.85}%
+\setcounter {tocdepth}{2}
+\contentsline {subsection}{\numberline {3.2.2}集成 HAT（轮次级重采样）}{9}{section*.86}%
+\setcounter {tocdepth}{-5}
+\contentsline {subsection}{\numberline {3.2.3}每批级重采样}{9}{section*.88}%
+\setcounter {tocdepth}{2}
+\contentsline {subsection}{\numberline {3.2.3}每批级重采样}{9}{section*.89}%
+\setcounter {tocdepth}{-5}
+\contentsline {subsection}{\numberline {3.2.4}三种 regime 的可视化比较}{9}{section*.91}%
+\setcounter {tocdepth}{2}
+\contentsline {subsection}{\numberline {3.2.4}三种 regime 的可视化比较}{9}{section*.92}%
+\setcounter {tocdepth}{-5}
+\contentsline {section}{\numberline {3.3}集成频率扫描：频率消融实验}{10}{section*.99}%
+\setcounter {tocdepth}{2}
+\contentsline {section}{\numberline {3.3}集成频率扫描：频率消融实验}{10}{section*.100}%
+\setcounter {tocdepth}{-5}
+\contentsline {subsection}{\numberline {3.3.1}实验协议}{10}{section*.102}%
+\setcounter {tocdepth}{2}
+\contentsline {subsection}{\numberline {3.3.1}实验协议}{10}{section*.103}%
+\setcounter {tocdepth}{-5}
+\contentsline {subsection}{\numberline {3.3.2}结果}{10}{section*.105}%
+\setcounter {tocdepth}{2}
+\contentsline {subsection}{\numberline {3.3.2}结果}{10}{section*.106}%
+\setcounter {tocdepth}{-5}
+\contentsline {subsection}{\numberline {3.3.3}解读：为何轮次级重采样胜出}{11}{section*.110}%
+\setcounter {tocdepth}{2}
+\contentsline {subsection}{\numberline {3.3.3}解读：为何轮次级重采样胜出}{11}{section*.111}%
+\setcounter {tocdepth}{-5}
+\contentsline {section}{\numberline {3.4}噪声轮廓靶向：比例噪声、加性噪声与混合噪声}{12}{section*.113}%
+\setcounter {tocdepth}{2}
+\contentsline {section}{\numberline {3.4}噪声轮廓靶向：比例噪声、加性噪声与混合噪声}{12}{section*.114}%
+\setcounter {tocdepth}{-5}
+\contentsline {subsection}{\numberline {3.4.1}均匀（加性）噪声}{12}{section*.116}%
+\setcounter {tocdepth}{2}
+\contentsline {subsection}{\numberline {3.4.1}均匀（加性）噪声}{12}{section*.117}%
+\setcounter {tocdepth}{-5}
+\contentsline {subsection}{\numberline {3.4.2}比例（状态相关）噪声}{12}{section*.119}%
+\setcounter {tocdepth}{2}
+\contentsline {subsection}{\numberline {3.4.2}比例（状态相关）噪声}{12}{section*.120}%
+\setcounter {tocdepth}{-5}
+\contentsline {subsection}{\numberline {3.4.3}混合轮廓}{13}{section*.122}%
+\setcounter {tocdepth}{2}
+\contentsline {subsection}{\numberline {3.4.3}混合轮廓}{13}{section*.123}%
+\setcounter {tocdepth}{-5}
+\contentsline {subsection}{\numberline {3.4.4}Regime-matched 训练与跨 regime 崩溃}{13}{section*.125}%
+\setcounter {tocdepth}{2}
+\contentsline {subsection}{\numberline {3.4.4}Regime-matched 训练与跨 regime 崩溃}{13}{section*.126}%
+\setcounter {tocdepth}{-5}
+\contentsline {section}{\numberline {3.5}相关工作}{13}{section*.130}%
+\setcounter {tocdepth}{2}
+\contentsline {section}{\numberline {3.5}相关工作}{13}{section*.131}%
+\setcounter {tocdepth}{-5}
+\contentsline {section}{\numberline {3.6}论文洞见：重采样频率作为隐式迁移保证}{14}{section*.133}%
+\setcounter {tocdepth}{2}
+\contentsline {section}{\numberline {3.6}论文洞见：重采样频率作为隐式迁移保证}{14}{section*.134}%
+\setcounter {tocdepth}{-5}
+\contentsline {subsection}{\numberline {3.6.1}固定掩膜 HAT：单例保证}{14}{section*.136}%
+\setcounter {tocdepth}{2}
+\contentsline {subsection}{\numberline {3.6.1}固定掩膜 HAT：单例保证}{14}{section*.137}%
+\setcounter {tocdepth}{-5}
+\contentsline {subsection}{\numberline {3.6.2}每批级 HAT：乘积分布保证}{14}{section*.139}%
+\setcounter {tocdepth}{2}
+\contentsline {subsection}{\numberline {3.6.2}每批级 HAT：乘积分布保证}{14}{section*.140}%
+\setcounter {tocdepth}{-5}
+\contentsline {subsection}{\numberline {3.6.3}轮次级 HAT：块平稳保证}{14}{section*.142}%
+\setcounter {tocdepth}{2}
+\contentsline {subsection}{\numberline {3.6.3}轮次级 HAT：块平稳保证}{14}{section*.143}%
+\setcounter {tocdepth}{-5}
+\contentsline {subsection}{\numberline {3.6.4}噪声轮廓匹配作为分布对齐条件}{14}{section*.145}%
+\setcounter {tocdepth}{2}
+\contentsline {subsection}{\numberline {3.6.4}噪声轮廓匹配作为分布对齐条件}{14}{section*.146}%
+\setcounter {tocdepth}{-5}
+\contentsline {subsection}{\numberline {3.6.5}总结：频率--轮廓设计平面}{15}{section*.148}%
+\setcounter {tocdepth}{2}
+\contentsline {subsection}{\numberline {3.6.5}总结：频率--轮廓设计平面}{15}{section*.149}%
+\setcounter {tocdepth}{-5}
+\contentsline {section}{\numberline {3.7}本章小结}{15}{section*.153}%
+\setcounter {tocdepth}{2}
+\contentsline {section}{\numberline {3.7}本章小结}{15}{section*.154}%
+\setcounter {tocdepth}{-5}
+\contentsline {chapter}{\numberline {4}失效模式图谱}{17}{section*.156}%
+\setcounter {tocdepth}{2}
+\contentsline {chapter}{\numberline {4}失效模式图谱}{17}{section*.157}%
+\setcounter {tocdepth}{-5}
+\contentsline {section}{\numberline {4.1}引言：有机存算一体部署中的失效模式是什么？}{17}{section*.159}%
+\setcounter {tocdepth}{2}
+\contentsline {section}{\numberline {4.1}引言：有机存算一体部署中的失效模式是什么？}{17}{section*.160}%
+\setcounter {tocdepth}{-5}
+\contentsline {section}{\numberline {4.2}失效模式：硬件实例过拟合}{18}{section*.162}%
+\setcounter {tocdepth}{2}
+\contentsline {section}{\numberline {4.2}失效模式：硬件实例过拟合}{18}{section*.163}%
+\setcounter {tocdepth}{-5}
+\contentsline {section}{\numberline {4.3}失效模式：双注意力非线性写入崩溃}{18}{section*.165}%
+\setcounter {tocdepth}{2}
+\contentsline {section}{\numberline {4.3}失效模式：双注意力非线性写入崩溃}{18}{section*.166}%
+\setcounter {tocdepth}{-5}
+\contentsline {section}{\numberline {4.4}失效模式：严重非线性退化与MLP路径诊断}{19}{section*.168}%
+\setcounter {tocdepth}{2}
+\contentsline {section}{\numberline {4.4}失效模式：严重非线性退化与MLP路径诊断}{19}{section*.169}%
+\setcounter {tocdepth}{-5}
+\contentsline {section}{\numberline {4.5}失效模式：相关D2D有界退化}{20}{section*.173}%
+\setcounter {tocdepth}{2}
+\contentsline {section}{\numberline {4.5}失效模式：相关D2D有界退化}{20}{section*.174}%
+\setcounter {tocdepth}{-5}
+\contentsline {section}{\numberline {4.6}失效模式：79\,\%保持平台}{21}{section*.178}%
+\setcounter {tocdepth}{2}
+\contentsline {section}{\numberline {4.6}失效模式：79\,\%保持平台}{21}{section*.179}%
+\setcounter {tocdepth}{-5}
+\contentsline {section}{\numberline {4.7}跨领域主题}{22}{section*.181}%
+\setcounter {tocdepth}{2}
+\contentsline {section}{\numberline {4.7}跨领域主题}{22}{section*.182}%
+\setcounter {tocdepth}{-5}
+\contentsline {subsection}{\numberline {4.7.1}主题1：分布鲁棒性 vs. 实例特定挽救}{22}{section*.184}%
+\setcounter {tocdepth}{2}
+\contentsline {subsection}{\numberline {4.7.1}主题1：分布鲁棒性 vs. 实例特定挽救}{22}{section*.185}%
+\setcounter {tocdepth}{-5}
+\contentsline {subsection}{\numberline {4.7.2}主题2：层类型敏感性与变换器解剖结构}{22}{section*.187}%
+\setcounter {tocdepth}{2}
+\contentsline {subsection}{\numberline {4.7.2}主题2：层类型敏感性与变换器解剖结构}{22}{section*.188}%
+\setcounter {tocdepth}{-5}
+\contentsline {subsection}{\numberline {4.7.3}主题3：近似上限}{23}{section*.190}%
+\setcounter {tocdepth}{2}
+\contentsline {subsection}{\numberline {4.7.3}主题3：近似上限}{23}{section*.191}%
+\setcounter {tocdepth}{-5}
+\contentsline {subsection}{\numberline {4.7.4}主题4：交互前沿}{23}{section*.193}%
+\setcounter {tocdepth}{2}
+\contentsline {subsection}{\numberline {4.7.4}主题4：交互前沿}{23}{section*.194}%
+\setcounter {tocdepth}{-5}
+\contentsline {section}{\numberline {4.8}小结}{23}{section*.196}%
+\setcounter {tocdepth}{2}
+\contentsline {section}{\numberline {4.8}小结}{23}{section*.197}%
+\setcounter {tocdepth}{-5}
+\contentsline {chapter}{\numberline {5}缓解策略案例研究}{25}{section*.199}%
+\setcounter {tocdepth}{2}
+\contentsline {chapter}{\numberline {5}缓解策略案例研究}{25}{section*.200}%
+\setcounter {tocdepth}{-5}
+\contentsline {section}{\numberline {5.1}引言：从失效模式到干预措施}{25}{section*.202}%
+\setcounter {tocdepth}{2}
+\contentsline {section}{\numberline {5.1}引言：从失效模式到干预措施}{25}{section*.203}%
+\setcounter {tocdepth}{-5}
+\contentsline {section}{\numberline {5.2}案例研究：集成 HAT 实现 $10\,\%\rightarrow 86\,\%$ 的提升}{25}{section*.205}%
+\setcounter {tocdepth}{2}
+\contentsline {section}{\numberline {5.2}案例研究：集成 HAT 实现 $10\,\%\rightarrow 86\,\%$ 的提升}{25}{section*.206}%
+\setcounter {tocdepth}{-5}
+\contentsline {section}{\numberline {5.3}案例研究：严重非线性写入下的标准 HAT}{26}{section*.208}%
+\setcounter {tocdepth}{2}
+\contentsline {section}{\numberline {5.3}案例研究：严重非线性写入下的标准 HAT}{26}{section*.209}%
+\setcounter {tocdepth}{-5}
+\contentsline {section}{\numberline {5.4}案例研究：严重非线性写入下的集成 HAT}{27}{section*.211}%
+\setcounter {tocdepth}{2}
+\contentsline {section}{\numberline {5.4}案例研究：严重非线性写入下的集成 HAT}{27}{section*.212}%
+\setcounter {tocdepth}{-5}
+\contentsline {section}{\numberline {5.5}案例研究：严重非线性写入下的比例噪声}{27}{section*.214}%
+\setcounter {tocdepth}{2}
+\contentsline {section}{\numberline {5.5}案例研究：严重非线性写入下的比例噪声}{27}{section*.215}%
+\setcounter {tocdepth}{-5}
+\contentsline {section}{\numberline {5.6}严重非线性恢复：$\sim $80--82\,\% 区间及其残余差距}{28}{section*.217}%
+\setcounter {tocdepth}{2}
+\contentsline {section}{\numberline {5.6}严重非线性恢复：$\sim $80--82\,\% 区间及其残余差距}{28}{section*.218}%
+\setcounter {tocdepth}{-5}
+\contentsline {section}{\numberline {5.7}案例研究：逐 batch 与逐 epoch HAT 的比较}{28}{section*.220}%
+\setcounter {tocdepth}{2}
+\contentsline {section}{\numberline {5.7}案例研究：逐 batch 与逐 epoch HAT 的比较}{28}{section*.221}%
+\setcounter {tocdepth}{-5}
+\contentsline {section}{\numberline {5.8}案例研究：集成频率平台效应}{29}{section*.223}%
+\setcounter {tocdepth}{2}
+\contentsline {section}{\numberline {5.8}案例研究：集成频率平台效应}{29}{section*.224}%
+\setcounter {tocdepth}{-5}
+\contentsline {section}{\numberline {5.9}综合：缓解策略共同揭示了什么}{30}{section*.226}%
+\setcounter {tocdepth}{2}
+\contentsline {section}{\numberline {5.9}综合：缓解策略共同揭示了什么}{30}{section*.227}%
+\setcounter {tocdepth}{-5}
+\contentsline {section}{\numberline {5.10}本章小结}{31}{section*.229}%
+\setcounter {tocdepth}{2}
+\contentsline {section}{\numberline {5.10}本章小结}{31}{section*.230}%
+\setcounter {tocdepth}{-5}
+\contentsline {chapter}{\numberline {6}物理真实性扩展}{33}{section*.232}%
+\setcounter {tocdepth}{2}
+\contentsline {chapter}{\numberline {6}物理真实性扩展}{33}{section*.233}%
+\setcounter {tocdepth}{-5}
+\contentsline {section}{\numberline {6.1}引言：手稿中推迟的内容与论文中重新开启的研究}{33}{section*.235}%
+\setcounter {tocdepth}{2}
+\contentsline {section}{\numberline {6.1}引言：手稿中推迟的内容与论文中重新开启的研究}{33}{section*.236}%
+\setcounter {tocdepth}{-5}
+\contentsline {section}{\numberline {6.2}相关器件间失配的完整结果：超越独立同分布假设的空间结构}{33}{section*.238}%
+\setcounter {tocdepth}{2}
+\contentsline {section}{\numberline {6.2}相关器件间失配的完整结果：超越独立同分布假设的空间结构}{33}{section*.239}%
+\setcounter {tocdepth}{-5}
+\contentsline {section}{\numberline {6.3}扩展贡献：重尾失配、压降、温度漂移与长时程保持}{35}{section*.243}%
+\setcounter {tocdepth}{2}
+\contentsline {section}{\numberline {6.3}扩展贡献：重尾失配、压降、温度漂移与长时程保持}{35}{section*.244}%
+\setcounter {tocdepth}{-5}
+\contentsline {section}{\numberline {6.4}综合：核心、扩展与未来贡献}{36}{section*.248}%
+\setcounter {tocdepth}{2}
+\contentsline {section}{\numberline {6.4}综合：核心、扩展与未来贡献}{36}{section*.249}%
+\contentsline {paragraph}{\numberline {6.4.0.0.1}相关器件间失配}{37}{section*.253}%
+\contentsline {paragraph}{\numberline {6.4.0.0.2}重尾电导、压降建模、温度漂移和长时程保持}{37}{section*.254}%
+\contentsline {paragraph}{\numberline {6.4.0.0.3}扩展之间的联合交互}{37}{section*.255}%
+\setcounter {tocdepth}{-5}
+\contentsline {subsection}{\numberline {6.4.1}跨领域原则：近似上限}{37}{section*.256}%
+\setcounter {tocdepth}{2}
+\contentsline {subsection}{\numberline {6.4.1}跨领域原则：近似上限}{37}{section*.257}%
+\setcounter {tocdepth}{-5}
+\contentsline {subsection}{\numberline {6.4.2}与失效模式图谱的连接}{37}{section*.259}%
+\setcounter {tocdepth}{2}
+\contentsline {subsection}{\numberline {6.4.2}与失效模式图谱的连接}{37}{section*.260}%
+\setcounter {tocdepth}{-5}
+\contentsline {section}{\numberline {6.5}本章小结}{38}{section*.262}%
+\setcounter {tocdepth}{2}
+\contentsline {section}{\numberline {6.5}本章小结}{38}{section*.263}%
+\setcounter {tocdepth}{-5}
+\contentsline {chapter}{\numberline {7}部署包络}{39}{section*.265}%
+\setcounter {tocdepth}{2}
+\contentsline {chapter}{\numberline {7}部署包络}{39}{section*.266}%
+\setcounter {tocdepth}{-5}
+\contentsline {section}{\numberline {7.1}引言：从仿真数据到出货标准}{39}{section*.268}%
+\setcounter {tocdepth}{2}
+\contentsline {section}{\numberline {7.1}引言：从仿真数据到出货标准}{39}{section*.269}%
+\setcounter {tocdepth}{-5}
+\contentsline {section}{\numberline {7.2}排名保持图}{39}{section*.271}%
+\setcounter {tocdepth}{2}
+\contentsline {section}{\numberline {7.2}排名保持图}{39}{section*.272}%
+\setcounter {tocdepth}{-5}
+\contentsline {subsection}{\numberline {7.2.1}``排名保持''的含义}{39}{section*.274}%
+\setcounter {tocdepth}{2}
+\contentsline {subsection}{\numberline {7.2.1}``排名保持''的含义}{39}{section*.275}%
+\setcounter {tocdepth}{-5}
+\contentsline {subsection}{\numberline {7.2.2}参数轴与可用数据网格}{40}{section*.277}%
+\setcounter {tocdepth}{2}
+\contentsline {subsection}{\numberline {7.2.2}参数轴与可用数据网格}{40}{section*.278}%
+\setcounter {tocdepth}{-5}
+\contentsline {subsection}{\numberline {7.2.3}绿区：高置信度排名保持}{40}{section*.280}%
+\setcounter {tocdepth}{2}
+\contentsline {subsection}{\numberline {7.2.3}绿区：高置信度排名保持}{40}{section*.281}%
+\setcounter {tocdepth}{-5}
+\contentsline {section}{\numberline {7.3}崩溃区}{41}{section*.287}%
+\setcounter {tocdepth}{2}
+\contentsline {section}{\numberline {7.3}崩溃区}{41}{section*.288}%
+\setcounter {tocdepth}{-5}
+\contentsline {section}{\numberline {7.4}决策图：该架构是否应该流片？}{42}{section*.292}%
+\setcounter {tocdepth}{2}
+\contentsline {section}{\numberline {7.4}决策图：该架构是否应该流片？}{42}{section*.293}%
+\setcounter {tocdepth}{-5}
+\contentsline {subsection}{\numberline {7.4.1}紧凑流程图}{43}{section*.295}%
+\setcounter {tocdepth}{2}
+\contentsline {subsection}{\numberline {7.4.1}紧凑流程图}{43}{section*.296}%
+\setcounter {tocdepth}{-5}
+\contentsline {section}{\numberline {7.5}不同成熟度层级下的 CNN 与 ViT 对比}{43}{section*.298}%
+\setcounter {tocdepth}{2}
+\contentsline {section}{\numberline {7.5}不同成熟度层级下的 CNN 与 ViT 对比}{43}{section*.299}%
+\setcounter {tocdepth}{-5}
+\contentsline {section}{\numberline {7.6}跨架构验证}{44}{section*.301}%
+\setcounter {tocdepth}{2}
+\contentsline {section}{\numberline {7.6}跨架构验证}{44}{section*.302}%
+\setcounter {tocdepth}{-5}
+\contentsline {section}{\numberline {7.7}对模拟 CIM 项目经理的启示}{45}{section*.304}%
+\setcounter {tocdepth}{2}
+\contentsline {section}{\numberline {7.7}对模拟 CIM 项目经理的启示}{45}{section*.305}%
+\setcounter {tocdepth}{-5}
+\contentsline {section}{\numberline {7.8}包络的局限性}{46}{section*.307}%
+\setcounter {tocdepth}{2}
+\contentsline {section}{\numberline {7.8}包络的局限性}{46}{section*.308}%
+\setcounter {tocdepth}{-5}
+\contentsline {section}{\numberline {7.9}本章小结}{46}{section*.310}%
+\setcounter {tocdepth}{2}
+\contentsline {section}{\numberline {7.9}本章小结}{46}{section*.311}%
+\setcounter {tocdepth}{-5}
+\contentsline {chapter}{\numberline {8}展望与结论}{48}{section*.313}%
+\setcounter {tocdepth}{2}
+\contentsline {chapter}{\numberline {8}展望与结论}{48}{section*.314}%
+\setcounter {tocdepth}{-5}
+\contentsline {section}{\numberline {8.1}引言：作为桥梁的论文}{48}{section*.316}%
+\setcounter {tocdepth}{2}
+\contentsline {section}{\numberline {8.1}引言：作为桥梁的论文}{48}{section*.317}%
+\setcounter {tocdepth}{-5}
+\contentsline {section}{\numberline {8.2}近期后续工作：论文收尾实验}{48}{section*.319}%
+\setcounter {tocdepth}{2}
+\contentsline {section}{\numberline {8.2}近期后续工作：论文收尾实验}{48}{section*.320}%
+\setcounter {tocdepth}{-5}
+\contentsline {section}{\numberline {8.3}语言模型存算一体：将 HAT 原理迁移至视觉之外}{48}{section*.322}%
+\setcounter {tocdepth}{2}
+\contentsline {section}{\numberline {8.3}语言模型存算一体：将 HAT 原理迁移至视觉之外}{48}{section*.323}%
+\setcounter {tocdepth}{-5}
+\contentsline {section}{\numberline {8.4}硬件在环路线图：从仿真到硅验证}{49}{section*.327}%
+\setcounter {tocdepth}{2}
+\contentsline {section}{\numberline {8.4}硬件在环路线图：从仿真到硅验证}{49}{section*.328}%
+\setcounter {tocdepth}{-5}
+\contentsline {section}{\numberline {8.5}理论方向：从经验配方到原则性保证}{49}{section*.330}%
+\setcounter {tocdepth}{2}
+\contentsline {section}{\numberline {8.5}理论方向：从经验配方到原则性保证}{49}{section*.331}%
+\setcounter {tocdepth}{-5}
+\contentsline {section}{\numberline {8.6}结论：一个故事}{50}{section*.333}%
+\setcounter {tocdepth}{2}
+\contentsline {section}{\numberline {8.6}结论：一个故事}{50}{section*.334}%
+\contentsline {chapter}{致谢}{53}{section*.336}%
+\contentsline {chapter}{参考文献}{54}{section*.339}%
+\contentsline {chapter}{附录}{56}{section*.342}%
+\setcounter {tocdepth}{-5}
+\contentsline {chapter}{\numberline {附录A}公式推导}{56}{section*.344}%
+\contentsline {section}{\numberline {附录A.1}第一章}{56}{section*.345}%
+\contentsline {chapter}{\numberline {附录B}附录图表}{57}{section*.350}%
+\setcounter {tocdepth}{2}
+\contentsline {chapter}{攻读学位期间取得的研究成果}{57}{section*.357}%
+\contentsline {chapter}{答辩委员会会议决议}{59}{section*.360}%
+\contentsline {chapter}{常规评阅人名单}{60}{section*.364}%
+\contentsfinish

@@ -2,8 +2,9 @@ import sys
 import os
 from pathlib import Path
 
-# Add project root to sys.path to find inference_analysis_utils and device_profile_utils
-sys.path.append(os.getcwd())
+SRC = Path(__file__).resolve().parents[1] / "src" / "compute_vit"
+if str(SRC) not in sys.path:
+    sys.path.insert(0, str(SRC))
 
 import json
 import torch

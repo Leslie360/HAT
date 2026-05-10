@@ -1,0 +1,19 @@
+% Supplementary Note S-HW: Hardware Calibration Pipeline
+
+\section*{Supplementary Note S-HW: Hardware Calibration Pipeline}
+\label{supp:hardware-calibration}
+
+This note describes the ingest pipeline for substituting measured device statistics into the simulation framework. To ensure that the high-level system conclusions can be validated against physical hardware, the pipeline is designed to accept four distinct categories of measured data. These inputs are then processed to produce a standardized JSON device profile, allowing the framework to serve as a bridge between fabricated materials and neural-network performance evaluation.
+
+\subsection*{S-HW.1 Data categories}
+
+\begin{enumerate}[leftmargin=1.2em]
+    \item \textbf{Pulsed programming curves}: Conductance-vs-pulse measurements for LTP and LTD trajectories. The auto-fitter extracts $G_{\min}$, $G_{\max}$, $NL_{\mathrm{LTP}}$, and $NL_{\mathrm{LTD}}$ via a behavioral exponential model.
+    \item \textbf{Cycle-to-cycle statistics}: Repeated write-verify measurements at identical target states, from which $\sigma_{\mathrm{C2C}}$ is extracted.
+    \item \textbf{Device-to-device mismatch}: Conductance distributions across multiple devices in a fabricated array, from which $\sigma_{\mathrm{D2D}}$ is extracted.
+    \item \textbf{Retention decay}: Long-term conductance-vs-time measurements, from which $\tau_1$, $\tau_2$, and $A_0$ are fitted via dual-exponential regression.
+\end{enumerate}
+
+\subsection*{S-HW.2 Current status}
+
+At the time of submission, measured-device data from the fabricated array was not yet available. All reported results therefore use literature-derived profiles. When measured statistics become available, the same workflow can be rerun with the measured profile substituted for the literature prior, preserving comparability across all reported experiments.

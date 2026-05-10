@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+set -euo pipefail
+mkdir -p '/home/qiaosir/projects/compute_vit/report_md/_gpt' && mv '/home/qiaosir/projects/compute_vit/archive/residual_report_md_gpt_20260510/report_md/_gpt/archive' '/home/qiaosir/projects/compute_vit/report_md/_gpt/archive'
+mkdir -p '/home/qiaosir/projects/compute_vit/report_md/_gpt' && mv '/home/qiaosir/projects/compute_vit/archive/residual_report_md_gpt_20260510/report_md/_gpt/json_gpt' '/home/qiaosir/projects/compute_vit/report_md/_gpt/json_gpt'
+mkdir -p '/home/qiaosir/projects/compute_vit/report_md/_gpt' && mv '/home/qiaosir/projects/compute_vit/archive/residual_report_md_gpt_20260510/report_md/_gpt/csv_gpt' '/home/qiaosir/projects/compute_vit/report_md/_gpt/csv_gpt'
+mkdir -p '/home/qiaosir/projects/compute_vit/report_md/_gpt' && mv '/home/qiaosir/projects/compute_vit/archive/residual_report_md_gpt_20260510/report_md/_gpt/images_gpt' '/home/qiaosir/projects/compute_vit/report_md/_gpt/images_gpt'
+mkdir -p '/home/qiaosir/projects/compute_vit/report_md/_gpt' && mv '/home/qiaosir/projects/compute_vit/archive/residual_report_md_gpt_20260510/report_md/_gpt/weight_distribution' '/home/qiaosir/projects/compute_vit/report_md/_gpt/weight_distribution'
+mkdir -p '/home/qiaosir/projects/compute_vit/report_md/_gpt' && mv '/home/qiaosir/projects/compute_vit/archive/residual_report_md_gpt_20260510/report_md/_gpt/weight_distribution_r1_vs_v4' '/home/qiaosir/projects/compute_vit/report_md/_gpt/weight_distribution_r1_vs_v4'
+mkdir -p '/home/qiaosir/projects/compute_vit/report_md/_gpt' && mv '/home/qiaosir/projects/compute_vit/archive/residual_report_md_gpt_20260510/report_md/_gpt/weight_distribution_r1_vs_standard' '/home/qiaosir/projects/compute_vit/report_md/_gpt/weight_distribution_r1_vs_standard'
+mkdir -p '/home/qiaosir/projects/compute_vit/report_md/_gpt' && mv '/home/qiaosir/projects/compute_vit/archive/residual_report_md_gpt_20260510/report_md/_gpt/figures' '/home/qiaosir/projects/compute_vit/report_md/_gpt/figures'
+mkdir -p '/home/qiaosir/projects/compute_vit/report_md/_gpt' && mv '/home/qiaosir/projects/compute_vit/archive/residual_report_md_gpt_20260510/report_md/_gpt/visualizations' '/home/qiaosir/projects/compute_vit/report_md/_gpt/visualizations'
+mkdir -p '/home/qiaosir/projects/compute_vit/report_md/_gpt' && mv '/home/qiaosir/projects/compute_vit/archive/residual_report_md_gpt_20260510/report_md/_gpt/json' '/home/qiaosir/projects/compute_vit/report_md/_gpt/json'
+mkdir -p '/home/qiaosir/projects/compute_vit/report_md/_gpt' && mv '/home/qiaosir/projects/compute_vit/archive/residual_report_md_gpt_20260510/report_md/_gpt/DS_WORKSPACE_ORGANIZATION_REVIEW_20260509.md' '/home/qiaosir/projects/compute_vit/report_md/_gpt/DS_WORKSPACE_ORGANIZATION_REVIEW_20260509.md'

@@ -11,6 +11,7 @@
 
 | Script | Purpose |
 |:--|:--|
+| `download_data.sh` | Public dataset download/staging stub; root compatibility symlink exists |
 | `auto_postfix_pipeline.sh` | Post-bug-fix verification + eval pipeline |
 | `run_postfix_eval.sh` | Fresh-instance eval entry |
 | `run_proportional_hat_fresh_eval.sh` | Proportional HAT fresh eval |

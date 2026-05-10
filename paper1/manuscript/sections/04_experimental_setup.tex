@@ -1,0 +1,24 @@
+% !TeX root = ../main.tex
+\section{Experimental Setup}
+\label{sec:experimental-setup}
+
+We evaluate ResNet-18, ConvNeXt-Tiny, and Tiny-ViT-5M backbones across three classification benchmarks: CIFAR-10, CIFAR-100, and Flowers-102. These models establish a progression from entry-level validation to high-capacity transformer deployment. The digital FP32 baselines for these configurations are summarized in Table~\ref{tab:digital_baselines}. Models for CIFAR-10/100 were trained from scratch, while Flowers-102 utilized ImageNet-pretrained weights.
+
+\begin{table}[htbp]
+\centering
+\caption{\textbf{Evaluated backbones and digital (FP32) accuracy baselines.} Data establishes the ideal software performance before analog non-ideality injection.}
+\label{tab:digital_baselines}
+\begin{tabular}{lccc}
+\toprule
+\textbf{Dataset} & \textbf{ResNet-18} & \textbf{ConvNeXt-Tiny} & \textbf{Tiny-ViT-5M} \\
+\midrule
+CIFAR-10 & 95.46\% & 90.74\% & 98.06\% \\
+CIFAR-100 & 78.64\% & 64.12\% & 86.94\% \\
+Flowers-102 & n.a. & 33.22\% & 97.97\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The main text evaluation focuses on the Tiny-ViT-5M backbone under extreme low precision (4-bit) and the realistic phase-change memory (PCM) precision ladder (4/6/8-bit). Detailed optimization settings, Monte Carlo evaluation protocols, and auxiliary architectural experiments (such as ConvNeXt retention and proportional-noise studies) are summarized in the Supplementary Information.
+
+Parameter provenance is summarized in the Supplementary Information, together with the optimization settings and evaluation conditions used for the reported runs. The present study therefore targets reproducible reruns through archived configurations, logs, and model lineage. We also emphasize that the framework operates at the simulation level: all device parameters are literature-derived or proxy-calibrated rather than extracted from fabricated devices under direct measurement. Validation against physical hardware remains for future work, and the quantitative results below should be interpreted as comparative risk rankings rather than absolute deployment predictions.

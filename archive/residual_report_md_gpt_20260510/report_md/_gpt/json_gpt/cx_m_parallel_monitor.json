@@ -1,0 +1,112 @@
+{
+  "timestamp": "2026-04-24T16:24:31",
+  "run_timestamp": "20260424_153222",
+  "gpu": {
+    "available": true,
+    "index": 0,
+    "memory_used_mib": 1807,
+    "memory_total_mib": 16303,
+    "utilization_gpu_pct": 65
+  },
+  "tasks": {
+    "cx_m1": {
+      "session": "cx_m1_20260424_153222",
+      "active": false,
+      "log": "logs/_gpt/cx_m1_20260424_153222.log",
+      "fresh_json": "report_md/_gpt/json_gpt/cx_m1_fresh_eval.json",
+      "fresh_done": true,
+      "latest_epoch": null
+    },
+    "cx_m2": {
+      "session": "cx_m2_20260424_153222",
+      "active": false,
+      "log": "logs/_gpt/cx_m2_20260424_153222.log",
+      "fresh_json": "report_md/_gpt/json_gpt/cx_m2_fresh_eval.json",
+      "fresh_done": true,
+      "latest_epoch": null
+    },
+    "cx_m3": {
+      "session": "cx_m3_20260424_153222",
+      "active": false,
+      "log": "logs/_gpt/cx_m3_20260424_153222.log",
+      "fresh_json": "report_md/_gpt/json_gpt/cx_m3_fresh_eval.json",
+      "fresh_done": true,
+      "latest_epoch": null
+    },
+    "cx_m4": {
+      "session": "cx_m4_20260424_153222",
+      "active": false,
+      "log": "logs/_gpt/cx_m4_20260424_153222.log",
+      "fresh_json": "report_md/_gpt/json_gpt/cx_m4_fresh_eval.json",
+      "fresh_done": true,
+      "latest_epoch": null
+    },
+    "cx_m5": {
+      "session": "cx_m5_20260424_153222",
+      "active": false,
+      "log": "logs/_gpt/cx_m5_20260424_153222.log",
+      "fresh_json": "report_md/_gpt/json_gpt/cx_m5_fresh_eval.json",
+      "fresh_done": true,
+      "latest_epoch": null
+    },
+    "cx_m6": {
+      "session": "cx_m6_20260424_153222",
+      "active": false,
+      "log": "logs/_gpt/cx_m6_20260424_153222.log",
+      "fresh_json": "report_md/_gpt/json_gpt/cx_m6_fresh_eval.json",
+      "fresh_done": true,
+      "latest_epoch": null
+    },
+    "cx_m7": {
+      "session": "cx_m7_20260424_153222",
+      "active": false,
+      "log": "logs/_gpt/cx_m7_20260424_153222.log",
+      "fresh_json": "report_md/_gpt/json_gpt/cx_m7_fresh_eval.json",
+      "fresh_done": false,
+      "latest_epoch": {
+        "line": "[2026-04-24 15:34:59]   Epoch   0/100: train_loss=1.3405, train_acc=51.68%, test_acc=60.02% (best=60.02%), lr=0.000500",
+        "epoch": 0,
+        "epochs": 100,
+        "train_loss": 1.3405,
+        "train_acc": 51.68,
+        "test_acc": 60.02,
+        "best": 60.02
+      }
+    },
+    "cx_m8": {
+      "session": "cx_m8_20260424_153222",
+      "active": false,
+      "log": "logs/_gpt/cx_m8_20260424_153222.log",
+      "fresh_json": "report_md/_gpt/json_gpt/cx_m8_fresh_eval.json",
+      "fresh_done": false,
+      "latest_epoch": {
+        "line": "[2026-04-24 15:35:02]   Epoch   0/100: train_loss=1.3693, train_acc=50.07%, test_acc=54.90% (best=54.90%), lr=0.000500",
+        "epoch": 0,
+        "epochs": 100,
+        "train_loss": 1.3693,
+        "train_acc": 50.07,
+        "test_acc": 54.9,
+        "best": 54.9
+      }
+    },
+    "cx_m9": {
+      "session": "cx_m9_20260424_153222",
+      "active": false,
+      "log": "logs/_gpt/cx_m9_20260424_153222.log",
+      "fresh_json": "report_md/_gpt/json_gpt/cx_m9_fresh_eval.json",
+      "fresh_done": false,
+      "latest_epoch": {
+        "line": "[2026-04-24 15:35:08]   Epoch   0/100: train_loss=1.3265, train_acc=51.91%, test_acc=62.12% (best=62.12%), lr=0.000500",
+        "epoch": 0,
+        "epochs": 100,
+        "train_loss": 1.3265,
+        "train_acc": 51.91,
+        "test_acc": 62.12,
+        "best": 62.12
+      }
+    }
+  },
+  "warnings": [
+    "No active CX-M tmux sessions, but at least one fresh JSON is missing"
+  ]
+}

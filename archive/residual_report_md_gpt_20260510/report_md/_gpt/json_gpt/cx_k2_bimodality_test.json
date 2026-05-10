@@ -1,0 +1,22 @@
+{
+  "test_name": "Hartigan's dip test",
+  "data_source": "report_md/_gpt/json_gpt/cx_k2_fresh_eval.json",
+  "n_samples": 30,
+  "dip_statistic": 0.0415,
+  "p_value": 0.9796,
+  "bimodal_significant": false,
+  "alpha_threshold": 0.05,
+  "interpretation": "p > 0.05: cannot reject unimodal null hypothesis. Distribution is not statistically bimodal.",
+  "gmm_2component": {
+    "means": [44.37, 30.12],
+    "weights": [0.62, 0.38],
+    "covariances": [55.72, 29.89]
+  },
+  "gmm_1component": {
+    "means": [38.95],
+    "weights": [1.0],
+    "covariances": [97.03]
+  },
+  "recommendation": "BRANCH_B",
+  "reasoning": "Hartigan's dip p=0.98 strongly supports unimodal distribution. GMM-2 shows two visually separable clusters but not statistically significant bimodality at N=30. Fallback to structural-limit narrative (~30% ceiling) with exploratory mention of visual clustering."
+}

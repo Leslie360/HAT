@@ -1,0 +1,26 @@
+[0] Config.pm:307> INFO - This is Biber 2.17
+[0] Config.pm:310> INFO - Logfile is 'Build/main.blg'
+[35] biber:340> INFO - === Thu May  7, 2026, 01:43:52
+[41] Biber.pm:418> INFO - Reading 'Build/main.bcf'
+[77] Biber.pm:972> INFO - Found 18 citekeys in bib section 0
+[77] Biber.pm:969> INFO - Using all citekeys in bib section 1
+[78] Biber.pm:972> INFO - Found 0 citekeys in bib section 0
+[85] Biber.pm:4383> INFO - Processing section 0
+[90] Biber.pm:4574> INFO - Looking for bibtex file 'References/reference.bib' for section 0
+[91] bibtex.pm:1713> INFO - LaTeX decoding ...
+[120] bibtex.pm:1518> INFO - Found BibTeX data source 'References/reference.bib'
+[324] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[324] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'variable = shifted' with 'variable = non-ignorable'
+[324] Biber.pm:4203> INFO - Sorting list 'none/global//global/global' of type 'entry' with template 'none' and locale 'en-US'
+[324] Biber.pm:4209> INFO - No sort tailoring available for locale 'en-US'
+[332] Biber.pm:4383> INFO - Processing section 1
+[332] Biber.pm:4574> INFO - Looking for bibtex file 'References/reference.bib' for section 1
+[1196] Biber.pm:4574> INFO - Looking for bibtex file 'References/achievement.bib' for section 1
+[1196] bibtex.pm:1713> INFO - LaTeX decoding ...
+[1199] bibtex.pm:1518> INFO - Found BibTeX data source 'References/achievement.bib'
+[1282] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[1282] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'variable = shifted' with 'variable = non-ignorable'
+[1282] Biber.pm:4203> INFO - Sorting list 'none/global//global/global' of type 'entry' with template 'none' and locale 'en-US'
+[1282] Biber.pm:4209> INFO - No sort tailoring available for locale 'en-US'
+[1314] bbl.pm:654> INFO - Writing 'Build/main.bbl' with encoding 'UTF-8'
+[1468] bbl.pm:757> INFO - Output to Build/main.bbl

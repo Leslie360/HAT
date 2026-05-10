@@ -1,0 +1,68 @@
+\definecolor{lineColor}{RGB}{50,50,50}
+\definecolor{boxBg}{RGB}{250,250,250}
+\definecolor{accentBlue}{RGB}{0,114,178}
+\definecolor{accentGreen}{RGB}{0,158,115}
+\definecolor{accentRed}{RGB}{213,94,0}
+
+\begin{tikzpicture}[
+    font=\sffamily,
+    cell/.style={draw=lineColor, fill=white, line width=2.0pt, minimum width=2.0cm, minimum height=2.0cm},
+    linegrid/.style={lineColor!30, line width=2.0pt},
+    arrow/.style={-{Latex[length=6.0mm]}, line width=3.0pt, draw=lineColor},
+    leak/.style={accentRed, dashed, line width=4.0pt, rounded corners=12pt, ->, >=Stealth}
+]
+
+% Panel A: IR Drop
+\begin{scope}[xshift=0cm]
+\node[font=\Huge\bfseries, text=lineColor, anchor=west] at (-3.0, 12.0) {(A) IR drop};
+\node[align=left, anchor=west, font=\huge, text=lineColor] at (-3.0, 10.5) {position-dependent\\[8pt]voltage loss};
+
+\foreach \x/\c in {0/accentBlue!60, 2.5/accentBlue!40, 5.0/accentBlue!20, 7.5/accentBlue!10} {
+    \foreach \y in {0, 2.5, 5.0, 7.5} {
+        \node[cell, fill=\c] at (\x,\y) {};
+    }
+}
+\foreach \x in {-1.2, 1.3, 3.8, 6.3, 8.8} {\draw[linegrid] (\x,-1.2) -- (\x,8.7);}
+\foreach \y in {-1.2, 1.3, 3.8, 6.3, 8.8} {\draw[linegrid] (-1.2,\y) -- (8.7,\y);}
+
+\draw[arrow, accentRed] (-2.5, 3.75) -- (10.0, 3.75);
+\node[font=\Huge\bfseries, text=accentRed, anchor=south] at (-2.5, 4.2) {$V_{\mathrm{DD}}$};
+\node[font=\Huge\bfseries, text=accentRed, anchor=south] at (10.0, 4.2) {$V_{\mathrm{SS}}$};
+
+\node[align=center, font=\huge, text=lineColor] at (3.75, -3.0) {effective conductance\\[8pt]decreases along wordlines};
+\end{scope}
+
+% Panel B: Sneak Paths
+\begin{scope}[xshift=20.0cm]
+\node[font=\Huge\bfseries, text=lineColor, anchor=west] at (-3.0, 12.0) {(B) Sneak paths};
+\node[align=left, anchor=west, font=\huge, text=lineColor] at (-3.0, 10.5) {unselected-cell\\[8pt]current leakage};
+
+\foreach \x in {0, 2.5, 5.0, 7.5} {
+    \foreach \y in {0, 2.5, 5.0, 7.5} {
+        \node[cell, fill=accentGreen!30] at (\x,\y) {};
+    }
+}
+\node[cell, fill=accentRed!80, minimum width=2.4cm, minimum height=2.4cm] (target) at (5.0, 5.0) {};
+
+\foreach \x in {-1.2, 1.3, 3.8, 6.3, 8.8} {\draw[linegrid] (\x,-1.2) -- (\x,8.7);}
+\foreach \y in {-1.2, 1.3, 3.8, 6.3, 8.8} {\draw[linegrid] (-1.2,\y) -- (8.7,\y);}
+
+\draw[arrow, accentRed] (-2.5, 5.0) -- (target.west);
+\draw[arrow, accentRed] (10.0, 5.0) -- (target.east);
+\draw[arrow, accentRed] (5.0, -1.5) -- (target.south);
+
+% Leak paths
+\draw[leak] (0.3, 0.2) -- (0.3, 7.2) -- (7.7, 7.2) -- (7.7, 5.3) -- (target.north east);
+\draw[leak] (0.3, 0.2) -- (6.5, 0.2) -- (6.5, 4.7) -- (target.south east);
+
+\node[font=\Huge\bfseries, text=accentRed, align=center, fill=white, inner sep=12pt, rounded corners=8pt, draw=accentRed, line width=2.5pt] (sp_text) at (-2.0, 8.0) {sneak\\[8pt]paths};
+\draw[->, accentRed!80, line width=3.0pt, >=Stealth] (sp_text.east) to[out=0, in=90] (0.3, 7.5);
+
+\node[align=center, font=\huge, text=lineColor] at (3.75, -3.0) {leakage adds\\[8pt]readout error};
+\end{scope}
+
+% Global Caption
+\node[align=center, font=\huge, text=lineColor] at (13.75, -6.0)
+{$G_{\mathrm{read}} = G_{\mathrm{ideal}} + \Delta G_{\mathrm{array}}$; Table~\ref{tab:nonideality-sensitivity} reports the tested error range.};
+
+\end{tikzpicture}

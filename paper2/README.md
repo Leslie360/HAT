@@ -1,15 +1,48 @@
-# Work 2: Analog KV-Cache for Decoder-Only LLMs
+# Paper2 / 107: Analog KV-Cache for Decoder-Only LLMs
 
-This directory is the isolated Work 2 workspace. It is intentionally separate from the Paper 1 manuscript under `paper/latex_gpt/`.
+This directory is the active Work-2 / Paper2 workspace. It is intentionally separate from the Paper1 manuscript and release evidence.
 
-Current Round-8 scope:
-- W0: testbed lock, architecture mapping, benchmark suite.
-- W1: analog KV-cache infrastructure and smoke tests.
-- W2: first Standard HAT vs Ensemble HAT experiments on attention/KV-cache paths.
+## Current scope
 
-Canonical W0 files:
-- `WORK2_TESTBED_DECISION_20260425.md`
-- `WORK2_ARCHITECTURAL_MAPPING_SPEC_20260425.md`
-- `WORK2_BENCHMARK_SUITE_20260425.md`
+- 107 selective KV-cache is the canonical Paper2 direction.
+- Work-2 experiments include analog KV-cache infrastructure, attention/KV-cache path tests, and Standard HAT vs Ensemble HAT style comparisons.
+- AIHWKit/PCM baseline work currently lives in sibling `../paper2_aihwkit_baseline/`.
 
-Implementation will live in `paper2/src/`. Draft writing owned by Kimi will live in `paper2/sections/` and `paper2/supplementary/`.
+## Active structure
+
+| Path | Purpose |
+|:--|:--|
+| `src/` | Work-2 implementation code, including analog KV-cache and LLM hybrid scripts. |
+| `manuscript/snippets/` | Paper2 manuscript snippets, including `r10e_tex_paragraph.tex`. |
+| `results/` | Local Work-2 outputs, driver scripts, PID/exit records, and JSON/TSV summaries. Current `W2_SCOPED_PROBE_SUMMARY_20260425.tsv` is a legacy smoke/probe index, not claim-bearing Paper2 evidence. |
+| `sections/` | Draft Paper2 section material. |
+| `supplementary/` | Draft supplementary material. |
+| `WORK2_TESTBED_DECISION_20260425.md` | Testbed decision snapshot. |
+| `WORK2_ARCHITECTURAL_MAPPING_SPEC_20260425.md` | Architecture mapping notes. |
+| `WORK2_BENCHMARK_SUITE_20260425.md` | Benchmark suite notes. |
+
+## 107 task/result entrypoints
+
+- Remote 107 tasklist: `../coordination/remote_tasks/107/REMOTE_107_PHASE_P8_CORRECTED_NOISE_WORK2_TASKLIST_20260509.md`
+- Paper2 / AIHWKit baseline area: `../paper2_aihwkit_baseline/`
+- R10E snippet compatibility path: `../paper2_aihwkit_baseline/r10e_tex_paragraph.tex` -> `../paper2/manuscript/snippets/r10e_tex_paragraph.tex`
+- Ideal future lane: `paper2_107/` per `../coordination/active/COMPUTE_VIT_IDEAL_LAYOUT_PLAN_20260510.md`
+
+## 107 evidence status
+
+Current repository-local Paper2 evidence is sufficient for infrastructure provenance but not for manuscript claims:
+
+- `results/w2_scoped_probe_summary_20260425.json` and `results/W2_SCOPED_PROBE_SUMMARY_20260425.tsv` summarize earlier scoped smoke/probe runs.
+- These rows use small smoke text batches and archived source logs; they are useful for debugging trends, not for final Paper2 PPL claims.
+- The Remote-107 P8 corrected-noise deliverable is still missing: `REMOTE_107_PHASE_P8_CORRECTED_NOISE_REPORT_YYYYMMDD.md` plus compact CSV/JSON tables.
+- Required claim-bearing tables remain: corrected-noise summary, fresh-D2D summary, old-vs-corrected comparison, and metadata completeness.
+## Provenance
+
+- 107/Paper2 provenance map: `PROVENANCE_107_20260510.tsv`
+
+## Rules
+
+- Keep Paper2/107 evidence separate from Paper1 release/source-data paths.
+- Mark invalid, contaminated, or superseded runs visibly; do not silently delete them.
+- Large checkpoints/data should stay local-first and indexed before migration.
+- Promote only audited results into future Paper2 source-data packages.

@@ -1,0 +1,54 @@
+% !TeX program = tectonic
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx}
+\graphicspath{{./figures/}}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{amsmath,amssymb}
+\usepackage{mathptmx}
+\usepackage{amsthm}
+\newtheorem{proposition}{Proposition}[section]
+\newtheorem{remark}{Remark}[section]
+\usepackage{microtype}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,fit,calc}
+\usepackage{subcaption}
+\usepackage[font=small,labelfont=bf]{caption}
+\usepackage{placeins}
+\usepackage{enumitem}
+\usepackage[super,sort&compress]{natbib}
+\usepackage[colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue]{hyperref}
+\usepackage{xcolor}
+\usepackage[most]{tcolorbox}
+
+\setlength{\textfloatsep}{10pt plus 2pt minus 2pt}
+\setlength{\floatsep}{8pt plus 2pt minus 2pt}
+\setlength{\intextsep}{8pt plus 2pt minus 2pt}
+\setlength{\abovecaptionskip}{5pt}
+\setlength{\belowcaptionskip}{0pt}
+\setlength{\emergencystretch}{1.5em}
+\setlist[enumerate]{topsep=3pt,itemsep=2pt,leftmargin=1.4em}
+\newcommand{\notrun}{n.e.}
+\title{Supplementary Information for\\
+Precision-Retention Frontiers for Low-Precision Analog Vision via Ensemble Hardware-Aware Training}
+\author{Songqiao Li}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\renewcommand{\thefigure}{S\arabic{figure}}
+\renewcommand{\thetable}{S\arabic{table}}
+\setcounter{figure}{0}
+\setcounter{table}{0}
+
+\input{supplementary}
+
+\bibliographystyle{unsrtnat}
+\bibliography{refs_gpt}
+
+\end{document}

@@ -1,0 +1,29 @@
+{
+  "generated_at": "2026-04-22T22:34:58.620591",
+  "run_name": "V4_hybrid_standard_noise_hat_all_linear_r40_1ep",
+  "checkpoint_path": "checkpoints/_gpt/all_linear_cadence/V4_hybrid_standard_noise_hat_all_linear_r40_1ep_best.pt",
+  "resample_interval": 40,
+  "epochs": 1,
+  "train": {
+    "best_acc": 73.31,
+    "best_epoch": 0,
+    "final_test_acc": 73.31,
+    "final_train_acc": 79.902
+  },
+  "fresh": null,
+  "config": {
+    "batch_size": 64,
+    "num_workers": 0,
+    "warm_start_from": "checkpoints/V4_hybrid_standard_noise_hat_best.pt",
+    "protected_group": "all",
+    "protected_nl_ltp": 1.0,
+    "protected_nl_ltd": -1.0,
+    "nl_ltp": 2.0,
+    "nl_ltd": -2.0,
+    "use_second_order_ste": true,
+    "delta_g_eff": -1.0,
+    "second_order_alpha": 1.0,
+    "fresh_instances": 5,
+    "eval_runs": 3
+  }
+}

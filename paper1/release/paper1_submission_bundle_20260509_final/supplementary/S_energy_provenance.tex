@@ -1,0 +1,56 @@
+% Supplementary Note S-Energy-Provenance: Energy Parameter Provenance
+
+\section*{Supplementary Note S-Energy: Provenance of Energy Model Constants}
+\label{supp:energy-provenance}
+
+This note documents the origin and selection criteria for every physical and architectural constant used in the first-order analytical energy profiler (\S 3.7 of the main text). Given the early stage of organic CIM hardware development, we utilize a combination of literature-anchored device metrics and established CMOS benchmarks to provide a comparative framework. The purpose is to allow reviewers to distinguish measured results in literature from order-of-magnitude engineering estimates used for higher-level system scaling.
+
+\subsection*{S-Energy.1 Parameter table}
+
+\begin{table}[ht]
+\centering
+\small
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.24\textwidth}>{\raggedright\arraybackslash}p{0.14\textwidth}>{\raggedright\arraybackslash}p{0.36\textwidth}>{\raggedright\arraybackslash}p{0.16\textwidth}@{}}
+\toprule
+\textbf{Parameter} & \textbf{Value} & \textbf{Provenance} & \textbf{Status} \\
+\midrule
+$E_{\text{analog,MAC}}$ & $100~\text{fJ}$ & Gebregiorgis \textit{et al.} (2023) \cite{gebregiorgis2023organiccim} & Literature proxy \\
+$E_{\text{analog,MAC}}^{\text{conservative}}$ & $150~\text{fJ}$ & RRAM/CIM literature median & Order-of-magnitude estimate \\
+$E_{\text{ADC},8\text{b}}$ & $25~\text{fJ/conv}$ & CIM SAR-ADC literature median ($10$--$30~\text{fJ}$) & Order-of-magnitude estimate \\
+$E_{\text{DAC},8\text{b}}$ & $30~\text{fJ/conv}$ & Li \textit{et al.} (2022) TCAS-I estimate (not in present bibliography) & Order-of-magnitude estimate \\
+$E_{\text{digital,INT8}}$ & $0.4~\text{pJ}$ & Horowitz (2014) \cite{horowitz2014computing} + 28\,nm scaling & Literature-derived \\
+$E_{\text{digital,FP32}}$ & $2.5~\text{pJ}$ & Horowitz (2014) \cite{horowitz2014computing} + 28\,nm scaling & Literature-derived \\
+$E_{\text{SRAM,read}}$ & $5~\text{pJ}$ & Horowitz (2014) \cite{horowitz2014computing} & Literature-derived \\
+$E_{\text{DRAM,read}}$ & $1300~\text{pJ}$ & Horowitz (2014) \cite{horowitz2014computing} & Literature-derived \\
+$E_{\text{softmax}}$ & $15~\text{pJ/elem}$ & Analytical estimate (exp + divide) & Engineering estimate \\
+$E_{\text{layernorm}}$ & $8~\text{pJ/elem}$ & Analytical estimate (sqrt + divide) & Engineering estimate \\
+\bottomrule
+\end{tabular}
+\caption{\textbf{Provenance of energy-model constants.} Literature proxies and order-of-magnitude estimates are used for relative comparison, not routed-circuit prediction.}
+\label{tab:energy-provenance}
+\end{table}
+
+\subsection*{S-Energy.2 Detailed provenance notes}
+
+\paragraph{Analog MAC ($100~\text{fJ}$).}
+Gebregiorgis \textit{et al.} \cite{gebregiorgis2023organiccim} report a three-terminal organic device array that achieves $100~\text{fJ}$ per MAC operation, decomposed as $70~\text{fJ}$ (device) + $20~\text{fJ}$ (readout) + $10~\text{fJ}$ (digital overhead).  We adopt this number as a \emph{literature proxy}: it is a measured result for a specific organic thin-film technology, but it is not guaranteed to match the conductance window, read voltage, or peripheral architecture of the organic devices targeted by the present framework.  The conservative alternative ($150~\text{fJ}$) is the median reported for RRAM-based CIM accelerators and is used only in sensitivity sweeps.
+
+\paragraph{8-bit ADC ($25~\text{fJ/conv}$).}
+The value is a rounded median of the $8$-bit SAR-ADC range reported in recent CIM literature ($10$--$30~\text{fJ/conv}$).  Individual data points include Yoon \textit{et al.} ($24.8~\text{fJ}$, TCAS-II 2025) and Zhang \textit{et al.} ($10.2~\text{fJ}$, ISCAS 2022).  Because these papers target different technology nodes, topologies, and sharing factors, we do not cite a single source; instead we label the $25~\text{fJ}$ value as an \emph{order-of-magnitude estimate} suitable for first-order relative comparison.
+
+\paragraph{8-bit DAC ($30~\text{fJ/conv}$).}
+Internal project notes reference Li \textit{et al.} (2022, TCAS-I), who report a time-multiplexing CIM architecture with a full energy breakdown of $136~\text{fJ/MAC}$, of which the DAC contribution is $10~\text{fJ}$ under heavy column sharing.  The $30~\text{fJ}$ value used here is a higher, architecture-agnostic estimate that assumes less aggressive sharing.  Because the TCAS-I paper is not included in the present bibliography, the $30~\text{fJ}$ value is labeled as an \emph{order-of-magnitude estimate} rather than a direct citation.
+
+\paragraph{Digital CMOS ($0.4~\text{pJ}$ INT8, $2.5~\text{pJ}$ FP32).}
+Both numbers are derived from Horowitz (2014) \cite{horowitz2014computing}, the most widely used CMOS energy benchmark in the CIM community.  The raw $45~\text{nm}$ values (FP32 $\approx 4.6~\text{pJ}$, INT32 $\approx 3.2~\text{pJ}$) are scaled to $28~\text{nm}$ using standard quadratic voltage-and-capacitance scaling, yielding $2.5~\text{pJ}$ and $0.4~\text{pJ}$ respectively.  These are \emph{literature-derived} estimates.
+
+\subsection*{S-Energy.3 Limitations and intended use}
+
+All constants in Table~\ref{tab:energy-provenance} are \emph{analytical placeholders}.  They are intended for:
+\begin{enumerate}[leftmargin=1.2em]
+    \item Relative comparison between analog and digital execution paths under identical operation-count assumptions;
+    \item Sensitivity analysis (e.g., varying routing overhead, ADC precision, or analog-MAC cost);
+    \item Design-space exploration before tape-out, not as silicon power predictions.
+\end{enumerate}
+
+Absolute energy numbers (e.g., $273.94~\mu$J per inference, $11.45\times$ reduction) should be read as \emph{first-order upper-bound projections}, not routed-circuit measurements.  Supplementary sensitivity tables (S6--S7) show that the analog-digital ranking is robust to $\pm 30\%$ variation in any single parameter and to $10$--$50\%$ unmodeled routing overhead.

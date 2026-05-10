@@ -1,0 +1,23 @@
+{
+  "checkpoint_path": "checkpoints/_gpt/postfix_standard_hat/V3_hybrid_standard_noise_standard_train_best.pt",
+  "exp_id": "V3",
+  "fresh_instances": 10,
+  "mc_runs_per_instance": 5,
+  "nl_ltp": 2.0,
+  "nl_ltd": -2.0,
+  "noise_mode": "uniform",
+  "cross_instance_mean": 82.6346,
+  "cross_instance_std": 0.5624475442207914,
+  "instance_means": [
+    83.36,
+    81.4,
+    82.928,
+    82.36,
+    82.61,
+    82.238,
+    83.006,
+    82.97,
+    82.226,
+    83.248
+  ]
+}

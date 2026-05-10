@@ -1,0 +1,74 @@
+% S_opect_distribution.tex
+% Supplementary note: OPECT device distribution vs. canonical Gaussian prior
+% Round-10 (R10C) analysis — Outcome C: honest framing required
+
+\section{OPECT Device Distribution: Proxy Estimates and Honest Framing}
+\label{sec:supp-opect-distribution}
+
+This note documents the provenance and statistical status of the OPECT (Zhang et al.~2026) device profile used in the \S5.8 case study. We provide a detailed breakdown of the extracted parameters and explain why the zero-shot transfer results must be interpreted as a demonstration of parameter-shift robustness rather than a general proof of distribution-shape invariance.
+
+\subsection{Literature anchors and proxy estimates}
+
+The OPECT profile (``Organic OPECT Zhang2025 Literature-Fitted'') is derived from the measured characteristics of organic phototransistor arrays reported by Zhang et al. in \textit{Nature Communications}. Table~\ref{tab:opect-provenance} summarises the status and origin of each parameter used in the simulation.
+
+\begin{table}[ht]
+\centering
+\caption{\textbf{Provenance of OPECT profile parameters.}}
+\label{tab:opect-provenance}
+\small
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.22\textwidth}>{\centering\arraybackslash}p{0.14\textwidth}>{\raggedright\arraybackslash}p{0.22\textwidth}>{\raggedright\arraybackslash}p{0.34\textwidth}@{}}
+\toprule
+Parameter & Value & Status & Evidence \\ \midrule
+$G_{\max}/G_{\min}$ & 47.3 & Direct-normalized & Abstract / Fig.~3h / Supp.~Fig.~8 \\
+$n_{\text{states}}$ & 34 & Direct-conservative & Explicit ``34 distinguishable conductance states'' \\
+$\sigma_{\text{d2d}}$ & 0.03 & Proxy estimate & $V_{\text{th}}$ spread across 80 devices (Fig.~3b/c): \\
+& & & dark $\mu=-1.50\,$V, $\sigma=0.01\,$V ($\sim$0.67\%); \\
+& & & light $\mu=-1.37\,$V, $\sigma=0.02\,$V ($\sim$1.46\%). \\
+$\sigma_{\text{c2c}}$ & 0.02 & Proxy estimate & Supp.~Fig.~15 (8-cycle repeatability) / Fig.~3g \\
+Distribution shape & Unknown & Missing & No conductance-domain D2D histogram identified \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The $\sigma_{\text{d2d}}$ and $\sigma_{\text{c2c}}$ values are \emph{transparent proxy estimates}, not directly measured conductance-domain statistics. The $V_{\text{th}}$ spread is a threshold-voltage metric; the 0.03 value represents a conservative conductance-domain uplift from that evidence. No direct conductance-uniformity histogram has been located in the current extraction package.
+
+\subsection{Comparison to the canonical Gaussian training prior}
+
+The simulator's canonical ``Organic OPECT Standard'' prior is a Gaussian noise model with $\sigma_{\text{d2d}}=0.10$ and $\sigma_{\text{c2c}}=0.05$. Table~\ref{tab:opect-vs-canonical} contrasts the literature-derived OPECT regime with the broader noise envelope used during hardware-aware training.
+
+\begin{table}[ht]
+\centering
+\caption{\textbf{OPECT literature profile vs.~canonical Gaussian training prior.}}
+\label{tab:opect-vs-canonical}
+\begin{tabular}{@{}lccc@{}}
+\toprule
+Parameter & Canonical prior & OPECT (Zhang2025) & Ratio \\
+\midrule
+$\sigma_{\text{d2d}}$ & 0.10 (10\%) & 0.03 (3\%) & $3.3\times$ lower \\
+$\sigma_{\text{c2c}}$ & 0.05 (5\%) & 0.02 (2\%) & $2.5\times$ lower \\
+Distribution shape & Gaussian (by construction) & Unknown & --- \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The OPECT profile therefore sits in a \emph{lower-variance, parameter-shifted} region of parameter space relative to the training prior. The 88.53$\pm$0.08\% CIFAR-10 accuracy demonstrates that substituting a literature-derived profile with substantially lower mismatch variance does not degrade performance. This is \textbf{profile-substitution robustness}, not evidence of invariance to the \emph{shape} of the mismatch distribution.
+
+\subsection{What cannot be claimed}
+
+Because the true conductance-domain distribution of the OPECT array is not reported in the source literature, the following stronger claims are \textbf{not supported}:
+
+\begin{itemize}
+\item That the framework generalises to the true OPECT empirical distribution (the true distribution is unknown).
+\item That the framework is invariant to mismatch-distribution shape (the test uses the same Gaussian sampler with different variance, not a different distribution family).
+\item That all OPECT parameters are directly measured ($\sigma_{\text{d2d}}$ and $\sigma_{\text{c2c}}$ are proxy estimates).
+\end{itemize}
+
+\subsection{Recommended manuscript wording}
+
+We recommend the following paper-safe sentence for \S5.8:
+
+\begin{quote}
+\textit{The OPECT D2D variability ($\sigma\approx$3\%, proxy-estimated from $V_{\text{th}}$ spread across 80 devices) is lower than our canonical training prior ($\sigma$=10\%), and the conductance-domain distribution shape is not directly reported in the source literature. The 88.53$\pm$0.08\% accuracy therefore demonstrates profile-substitution robustness under a parameter-shifted regime rather than mismatch-distribution-shape invariance, the latter pending hardware-calibrated data.}
+\end{quote}
+
+This wording transparently flags the proxy nature of the estimate, honestly notes the missing distribution-shape information, and advances a defensible, weaker claim that still supports the framework's practical utility for literature-driven benchmarking.

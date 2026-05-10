@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+set -euo pipefail
+mkdir -p '/home/qiaosir/projects/compute_vit/logs' && mv '/home/qiaosir/projects/archive/stale_logs_20260510/compute_vit/logs/adapter_ttt_all_analog_5x3_20260423_194412.log' '/home/qiaosir/projects/compute_vit/logs/adapter_ttt_all_analog_5x3_20260423_194412.log'
+mkdir -p '/home/qiaosir/projects/compute_vit/logs' && mv '/home/qiaosir/projects/archive/stale_logs_20260510/compute_vit/logs/adapter_ttt_smoke_20260423_184132.log' '/home/qiaosir/projects/compute_vit/logs/adapter_ttt_smoke_20260423_184132.log'
+mkdir -p '/home/qiaosir/projects/compute_vit/logs' && mv '/home/qiaosir/projects/archive/stale_logs_20260510/compute_vit/logs/adc_cliff_analysis.log' '/home/qiaosir/projects/compute_vit/logs/adc_cliff_analysis.log'
+mkdir -p '/home/qiaosir/projects/compute_vit/logs' && mv '/home/qiaosir/projects/archive/stale_logs_20260510/compute_vit/logs/adc_nonideality_analysis.log' '/home/qiaosir/projects/compute_vit/logs/adc_nonideality_analysis.log'
+mkdir -p '/home/qiaosir/projects/compute_vit/logs' && mv '/home/qiaosir/projects/archive/stale_logs_20260510/compute_vit/logs/adc_nonideality_final.log' '/home/qiaosir/projects/compute_vit/logs/adc_nonideality_final.log'
+mkdir -p '/home/qiaosir/projects/compute_vit/logs' && mv '/home/qiaosir/projects/archive/stale_logs_20260510/compute_vit/logs/aihwkit_benchmark.log' '/home/qiaosir/projects/compute_vit/logs/aihwkit_benchmark.log'
+mkdir -p '/home/qiaosir/projects/compute_vit/logs' && mv '/home/qiaosir/projects/archive/stale_logs_20260510/compute_vit/logs/ensemble_frequency_ablation.log' '/home/qiaosir/projects/compute_vit/logs/ensemble_frequency_ablation.log'
+mkdir -p '/home/qiaosir/projects/compute_vit/logs' && mv '/home/qiaosir/projects/archive/stale_logs_20260510/compute_vit/logs/flowers102_training.log' '/home/qiaosir/projects/compute_vit/logs/flowers102_training.log'
+mkdir -p '/home/qiaosir/projects/compute_vit/logs' && mv '/home/qiaosir/projects/archive/stale_logs_20260510/compute_vit/logs/framework_comparison.log' '/home/qiaosir/projects/compute_vit/logs/framework_comparison.log'
+mkdir -p '/home/qiaosir/projects/compute_vit/logs' && mv '/home/qiaosir/projects/archive/stale_logs_20260510/compute_vit/logs/ir_drop_sensitivity.log' '/home/qiaosir/projects/compute_vit/logs/ir_drop_sensitivity.log'
+mkdir -p '/home/qiaosir/projects/compute_vit/logs' && mv '/home/qiaosir/projects/archive/stale_logs_20260510/compute_vit/logs/ir_drop_sensitivity_final.log' '/home/qiaosir/projects/compute_vit/logs/ir_drop_sensitivity_final.log'
+mkdir -p '/home/qiaosir/projects/compute_vit/logs' && mv '/home/qiaosir/projects/archive/stale_logs_20260510/compute_vit/logs/sam_2026-04-28.log' '/home/qiaosir/projects/compute_vit/logs/sam_2026-04-28.log'
+mkdir -p '/home/qiaosir/projects/compute_vit/logs' && mv '/home/qiaosir/projects/archive/stale_logs_20260510/compute_vit/logs/spatial_ablation.log' '/home/qiaosir/projects/compute_vit/logs/spatial_ablation.log'
+mkdir -p '/home/qiaosir/projects/compute_vit/logs' && mv '/home/qiaosir/projects/archive/stale_logs_20260510/compute_vit/logs/svhn_training.log' '/home/qiaosir/projects/compute_vit/logs/svhn_training.log'
+mkdir -p '/home/qiaosir/projects/compute_vit/logs' && mv '/home/qiaosir/projects/archive/stale_logs_20260510/compute_vit/logs/work2_min_matrix_20260423_183129.log' '/home/qiaosir/projects/compute_vit/logs/work2_min_matrix_20260423_183129.log'

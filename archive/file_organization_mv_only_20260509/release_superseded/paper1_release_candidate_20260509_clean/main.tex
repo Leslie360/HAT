@@ -1,0 +1,71 @@
+% !TeX program = tectonic
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx}
+\graphicspath{{./figures/}}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{amsmath,amssymb}
+\usepackage{mathptmx}
+\usepackage{amsthm}
+\newtheorem{proposition}{Proposition}[section]
+\newtheorem{remark}{Remark}[section]
+\usepackage{microtype}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,fit,calc}
+\usepackage{subcaption}
+\usepackage[font=small,labelfont=bf]{caption}
+\usepackage{float}
+\usepackage{placeins}
+\usepackage{enumitem}
+\usepackage[super,sort&compress]{natbib}
+\usepackage[colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue]{hyperref}
+\usepackage{xcolor}
+\usepackage[most]{tcolorbox}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+
+\setlength{\textfloatsep}{10pt plus 2pt minus 2pt}
+\setlength{\floatsep}{8pt plus 2pt minus 2pt}
+\setlength{\intextsep}{8pt plus 2pt minus 2pt}
+\setlength{\abovecaptionskip}{5pt}
+\setlength{\belowcaptionskip}{0pt}
+\setlength{\emergencystretch}{1.5em}
+\setlist[enumerate]{topsep=3pt,itemsep=2pt,leftmargin=1.4em}
+\newcommand{\SuppFigNoiseSweep}{S3}
+\newcommand{\SuppFigZeroShot}{S4}
+\newcommand{\SuppFigRetention}{S6}
+\newcommand{\SuppFigFrontend}{S7}
+\newcommand{\SuppFigSnr}{S8}
+\newcommand{\SuppFigCollapseMechanism}{S20}
+\newcommand{\SuppTableFrontend}{S5}
+\newcommand{\SuppTableFlowers}{S7}
+
+\title{Precision-Retention Frontiers for Low-Precision Analog Vision via Ensemble Hardware-Aware Training}
+\author{Songqiao Li}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\input{sections/00_abstract}
+
+{\small\noindent\textbf{Keywords:} analog compute-in-memory; hardware-aware training; phase-change memory; low-precision inference; precision-retention tradeoff; vision transformers; mixed-signal simulation.\par}
+
+\input{sections/01_introduction}
+\input{sections/02_related_work}
+\input{sections/03_methodology}
+\input{sections/04_experimental_setup}
+\input{sections/05_results}
+\input{sections/06_discussion}
+\input{sections/07_conclusion}
+
+\bibliographystyle{unsrtnat}
+\bibliography{refs_gpt}
+
+\input{sections/08_availability}
+
+\end{document}

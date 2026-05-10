@@ -1,0 +1,28 @@
+[
+  {
+    "mode": "train",
+    "experiment": "V4",
+    "experiment_name": "V4_hybrid_standard_noise_hat_qkv_only_linearization",
+    "dataset": "cifar10",
+    "num_classes": 10,
+    "use_hybrid": true,
+    "noise_enabled": true,
+    "sigma_c2c": 0.05,
+    "sigma_d2d": 0.1,
+    "hat_training": true,
+    "use_physical_frontend": false,
+    "retention_enabled": false,
+    "inference_time": 0.0,
+    "epochs": 100,
+    "batch_size": 64,
+    "lr": 0.0005,
+    "weight_decay": 0.05,
+    "best_test_acc": 26.37,
+    "best_epoch": 0,
+    "final_train_loss": 3.627755442504883,
+    "final_train_acc": 5.936,
+    "final_test_loss": 3.3366424011230467,
+    "final_test_acc": 10.18,
+    "checkpoint_path": "checkpoints/_gpt/qkv_only_linearization/V4_hybrid_standard_noise_hat_qkv_only_linearization_best.pt"
+  }
+]

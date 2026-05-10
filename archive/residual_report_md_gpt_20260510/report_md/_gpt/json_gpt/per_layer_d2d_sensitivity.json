@@ -1,0 +1,963 @@
+{
+  "baseline_acc": 89.33,
+  "baseline_loss": 0.6766579170942306,
+  "batch_size": 256,
+  "code_sha256": "42c67de810da1db10e696b61713356a9f70ce7e3a175a49d942501379c75d2f0",
+  "commit_hash": "cbb5db0759cf981d59f702343097c17fe6d944a1",
+  "cuda_device_name": "NVIDIA GeForce RTX 5070 Ti",
+  "figures": [
+    "paper/figures/figS_per_layer_sensitivity.png",
+    "paper/figures/figS_per_layer_sensitivity.pdf"
+  ],
+  "git_worktree_dirty": true,
+  "gpu_resize_eval": true,
+  "gpu_resize_protocol": "CIFAR32 ToTensor -> GPU bilinear resize 224 -> GPU normalize",
+  "group_summary": {
+    "mlp": {
+      "count": 20,
+      "max_drop_pp": 1.3799999999999955,
+      "mean_drop_pp": 0.0914999999999985
+    },
+    "patch_embed": {
+      "count": 2,
+      "max_drop_pp": 1.1799999999999926,
+      "mean_drop_pp": 0.6399999999999935
+    },
+    "proj": {
+      "count": 10,
+      "max_drop_pp": 0.03999999999999204,
+      "mean_drop_pp": 0.004999999999999716
+    },
+    "qkv": {
+      "count": 10,
+      "max_drop_pp": 0.14000000000000057,
+      "mean_drop_pp": 0.03799999999999955
+    }
+  },
+  "job": "E4_PER_LAYER_D2D_SENSITIVITY",
+  "layers_in_network_order": [
+    {
+      "acc_drop_pp": 1.1799999999999926,
+      "baseline_acc": 89.33,
+      "group": "patch_embed",
+      "layer": "patch_embed.conv1.conv",
+      "layer_index": 0,
+      "samples": 10000,
+      "test_acc": 88.15,
+      "test_loss": 0.7513824882030488
+    },
+    {
+      "acc_drop_pp": 0.09999999999999432,
+      "baseline_acc": 89.33,
+      "group": "patch_embed",
+      "layer": "patch_embed.conv2.conv",
+      "layer_index": 1,
+      "samples": 10000,
+      "test_acc": 89.23,
+      "test_loss": 0.6806108123898507
+    },
+    {
+      "acc_drop_pp": 0.14000000000000057,
+      "baseline_acc": 89.33,
+      "group": "qkv",
+      "layer": "stages.1.blocks.0.attn.qkv",
+      "layer_index": 2,
+      "samples": 10000,
+      "test_acc": 89.19,
+      "test_loss": 0.680996959221363
+    },
+    {
+      "acc_drop_pp": -0.010000000000005116,
+      "baseline_acc": 89.33,
+      "group": "proj",
+      "layer": "stages.1.blocks.0.attn.proj",
+      "layer_index": 3,
+      "samples": 10000,
+      "test_acc": 89.34,
+      "test_loss": 0.6776334303021431
+    },
+    {
+      "acc_drop_pp": -0.04000000000000625,
+      "baseline_acc": 89.33,
+      "group": "mlp",
+      "layer": "stages.1.blocks.0.mlp.fc1",
+      "layer_index": 4,
+      "samples": 10000,
+      "test_acc": 89.37,
+      "test_loss": 0.6732925942063331
+    },
+    {
+      "acc_drop_pp": -0.07000000000000739,
+      "baseline_acc": 89.33,
+      "group": "mlp",
+      "layer": "stages.1.blocks.0.mlp.fc2",
+      "layer_index": 5,
+      "samples": 10000,
+      "test_acc": 89.4,
+      "test_loss": 0.6781177207112312
+    },
+    {
+      "acc_drop_pp": 0.0,
+      "baseline_acc": 89.33,
+      "group": "qkv",
+      "layer": "stages.1.blocks.1.attn.qkv",
+      "layer_index": 6,
+      "samples": 10000,
+      "test_acc": 89.33,
+      "test_loss": 0.6760206007242203
+    },
+    {
+      "acc_drop_pp": 0.010000000000005116,
+      "baseline_acc": 89.33,
+      "group": "proj",
+      "layer": "stages.1.blocks.1.attn.proj",
+      "layer_index": 7,
+      "samples": 10000,
+      "test_acc": 89.32,
+      "test_loss": 0.6765860398173332
+    },
+    {
+      "acc_drop_pp": -0.0799999999999983,
+      "baseline_acc": 89.33,
+      "group": "mlp",
+      "layer": "stages.1.blocks.1.mlp.fc1",
+      "layer_index": 8,
+      "samples": 10000,
+      "test_acc": 89.41,
+      "test_loss": 0.6737084586024285
+    },
+    {
+      "acc_drop_pp": 0.09000000000000341,
+      "baseline_acc": 89.33,
+      "group": "mlp",
+      "layer": "stages.1.blocks.1.mlp.fc2",
+      "layer_index": 9,
+      "samples": 10000,
+      "test_acc": 89.24,
+      "test_loss": 0.6861448609709739
+    },
+    {
+      "acc_drop_pp": 0.06999999999999318,
+      "baseline_acc": 89.33,
+      "group": "qkv",
+      "layer": "stages.2.blocks.0.attn.qkv",
+      "layer_index": 10,
+      "samples": 10000,
+      "test_acc": 89.26,
+      "test_loss": 0.6825198119282723
+    },
+    {
+      "acc_drop_pp": 0.030000000000001137,
+      "baseline_acc": 89.33,
+      "group": "proj",
+      "layer": "stages.2.blocks.0.attn.proj",
+      "layer_index": 11,
+      "samples": 10000,
+      "test_acc": 89.3,
+      "test_loss": 0.6784494567632675
+    },
+    {
+      "acc_drop_pp": 0.10999999999999943,
+      "baseline_acc": 89.33,
+      "group": "mlp",
+      "layer": "stages.2.blocks.0.mlp.fc1",
+      "layer_index": 12,
+      "samples": 10000,
+      "test_acc": 89.22,
+      "test_loss": 0.6883736038208008
+    },
+    {
+      "acc_drop_pp": 0.10999999999999943,
+      "baseline_acc": 89.33,
+      "group": "mlp",
+      "layer": "stages.2.blocks.0.mlp.fc2",
+      "layer_index": 13,
+      "samples": 10000,
+      "test_acc": 89.22,
+      "test_loss": 0.6904661653161049
+    },
+    {
+      "acc_drop_pp": -0.0799999999999983,
+      "baseline_acc": 89.33,
+      "group": "qkv",
+      "layer": "stages.2.blocks.1.attn.qkv",
+      "layer_index": 14,
+      "samples": 10000,
+      "test_acc": 89.41,
+      "test_loss": 0.6641649255990982
+    },
+    {
+      "acc_drop_pp": -0.01999999999999602,
+      "baseline_acc": 89.33,
+      "group": "proj",
+      "layer": "stages.2.blocks.1.attn.proj",
+      "layer_index": 15,
+      "samples": 10000,
+      "test_acc": 89.35,
+      "test_loss": 0.6762392451763153
+    },
+    {
+      "acc_drop_pp": 0.3100000000000023,
+      "baseline_acc": 89.33,
+      "group": "mlp",
+      "layer": "stages.2.blocks.1.mlp.fc1",
+      "layer_index": 16,
+      "samples": 10000,
+      "test_acc": 89.02,
+      "test_loss": 0.6813718953251838
+    },
+    {
+      "acc_drop_pp": -0.10000000000000853,
+      "baseline_acc": 89.33,
+      "group": "mlp",
+      "layer": "stages.2.blocks.1.mlp.fc2",
+      "layer_index": 17,
+      "samples": 10000,
+      "test_acc": 89.43,
+      "test_loss": 0.6723279944658279
+    },
+    {
+      "acc_drop_pp": 0.030000000000001137,
+      "baseline_acc": 89.33,
+      "group": "qkv",
+      "layer": "stages.2.blocks.2.attn.qkv",
+      "layer_index": 18,
+      "samples": 10000,
+      "test_acc": 89.3,
+      "test_loss": 0.6785609580874443
+    },
+    {
+      "acc_drop_pp": 0.010000000000005116,
+      "baseline_acc": 89.33,
+      "group": "proj",
+      "layer": "stages.2.blocks.2.attn.proj",
+      "layer_index": 19,
+      "samples": 10000,
+      "test_acc": 89.32,
+      "test_loss": 0.676091463649273
+    },
+    {
+      "acc_drop_pp": 0.28000000000000114,
+      "baseline_acc": 89.33,
+      "group": "mlp",
+      "layer": "stages.2.blocks.2.mlp.fc1",
+      "layer_index": 20,
+      "samples": 10000,
+      "test_acc": 89.05,
+      "test_loss": 0.6844532106995582
+    },
+    {
+      "acc_drop_pp": 0.1599999999999966,
+      "baseline_acc": 89.33,
+      "group": "mlp",
+      "layer": "stages.2.blocks.2.mlp.fc2",
+      "layer_index": 21,
+      "samples": 10000,
+      "test_acc": 89.17,
+      "test_loss": 0.6823532381534576
+    },
+    {
+      "acc_drop_pp": -0.01999999999999602,
+      "baseline_acc": 89.33,
+      "group": "qkv",
+      "layer": "stages.2.blocks.3.attn.qkv",
+      "layer_index": 22,
+      "samples": 10000,
+      "test_acc": 89.35,
+      "test_loss": 0.6719208606600762
+    },
+    {
+      "acc_drop_pp": 0.030000000000001137,
+      "baseline_acc": 89.33,
+      "group": "proj",
+      "layer": "stages.2.blocks.3.attn.proj",
+      "layer_index": 23,
+      "samples": 10000,
+      "test_acc": 89.3,
+      "test_loss": 0.6793252345323563
+    },
+    {
+      "acc_drop_pp": 0.04999999999999716,
+      "baseline_acc": 89.33,
+      "group": "mlp",
+      "layer": "stages.2.blocks.3.mlp.fc1",
+      "layer_index": 24,
+      "samples": 10000,
+      "test_acc": 89.28,
+      "test_loss": 0.6793044926285744
+    },
+    {
+      "acc_drop_pp": -0.0799999999999983,
+      "baseline_acc": 89.33,
+      "group": "mlp",
+      "layer": "stages.2.blocks.3.mlp.fc2",
+      "layer_index": 25,
+      "samples": 10000,
+      "test_acc": 89.41,
+      "test_loss": 0.6674737124562263
+    },
+    {
+      "acc_drop_pp": 0.09999999999999432,
+      "baseline_acc": 89.33,
+      "group": "qkv",
+      "layer": "stages.2.blocks.4.attn.qkv",
+      "layer_index": 26,
+      "samples": 10000,
+      "test_acc": 89.23,
+      "test_loss": 0.6835598406076431
+    },
+    {
+      "acc_drop_pp": -0.0799999999999983,
+      "baseline_acc": 89.33,
+      "group": "proj",
+      "layer": "stages.2.blocks.4.attn.proj",
+      "layer_index": 27,
+      "samples": 10000,
+      "test_acc": 89.41,
+      "test_loss": 0.6740105815529823
+    },
+    {
+      "acc_drop_pp": 0.060000000000002274,
+      "baseline_acc": 89.33,
+      "group": "mlp",
+      "layer": "stages.2.blocks.4.mlp.fc1",
+      "layer_index": 28,
+      "samples": 10000,
+      "test_acc": 89.27,
+      "test_loss": 0.6818210662007332
+    },
+    {
+      "acc_drop_pp": 1.3799999999999955,
+      "baseline_acc": 89.33,
+      "group": "mlp",
+      "layer": "stages.2.blocks.4.mlp.fc2",
+      "layer_index": 29,
+      "samples": 10000,
+      "test_acc": 87.95,
+      "test_loss": 0.7606570175051689
+    },
+    {
+      "acc_drop_pp": 0.030000000000001137,
+      "baseline_acc": 89.33,
+      "group": "qkv",
+      "layer": "stages.2.blocks.5.attn.qkv",
+      "layer_index": 30,
+      "samples": 10000,
+      "test_acc": 89.3,
+      "test_loss": 0.6688552752256394
+    },
+    {
+      "acc_drop_pp": 0.01999999999999602,
+      "baseline_acc": 89.33,
+      "group": "proj",
+      "layer": "stages.2.blocks.5.attn.proj",
+      "layer_index": 31,
+      "samples": 10000,
+      "test_acc": 89.31,
+      "test_loss": 0.6841825020670891
+    },
+    {
+      "acc_drop_pp": -0.29000000000000625,
+      "baseline_acc": 89.33,
+      "group": "mlp",
+      "layer": "stages.2.blocks.5.mlp.fc1",
+      "layer_index": 32,
+      "samples": 10000,
+      "test_acc": 89.62,
+      "test_loss": 0.6637432554841042
+    },
+    {
+      "acc_drop_pp": 0.28999999999999204,
+      "baseline_acc": 89.33,
+      "group": "mlp",
+      "layer": "stages.2.blocks.5.mlp.fc2",
+      "layer_index": 33,
+      "samples": 10000,
+      "test_acc": 89.04,
+      "test_loss": 0.7068831669330597
+    },
+    {
+      "acc_drop_pp": 0.0799999999999983,
+      "baseline_acc": 89.33,
+      "group": "qkv",
+      "layer": "stages.3.blocks.0.attn.qkv",
+      "layer_index": 34,
+      "samples": 10000,
+      "test_acc": 89.25,
+      "test_loss": 0.6762511341810227
+    },
+    {
+      "acc_drop_pp": 0.01999999999999602,
+      "baseline_acc": 89.33,
+      "group": "proj",
+      "layer": "stages.3.blocks.0.attn.proj",
+      "layer_index": 35,
+      "samples": 10000,
+      "test_acc": 89.31,
+      "test_loss": 0.6757644849538803
+    },
+    {
+      "acc_drop_pp": -0.3400000000000034,
+      "baseline_acc": 89.33,
+      "group": "mlp",
+      "layer": "stages.3.blocks.0.mlp.fc1",
+      "layer_index": 36,
+      "samples": 10000,
+      "test_acc": 89.67,
+      "test_loss": 0.6547061454892158
+    },
+    {
+      "acc_drop_pp": 0.010000000000005116,
+      "baseline_acc": 89.33,
+      "group": "mlp",
+      "layer": "stages.3.blocks.0.mlp.fc2",
+      "layer_index": 37,
+      "samples": 10000,
+      "test_acc": 89.32,
+      "test_loss": 0.6667100816249848
+    },
+    {
+      "acc_drop_pp": 0.030000000000001137,
+      "baseline_acc": 89.33,
+      "group": "qkv",
+      "layer": "stages.3.blocks.1.attn.qkv",
+      "layer_index": 38,
+      "samples": 10000,
+      "test_acc": 89.3,
+      "test_loss": 0.6783736561894417
+    },
+    {
+      "acc_drop_pp": 0.03999999999999204,
+      "baseline_acc": 89.33,
+      "group": "proj",
+      "layer": "stages.3.blocks.1.attn.proj",
+      "layer_index": 39,
+      "samples": 10000,
+      "test_acc": 89.29,
+      "test_loss": 0.6797468927383423
+    },
+    {
+      "acc_drop_pp": -0.030000000000001137,
+      "baseline_acc": 89.33,
+      "group": "mlp",
+      "layer": "stages.3.blocks.1.mlp.fc1",
+      "layer_index": 40,
+      "samples": 10000,
+      "test_acc": 89.36,
+      "test_loss": 0.6701898383975029
+    },
+    {
+      "acc_drop_pp": 0.010000000000005116,
+      "baseline_acc": 89.33,
+      "group": "mlp",
+      "layer": "stages.3.blocks.1.mlp.fc2",
+      "layer_index": 41,
+      "samples": 10000,
+      "test_acc": 89.32,
+      "test_loss": 0.6767729835271835
+    }
+  ],
+  "max_batches": null,
+  "method": "Perturb exactly one analog layer at a time with one fixed sigma_d2d mask; all other D2D buffers zero; custom eval loop",
+  "provenance": {
+    "canonical_ensemble": {
+      "checkpoint_best_acc": 91.13,
+      "checkpoint_best_epoch": 94,
+      "checkpoint_epoch": 94,
+      "checkpoint_experiment_name": "V4_hybrid_standard_noise_hat",
+      "checkpoint_nl_ltd": -1.0,
+      "checkpoint_nl_ltp": 1.0,
+      "checkpoint_noise_mode": "uniform",
+      "checkpoint_path": "checkpoints/_ensemble/V4_hybrid_standard_noise_hat_best.pt",
+      "checkpoint_seed": null,
+      "eval_nl_ltd": -1.0,
+      "eval_nl_ltp": 1.0,
+      "eval_noise_mode": "uniform",
+      "exp_id": "V4",
+      "hat_type": "Ensemble",
+      "label": "Canonical Ensemble HAT (NL=1)",
+      "run_id": "canonical_ensemble",
+      "seed": null
+    }
+  },
+  "pytorch_version": "2.10.0+cu128",
+  "ranked_layers": [
+    {
+      "acc_drop_pp": 1.3799999999999955,
+      "baseline_acc": 89.33,
+      "group": "mlp",
+      "layer": "stages.2.blocks.4.mlp.fc2",
+      "layer_index": 29,
+      "samples": 10000,
+      "test_acc": 87.95,
+      "test_loss": 0.7606570175051689
+    },
+    {
+      "acc_drop_pp": 1.1799999999999926,
+      "baseline_acc": 89.33,
+      "group": "patch_embed",
+      "layer": "patch_embed.conv1.conv",
+      "layer_index": 0,
+      "samples": 10000,
+      "test_acc": 88.15,
+      "test_loss": 0.7513824882030488
+    },
+    {
+      "acc_drop_pp": 0.3100000000000023,
+      "baseline_acc": 89.33,
+      "group": "mlp",
+      "layer": "stages.2.blocks.1.mlp.fc1",
+      "layer_index": 16,
+      "samples": 10000,
+      "test_acc": 89.02,
+      "test_loss": 0.6813718953251838
+    },
+    {
+      "acc_drop_pp": 0.28999999999999204,
+      "baseline_acc": 89.33,
+      "group": "mlp",
+      "layer": "stages.2.blocks.5.mlp.fc2",
+      "layer_index": 33,
+      "samples": 10000,
+      "test_acc": 89.04,
+      "test_loss": 0.7068831669330597
+    },
+    {
+      "acc_drop_pp": 0.28000000000000114,
+      "baseline_acc": 89.33,
+      "group": "mlp",
+      "layer": "stages.2.blocks.2.mlp.fc1",
+      "layer_index": 20,
+      "samples": 10000,
+      "test_acc": 89.05,
+      "test_loss": 0.6844532106995582
+    },
+    {
+      "acc_drop_pp": 0.1599999999999966,
+      "baseline_acc": 89.33,
+      "group": "mlp",
+      "layer": "stages.2.blocks.2.mlp.fc2",
+      "layer_index": 21,
+      "samples": 10000,
+      "test_acc": 89.17,
+      "test_loss": 0.6823532381534576
+    },
+    {
+      "acc_drop_pp": 0.14000000000000057,
+      "baseline_acc": 89.33,
+      "group": "qkv",
+      "layer": "stages.1.blocks.0.attn.qkv",
+      "layer_index": 2,
+      "samples": 10000,
+      "test_acc": 89.19,
+      "test_loss": 0.680996959221363
+    },
+    {
+      "acc_drop_pp": 0.10999999999999943,
+      "baseline_acc": 89.33,
+      "group": "mlp",
+      "layer": "stages.2.blocks.0.mlp.fc1",
+      "layer_index": 12,
+      "samples": 10000,
+      "test_acc": 89.22,
+      "test_loss": 0.6883736038208008
+    },
+    {
+      "acc_drop_pp": 0.10999999999999943,
+      "baseline_acc": 89.33,
+      "group": "mlp",
+      "layer": "stages.2.blocks.0.mlp.fc2",
+      "layer_index": 13,
+      "samples": 10000,
+      "test_acc": 89.22,
+      "test_loss": 0.6904661653161049
+    },
+    {
+      "acc_drop_pp": 0.09999999999999432,
+      "baseline_acc": 89.33,
+      "group": "patch_embed",
+      "layer": "patch_embed.conv2.conv",
+      "layer_index": 1,
+      "samples": 10000,
+      "test_acc": 89.23,
+      "test_loss": 0.6806108123898507
+    },
+    {
+      "acc_drop_pp": 0.09999999999999432,
+      "baseline_acc": 89.33,
+      "group": "qkv",
+      "layer": "stages.2.blocks.4.attn.qkv",
+      "layer_index": 26,
+      "samples": 10000,
+      "test_acc": 89.23,
+      "test_loss": 0.6835598406076431
+    },
+    {
+      "acc_drop_pp": 0.09000000000000341,
+      "baseline_acc": 89.33,
+      "group": "mlp",
+      "layer": "stages.1.blocks.1.mlp.fc2",
+      "layer_index": 9,
+      "samples": 10000,
+      "test_acc": 89.24,
+      "test_loss": 0.6861448609709739
+    },
+    {
+      "acc_drop_pp": 0.0799999999999983,
+      "baseline_acc": 89.33,
+      "group": "qkv",
+      "layer": "stages.3.blocks.0.attn.qkv",
+      "layer_index": 34,
+      "samples": 10000,
+      "test_acc": 89.25,
+      "test_loss": 0.6762511341810227
+    },
+    {
+      "acc_drop_pp": 0.06999999999999318,
+      "baseline_acc": 89.33,
+      "group": "qkv",
+      "layer": "stages.2.blocks.0.attn.qkv",
+      "layer_index": 10,
+      "samples": 10000,
+      "test_acc": 89.26,
+      "test_loss": 0.6825198119282723
+    },
+    {
+      "acc_drop_pp": 0.060000000000002274,
+      "baseline_acc": 89.33,
+      "group": "mlp",
+      "layer": "stages.2.blocks.4.mlp.fc1",
+      "layer_index": 28,
+      "samples": 10000,
+      "test_acc": 89.27,
+      "test_loss": 0.6818210662007332
+    },
+    {
+      "acc_drop_pp": 0.04999999999999716,
+      "baseline_acc": 89.33,
+      "group": "mlp",
+      "layer": "stages.2.blocks.3.mlp.fc1",
+      "layer_index": 24,
+      "samples": 10000,
+      "test_acc": 89.28,
+      "test_loss": 0.6793044926285744
+    },
+    {
+      "acc_drop_pp": 0.03999999999999204,
+      "baseline_acc": 89.33,
+      "group": "proj",
+      "layer": "stages.3.blocks.1.attn.proj",
+      "layer_index": 39,
+      "samples": 10000,
+      "test_acc": 89.29,
+      "test_loss": 0.6797468927383423
+    },
+    {
+      "acc_drop_pp": 0.030000000000001137,
+      "baseline_acc": 89.33,
+      "group": "proj",
+      "layer": "stages.2.blocks.0.attn.proj",
+      "layer_index": 11,
+      "samples": 10000,
+      "test_acc": 89.3,
+      "test_loss": 0.6784494567632675
+    },
+    {
+      "acc_drop_pp": 0.030000000000001137,
+      "baseline_acc": 89.33,
+      "group": "qkv",
+      "layer": "stages.2.blocks.2.attn.qkv",
+      "layer_index": 18,
+      "samples": 10000,
+      "test_acc": 89.3,
+      "test_loss": 0.6785609580874443
+    },
+    {
+      "acc_drop_pp": 0.030000000000001137,
+      "baseline_acc": 89.33,
+      "group": "proj",
+      "layer": "stages.2.blocks.3.attn.proj",
+      "layer_index": 23,
+      "samples": 10000,
+      "test_acc": 89.3,
+      "test_loss": 0.6793252345323563
+    },
+    {
+      "acc_drop_pp": 0.030000000000001137,
+      "baseline_acc": 89.33,
+      "group": "qkv",
+      "layer": "stages.2.blocks.5.attn.qkv",
+      "layer_index": 30,
+      "samples": 10000,
+      "test_acc": 89.3,
+      "test_loss": 0.6688552752256394
+    },
+    {
+      "acc_drop_pp": 0.030000000000001137,
+      "baseline_acc": 89.33,
+      "group": "qkv",
+      "layer": "stages.3.blocks.1.attn.qkv",
+      "layer_index": 38,
+      "samples": 10000,
+      "test_acc": 89.3,
+      "test_loss": 0.6783736561894417
+    },
+    {
+      "acc_drop_pp": 0.01999999999999602,
+      "baseline_acc": 89.33,
+      "group": "proj",
+      "layer": "stages.2.blocks.5.attn.proj",
+      "layer_index": 31,
+      "samples": 10000,
+      "test_acc": 89.31,
+      "test_loss": 0.6841825020670891
+    },
+    {
+      "acc_drop_pp": 0.01999999999999602,
+      "baseline_acc": 89.33,
+      "group": "proj",
+      "layer": "stages.3.blocks.0.attn.proj",
+      "layer_index": 35,
+      "samples": 10000,
+      "test_acc": 89.31,
+      "test_loss": 0.6757644849538803
+    },
+    {
+      "acc_drop_pp": 0.010000000000005116,
+      "baseline_acc": 89.33,
+      "group": "proj",
+      "layer": "stages.1.blocks.1.attn.proj",
+      "layer_index": 7,
+      "samples": 10000,
+      "test_acc": 89.32,
+      "test_loss": 0.6765860398173332
+    },
+    {
+      "acc_drop_pp": 0.010000000000005116,
+      "baseline_acc": 89.33,
+      "group": "proj",
+      "layer": "stages.2.blocks.2.attn.proj",
+      "layer_index": 19,
+      "samples": 10000,
+      "test_acc": 89.32,
+      "test_loss": 0.676091463649273
+    },
+    {
+      "acc_drop_pp": 0.010000000000005116,
+      "baseline_acc": 89.33,
+      "group": "mlp",
+      "layer": "stages.3.blocks.0.mlp.fc2",
+      "layer_index": 37,
+      "samples": 10000,
+      "test_acc": 89.32,
+      "test_loss": 0.6667100816249848
+    },
+    {
+      "acc_drop_pp": 0.010000000000005116,
+      "baseline_acc": 89.33,
+      "group": "mlp",
+      "layer": "stages.3.blocks.1.mlp.fc2",
+      "layer_index": 41,
+      "samples": 10000,
+      "test_acc": 89.32,
+      "test_loss": 0.6767729835271835
+    },
+    {
+      "acc_drop_pp": 0.0,
+      "baseline_acc": 89.33,
+      "group": "qkv",
+      "layer": "stages.1.blocks.1.attn.qkv",
+      "layer_index": 6,
+      "samples": 10000,
+      "test_acc": 89.33,
+      "test_loss": 0.6760206007242203
+    },
+    {
+      "acc_drop_pp": -0.010000000000005116,
+      "baseline_acc": 89.33,
+      "group": "proj",
+      "layer": "stages.1.blocks.0.attn.proj",
+      "layer_index": 3,
+      "samples": 10000,
+      "test_acc": 89.34,
+      "test_loss": 0.6776334303021431
+    },
+    {
+      "acc_drop_pp": -0.01999999999999602,
+      "baseline_acc": 89.33,
+      "group": "proj",
+      "layer": "stages.2.blocks.1.attn.proj",
+      "layer_index": 15,
+      "samples": 10000,
+      "test_acc": 89.35,
+      "test_loss": 0.6762392451763153
+    },
+    {
+      "acc_drop_pp": -0.01999999999999602,
+      "baseline_acc": 89.33,
+      "group": "qkv",
+      "layer": "stages.2.blocks.3.attn.qkv",
+      "layer_index": 22,
+      "samples": 10000,
+      "test_acc": 89.35,
+      "test_loss": 0.6719208606600762
+    },
+    {
+      "acc_drop_pp": -0.030000000000001137,
+      "baseline_acc": 89.33,
+      "group": "mlp",
+      "layer": "stages.3.blocks.1.mlp.fc1",
+      "layer_index": 40,
+      "samples": 10000,
+      "test_acc": 89.36,
+      "test_loss": 0.6701898383975029
+    },
+    {
+      "acc_drop_pp": -0.04000000000000625,
+      "baseline_acc": 89.33,
+      "group": "mlp",
+      "layer": "stages.1.blocks.0.mlp.fc1",
+      "layer_index": 4,
+      "samples": 10000,
+      "test_acc": 89.37,
+      "test_loss": 0.6732925942063331
+    },
+    {
+      "acc_drop_pp": -0.07000000000000739,
+      "baseline_acc": 89.33,
+      "group": "mlp",
+      "layer": "stages.1.blocks.0.mlp.fc2",
+      "layer_index": 5,
+      "samples": 10000,
+      "test_acc": 89.4,
+      "test_loss": 0.6781177207112312
+    },
+    {
+      "acc_drop_pp": -0.0799999999999983,
+      "baseline_acc": 89.33,
+      "group": "mlp",
+      "layer": "stages.1.blocks.1.mlp.fc1",
+      "layer_index": 8,
+      "samples": 10000,
+      "test_acc": 89.41,
+      "test_loss": 0.6737084586024285
+    },
+    {
+      "acc_drop_pp": -0.0799999999999983,
+      "baseline_acc": 89.33,
+      "group": "qkv",
+      "layer": "stages.2.blocks.1.attn.qkv",
+      "layer_index": 14,
+      "samples": 10000,
+      "test_acc": 89.41,
+      "test_loss": 0.6641649255990982
+    },
+    {
+      "acc_drop_pp": -0.0799999999999983,
+      "baseline_acc": 89.33,
+      "group": "mlp",
+      "layer": "stages.2.blocks.3.mlp.fc2",
+      "layer_index": 25,
+      "samples": 10000,
+      "test_acc": 89.41,
+      "test_loss": 0.6674737124562263
+    },
+    {
+      "acc_drop_pp": -0.0799999999999983,
+      "baseline_acc": 89.33,
+      "group": "proj",
+      "layer": "stages.2.blocks.4.attn.proj",
+      "layer_index": 27,
+      "samples": 10000,
+      "test_acc": 89.41,
+      "test_loss": 0.6740105815529823
+    },
+    {
+      "acc_drop_pp": -0.10000000000000853,
+      "baseline_acc": 89.33,
+      "group": "mlp",
+      "layer": "stages.2.blocks.1.mlp.fc2",
+      "layer_index": 17,
+      "samples": 10000,
+      "test_acc": 89.43,
+      "test_loss": 0.6723279944658279
+    },
+    {
+      "acc_drop_pp": -0.29000000000000625,
+      "baseline_acc": 89.33,
+      "group": "mlp",
+      "layer": "stages.2.blocks.5.mlp.fc1",
+      "layer_index": 32,
+      "samples": 10000,
+      "test_acc": 89.62,
+      "test_loss": 0.6637432554841042
+    },
+    {
+      "acc_drop_pp": -0.3400000000000034,
+      "baseline_acc": 89.33,
+      "group": "mlp",
+      "layer": "stages.3.blocks.0.mlp.fc1",
+      "layer_index": 36,
+      "samples": 10000,
+      "test_acc": 89.67,
+      "test_loss": 0.6547061454892158
+    }
+  ],
+  "run_id": "canonical_ensemble",
+  "samples": 10000,
+  "script": "scripts/_gpt/empirical_mechanism_20260425.py",
+  "sigma_d2d": 0.1,
+  "timestamp_unix": 1777090476.9331326,
+  "top5": [
+    {
+      "acc_drop_pp": 1.3799999999999955,
+      "baseline_acc": 89.33,
+      "group": "mlp",
+      "layer": "stages.2.blocks.4.mlp.fc2",
+      "layer_index": 29,
+      "samples": 10000,
+      "test_acc": 87.95,
+      "test_loss": 0.7606570175051689
+    },
+    {
+      "acc_drop_pp": 1.1799999999999926,
+      "baseline_acc": 89.33,
+      "group": "patch_embed",
+      "layer": "patch_embed.conv1.conv",
+      "layer_index": 0,
+      "samples": 10000,
+      "test_acc": 88.15,
+      "test_loss": 0.7513824882030488
+    },
+    {
+      "acc_drop_pp": 0.3100000000000023,
+      "baseline_acc": 89.33,
+      "group": "mlp",
+      "layer": "stages.2.blocks.1.mlp.fc1",
+      "layer_index": 16,
+      "samples": 10000,
+      "test_acc": 89.02,
+      "test_loss": 0.6813718953251838
+    },
+    {
+      "acc_drop_pp": 0.28999999999999204,
+      "baseline_acc": 89.33,
+      "group": "mlp",
+      "layer": "stages.2.blocks.5.mlp.fc2",
+      "layer_index": 33,
+      "samples": 10000,
+      "test_acc": 89.04,
+      "test_loss": 0.7068831669330597
+    },
+    {
+      "acc_drop_pp": 0.28000000000000114,
+      "baseline_acc": 89.33,
+      "group": "mlp",
+      "layer": "stages.2.blocks.2.mlp.fc1",
+      "layer_index": 20,
+      "samples": 10000,
+      "test_acc": 89.05,
+      "test_loss": 0.6844532106995582
+    }
+  ]
+}

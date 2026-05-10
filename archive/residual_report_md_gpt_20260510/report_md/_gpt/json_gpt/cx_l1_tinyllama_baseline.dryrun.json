@@ -1,0 +1,17 @@
+{
+  "experiment": "cx_l1_tinyllama_baseline",
+  "generated_at": "2026-04-23T20:07:17+08:00",
+  "dry_run": true,
+  "ready_to_run": true,
+  "model_id": "TinyLlama/TinyLlama-1.1B-intermediate",
+  "dataset": "wikitext",
+  "dataset_config": "wikitext-103-raw-v1",
+  "split": "validation",
+  "device_requested": "auto",
+  "cuda_available": true,
+  "torch_version": "2.10.0+cu128",
+  "transformers_version": "5.6.1",
+  "datasets_version": "4.8.4",
+  "json_out": "report_md/_gpt/json_gpt/cx_l1_tinyllama_baseline.dryrun.json",
+  "note": "Dry run only: no model or dataset loaded/downloaded."
+}

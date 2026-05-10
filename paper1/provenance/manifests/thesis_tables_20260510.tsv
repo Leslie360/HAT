@@ -1,0 +1,95 @@
+scope	source_tex	line	environment	label	caption
+thesis	thesis/cn/chapter_3_methodology.tex	43	table	tab:measurement-mapping	测量到模拟器的参数映射。文献推导配置文件与内部实测配置文件填充相同字段，因此驱动同一训练脚本。
+thesis	thesis/cn/chapter_3_methodology.tex	47	tabular	eq:d2d-model
+thesis	thesis/cn/chapter_3_methodology.tex	394	table	tab:cadence-comparison	三种 canonical HAT 重采样频率的结构比较。
+thesis	thesis/cn/chapter_3_methodology.tex	399	tabular	alg:hat-training	HAT 训练循环（统一三种重采样频率）
+thesis	thesis/cn/chapter_3_methodology.tex	565	table	tab:noise-regime-matrix	Tiny-ViT 在均匀与比例噪声下的跨体制精度矩阵。对角项为匹配体制结果；非对角项显示跨体制崩溃。
+thesis	thesis/cn/chapter_3_methodology.tex	570	tabular	sec:cadence-transfer-guarantee
+thesis	thesis/cn/chapter_4_benchmarks.tex	59	table	tab:resnet18-cifar10	ResNet-18 在 CIFAR-10 上的 accuracy（\%）。$\pm$ 后为蒙特卡罗标准差（10 次运行）。
+thesis	thesis/cn/chapter_4_benchmarks.tex	63	tabular	tab:convnext-results	ConvNeXt-Tiny 在 CIFAR-10 与 CIFAR-100 上的 accuracy（\%）。
+thesis	thesis/cn/chapter_4_benchmarks.tex	96	table	tab:convnext-results	ConvNeXt-Tiny 在 CIFAR-10 与 CIFAR-100 上的 accuracy（\%）。
+thesis	thesis/cn/chapter_4_benchmarks.tex	100	tabular	tab:tinyvit-results	Tiny-ViT-5M 在 CIFAR-10、CIFAR-100 与 Flowers-102 上的 accuracy（\%）。
+thesis	thesis/cn/chapter_4_benchmarks.tex	130	table	tab:tinyvit-results	Tiny-ViT-5M 在 CIFAR-10、CIFAR-100 与 Flowers-102 上的 accuracy（\%）。
+thesis	thesis/cn/chapter_4_benchmarks.tex	134	tabular	tab:convnext-flowers	ConvNeXt-Tiny 在 Flowers-102 上的 accuracy（\%）。
+thesis	thesis/cn/chapter_4_benchmarks.tex	172	table	tab:convnext-flowers	ConvNeXt-Tiny 在 Flowers-102 上的 accuracy（\%）。
+thesis	thesis/cn/chapter_4_benchmarks.tex	176	tabular	tab:fresh-instance-v4	Tiny-ViT V4 在 CIFAR-10 上的 fresh-instance 评估（\%）。
+thesis	thesis/cn/chapter_4_benchmarks.tex	224	table	tab:fresh-instance-v4	Tiny-ViT V4 在 CIFAR-10 上的 fresh-instance 评估（\%）。
+thesis	thesis/cn/chapter_4_benchmarks.tex	228	tabular	sec:pcm-benchmark	PCM 精度--保持阶梯（UnitCell 预设，3-seed 均值$\pm$标准差）。
+thesis	thesis/cn/chapter_4_benchmarks.tex	282	table	tab:pcm-precision-ladder	PCM 精度--保持阶梯（UnitCell 预设，3-seed 均值$\pm$标准差）。
+thesis	thesis/cn/chapter_4_benchmarks.tex	286	tabular	tab:pcm-extended	PCM 扩展验证（Batch B/C/D）。
+thesis	thesis/cn/chapter_4_benchmarks.tex	313	table	tab:pcm-extended	PCM 扩展验证（Batch B/C/D）。
+thesis	thesis/cn/chapter_4_benchmarks.tex	317	tabular	tab:pcm-negative	纯量化 4-bit 负面基线（全部崩溃）。
+thesis	thesis/cn/chapter_4_benchmarks.tex	341	table	tab:pcm-negative	纯量化 4-bit 负面基线（全部崩溃）。
+thesis	thesis/cn/chapter_4_benchmarks.tex	345	tabular
+thesis	thesis/cn/chapter_5_failure_modes.tex	291	table	tab:failure_mode_cheatsheet	失效模式速查表
+thesis	thesis/cn/chapter_5_failure_modes.tex	295	tabular
+thesis	thesis/cn/chapter_6_work2_scope.tex	94	table	tab:kv_tech_match	存储技术与KV缓存需求的物理匹配度比较
+thesis	thesis/cn/chapter_6_work2_scope.tex	98	tabular	sec:work2_problem
+thesis	thesis/cn/chapter_6_work2_scope.tex	277	table	tab:baselines	对比基线及其公平比较原则
+thesis	thesis/cn/chapter_6_work2_scope.tex	281	tabular	sec:work2_experiments	实验一参数扫描空间
+thesis	thesis/cn/chapter_6_work2_scope.tex	320	table	tab:exp1_grid	实验一参数扫描空间
+thesis	thesis/cn/chapter_6_work2_scope.tex	324	tabular	eq:rank_preservation	实验二参数扫描空间
+thesis	thesis/cn/chapter_6_work2_scope.tex	383	table	tab:exp2_grid	实验二参数扫描空间
+thesis	thesis/cn/chapter_6_work2_scope.tex	387	tabular	sec:exp3_compression	实验三参数扫描空间
+thesis	thesis/cn/chapter_6_work2_scope.tex	443	table	tab:exp3_grid	实验三参数扫描空间
+thesis	thesis/cn/chapter_6_work2_scope.tex	447	tabular	sec:exp4_temporal	实验四参数扫描空间
+thesis	thesis/cn/chapter_6_work2_scope.tex	493	table	tab:exp4_grid	实验四参数扫描空间
+thesis	thesis/cn/chapter_6_work2_scope.tex	497	tabular	sec:work2_results	Remote~107基准线与全层淘汰判定（seed=42）
+thesis	thesis/cn/chapter_6_work2_scope.tex	532	table	tab:work2_baseline	Remote~107基准线与全层淘汰判定（seed=42）
+thesis	thesis/cn/chapter_6_work2_scope.tex	536	tabular	tab:work2_selective	选择性终端层模拟KV缓存探测（8-bit, seed=42）
+thesis	thesis/cn/chapter_6_work2_scope.tex	550	table	tab:work2_selective	选择性终端层模拟KV缓存探测（8-bit, seed=42）
+thesis	thesis/cn/chapter_6_work2_scope.tex	554	tabular	tab:work2_alllayer_sweep	6-bit全层噪声敏感性扫描（seed=42）
+thesis	thesis/cn/chapter_6_work2_scope.tex	568	table	tab:work2_alllayer_sweep	6-bit全层噪声敏感性扫描（seed=42）
+thesis	thesis/cn/chapter_6_work2_scope.tex	572	tabular	tab:work2_fresh_d2d	选择性终端层Fresh-D2D交叉实例验证（train D2D=0.02, seed=42）
+thesis	thesis/cn/chapter_6_work2_scope.tex	591	table	tab:work2_fresh_d2d	选择性终端层Fresh-D2D交叉实例验证（train D2D=0.02, seed=42）
+thesis	thesis/cn/chapter_6_work2_scope.tex	595	tabular	sec:work2_contributions	范围边界与排除理由
+thesis	thesis/cn/chapter_6_work2_scope.tex	670	table	tab:boundaries	范围边界与排除理由
+thesis	thesis/cn/chapter_6_work2_scope.tex	674	tabular	sec:work2_summary
+thesis	thesis/cn/chapter_7_deployment.tex	155	table	tab:d2d-envelope	D2D 失配包络：标准 HAT 与 Ensemble HAT 的 fresh-instance 精度对比（CIFAR-10 top-1，$10 \times 5$ 协议）
+thesis	thesis/cn/chapter_7_deployment.tex	160	tabular	sec:noise-nl-tradeoff
+thesis	thesis/cn/chapter_7_deployment.tex	290	table	tab:cross-arch-proportional	TinyImageNet-200 跨架构比例噪声 HAT 验证（fresh-instance 均值，$n=10$ 实例 $\times$ $5$ MC 运行）
+thesis	thesis/cn/chapter_7_deployment.tex	295	tabular	sec:deployment-recommendations	按器件成熟度等级的部署决策矩阵
+thesis	thesis/cn/chapter_7_deployment.tex	343	table	tab:maturity-matrix	按器件成熟度等级的部署决策矩阵
+thesis	thesis/cn/chapter_7_deployment.tex	348	tabular
+thesis	thesis/en/chapter_3_hat_taxonomy.tex	55	table	tab:cadence-comparison	Structural comparison of the three canonical HAT cadences.
+thesis	thesis/en/chapter_3_hat_taxonomy.tex	60	tabular	alg:hat-training	HAT training loop (unified over the three resampling cadences)
+thesis	thesis/en/chapter_3_hat_taxonomy.tex	191	table	tab:noise-regime-matrix	Cross-regime accuracy matrix for Tiny-ViT under uniform and proportional noise. Diagonal entries are matched-regime results; off-diagonal entries show cross-regime collapse.
+thesis	thesis/en/chapter_3_hat_taxonomy.tex	196	tabular	sec:literature-comparison	Simplified design plane for HAT protocols. The horizontal axis moves from fixed-mask (no resampling) to per-batch (maximal resampling). The vertical axis moves from uniform additive noise to proportional state-dependent noise. Thesis experi
+thesis	thesis/en/chapter_4_failure_modes.tex	52	table	tab:fresh-instance-nl	Fresh-instance transfer of severe-NL checkpoints under the revised gradient-scaling recipe (data from manuscript supplementary package, Note~SX.N). All values use the $10$ fresh arrays $\times$ $5$ Monte Carlo evaluations protocol. The seve
+thesis	thesis/en/chapter_4_failure_modes.tex	58	tabular	sec:failure-correlated-d2d	Fresh-instance robustness under spatially correlated D2D mismatch (reused from manuscript supplementary package, Fig.~S5). Error bars show cross-instance standard deviation over $10$ fresh arrays, with $5$ Monte Carlo evaluations per array,
+thesis	thesis/en/chapter_6_physical_realism.tex	51	table	tab:correlated-d2d-full	Fresh-instance robustness of Ensemble HAT under spatially correlated D2D mismatch ($10$ fresh arrays $\times$ $5$ Monte Carlo evaluations). All values are drawn from the same canonical checkpoint to isolate the effect of correlation structu
+thesis	thesis/en/chapter_6_physical_realism.tex	57	tabular	sec:extended-four	Approximate worst-case IR-drop envelope for two tile geometries under a representative per-cell line resistance. Values are analytical estimates, not simulated results.
+thesis	thesis/en/chapter_6_physical_realism.tex	90	table	tab:ir-drop-geometry	Approximate worst-case IR-drop envelope for two tile geometries under a representative per-cell line resistance. Values are analytical estimates, not simulated results.
+thesis	thesis/en/chapter_6_physical_realism.tex	96	tabular	eq:arrhenius-tau	Thesis contribution tier for each physical-realism extension.
+thesis	thesis/en/chapter_6_physical_realism.tex	129	table	tab:tier-mapping	Thesis contribution tier for each physical-realism extension.
+thesis	thesis/en/chapter_6_physical_realism.tex	135	tabular	sec:pr-summary
+thesis	thesis/en/chapter_7_deployment.tex	56	table	tab:green-zone	Green zone: parameter combinations with direct fresh-instance evidence that Ensemble HAT $>$ fixed-mask $>$ naive. All accuracies are CIFAR-10 top-1 under the $10 \times 5$ fresh-instance protocol unless otherwise noted.
+thesis	thesis/en/chapter_7_deployment.tex	61	tabular	tab:ranking-summary	Qualitative ranking-preservation matrix. Colors: \textbf{G}=green (direct fresh-instance evidence), \textbf{Y}=yellow (reasonable extrapolation), \textbf{O}=orange (marginal viability), \textbf{R}=red (collapse). The matrix is conditional o
+thesis	thesis/en/chapter_7_deployment.tex	77	table	tab:ranking-summary	Qualitative ranking-preservation matrix. Colors: \textbf{G}=green (direct fresh-instance evidence), \textbf{Y}=yellow (reasonable extrapolation), \textbf{O}=orange (marginal viability), \textbf{R}=red (collapse). The matrix is conditional o
+thesis	thesis/en/chapter_7_deployment.tex	83	tabular	sec:collapse-zone	Collapse zone: qualitative danger-zone specification. Entries marked ``extrap.'' are not directly measured but are inferred from the monotonic trends of the individual sweeps.
+thesis	thesis/en/chapter_7_deployment.tex	114	table	tab:danger-zone	Collapse zone: qualitative danger-zone specification. Entries marked ``extrap.'' are not directly measured but are inferred from the monotonic trends of the individual sweeps.
+thesis	thesis/en/chapter_7_deployment.tex	119	tabular	sec:decision-diagram
+thesis	thesis/en/chapter_7_deployment.tex	198	table	tab:cross-arch-proportional	Cross-architecture proportional-noise HAT validation on TinyImageNet-200 (fresh-instance mean, $n=10$ realisations $\times$ $5$ MC runs per realisation).
+thesis	thesis/en/chapter_7_deployment.tex	203	tabular	sec:program-manager
+thesis	thesis/en/chapter_8_outlook.tex	41	table	tab:kv-cache-107	\textbf{Fresh-D2D cross-instance robustness of selective analog KV-cache.} Evaluated on a $125$~M-parameter language model with $5$ independent D2D seeds per evaluation level. Train D2D $=0.02$ for all selective checkpoints.
+thesis	thesis/en/chapter_8_outlook.tex	47	tabular	sec:hardware-roadmap
+thesis	thesis/xjtu_template/Main_Spine/c3.tex	57	table	tab:cadence-comparison	三种经典 HAT 重采样频率的结构比较。
+thesis	thesis/xjtu_template/Main_Spine/c3.tex	62	tabular	alg:hat-training	HAT 训练循环（三种重采样频率的统一形式）
+thesis	thesis/xjtu_template/Main_Spine/c3.tex	193	table	tab:noise-regime-matrix	Tiny-ViT 在均匀噪声与比例噪声下的跨 regime 精度矩阵。对角线项为匹配 regime 结果；非对角线项显示跨 regime 崩溃。
+thesis	thesis/xjtu_template/Main_Spine/c3.tex	198	tabular	sec:literature-comparison	HAT 协议的简化设计平面。水平轴从固定掩膜（无重采样）移至每批级（最大重采样）。垂直轴从均匀加性噪声移至比例状态相关噪声。论文实验占据标记点。
+thesis	thesis/xjtu_template/Main_Spine/c4.tex	54	table	tab:fresh-instance-nl	修正梯度缩放配方下严重非线性检查点的全新实例迁移（数据来自论文补充包，注~SX.N）。所有数值使用 $10$ 个全新阵列 $\times$ $5$ 次蒙特卡洛评估协议。严重非线性行报告种子~$123$ 单检查点跨实例统计；跨种子汇总结果（每种配置 $2$ 个种子）见第~\ref{chap:mitigation-case-studies}章。
+thesis	thesis/xjtu_template/Main_Spine/c4.tex	60	tabular	sec:failure-correlated-d2d	空间相关D2D失配下的全新实例鲁棒性（复用自论文补充包，图~S5）。误差条显示 $10$ 个全新阵列的跨实例标准差，每个阵列 $5$ 次蒙特卡洛评估，针对典型Tiny-ViT V4集成HAT检查点。
+thesis	thesis/xjtu_template/Main_Spine/c6.tex	53	table	tab:correlated-d2d-full	集成HAT在空间相关器件间失配下的新实例鲁棒性（$10$ 个新阵列 $\times$ $5$ 次蒙特卡洛评估）。所有数值均来自同一典型检查点，以隔离相关性结构的影响。
+thesis	thesis/xjtu_template/Main_Spine/c6.tex	59	tabular	sec:extended-four	两种瓦片几何结构在代表性单位单元线电阻下的近似最坏情况压降包络。数值为解析估计，非模拟结果。
+thesis	thesis/xjtu_template/Main_Spine/c6.tex	93	table	tab:ir-drop-geometry	两种瓦片几何结构在代表性单位单元线电阻下的近似最坏情况压降包络。数值为解析估计，非模拟结果。
+thesis	thesis/xjtu_template/Main_Spine/c6.tex	99	tabular	eq:arrhenius-tau	每个物理真实性扩展的论文贡献层级。
+thesis	thesis/xjtu_template/Main_Spine/c6.tex	132	table	tab:tier-mapping	每个物理真实性扩展的论文贡献层级。
+thesis	thesis/xjtu_template/Main_Spine/c6.tex	138	tabular	sec:pr-summary
+thesis	thesis/xjtu_template/Main_Spine/c7.tex	57	table	tab:green-zone	绿区：具有直接新实例证据的参数组合，表明集成 HAT $>$ 固定掩码 $>$ 朴素。除非另有说明，所有准确率均为 $10 \times 5$ 新实例协议下的 CIFAR-10 top-1。
+thesis	thesis/xjtu_template/Main_Spine/c7.tex	62	tabular	tab:ranking-summary	定性排名保持矩阵。颜色：\textbf{G}=绿色（直接新实例证据），\textbf{Y}=黄色（合理外推），\textbf{O}=橙色（边际可行性），\textbf{R}=红色（崩溃）。该矩阵以 Tiny-ViT、CIFAR-10 和典型 100 epoch 集成 HAT 方案为条件。
+thesis	thesis/xjtu_template/Main_Spine/c7.tex	78	table	tab:ranking-summary	定性排名保持矩阵。颜色：\textbf{G}=绿色（直接新实例证据），\textbf{Y}=黄色（合理外推），\textbf{O}=橙色（边际可行性），\textbf{R}=红色（崩溃）。该矩阵以 Tiny-ViT、CIFAR-10 和典型 100 epoch 集成 HAT 方案为条件。
+thesis	thesis/xjtu_template/Main_Spine/c7.tex	84	tabular	sec:collapse-zone	崩溃区：定性危险区规范。标记``外推''的条目未经直接测量，而是从单个扫描的单调趋势推断得出。
+thesis	thesis/xjtu_template/Main_Spine/c7.tex	113	table	tab:danger-zone	崩溃区：定性危险区规范。标记``外推''的条目未经直接测量，而是从单个扫描的单调趋势推断得出。
+thesis	thesis/xjtu_template/Main_Spine/c7.tex	118	tabular	sec:decision-diagram
+thesis	thesis/xjtu_template/Main_Spine/c8.tex	42	table	tab:kv-cache-107	\textbf{选择性模拟 KV 缓存的新实例跨实例鲁棒性。} 在 $125$~M 参数语言模型上评估，每个评估级别使用 $5$ 个独立 D2D 种子。所有选择性检查点的训练 D2D $=0.02$。
+thesis	thesis/xjtu_template/Main_Spine/c8.tex	48	tabular	sec:hardware-roadmap

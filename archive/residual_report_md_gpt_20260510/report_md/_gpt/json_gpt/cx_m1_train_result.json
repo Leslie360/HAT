@@ -1,0 +1,29 @@
+[
+  {
+    "mode": "train",
+    "experiment": "V3",
+    "experiment_name": "V3_hybrid_standard_noise_standard_train",
+    "dataset": "cifar10",
+    "num_classes": 10,
+    "use_hybrid": true,
+    "noise_enabled": true,
+    "sigma_c2c": 0.05,
+    "sigma_d2d": 0.1,
+    "hat_training": false,
+    "use_physical_frontend": false,
+    "retention_enabled": false,
+    "inference_time": 0.0,
+    "epochs": 100,
+    "batch_size": 64,
+    "lr": 0.0005,
+    "weight_decay": 0.05,
+    "seed": 123,
+    "best_test_acc": 82.89,
+    "best_epoch": 54,
+    "final_train_loss": 0.021236795942783354,
+    "final_train_acc": 99.356,
+    "final_test_loss": 1.1800705839157104,
+    "final_test_acc": 77.85,
+    "checkpoint_path": "checkpoints/_gpt/postfix_m_series/cx_m1_standard_seed123/V3_hybrid_standard_noise_standard_train_best.pt"
+  }
+]

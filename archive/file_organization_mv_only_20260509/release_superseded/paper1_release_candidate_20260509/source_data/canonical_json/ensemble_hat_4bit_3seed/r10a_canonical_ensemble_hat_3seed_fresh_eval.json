@@ -1,0 +1,116 @@
+{
+  "generated_at": "2026-04-26T03:05:00+08:00",
+  "protocol": "Canonical Ensemble HAT fresh-instance evaluation; 10 fresh D2D instances x 5 MC runs per seed; NL_LTP=1.0, NL_LTD=-1.0, uniform noise.",
+  "seeds": [
+    {
+      "seed": 123,
+      "checkpoint": "checkpoints/_ensemble/V4_hybrid_standard_noise_hat_best.pt",
+      "source_best_acc": 91.94,
+      "fresh_mean": 86.36500000000001,
+      "fresh_std": 1.5350085993244453,
+      "fresh_instances": [
+        87.282,
+        88.612,
+        87.358,
+        84.066,
+        85.554,
+        85.182,
+        86.914,
+        87.768,
+        87.104,
+        83.81
+      ],
+      "source_json": "report_md/_gpt/json_gpt/fresh_instance_eval.json"
+    },
+    {
+      "seed": 456,
+      "checkpoint": "checkpoints/_ensemble/V4_hybrid_seed456/V4_hybrid_standard_noise_hat_best.pt",
+      "source_best_acc": 89.58,
+      "fresh_mean": 86.1232,
+      "fresh_std": 0.7167555789807332,
+      "fresh_instances": [
+        87.218,
+        86.474,
+        85.6,
+        85.586,
+        87.13600000000001,
+        85.73,
+        86.936,
+        85.1,
+        85.568,
+        85.884
+      ],
+      "source_json": "report_md/_gpt/json_gpt/r10a_seed456_fresh_eval.json"
+    },
+    {
+      "seed": 789,
+      "checkpoint": "checkpoints/_ensemble/V4_hybrid_seed789/V4_hybrid_standard_noise_hat_best.pt",
+      "source_best_acc": 90.66,
+      "fresh_mean": 85.988,
+      "fresh_std": 1.9399317513768375,
+      "fresh_instances": [
+        86.512,
+        87.95,
+        81.78999999999999,
+        87.384,
+        86.454,
+        87.922,
+        83.298,
+        84.87,
+        86.788,
+        86.912
+      ],
+      "source_json": "report_md/_gpt/json_gpt/r10a_seed789_fresh_eval.json"
+    }
+  ],
+  "cross_seed": {
+    "n_seeds": 3,
+    "mean_of_seed_means": 86.15873333333333,
+    "std_of_seed_means_sample": 0.1909953228048671,
+    "std_of_seed_means_population": 0.15594702804336133,
+    "seed_means": [
+      86.36500000000001,
+      86.1232,
+      85.988
+    ]
+  },
+  "pooled_fresh_instances": {
+    "n_instances": 30,
+    "mean": 86.15873333333333,
+    "std_sample": 1.5206944405794338,
+    "std_population": 1.49513473045817,
+    "instances": [
+      87.282,
+      88.612,
+      87.358,
+      84.066,
+      85.554,
+      85.182,
+      86.914,
+      87.768,
+      87.104,
+      83.81,
+      87.218,
+      86.474,
+      85.6,
+      85.586,
+      87.13600000000001,
+      85.73,
+      86.936,
+      85.1,
+      85.568,
+      85.884,
+      86.512,
+      87.95,
+      81.78999999999999,
+      87.384,
+      86.454,
+      87.922,
+      83.298,
+      84.87,
+      86.788,
+      86.912
+    ]
+  },
+  "reporting_recommendation": "Use 86.16 +/- 0.19% for training-seed reproducibility (mean +/- sample std of three seed means). Use 86.37 +/- 1.54% only when referring to the plotted canonical single-checkpoint fresh-instance distribution."
+}

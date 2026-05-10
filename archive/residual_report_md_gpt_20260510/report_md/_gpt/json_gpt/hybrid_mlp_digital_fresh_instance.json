@@ -1,0 +1,97 @@
+{
+  "checkpoint_path": "checkpoints/_gpt/hybrid_attention_cim_mlp_digital.pt",
+  "train_best_acc": 91.5,
+  "train_best_epoch": 96,
+  "fresh_instances": 5,
+  "mc_runs_per_instance": 3,
+  "resample_scope": "all",
+  "dataset": "cifar10",
+  "num_classes": 10,
+  "eval_batch_size": 256,
+  "cross_instance_mean": 9.951333333333334,
+  "cross_instance_std": 0.04574081571443903,
+  "instance_means": [
+    9.87,
+    9.97,
+    9.966666666666667,
+    9.98,
+    9.97
+  ],
+  "instances": [
+    {
+      "instance_index": 0,
+      "seed": 42,
+      "resampled_modules": 42,
+      "resample_scope": "all",
+      "eval_runs": 3,
+      "test_loss_mean": 4.149365947087606,
+      "test_acc_mean": 9.87,
+      "test_acc_std": 0.14730919862656228,
+      "test_acc_raw": [
+        9.78,
+        10.04,
+        9.79
+      ]
+    },
+    {
+      "instance_index": 1,
+      "seed": 142,
+      "resampled_modules": 42,
+      "resample_scope": "all",
+      "eval_runs": 3,
+      "test_loss_mean": 3.325475623957316,
+      "test_acc_mean": 9.97,
+      "test_acc_std": 0.05291502622129169,
+      "test_acc_raw": [
+        9.91,
+        10.01,
+        9.99
+      ]
+    },
+    {
+      "instance_index": 2,
+      "seed": 242,
+      "resampled_modules": 42,
+      "resample_scope": "all",
+      "eval_runs": 3,
+      "test_loss_mean": 3.445146540959676,
+      "test_acc_mean": 9.966666666666667,
+      "test_acc_std": 0.18903262505010401,
+      "test_acc_raw": [
+        9.9,
+        10.18,
+        9.82
+      ]
+    },
+    {
+      "instance_index": 3,
+      "seed": 342,
+      "resampled_modules": 42,
+      "resample_scope": "all",
+      "eval_runs": 3,
+      "test_loss_mean": 4.34867081934611,
+      "test_acc_mean": 9.98,
+      "test_acc_std": 0.1252996408614167,
+      "test_acc_raw": [
+        10.1,
+        9.99,
+        9.85
+      ]
+    },
+    {
+      "instance_index": 4,
+      "seed": 442,
+      "resampled_modules": 42,
+      "resample_scope": "all",
+      "eval_runs": 3,
+      "test_loss_mean": 4.411965805308024,
+      "test_acc_mean": 9.97,
+      "test_acc_std": 0.04999999999999982,
+      "test_acc_raw": [
+        10.02,
+        9.92,
+        9.97
+      ]
+    }
+  ]
+}

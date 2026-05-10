@@ -1,0 +1,8 @@
+{
+  "phase": "complete",
+  "run_id": "CX-M5/CX-M6 ADC8 + CX-M1/CX-M3 ADC6",
+  "message": "extra_adc_parallel_eval_done",
+  "timestamp": "2026-04-24T18:17:00+08:00",
+  "log_timestamp": "20260424_170223",
+  "parallelism_added": 4
+}

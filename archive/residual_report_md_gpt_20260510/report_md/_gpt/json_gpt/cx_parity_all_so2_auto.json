@@ -1,0 +1,28 @@
+[
+  {
+    "mode": "train",
+    "experiment": "V4",
+    "experiment_name": "V4_hybrid_standard_noise_hat_all_so2_auto",
+    "dataset": "cifar10",
+    "num_classes": 10,
+    "use_hybrid": true,
+    "noise_enabled": true,
+    "sigma_c2c": 0.05,
+    "sigma_d2d": 0.1,
+    "hat_training": true,
+    "use_physical_frontend": false,
+    "retention_enabled": false,
+    "inference_time": 0.0,
+    "epochs": 1,
+    "batch_size": 64,
+    "lr": 0.0005,
+    "weight_decay": 0.05,
+    "best_test_acc": 83.34,
+    "best_epoch": 0,
+    "final_train_loss": 0.3535564735889435,
+    "final_train_acc": 88.326,
+    "final_test_loss": 0.5295898140907288,
+    "final_test_acc": 83.34,
+    "checkpoint_path": "/home/qiaosir/projects/compute_vit/checkpoints/_gpt/cx_parity_minimal/all_so2_auto/V4_hybrid_standard_noise_hat_all_so2_auto_best.pt"
+  }
+]

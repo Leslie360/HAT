@@ -1,0 +1,442 @@
+{
+  "averaged_checkpoint": "checkpoints/_gpt/empirical_mechanism_20260425/cx_m1_m5_standard_seedavg.pt",
+  "averaged_from": [
+    "checkpoints/_gpt/postfix_m_series/cx_m1_standard_seed123/V3_hybrid_standard_noise_standard_train_best.pt",
+    "checkpoints/_gpt/postfix_m_series/cx_m5_standard_seed456/V3_hybrid_standard_noise_standard_train_best.pt"
+  ],
+  "checkpoint_average": {
+    "cross_instance_mean": 10.0,
+    "cross_instance_std": 0.0,
+    "instance_means": [
+      10.0,
+      10.0,
+      10.0,
+      10.0,
+      10.0,
+      10.0,
+      10.0,
+      10.0,
+      10.0,
+      10.0
+    ],
+    "raw": [
+      {
+        "instance": 0,
+        "mc_run": 0,
+        "samples": 10000,
+        "test_acc": 10.0,
+        "test_loss": 3.267235693359375
+      },
+      {
+        "instance": 0,
+        "mc_run": 1,
+        "samples": 10000,
+        "test_acc": 10.0,
+        "test_loss": 3.267235693359375
+      },
+      {
+        "instance": 0,
+        "mc_run": 2,
+        "samples": 10000,
+        "test_acc": 10.0,
+        "test_loss": 3.267235693359375
+      },
+      {
+        "instance": 0,
+        "mc_run": 3,
+        "samples": 10000,
+        "test_acc": 10.0,
+        "test_loss": 3.267235693359375
+      },
+      {
+        "instance": 0,
+        "mc_run": 4,
+        "samples": 10000,
+        "test_acc": 10.0,
+        "test_loss": 3.267235693359375
+      },
+      {
+        "instance": 1,
+        "mc_run": 0,
+        "samples": 10000,
+        "test_acc": 10.0,
+        "test_loss": 3.25596376953125
+      },
+      {
+        "instance": 1,
+        "mc_run": 1,
+        "samples": 10000,
+        "test_acc": 10.0,
+        "test_loss": 3.25596376953125
+      },
+      {
+        "instance": 1,
+        "mc_run": 2,
+        "samples": 10000,
+        "test_acc": 10.0,
+        "test_loss": 3.25596376953125
+      },
+      {
+        "instance": 1,
+        "mc_run": 3,
+        "samples": 10000,
+        "test_acc": 10.0,
+        "test_loss": 3.25596376953125
+      },
+      {
+        "instance": 1,
+        "mc_run": 4,
+        "samples": 10000,
+        "test_acc": 10.0,
+        "test_loss": 3.25596376953125
+      },
+      {
+        "instance": 2,
+        "mc_run": 0,
+        "samples": 10000,
+        "test_acc": 10.0,
+        "test_loss": 3.25610693359375
+      },
+      {
+        "instance": 2,
+        "mc_run": 1,
+        "samples": 10000,
+        "test_acc": 10.0,
+        "test_loss": 3.25610693359375
+      },
+      {
+        "instance": 2,
+        "mc_run": 2,
+        "samples": 10000,
+        "test_acc": 10.0,
+        "test_loss": 3.25610693359375
+      },
+      {
+        "instance": 2,
+        "mc_run": 3,
+        "samples": 10000,
+        "test_acc": 10.0,
+        "test_loss": 3.25610693359375
+      },
+      {
+        "instance": 2,
+        "mc_run": 4,
+        "samples": 10000,
+        "test_acc": 10.0,
+        "test_loss": 3.25610693359375
+      },
+      {
+        "instance": 3,
+        "mc_run": 0,
+        "samples": 10000,
+        "test_acc": 10.0,
+        "test_loss": 3.262039013671875
+      },
+      {
+        "instance": 3,
+        "mc_run": 1,
+        "samples": 10000,
+        "test_acc": 10.0,
+        "test_loss": 3.262039013671875
+      },
+      {
+        "instance": 3,
+        "mc_run": 2,
+        "samples": 10000,
+        "test_acc": 10.0,
+        "test_loss": 3.262039013671875
+      },
+      {
+        "instance": 3,
+        "mc_run": 3,
+        "samples": 10000,
+        "test_acc": 10.0,
+        "test_loss": 3.262039013671875
+      },
+      {
+        "instance": 3,
+        "mc_run": 4,
+        "samples": 10000,
+        "test_acc": 10.0,
+        "test_loss": 3.262039013671875
+      },
+      {
+        "instance": 4,
+        "mc_run": 0,
+        "samples": 10000,
+        "test_acc": 10.0,
+        "test_loss": 3.26286962890625
+      },
+      {
+        "instance": 4,
+        "mc_run": 1,
+        "samples": 10000,
+        "test_acc": 10.0,
+        "test_loss": 3.26286962890625
+      },
+      {
+        "instance": 4,
+        "mc_run": 2,
+        "samples": 10000,
+        "test_acc": 10.0,
+        "test_loss": 3.26286962890625
+      },
+      {
+        "instance": 4,
+        "mc_run": 3,
+        "samples": 10000,
+        "test_acc": 10.0,
+        "test_loss": 3.26286962890625
+      },
+      {
+        "instance": 4,
+        "mc_run": 4,
+        "samples": 10000,
+        "test_acc": 10.0,
+        "test_loss": 3.26286962890625
+      },
+      {
+        "instance": 5,
+        "mc_run": 0,
+        "samples": 10000,
+        "test_acc": 10.0,
+        "test_loss": 3.260017333984375
+      },
+      {
+        "instance": 5,
+        "mc_run": 1,
+        "samples": 10000,
+        "test_acc": 10.0,
+        "test_loss": 3.260017333984375
+      },
+      {
+        "instance": 5,
+        "mc_run": 2,
+        "samples": 10000,
+        "test_acc": 10.0,
+        "test_loss": 3.260017333984375
+      },
+      {
+        "instance": 5,
+        "mc_run": 3,
+        "samples": 10000,
+        "test_acc": 10.0,
+        "test_loss": 3.260017333984375
+      },
+      {
+        "instance": 5,
+        "mc_run": 4,
+        "samples": 10000,
+        "test_acc": 10.0,
+        "test_loss": 3.260017333984375
+      },
+      {
+        "instance": 6,
+        "mc_run": 0,
+        "samples": 10000,
+        "test_acc": 10.0,
+        "test_loss": 3.2659240234375
+      },
+      {
+        "instance": 6,
+        "mc_run": 1,
+        "samples": 10000,
+        "test_acc": 10.0,
+        "test_loss": 3.2659240234375
+      },
+      {
+        "instance": 6,
+        "mc_run": 2,
+        "samples": 10000,
+        "test_acc": 10.0,
+        "test_loss": 3.2659240234375
+      },
+      {
+        "instance": 6,
+        "mc_run": 3,
+        "samples": 10000,
+        "test_acc": 10.0,
+        "test_loss": 3.2659240234375
+      },
+      {
+        "instance": 6,
+        "mc_run": 4,
+        "samples": 10000,
+        "test_acc": 10.0,
+        "test_loss": 3.2659240234375
+      },
+      {
+        "instance": 7,
+        "mc_run": 0,
+        "samples": 10000,
+        "test_acc": 10.0,
+        "test_loss": 3.2584892578125
+      },
+      {
+        "instance": 7,
+        "mc_run": 1,
+        "samples": 10000,
+        "test_acc": 10.0,
+        "test_loss": 3.2584892578125
+      },
+      {
+        "instance": 7,
+        "mc_run": 2,
+        "samples": 10000,
+        "test_acc": 10.0,
+        "test_loss": 3.2584892578125
+      },
+      {
+        "instance": 7,
+        "mc_run": 3,
+        "samples": 10000,
+        "test_acc": 10.0,
+        "test_loss": 3.2584892578125
+      },
+      {
+        "instance": 7,
+        "mc_run": 4,
+        "samples": 10000,
+        "test_acc": 10.0,
+        "test_loss": 3.2584892578125
+      },
+      {
+        "instance": 8,
+        "mc_run": 0,
+        "samples": 10000,
+        "test_acc": 10.0,
+        "test_loss": 3.259772607421875
+      },
+      {
+        "instance": 8,
+        "mc_run": 1,
+        "samples": 10000,
+        "test_acc": 10.0,
+        "test_loss": 3.259772607421875
+      },
+      {
+        "instance": 8,
+        "mc_run": 2,
+        "samples": 10000,
+        "test_acc": 10.0,
+        "test_loss": 3.259772607421875
+      },
+      {
+        "instance": 8,
+        "mc_run": 3,
+        "samples": 10000,
+        "test_acc": 10.0,
+        "test_loss": 3.259772607421875
+      },
+      {
+        "instance": 8,
+        "mc_run": 4,
+        "samples": 10000,
+        "test_acc": 10.0,
+        "test_loss": 3.259772607421875
+      },
+      {
+        "instance": 9,
+        "mc_run": 0,
+        "samples": 10000,
+        "test_acc": 10.0,
+        "test_loss": 3.264938232421875
+      },
+      {
+        "instance": 9,
+        "mc_run": 1,
+        "samples": 10000,
+        "test_acc": 10.0,
+        "test_loss": 3.264938232421875
+      },
+      {
+        "instance": 9,
+        "mc_run": 2,
+        "samples": 10000,
+        "test_acc": 10.0,
+        "test_loss": 3.264938232421875
+      },
+      {
+        "instance": 9,
+        "mc_run": 3,
+        "samples": 10000,
+        "test_acc": 10.0,
+        "test_loss": 3.264938232421875
+      },
+      {
+        "instance": 9,
+        "mc_run": 4,
+        "samples": 10000,
+        "test_acc": 10.0,
+        "test_loss": 3.264938232421875
+      }
+    ]
+  },
+  "code_sha256": "42c67de810da1db10e696b61713356a9f70ce7e3a175a49d942501379c75d2f0",
+  "commit_hash": "cbb5db0759cf981d59f702343097c17fe6d944a1",
+  "cuda_device_name": "NVIDIA GeForce RTX 5070 Ti",
+  "figures": [
+    "paper/figures/figS_checkpoint_avg.png",
+    "paper/figures/figS_checkpoint_avg.pdf"
+  ],
+  "git_worktree_dirty": true,
+  "gpu_resize_eval": true,
+  "gpu_resize_protocol": "CIFAR32 ToTensor -> GPU bilinear resize 224 -> GPU normalize",
+  "instances": 10,
+  "job": "E5_CHECKPOINT_AVERAGING",
+  "max_batches": null,
+  "mc_runs": 5,
+  "method": "Parameter-wise average of CX-M1 Standard seed123 and CX-M5 Standard seed456; fresh-instance eval with fixed D2D per instance",
+  "provenance": {
+    "cx_m1": {
+      "checkpoint_best_acc": 82.89,
+      "checkpoint_best_epoch": 54,
+      "checkpoint_epoch": 54,
+      "checkpoint_experiment_name": "V3_hybrid_standard_noise_standard_train",
+      "checkpoint_nl_ltd": -2.0,
+      "checkpoint_nl_ltp": 2.0,
+      "checkpoint_noise_mode": "uniform",
+      "checkpoint_path": "checkpoints/_gpt/postfix_m_series/cx_m1_standard_seed123/V3_hybrid_standard_noise_standard_train_best.pt",
+      "checkpoint_seed": 123,
+      "eval_nl_ltd": -2.0,
+      "eval_nl_ltp": 2.0,
+      "eval_noise_mode": "uniform",
+      "exp_id": "V3",
+      "hat_type": "Standard",
+      "label": "CX-M1 Standard seed123 severe-NL",
+      "run_id": "cx_m1",
+      "seed": 123
+    },
+    "cx_m5": {
+      "checkpoint_best_acc": 80.69,
+      "checkpoint_best_epoch": 16,
+      "checkpoint_epoch": 16,
+      "checkpoint_experiment_name": "V3_hybrid_standard_noise_standard_train",
+      "checkpoint_nl_ltd": -2.0,
+      "checkpoint_nl_ltp": 2.0,
+      "checkpoint_noise_mode": "uniform",
+      "checkpoint_path": "checkpoints/_gpt/postfix_m_series/cx_m5_standard_seed456/V3_hybrid_standard_noise_standard_train_best.pt",
+      "checkpoint_seed": 456,
+      "eval_nl_ltd": -2.0,
+      "eval_nl_ltp": 2.0,
+      "eval_noise_mode": "uniform",
+      "exp_id": "V3",
+      "hat_type": "Standard",
+      "label": "CX-M5 Standard seed456 severe-NL",
+      "run_id": "cx_m5",
+      "seed": 456
+    }
+  },
+  "pytorch_version": "2.10.0+cu128",
+  "references": {
+    "canonical_ensemble_fresh_mean": 86.37,
+    "canonical_ensemble_fresh_std": 1.54,
+    "cx_m1_fresh_mean": 82.02820000000001,
+    "cx_m1_fresh_std": 0.9415958581047394,
+    "cx_m5_fresh_mean": 80.46740000000001,
+    "cx_m5_fresh_std": 0.0935865374933788
+  },
+  "script": "scripts/_gpt/empirical_mechanism_20260425.py",
+  "sigma_d2d": 0.1,
+  "timestamp_unix": 1777090512.9153397
+}

@@ -1,0 +1,50 @@
+\begin{tikzpicture}[
+  font=\rmfamily\Large,
+  branch/.style={draw=#1, fill=#1!10, line width=1.5pt, rounded corners=4pt, minimum width=3.5cm, minimum height=1.5cm, align=center, font=\Large\bfseries, text=lineColor},
+  formula/.style={draw=lineColor!45, fill=white, line width=1.5pt, rounded corners=4pt, minimum width=6.0cm, minimum height=1.5cm, align=center, font=\Large, text=lineColor},
+  panel/.style={draw=lineColor!40, fill=boxBg, line width=2.0pt, rounded corners=6pt},
+  arrow/.style={-{Latex[length=4.0mm]}, line width=2.0pt, draw=lineColor},
+  lab/.style={font=\Large\bfseries, text=lineColor, anchor=west}
+]
+\definecolor{lineColor}{RGB}{50,50,50}
+\definecolor{panelBg}{RGB}{248,250,252}
+\definecolor{boxBg}{RGB}{250,250,250}
+\definecolor{accentBlue}{RGB}{0,114,178}
+\definecolor{accentGreen}{RGB}{0,158,115}
+\definecolor{accentRed}{RGB}{213,94,0}
+
+% Global Title
+\node[font=\LARGE\bfseries, text=lineColor] at (6.5, 12.0) {Differential-pair asymmetry};
+\node[draw=lineColor, fill=white, line width=1.5pt, rounded corners=4pt, inner xsep=10pt, inner ysep=6pt, font=\Large\bfseries, text=lineColor] at (16.0, 12.0) {$\alpha \in [0,0.20]$};
+
+% Row 1
+\begin{scope}[yshift=0cm]
+\node[panel, minimum width=20.5cm, minimum height=5.5cm, anchor=north west] (pa) at (-2.0, 10.5) {};
+\node[lab] at (-1.5, 9.5) {(A) Symmetric baseline ($\alpha=0$)};
+\node[branch=accentGreen] (p0) at (2.5, 8.0) {Positive\\[4pt]$G^+$};
+\node[branch=accentBlue] (n0) at (2.5, 6.0) {Negative\\[4pt]$G^-$};
+
+\node[formula, anchor=west] (eff0) at (7.5, 7.0) {$G_{\mathrm{eff}} = G^+ - G^-$};
+
+\coordinate (merge0) at (5.5, 7.0);
+\draw[arrow] (p0.east) -| (merge0);
+\draw[arrow] (n0.east) -| (merge0);
+\draw[arrow] (merge0) -- (eff0.west);
+\end{scope}
+
+% Row 2
+\begin{scope}[yshift=-6.5cm]
+\node[panel, minimum width=20.5cm, minimum height=5.5cm, anchor=north west] (pb) at (-2.0, 10.5) {};
+\node[lab] at (-1.5, 9.5) {(B) Asymmetric mapping ($\alpha=0.10$)};
+\node[branch=accentGreen] (p1) at (2.5, 8.0) {Positive\\[4pt]$(1+\alpha)G^+$};
+\node[branch=accentBlue] (n1) at (2.5, 6.0) {Negative\\[4pt]$(1-\alpha)G^-$};
+
+\node[formula, anchor=west] (eff1) at (7.5, 7.0) {$G_{\mathrm{eff}}^{(\alpha)} = (1+\alpha)G^+ - (1-\alpha)G^- - 2\alpha G_{\min}$};
+
+\coordinate (merge1) at (5.5, 7.0);
+\draw[arrow] (p1.east) -| (merge1);
+\draw[arrow] (n1.east) -| (merge1);
+\draw[arrow] (merge1) -- (eff1.west);
+\end{scope}
+
+\end{tikzpicture}

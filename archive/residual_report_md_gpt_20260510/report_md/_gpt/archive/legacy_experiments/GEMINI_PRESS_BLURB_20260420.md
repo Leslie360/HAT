@@ -1,0 +1,3 @@
+# Gemini Press Blurb — 2026-04-20
+
+Researchers developed a simulation framework that tests whether emerging organic optoelectronic memory devices could realistically support modern AI vision models before full hardware arrays are built. The study shows that a major hidden risk is not just noisy devices, but training a model to one specific chip instance so that it fails on the next one. A new training strategy, Ensemble HAT, restores robust performance across fresh hardware instances. The framework also identifies the readout precision needed for stable operation and shows that moderate spatially correlated device mismatch causes degradation, but not catastrophic failure.

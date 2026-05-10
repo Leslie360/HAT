@@ -1,0 +1,31 @@
+{
+  "checkpoint_path": "checkpoints/_gpt/r1_clean_anchor/V4_hybrid_standard_noise_hat_r1_clean_anchor_first_order_best.pt",
+  "policy_json": "report_md/_gpt/json_gpt/hybrid_deployment_policy_mlp_digital.json",
+  "train_best_acc": 91.5,
+  "fresh_instances": 1,
+  "mc_runs_per_instance": 1,
+  "resample_scope": "none",
+  "dataset": "cifar10",
+  "num_classes": 10,
+  "eval_batch_size": 256,
+  "cross_instance_mean": 91.5,
+  "cross_instance_std": 0.0,
+  "instance_means": [
+    91.5
+  ],
+  "instances": [
+    {
+      "instance_index": 0,
+      "seed": 42,
+      "resampled_modules": 0,
+      "resample_scope": "none",
+      "eval_runs": 1,
+      "test_loss_mean": 0.4389225956916809,
+      "test_acc_mean": 91.5,
+      "test_acc_std": 0.0,
+      "test_acc_raw": [
+        91.5
+      ]
+    }
+  ]
+}

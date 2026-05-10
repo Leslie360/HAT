@@ -1,0 +1,7 @@
+condition,fresh_mean,fresh_std,role
+"IdealDevice
+8-bit",87.282,0.1286,stable baseline
+"IdealDevice
+4-bit",14.6368,0.1059,collapse
+"Ensemble HAT
+4-bit",86.15873333333333,0.1909953228048671,algorithmic rescue

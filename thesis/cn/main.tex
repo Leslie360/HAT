@@ -1,0 +1,120 @@
+% !TeX program = xelatex
+\documentclass[12pt,a4paper]{ctexbook}
+
+% ---------------------------------------------------------------
+% 页面设置
+% ---------------------------------------------------------------
+\usepackage[margin=2.5cm]{geometry}
+\setlength{	extfloatsep}{10pt plus 2pt minus 2pt}
+\setlength{loatsep}{8pt plus 2pt minus 2pt}
+\setlength{loatsep}{8pt plus 2pt minus 2pt}
+\setlength{loatsep}{8pt plus 2pt minus 2pt}
+\setlength{\abovecaptionskip}{5pt}
+\setlength{\belowcaptionskip}{0pt}
+\setlength{\emergencystretch}{1.5em}
+
+% ---------------------------------------------------------------
+% 基础包
+% ---------------------------------------------------------------
+\usepackage{graphicx}
+\graphicspath{{../latex_gpt/figures/}}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{microtype}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,fit,calc}
+\usepackage{subcaption}
+\usepackage[font=small,labelfont=bf]{caption}
+\usepackage{placeins}
+\usepackage{enumitem}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\setlist[enumerate]{topsep=3pt,itemsep=2pt,leftmargin=1.4em}
+\setlist[itemize]{topsep=3pt,itemsep=2pt,leftmargin=1.4em}
+
+% ---------------------------------------------------------------
+% 参考文献与超链接
+% ---------------------------------------------------------------
+\usepackage[super,sort&compress]{natbib}
+\usepackage[colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue]{hyperref}
+\usepackage{cleveref}
+
+% ---------------------------------------------------------------
+% 自定义环境
+% ---------------------------------------------------------------
+\theoremstyle{definition}
+\newtheorem{hypothesis}{假设}[chapter]
+
+% ---------------------------------------------------------------
+% 标题页信息
+% ---------------------------------------------------------------
+\ctexset{
+    chapter = {
+        format = \zihao{3}\bfseries\centering,
+        beforeskip = 24pt,
+        afterskip = 18pt,
+    },
+    section = {
+        format = \zihao{4}\bfseries,
+        beforeskip = 18pt,
+        afterskip = 12pt,
+    },
+    subsection = {
+        format = \zihao{-4}\bfseries,
+        beforeskip = 12pt,
+        afterskip = 6pt,
+    },
+}
+
+\title{\textbf{有机光电存算一体系统的算法—器件协同设计研究}}
+\author{[作者姓名]}
+\date{[日期]}
+
+% ---------------------------------------------------------------
+% 文档开始
+% ---------------------------------------------------------------
+\begin{document}
+
+% 标题页
+\begin{titlepage}
+    \centering
+    \vspace*{2cm}
+    {\zihao{2}\bfseries 有机光电存算一体系统的算法—器件协同设计研究\par}
+    \vspace{3cm}
+    {\zihao{3} [学位论文类型]\par}
+    \vspace{1cm}
+    {\zihao{4} 作者：[作者姓名]\par}
+    \vspace{0.5cm}
+    {\zihao{4} 导师：[导师姓名] 教授\par}
+    \vspace{2cm}
+    {\zihao{4} [学院名称]\par}
+    \vspace{0.5cm}
+    {\zihao{4} [大学名称]\par}
+    \vfill
+    {\zihao{4} [日期]\par}
+\end{titlepage}
+
+% 前置部分
+\frontmatter
+\input{front_matter}
+
+% 目录
+\tableofcontents
+
+% 正文
+\mainmatter
+\include{chapter_1_introduction}
+\include{chapter_2_related_work}
+\include{chapter_3_methodology}
+\include{chapter_4_benchmarks}
+\include{chapter_5_failure_modes}
+\include{chapter_6_work2_scope}
+\include{chapter_7_deployment}
+\include{chapter_8_outlook}
+
+% 参考文献
+\bibliographystyle{unsrtnat}
+\bibliography{../latex_gpt/refs_gpt}
+
+\end{document}

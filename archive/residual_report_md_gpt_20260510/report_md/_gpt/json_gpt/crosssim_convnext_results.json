@@ -1,0 +1,39 @@
+{
+  "experiment": "ConvNeXt-Tiny CrossSim comparison",
+  "timestamp": "2026-04-16T21:04:40",
+  "checkpoint": "checkpoints/C4_4bit_noise_HAT_best.pt",
+  "dataset": "cifar10",
+  "adc_bits": 8,
+  "weight_bits": 4,
+  "sigma_c2c": 0.05,
+  "sigma_d2d": 0.05,
+  "crosssim_alpha_noise": 0.05,
+  "crosssim_alpha_error": 0.05,
+  "max_samples": 1000,
+  "our_framework": {
+    "accuracies": [
+      82.4,
+      81.1,
+      81.4
+    ],
+    "mean": 81.63333333333334,
+    "std": 0.5557777333511059,
+    "runtime_total_s": 3.3447837829589844,
+    "runtime_per_run_s": 1.1149279276529949
+  },
+  "crosssim": {
+    "accuracies": [
+      63.6,
+      70.0,
+      68.0
+    ],
+    "mean": 67.2,
+    "std": 2.6733250207684556,
+    "runtime_total_s": 16083.420817136765,
+    "runtime_per_run_s": 5361.1402723789215
+  },
+  "notes": {
+    "checkpoint_eval_model": "our_framework uses fresh D2D resampling plus ADCQuantHookManager",
+    "crosssim_noise_mapping": "CrossSim generic programming_error/read_noise magnitudes are not identical to the framework's fixed-D2D plus per-forward C2C implementation"
+  }
+}

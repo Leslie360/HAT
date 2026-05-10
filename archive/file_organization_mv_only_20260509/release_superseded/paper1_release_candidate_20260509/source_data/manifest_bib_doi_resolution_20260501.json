@@ -1,0 +1,682 @@
+{
+  "generated_by": "scripts/_gpt/audit_bib_doi_resolution.py",
+  "bib_file": "paper/latex_gpt/refs_gpt.bib",
+  "scope_note": "Network DOI/URL resolution audit only. A resolved DOI/URL is evidence that the reference endpoint exists; it is not a full semantic bibliography review.",
+  "entry_count": 67,
+  "status_counts": {
+    "doi_redirected": 53,
+    "resolved": 14
+  },
+  "results": [
+    {
+      "key": "amspa2024insensor",
+      "doi": "10.1002/advs.202406401",
+      "url": "https://doi.org/10.1002/advs.202406401",
+      "target": "https://doi.org/10.1002/advs.202406401",
+      "status": "doi_redirected",
+      "http_status": 302,
+      "final_url": "https://advanced.onlinelibrary.wiley.com/doi/10.1002/advs.202406401",
+      "error": null
+    },
+    {
+      "key": "analogfm2025",
+      "doi": null,
+      "url": "https://arxiv.org/abs/2505.09663",
+      "target": "https://arxiv.org/abs/2505.09663",
+      "status": "resolved",
+      "http_status": 200,
+      "final_url": "https://arxiv.org/abs/2505.09663",
+      "error": null
+    },
+    {
+      "key": "ando2025transfer",
+      "doi": "10.1109/IEDM50572.2025.11353900",
+      "url": "https://doi.org/10.1109/IEDM50572.2025.11353900",
+      "target": "https://doi.org/10.1109/IEDM50572.2025.11353900",
+      "status": "doi_redirected",
+      "http_status": 302,
+      "final_url": "https://ieeexplore.ieee.org/document/11353900/",
+      "error": null
+    },
+    {
+      "key": "andriushchenko2022understanding",
+      "doi": null,
+      "url": "https://proceedings.mlr.press/v162/andriushchenko22a.html",
+      "target": "https://proceedings.mlr.press/v162/andriushchenko22a.html",
+      "status": "resolved",
+      "http_status": 200,
+      "final_url": "https://proceedings.mlr.press/v162/andriushchenko22a.html",
+      "error": null
+    },
+    {
+      "key": "beller2024organicneurons",
+      "doi": "10.1038/s41467-024-49668-1",
+      "url": "https://doi.org/10.1038/s41467-024-49668-1",
+      "target": "https://doi.org/10.1038/s41467-024-49668-1",
+      "status": "doi_redirected",
+      "http_status": 302,
+      "final_url": "https://www.nature.com/articles/s41467-024-49668-1",
+      "error": null
+    },
+    {
+      "key": "bettayeb2024memristorattention",
+      "doi": "10.1038/s41598-024-75021-z",
+      "url": "https://doi.org/10.1038/s41598-024-75021-z",
+      "target": "https://doi.org/10.1038/s41598-024-75021-z",
+      "status": "doi_redirected",
+      "http_status": 302,
+      "final_url": "https://www.nature.com/articles/s41598-024-75021-z",
+      "error": null
+    },
+    {
+      "key": "choi2019pact",
+      "doi": "10.48550/arXiv.1805.06085",
+      "url": "http://proceedings.mlr.press/v80/choi18a.html",
+      "target": "https://doi.org/10.48550/arXiv.1805.06085",
+      "status": "doi_redirected",
+      "http_status": 302,
+      "final_url": "https://arxiv.org/abs/1805.06085",
+      "error": null
+    },
+    {
+      "key": "crosssim2024",
+      "doi": "10.2172/2585829",
+      "url": "https://doi.org/10.2172/2585829",
+      "target": "https://doi.org/10.2172/2585829",
+      "status": "doi_redirected",
+      "http_status": 302,
+      "final_url": "https://www.osti.gov/biblio/2585829",
+      "error": null
+    },
+    {
+      "key": "cui2025multimode",
+      "doi": "10.1038/s41565-024-01794-z",
+      "url": "https://doi.org/10.1038/s41565-024-01794-z",
+      "target": "https://doi.org/10.1038/s41565-024-01794-z",
+      "status": "doi_redirected",
+      "http_status": 302,
+      "final_url": "https://www.nature.com/articles/s41565-024-01794-z",
+      "error": null
+    },
+    {
+      "key": "dziugaite2017computing",
+      "doi": null,
+      "url": "https://mlanthology.org/uai/2017/dziugaite2017uai-computing/",
+      "target": "https://mlanthology.org/uai/2017/dziugaite2017uai-computing/",
+      "status": "resolved",
+      "http_status": 200,
+      "final_url": "https://mlanthology.org/uai/2017/dziugaite2017uai-computing/",
+      "error": null
+    },
+    {
+      "key": "fastirdrop2025",
+      "doi": "10.1109/TED.2025.3573996",
+      "url": "https://doi.org/10.1109/TED.2025.3573996",
+      "target": "https://doi.org/10.1109/TED.2025.3573996",
+      "status": "doi_redirected",
+      "http_status": 302,
+      "final_url": "https://ieeexplore.ieee.org/document/11024239/",
+      "error": null
+    },
+    {
+      "key": "foret2021sharpness",
+      "doi": null,
+      "url": "https://openreview.net/forum?id=6Tm1mposlrM",
+      "target": "https://openreview.net/forum?id=6Tm1mposlrM",
+      "status": "resolved",
+      "http_status": 200,
+      "final_url": "https://openreview.net/forum?id=6Tm1mposlrM",
+      "error": null
+    },
+    {
+      "key": "fuller2020tempresilient",
+      "doi": "10.1126/sciadv.abb2958",
+      "url": "https://doi.org/10.1126/sciadv.abb2958",
+      "target": "https://doi.org/10.1126/sciadv.abb2958",
+      "status": "doi_redirected",
+      "http_status": 302,
+      "final_url": "https://www.science.org/doi/10.1126/sciadv.abb2958",
+      "error": null
+    },
+    {
+      "key": "ge2024allspark",
+      "doi": "10.1109/TC.2024.3483633",
+      "url": "https://doi.org/10.1109/TC.2024.3483633",
+      "target": "https://doi.org/10.1109/TC.2024.3483633",
+      "status": "doi_redirected",
+      "http_status": 302,
+      "final_url": "https://ieeexplore.ieee.org/document/10726919/",
+      "error": null
+    },
+    {
+      "key": "gebregiorgis2023organiccim",
+      "doi": "10.1109/TED.2023.3327947",
+      "url": "https://doi.org/10.1109/TED.2023.3327947",
+      "target": "https://doi.org/10.1109/TED.2023.3327947",
+      "status": "doi_redirected",
+      "http_status": 302,
+      "final_url": "https://ieeexplore.ieee.org/document/10309960/",
+      "error": null
+    },
+    {
+      "key": "guo2024hightemp",
+      "doi": "10.1002/adma.202310155",
+      "url": "https://doi.org/10.1002/adma.202310155",
+      "target": "https://doi.org/10.1002/adma.202310155",
+      "status": "doi_redirected",
+      "http_status": 302,
+      "final_url": "https://advanced.onlinelibrary.wiley.com/doi/10.1002/adma.202310155",
+      "error": null
+    },
+    {
+      "key": "guo2024organic",
+      "doi": "10.1021/acsami.3c19624",
+      "url": "https://doi.org/10.1021/acsami.3c19624",
+      "target": "https://doi.org/10.1021/acsami.3c19624",
+      "status": "doi_redirected",
+      "http_status": 302,
+      "final_url": "https://pubs.acs.org/doi/10.1021/acsami.3c19624",
+      "error": null
+    },
+    {
+      "key": "harikesh2024oeneurons",
+      "doi": "10.1038/s41928-024-01200-5",
+      "url": "https://doi.org/10.1038/s41928-024-01200-5",
+      "target": "https://doi.org/10.1038/s41928-024-01200-5",
+      "status": "doi_redirected",
+      "http_status": 302,
+      "final_url": "https://www.nature.com/articles/s41928-024-01200-5",
+      "error": null
+    },
+    {
+      "key": "hochreiter1997flat",
+      "doi": "10.1162/neco.1997.9.1.1",
+      "url": "https://doi.org/10.1162/neco.1997.9.1.1",
+      "target": "https://doi.org/10.1162/neco.1997.9.1.1",
+      "status": "doi_redirected",
+      "http_status": 302,
+      "final_url": "https://direct.mit.edu/neco/article/9/1/1-42/6027",
+      "error": null
+    },
+    {
+      "key": "horowitz2014computing",
+      "doi": "10.1109/ISSCC.2014.6757323",
+      "url": "https://doi.org/10.1109/ISSCC.2014.6757323",
+      "target": "https://doi.org/10.1109/ISSCC.2014.6757323",
+      "status": "doi_redirected",
+      "http_status": 302,
+      "final_url": "http://ieeexplore.ieee.org/document/6757323/",
+      "error": null
+    },
+    {
+      "key": "iconniv2026",
+      "doi": "10.1145/3777381",
+      "url": "https://doi.org/10.1145/3777381",
+      "target": "https://doi.org/10.1145/3777381",
+      "status": "doi_redirected",
+      "http_status": 302,
+      "final_url": "https://dl.acm.org/doi/10.1145/3777381",
+      "error": null
+    },
+    {
+      "key": "jang2023insensor",
+      "doi": "10.1002/adma.202203830",
+      "url": "https://doi.org/10.1002/adma.202203830",
+      "target": "https://doi.org/10.1002/adma.202203830",
+      "status": "doi_redirected",
+      "http_status": 302,
+      "final_url": "https://advanced.onlinelibrary.wiley.com/doi/10.1002/adma.202203830",
+      "error": null
+    },
+    {
+      "key": "ji2025singleoectneuron",
+      "doi": "10.1038/s41467-025-59587-4",
+      "url": "https://doi.org/10.1038/s41467-025-59587-4",
+      "target": "https://doi.org/10.1038/s41467-025-59587-4",
+      "status": "doi_redirected",
+      "http_status": 302,
+      "final_url": "https://www.nature.com/articles/s41467-025-59587-4",
+      "error": null
+    },
+    {
+      "key": "joshi2020accurate",
+      "doi": "10.1038/s41467-020-16108-9",
+      "url": "https://doi.org/10.1038/s41467-020-16108-9",
+      "target": "https://doi.org/10.1038/s41467-020-16108-9",
+      "status": "doi_redirected",
+      "http_status": 302,
+      "final_url": "https://www.nature.com/articles/s41467-020-16108-9",
+      "error": null
+    },
+    {
+      "key": "jung2024organicfilaments",
+      "doi": "10.1002/advs.202307494",
+      "url": "https://doi.org/10.1002/advs.202307494",
+      "target": "https://doi.org/10.1002/advs.202307494",
+      "status": "doi_redirected",
+      "http_status": 302,
+      "final_url": "https://advanced.onlinelibrary.wiley.com/doi/10.1002/advs.202307494",
+      "error": null
+    },
+    {
+      "key": "keskar2017large",
+      "doi": null,
+      "url": "https://openreview.net/forum?id=H1oyRlYgg",
+      "target": "https://openreview.net/forum?id=H1oyRlYgg",
+      "status": "resolved",
+      "http_status": 200,
+      "final_url": "https://openreview.net/forum?id=H1oyRlYgg",
+      "error": null
+    },
+    {
+      "key": "kim2024sttmram",
+      "doi": "10.1109/JXCDC.2024.3478360",
+      "url": "https://doi.org/10.1109/JXCDC.2024.3478360",
+      "target": "https://doi.org/10.1109/JXCDC.2024.3478360",
+      "status": "doi_redirected",
+      "http_status": 302,
+      "final_url": "https://ieeexplore.ieee.org/document/10714384/",
+      "error": null
+    },
+    {
+      "key": "kirkpatrick2017overcoming",
+      "doi": "10.1073/pnas.1611835114",
+      "url": "https://doi.org/10.1073/pnas.1611835114",
+      "target": "https://doi.org/10.1073/pnas.1611835114",
+      "status": "doi_redirected",
+      "http_status": 302,
+      "final_url": "https://pnas.org/doi/full/10.1073/pnas.1611835114",
+      "error": null
+    },
+    {
+      "key": "lammie2022memtorch",
+      "doi": "10.1016/j.neucom.2022.02.043",
+      "url": "https://doi.org/10.1016/j.neucom.2022.02.043",
+      "target": "https://doi.org/10.1016/j.neucom.2022.02.043",
+      "status": "doi_redirected",
+      "http_status": 302,
+      "final_url": "https://linkinghub.elsevier.com/retrieve/pii/S0925231222002053",
+      "error": null
+    },
+    {
+      "key": "lanza2025memristor",
+      "doi": "10.1038/s41586-025-08733-5",
+      "url": null,
+      "target": "https://doi.org/10.1038/s41586-025-08733-5",
+      "status": "doi_redirected",
+      "http_status": 302,
+      "final_url": "https://www.nature.com/articles/s41586-025-08733-5",
+      "error": null
+    },
+    {
+      "key": "li2022qvit",
+      "doi": null,
+      "url": "https://openreview.net/forum?id=fU-m9kQe0ke",
+      "target": "https://openreview.net/forum?id=fU-m9kQe0ke",
+      "status": "resolved",
+      "http_status": 200,
+      "final_url": "https://openreview.net/forum?id=fU-m9kQe0ke",
+      "error": null
+    },
+    {
+      "key": "lin2016physical",
+      "doi": "10.1038/srep31932",
+      "url": "https://doi.org/10.1038/srep31932",
+      "target": "https://doi.org/10.1038/srep31932",
+      "status": "doi_redirected",
+      "http_status": 302,
+      "final_url": "https://www.nature.com/articles/srep31932",
+      "error": null
+    },
+    {
+      "key": "lin2023vitptq",
+      "doi": "10.24963/ijcai.2022/164",
+      "url": "https://www.ijcai.org/proceedings/2022/164",
+      "target": "https://doi.org/10.24963/ijcai.2022/164",
+      "status": "doi_redirected",
+      "http_status": 302,
+      "final_url": "https://www.ijcai.org/proceedings/2022/164",
+      "error": null
+    },
+    {
+      "key": "liu2021ptqvit",
+      "doi": null,
+      "url": "https://proceedings.neurips.cc/paper/2021/hash/ec8956637a99787bd197eacd77acce5e-Abstract.html",
+      "target": "https://proceedings.neurips.cc/paper/2021/hash/ec8956637a99787bd197eacd77acce5e-Abstract.html",
+      "status": "resolved",
+      "http_status": 200,
+      "final_url": "https://proceedings.neurips.cc/paper/2021/hash/ec8956637a99787bd197eacd77acce5e-Abstract.html",
+      "error": null
+    },
+    {
+      "key": "liu2024hardsea",
+      "doi": "10.1109/TVLSI.2023.3337777",
+      "url": "https://doi.org/10.1109/TVLSI.2023.3337777",
+      "target": "https://doi.org/10.1109/TVLSI.2023.3337777",
+      "status": "doi_redirected",
+      "http_status": 302,
+      "final_url": "https://ieeexplore.ieee.org/document/10367847/",
+      "error": null
+    },
+    {
+      "key": "liu2024wearable",
+      "doi": "10.1038/s41928-024-01250-9",
+      "url": null,
+      "target": "https://doi.org/10.1038/s41928-024-01250-9",
+      "status": "doi_redirected",
+      "http_status": 302,
+      "final_url": "https://www.nature.com/articles/s41928-024-01250-9",
+      "error": null
+    },
+    {
+      "key": "liu2026opect",
+      "doi": "10.1038/s41467-025-66891-6",
+      "url": "https://doi.org/10.1038/s41467-025-66891-6",
+      "target": "https://doi.org/10.1038/s41467-025-66891-6",
+      "status": "doi_redirected",
+      "http_status": 302,
+      "final_url": "https://www.nature.com/articles/s41467-025-66891-6",
+      "error": null
+    },
+    {
+      "key": "mcallester1999pac",
+      "doi": "10.1145/307400.307435",
+      "url": "https://doi.org/10.1145/307400.307435",
+      "target": "https://doi.org/10.1145/307400.307435",
+      "status": "doi_redirected",
+      "http_status": 302,
+      "final_url": "https://dl.acm.org/doi/10.1145/307400.307435",
+      "error": null
+    },
+    {
+      "key": "mcallester1999some",
+      "doi": "10.1023/A:1007618624809",
+      "url": "https://doi.org/10.1023/A:1007618624809",
+      "target": "https://doi.org/10.1023/A:1007618624809",
+      "status": "doi_redirected",
+      "http_status": 302,
+      "final_url": "https://link.springer.com/10.1023/A:1007618624809",
+      "error": null
+    },
+    {
+      "key": "mia2026trilinear",
+      "doi": null,
+      "url": "https://arxiv.org/abs/2604.07628",
+      "target": "https://arxiv.org/abs/2604.07628",
+      "status": "resolved",
+      "http_status": 200,
+      "final_url": "https://arxiv.org/abs/2604.07628",
+      "error": null
+    },
+    {
+      "key": "peng2020dnnneurosim",
+      "doi": "10.1109/TCAD.2020.3043731",
+      "url": "https://doi.org/10.1109/TCAD.2020.3043731",
+      "target": "https://doi.org/10.1109/TCAD.2020.3043731",
+      "status": "doi_redirected",
+      "http_status": 302,
+      "final_url": "https://ieeexplore.ieee.org/document/9292971/",
+      "error": null
+    },
+    {
+      "key": "perez2021tighter",
+      "doi": null,
+      "url": "https://jmlr.csail.mit.edu/papers/v22/20-879.html",
+      "target": "https://jmlr.csail.mit.edu/papers/v22/20-879.html",
+      "status": "resolved",
+      "http_status": 200,
+      "final_url": "https://jmlr.csail.mit.edu/papers/v22/20-879.html",
+      "error": null
+    },
+    {
+      "key": "photonics2025organicreview",
+      "doi": "10.3390/photonics12050435",
+      "url": "https://doi.org/10.3390/photonics12050435",
+      "target": "https://doi.org/10.3390/photonics12050435",
+      "status": "doi_redirected",
+      "http_status": 302,
+      "final_url": "https://www.mdpi.com/2304-6732/12/5/435",
+      "error": null
+    },
+    {
+      "key": "qiu2025m3dattention",
+      "doi": "10.1109/IEDM50572.2025.11353844",
+      "url": "https://doi.org/10.1109/IEDM50572.2025.11353844",
+      "target": "https://doi.org/10.1109/IEDM50572.2025.11353844",
+      "status": "doi_redirected",
+      "http_status": 302,
+      "final_url": "https://ieeexplore.ieee.org/document/11353844/",
+      "error": null
+    },
+    {
+      "key": "rasch2021aihwkit",
+      "doi": "10.48550/arXiv.2104.02184",
+      "url": "https://arxiv.org/abs/2104.02184",
+      "target": "https://doi.org/10.48550/arXiv.2104.02184",
+      "status": "doi_redirected",
+      "http_status": 302,
+      "final_url": "https://arxiv.org/abs/2104.02184",
+      "error": null
+    },
+    {
+      "key": "rasch2023ncomms",
+      "doi": "10.1038/s41467-023-40770-4",
+      "url": "https://doi.org/10.1038/s41467-023-40770-4",
+      "target": "https://doi.org/10.1038/s41467-023-40770-4",
+      "status": "doi_redirected",
+      "http_status": 302,
+      "final_url": "https://www.nature.com/articles/s41467-023-40770-4",
+      "error": null
+    },
+    {
+      "key": "roberts2022principles",
+      "doi": "10.1017/9781009023405",
+      "url": "https://doi.org/10.1017/9781009023405",
+      "target": "https://doi.org/10.1017/9781009023405",
+      "status": "doi_redirected",
+      "http_status": 302,
+      "final_url": "https://www.cambridge.org/core/product/identifier/9781009023405/type/book",
+      "error": null
+    },
+    {
+      "key": "tobin2017domain",
+      "doi": "10.1109/IROS.2017.8202133",
+      "url": "https://doi.org/10.1109/IROS.2017.8202133",
+      "target": "https://doi.org/10.1109/IROS.2017.8202133",
+      "status": "doi_redirected",
+      "http_status": 302,
+      "final_url": "http://ieeexplore.ieee.org/document/8202133/",
+      "error": null
+    },
+    {
+      "key": "vincze2025dualplasticity",
+      "doi": "10.1002/aelm.202500515",
+      "url": "https://doi.org/10.1002/aelm.202500515",
+      "target": "https://doi.org/10.1002/aelm.202500515",
+      "status": "doi_redirected",
+      "http_status": 302,
+      "final_url": "https://advanced.onlinelibrary.wiley.com/doi/10.1002/aelm.202500515",
+      "error": null
+    },
+    {
+      "key": "visionarch2023crosstalk",
+      "doi": "10.1021/acsami.3c11495",
+      "url": "https://doi.org/10.1021/acsami.3c11495",
+      "target": "https://doi.org/10.1021/acsami.3c11495",
+      "status": "doi_redirected",
+      "http_status": 302,
+      "final_url": "https://pubs.acs.org/doi/10.1021/acsami.3c11495",
+      "error": null
+    },
+    {
+      "key": "wager2013dropout",
+      "doi": null,
+      "url": "https://papers.nips.cc/paper/4882-dropout-training-as-adaptive-regularization",
+      "target": "https://papers.nips.cc/paper/4882-dropout-training-as-adaptive-regularization",
+      "status": "resolved",
+      "http_status": 200,
+      "final_url": "https://papers.nips.cc/paper_files/paper/2013/hash/38db3aed920cf82ab059bfccbd02be6a-Abstract.html",
+      "error": null
+    },
+    {
+      "key": "wang2024epim",
+      "doi": "10.1145/3649329.3657377",
+      "url": "https://arxiv.org/abs/2311.07620",
+      "target": "https://doi.org/10.1145/3649329.3657377",
+      "status": "doi_redirected",
+      "http_status": 302,
+      "final_url": "https://dl.acm.org/doi/10.1145/3649329.3657377",
+      "error": null
+    },
+    {
+      "key": "wang2025hemlet",
+      "doi": "10.48550/arXiv.2511.15397",
+      "url": "https://arxiv.org/abs/2511.15397",
+      "target": "https://doi.org/10.48550/arXiv.2511.15397",
+      "status": "doi_redirected",
+      "http_status": 302,
+      "final_url": "https://arxiv.org/abs/2511.15397",
+      "error": null
+    },
+    {
+      "key": "wang2025vant",
+      "doi": null,
+      "url": "https://arxiv.org/abs/2503.16183",
+      "target": "https://arxiv.org/abs/2503.16183",
+      "status": "resolved",
+      "http_status": 200,
+      "final_url": "https://arxiv.org/abs/2503.16183",
+      "error": null
+    },
+    {
+      "key": "wei2020voltagedifferential",
+      "doi": "10.1109/VLSITechnology18217.2020.9265066",
+      "url": "https://doi.org/10.1109/VLSITechnology18217.2020.9265066",
+      "target": "https://doi.org/10.1109/VLSITechnology18217.2020.9265066",
+      "status": "doi_redirected",
+      "http_status": 302,
+      "final_url": "https://ieeexplore.ieee.org/document/9265066/",
+      "error": null
+    },
+    {
+      "key": "wolters2024memory",
+      "doi": null,
+      "url": "https://arxiv.org/abs/2406.08413",
+      "target": "https://arxiv.org/abs/2406.08413",
+      "status": "resolved",
+      "http_status": 200,
+      "final_url": "https://arxiv.org/abs/2406.08413",
+      "error": null
+    },
+    {
+      "key": "wu2023bwq",
+      "doi": "10.1109/TCAD.2024.3409193",
+      "url": "https://doi.org/10.1109/TCAD.2024.3409193",
+      "target": "https://doi.org/10.1109/TCAD.2024.3409193",
+      "status": "doi_redirected",
+      "http_status": 302,
+      "final_url": "https://ieeexplore.ieee.org/document/10547183/",
+      "error": null
+    },
+    {
+      "key": "wu2025halora",
+      "doi": null,
+      "url": "https://arxiv.org/abs/2502.19747",
+      "target": "https://arxiv.org/abs/2502.19747",
+      "status": "resolved",
+      "http_status": 200,
+      "final_url": "https://arxiv.org/abs/2502.19747",
+      "error": null
+    },
+    {
+      "key": "wu2025neurips_train",
+      "doi": null,
+      "url": "https://neurips.cc/virtual/2025/poster/116321",
+      "target": "https://neurips.cc/virtual/2025/poster/116321",
+      "status": "resolved",
+      "http_status": 200,
+      "final_url": "https://neurips.cc/virtual/2025/loc/san-diego/poster/116321",
+      "error": null
+    },
+    {
+      "key": "xu2025emerging",
+      "doi": "10.1021/acsami.4c17455",
+      "url": "https://doi.org/10.1021/acsami.4c17455",
+      "target": "https://doi.org/10.1021/acsami.4c17455",
+      "status": "doi_redirected",
+      "http_status": 302,
+      "final_url": "https://pubs.acs.org/doi/10.1021/acsami.4c17455",
+      "error": null
+    },
+    {
+      "key": "yan2025learningaware",
+      "doi": "10.1109/IEDM50572.2025.11353856",
+      "url": "https://doi.org/10.1109/IEDM50572.2025.11353856",
+      "target": "https://doi.org/10.1109/IEDM50572.2025.11353856",
+      "status": "doi_redirected",
+      "http_status": 302,
+      "final_url": "https://ieeexplore.ieee.org/document/11353856/",
+      "error": null
+    },
+    {
+      "key": "yoshioka2024isscc",
+      "doi": "10.1109/ISSCC49657.2024.10454489",
+      "url": "https://doi.org/10.1109/ISSCC49657.2024.10454489",
+      "target": "https://doi.org/10.1109/ISSCC49657.2024.10454489",
+      "status": "doi_redirected",
+      "http_status": 302,
+      "final_url": "https://ieeexplore.ieee.org/document/10454489/",
+      "error": null
+    },
+    {
+      "key": "yoshioka2025jssc",
+      "doi": "10.1109/JSSC.2024.3457898",
+      "url": "https://doi.org/10.1109/JSSC.2024.3457898",
+      "target": "https://doi.org/10.1109/JSSC.2024.3457898",
+      "status": "doi_redirected",
+      "http_status": 302,
+      "final_url": "https://ieeexplore.ieee.org/document/10689660/",
+      "error": null
+    },
+    {
+      "key": "yousuf2025lea",
+      "doi": "10.1038/s41467-025-56319-6",
+      "url": "https://doi.org/10.1038/s41467-025-56319-6",
+      "target": "https://doi.org/10.1038/s41467-025-56319-6",
+      "status": "doi_redirected",
+      "http_status": 302,
+      "final_url": "https://www.nature.com/articles/s41467-025-56319-6",
+      "error": null
+    },
+    {
+      "key": "yu2025fullstack",
+      "doi": "10.1038/s41467-025-57183-0",
+      "url": "https://doi.org/10.1038/s41467-025-57183-0",
+      "target": "https://doi.org/10.1038/s41467-025-57183-0",
+      "status": "doi_redirected",
+      "http_status": 302,
+      "final_url": "https://www.nature.com/articles/s41467-025-57183-0",
+      "error": null
+    },
+    {
+      "key": "zeng2023organicmemristor",
+      "doi": "10.3390/nano13050803",
+      "url": "https://doi.org/10.3390/nano13050803",
+      "target": "https://doi.org/10.3390/nano13050803",
+      "status": "doi_redirected",
+      "http_status": 302,
+      "final_url": "https://www.mdpi.com/2079-4991/13/5/803",
+      "error": null
+    },
+    {
+      "key": "zhang2025mooptoelectronic",
+      "doi": "10.1038/s41378-024-00859-2",
+      "url": "https://doi.org/10.1038/s41378-024-00859-2",
+      "target": "https://doi.org/10.1038/s41378-024-00859-2",
+      "status": "doi_redirected",
+      "http_status": 302,
+      "final_url": "https://www.nature.com/articles/s41378-024-00859-2",
+      "error": null
+    }
+  ]
+}

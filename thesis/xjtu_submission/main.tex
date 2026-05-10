@@ -1,0 +1,76 @@
+% !TEX program = latexmk
+% !TEX encoding = UTF-8 Unicode
+% XJTU submission preview lane generated from thesis/cn on 2026-05-10.
+% This is not an official submission PDF until metadata and 2025+ university requirements are confirmed.
+
+\documentclass[
+    master,
+    % blind,
+    % plgck,
+]{XJTU-thesis}
+
+\title{有机光电存算一体系统的算法—器件协同设计研究}{Algorithm--Device Co-design for Organic Optoelectronic Compute-in-Memory Systems}
+\degree[A]{硕士}{Master of Science}
+\author{李松桥}{Songqiao Li}
+\advisor{导师待确认}{职称待确认}{Advisor To Be Confirmed}{Title TBD}
+\subject{材料科学与工程}{Materials Science and Engineering}
+\submitdate[2026][05]
+
+% Defense/reviewer metadata placeholders. Replace before any formal submission.
+\addcommitteemember{西安交通大学,待确认,待确认}
+\defensedate{2026}{05}{31}
+\defenseloc{西安交通大学}
+\addgeneralreviewer{西安交通大学,待确认,待确认}
+
+\addreferenceresource{References/reference}
+\addachivementresource{References/achievement}
+
+% Compatibility for the active thesis draft content.
+\usepackage{graphicx}
+\graphicspath{{../latex_gpt/figures/}{Figures/}}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{subcaption}
+\usepackage{caption}
+\usepackage{placeins}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{enumitem}
+\setlist[enumerate]{topsep=3pt,itemsep=2pt,leftmargin=1.4em}
+\setlist[itemize]{topsep=3pt,itemsep=2pt,leftmargin=1.4em}
+\usetikzlibrary{arrows.meta,positioning,fit,calc}
+\theoremstyle{definition}
+\newtheorem{hypothesis}{假设}[chapter]
+\providecommand{\cref}[1]{\ref{#1}}
+\providecommand{\Cref}[1]{\ref{#1}}
+\providecommand{\citep}[1]{\parencite{#1}}
+\providecommand{\citet}[1]{\textcite{#1}}
+
+\begin{document}
+\thesistitles
+% Committee pages are placeholders in this preview lane and should be disabled for blind review.
+% \thesiscommittes
+\thesisabstract
+\thesistableofcontens
+\thesisglossarylist
+
+\thesisbodybegin
+\include{Main_Spine/c1}
+\include{Main_Spine/c2}
+\include{Main_Spine/c3}
+\include{Main_Spine/c4}
+\include{Main_Spine/c5}
+\include{Main_Spine/c6}
+\include{Main_Spine/c7}
+\include{Main_Spine/c8}
+\thesisbodyend
+
+\thesisacknowledegment
+\thesisbibliography
+\thesisappendix{Main_Miscellaneous/appendix_a,
+                Main_Miscellaneous/appendix_b}
+\thesisachivements
+% \thesisdecision
+% \thesisreviewers{1}{1}
+\thesisdeclarations
+\end{document}

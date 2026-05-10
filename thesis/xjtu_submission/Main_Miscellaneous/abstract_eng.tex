@@ -1,0 +1,29 @@
+\begin{englishabstract}
+Compute-in-memory (CIM) architectures eliminate the data-movement bottleneck of conventional digital systems by performing matrix--vector multiplications directly inside memory arrays.
+Among emerging device routes, organic optoelectronic devices offer a distinctive physical substrate for neuromorphic vision systems thanks to their multi-level conductance tunability, low-voltage operation, and intrinsic photosensitivity.
+Yet translating device-level progress into system-level visual performance remains hindered by device variability, limited analog-to-digital converter (ADC) resolution, retention drift, and cross-fabrication-instance transferability.
+
+This thesis presents a reusable hardware-aware training (HAT) simulation framework for organic optoelectronic CIM arrays that supports vision transformers (ViT) and convolutional neural networks (CNN) under realistic device non-idealities.
+The framework adopts a profile-driven design that maps literature-reported device characteristics---conductance window, cycle-to-cycle variability, device-to-device (D2D) mismatch, retention dynamics, photoresponse nonlinearity, and write nonlinearity---into task-level visual accuracy.
+
+Experiments first systematically evaluate ResNet-18, ConvNeXt-Tiny, and Tiny-ViT-5M on CIFAR-10, CIFAR-100, Flowers-102, and ImageNet-1k.
+Building on these baselines, the thesis introduces a taxonomy of HAT regimes and discovers \emph{hardware-instance overfitting}:
+standard fixed-mask HAT performs well on the training-time hardware instance yet collapses to near-chance level on fresh mismatch realizations ($10.00\pm0.00\%$ on CIFAR-10).
+To address this, the thesis proposes Ensemble HAT, which resamples structured D2D mismatch fields at epoch boundaries during training, recovering fresh-instance accuracy to $86.16\pm0.19\%$.
+
+Furthermore, the thesis constructs a \emph{failure mode atlas} for organic optoelectronic CIM deployment,
+systematically cataloguing five reproducible breakdown patterns and their boundaries:
+(1) hardware-instance overfitting and its Ensemble HAT remedy;
+(2) dual-attention-pathway collapse under severe write nonlinearity ($NL=2.0$);
+(3) the $32\%$ fresh-instance diagnostic ceiling of MLP-only linearization;
+(4) bounded degradation under spatially correlated D2D;
+(5) the $79\%$ asymptotic retention plateau.
+Each failure mode is bounded by rigorous negative results, locating bottlenecks as structural generalization barriers rather than optimization gaps.
+
+Contributions include:
+(1) a reusable, extensible simulation framework for organic optoelectronic CIM;
+(2) a taxonomy of HAT regimes and the discovery of hardware-instance overfitting;
+(3) an empirically constrained deployment envelope that delineates which noise-model and training-intervention combinations transfer to new hardware instances and which do not.
+These results provide system-level decision support for algorithm--device co-design of organic optoelectronic neuromorphic hardware.
+\englishkeywordstype{compute-in-memory; hardware-aware training; vision transformer; organic optoelectronic device; hardware-instance overfitting}{Applied Fundamental Research}
+\end{englishabstract}

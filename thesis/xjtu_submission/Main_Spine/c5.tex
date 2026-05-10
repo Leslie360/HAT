@@ -1,0 +1,319 @@
+% Chapter 5: 失效模式与诊断框架
+% CN thesis. Aligned with NARRATIVE_PIVOT_20260424.md.
+% Zone discipline: 3A/3B/3C tags on all numerical claims.
+% No bug-retrospective language in body text.
+
+\chapter{失效模式与诊断框架}
+\label{ch:failure_modes}
+
+\section{引言：从症状到机制}
+
+第\ref{chap:benchmarks}章建立了基准性能数字，第\ref{chap:methodology}章梳理了硬件感知训练的技术谱系。本章的任务是将前两章的实证结果组织成一个系统的\emph{失效模式分类学}，并针对每种模式给出可操作的诊断协议。诊断框架的核心问题是：当部署准确率低于预期时，如何在不重新制造芯片的情况下定位主导瓶颈？
+
+有机光电存内计算（OEC-CIM）的失效模式具有\emph{层级嵌套}特征。低层物理非理想性（D2D失配、C2C噪声、写入非线性、ADC量化、保持漂移）通过模拟MAC阵列的权重--激活映射耦合到高层算法表现。同一物理参数在不同网络深度和不同任务复杂度下可能触发截然不同的失效签名。因此，单纯的“准确率下降”不足以指导干预；必须将下降分解为可归属的物理来源。
+
+本章提出一个五层诊断栈：
+\begin{enumerate}
+    \item \textbf{实例级诊断}：区分训练实例过拟合与真正的新鲜实例脆弱性；
+    \item \textbf{模块级诊断}：定位瓶颈所在的功能块（嵌入层、QKV投影、注意力输出、MLP前馈）；
+    \item \textbf{参数级诊断}：量化各物理参数（$\sigma_{\mathrm{D2D}}$、$\sigma_{\mathrm{C2C}}$、$NL$、ADC位宽、$\gamma_{\mathrm{phys}}$）的独立贡献；
+    \item \textbf{时序级诊断}：识别退化是瞬时（一次性编程误差）还是累积（保持漂移、温度循环）；
+    \item \textbf{统计级诊断}：判断样本方差是物理随机性还是训练过程中的系统性偏差。
+\end{enumerate}
+
+以下各节按此栈展开。
+
+
+% =============================================================================
+\section{失效模式分类学}
+\label{sec:failure_taxonomy}
+
+\subsection{模式一：硬件实例过拟合（Hardware-Instance Overfitting）}
+\label{subsec:failure_instance_overfitting}
+
+\textbf{触发条件}：固定掩码HAT（Standard HAT）在任意$NL$和噪声组合下训练。
+
+\textbf{失效签名}：训练实例准确率$\gg$70\%，新鲜实例准确率$\approx$10\%（CIFAR-10平衡基线）。分布不是高斯弥散，而是\emph{单类预测器}：模型对所有输入输出同一类别。
+
+\textbf{机理}：固定D2D掩码使优化器将权重调整到与该特定失配模式\emph{共适应}。当测试时的D2D实现改变时，共适应失效，特征几何崩溃。
+
+\textbf{诊断测试}：在10个独立D2D实例上运行新鲜实例评估。若所有实例均收敛至同一低值（$\approx$10\%），且跨实例标准差$<$0.5~pp，则诊断为实例过拟合。若部分实例表现良好而 others 崩溃，则提示存在\emph{异常值敏感}而非纯粹的过拟合。
+
+\textbf{已知数据（zone 3A）}：Tiny-ViT V4 Standard HAT在$NL=1.0$、$\sigma_{\mathrm{D2D}}=10\%$、$\sigma_{\mathrm{C2C}}=5\%$下，训练最优$87.95\pm0.27\,\%$，新鲜实例$10.00\pm0.00\,\%$（$n=10$实例$\times5$ MC运行）。
+
+\textbf{干预}：Ensemble HAT（每轮D2D重采样）将新鲜实例准确率恢复至$86.16\pm0.19\,\%$（zone 3A）。
+
+\subsection{模式二：尺度掩蔽区（Scale-Masking Regime）}
+\label{subsec:failure_scale_masking}
+
+\textbf{触发条件}：低$\sigma_{\mathrm{D2D}}$（$<$5\%）与4bit量化共存。
+
+\textbf{失效签名}：混合控制（V2，零噪声、4bit映射）的准确率接近FP32基线（97.39\%），但加入少量D2D噪声后退化极慢。噪声被“掩蔽”在量化LSB以下。
+
+\textbf{机理}：恢复权重定律$w_{\mathrm{rec}} = s_{\ell}(g_{\ell} + \delta g_{\ell}) + b_{\ell}$将噪声扰动$\delta g_{\ell}$映射回数字域时，许多受扰动的电导实现落入同一恢复权重bin。量化阶梯的离散性因此起到\emph{隐式去噪}作用。
+
+\textbf{诊断测试}：比较V2（零噪声）与V3（10\% D2D）的准确率差异。若差异$<$2~pp，则处于尺度掩蔽区。
+
+\textbf{边界条件}：尺度掩蔽只在噪声为\emph{状态无关}（均匀加性）时有效。一旦噪声律变为状态依赖（NL$\neq$1.0或比例噪声），掩蔽效应消失。
+
+\subsection{模式三：ADC精度悬崖}
+\label{subsec:failure_adc_cliff}
+
+\textbf{触发条件}：ADC分辨率低于6bit。
+
+\textbf{失效签名}：准确率从$>$80\%骤降至$\approx$10\%（近随机）。退化不是渐进的，而是在5--6bit边界处出现\emph{悬崖式跳跃}（$\sim$7~pp）。
+
+\textbf{机理}：低于6bit时，层间激活量化误差超过D2D失配成为主导噪声源。注意力softmax对输入分布的小扰动极度敏感，ADC截断引入的离散误差破坏了token间的相对排序。
+
+\textbf{诊断测试}：系统扫描ADC位宽$\in\{2,3,4,5,6,7,8,10,12\}$。若5bit与6bit之间存在$>$5~pp的跳跃，则确认ADC悬崖。
+
+\textbf{已知数据（zone 3A）}：63点联合扫描（$\sigma_{\mathrm{D2D}}\in\{1,3,5,8,10,15,20\}\%$，ADC$\in\{2,3,4,5,6,7,8,10,12\}$bit）显示$S_{\mathrm{ADC}}=0.98$（全网格），5--6bit过渡平均$\sim$7~pp（per-row 5.8--8.1~pp）。
+
+\textbf{设计规则}：有机OEC-CIM部署的ADC分辨率\emph{不得低于6bit}。
+
+\subsection{模式四：空间相关D2D退化}
+\label{subsec:failure_correlated_d2d}
+
+\textbf{触发条件}：D2D失配具有空间相关性（AR(1)核、晶圆级梯度、各向异性协方差）。
+
+\textbf{失效签名}：均值单调下降，方差随相关强度增加而扩大，但\emph{无灾难性崩溃}。最差实例仍远高于随机水平。
+
+\textbf{机理}：空间结构将独立噪声的"平均化优势"部分抵消。Ensemble HAT的逐轮重采样假设空间独立性；当真实相关性$\rho>0$时，训练分布的支撑集小于测试分布，导致有界但可测的退化。
+
+\textbf{诊断测试}：从晶圆图或实测数据估计空间协方差核。若存在显著非对角元素，则计算等效$\rho$并插值至已知AR(1)表。
+
+\textbf{已知数据（zone 3A）}：三种子主口径下 $\rho=0$ 基线为 $86.16\pm0.19\,\%$；相关失配扫描给出 $\rho=0.3$ 时 $84.57\pm2.39\,\%$（$-1.76$~pp）与 $\rho=0.5$ 时 $82.12\pm3.95\,\%$（$-4.20$~pp）。最差实例$73.7\,\%$（instance 4, $\rho=0.5$）。单调退化，排名保持。
+
+\textbf{设计规则}：若晶圆图显示$\rho\approx0.3$，将$84.57\,\%$作为保守准确率下限；$\rho\approx0.5$时以$82.12\,\%$为应力测试边界。
+
+\subsection{模式五：保持漂移}
+\label{subsec:failure_retention}
+
+\textbf{触发条件}：器件在编程后经历时间、温度或光照漂移。
+
+\textbf{失效签名}：快速早期下降（$<$1s内$\sim$9~pp），随后进入宽平台期（$\approx$79\%，79.13--79.51\%至$10^4$s）。
+
+\textbf{机理}：有机光晶体管的电导状态在初始编程后快速弛豫，随后达到亚稳态。平台期宽度取决于材料保持时间和环境条件。
+
+\textbf{诊断测试}：时间序列评估（0s, 1s, 10s, 100s, 1000s, 10000s）。若观察到快速下降后平稳，则符合均匀衰减模型。
+
+\textbf{已知数据（zone 3A）}：V8保持感知模型在0s时$91.63\,\%$，1s时$82.66\,\%$，$10^4$s时$79.13$--$79.51\,\%$。
+
+\textbf{干预}：动态尺度重校准（在推断栈中周期性地重新读取参考单元）可将平台期准确率维持在$\sim$79\%。
+
+\subsection{模式六：严重非线性写入}
+\label{subsec:failure_severe_nl}
+
+\textbf{触发条件}：$|NL|\gg1$（典型$NL_{\mathrm{LTP}}=2.0$，$NL_{\mathrm{LTD}}=-2.0$）。
+
+\textbf{失效签名}：$NL=1.0$基线$\sim$86\%；$NL=2.0$时降至$\sim$80--82\%（修订梯度缩放配方后）。退化是\emph{系统性的}（跨实例标准差$<$2~pp），而非随机的。
+
+\textbf{机理}：一阶代理梯度在$NL=2.0$时产生状态依赖的LTP/LTD不对称缩放。该不对称性重塑了优化景观，使注意力通路的特征几何对D2D实现的变化更加敏感。然而，与先前基于污染实现报告的$\sim$30\%不同，修订配方下的系统性退化表明瓶颈是\emph{可量化的代理梯度近似误差}，而非不可逾越的结构壁垒。
+
+\textbf{诊断测试}：在$NL\in\{1.0, 1.5, 2.0\}$上扫描，同时保持其他参数恒定。若退化单调且跨训练种子可重复，则归因于NL失真。
+
+\textbf{已知数据（zone 3C）}：M系列6次训练全部收敛至$\sim$80--82\%带。Standard 与 Ensemble 均值差$<$1~pp，比例噪声与均匀噪声差$<$0.1~pp。8bit ADC-on hook diagnostic 仅比 ADC-off 低$\sim$0.10~pp（基于训练时代理想电导阵列校准的推断时钩子，非物理 ADC 边界）。
+
+\textbf{干预}：设备层面线性化（降低$|NL|$）可恢复$\sim$5~pp；算法层面高阶梯度修正或更大批量训练可能进一步缩小残余差距。
+
+\subsection{模式七：精度--漂移权衡（Precision--Retention Trade-off）}
+\label{subsec:failure_precision_retention}
+
+\textbf{触发条件}：PCM 器件在低精度（4-bit）电导态下训练并经历时间漂移。
+
+\textbf{失效签名}：源域精度接近高精度配置（4-bit PCM $76.71\%$ vs 8-bit PCM $77.64\%$，差距仅 $0.93$~pp），
+但 1 天漂移后差距急剧扩大至 $4.94$~pp（4-bit $72.64\%$ vs 8-bit $77.57\%$）。
+退化不是渐进的，而是在 4-bit 与 6/8-bit 之间呈现\emph{二元跳跃}：
+6-bit 漂移行为（$-0.10$~pp/1 d）几乎与 8-bit（$-0.04$~pp/1 d）重叠，
+未落在 4-bit（$-4.01$~pp/1 d）与 8-bit 之间的中间区域。
+
+\textbf{机理}：PCM 的低电导态具有更大的编程噪声和更快的漂移系数（$\nu$ 更大）。
+4-bit 量化将权重压缩至更少的电导层级，使得每个态的相对漂移贡献被放大。
+同时，低电导态的读取噪声（与 $\sqrt{G}$ 成比例）在绝对值上虽小，
+但相对于有限的态间距仍足以引起跨层级跳变。
+
+\textbf{诊断测试}：在相同训练配置下比较 4/6/8-bit 的源域精度与 1 天漂移精度。
+若 4-bit 源域接近 8-bit 但漂移后差距 $>3$~pp，则确认精度--漂移权衡是部署瓶颈。
+
+\textbf{已知数据（zone 3A）}：
+4-bit PCM（UnitCell 3-seed mean）：源域 $76.71\pm0.46\%$，漂移 1 d $72.64\pm0.71\%$，下降 $-4.01$~pp；
+8-bit PCM：源域 $77.64\pm0.68\%$，漂移 1 d $77.57\pm0.61\%$，下降 $-0.04$~pp；
+6-bit PCM：源域 $77.88\pm0.58\%$，漂移 1 d $77.74\%$，下降 $-0.10$~pp。
+
+\textbf{设计规则}：4-bit PCM 是\emph{可训练但保持受限的}（trainable but retention-limited）。
+若部署场景允许周期性刷新（如光学刷新，见第~\ref{ch:work2_scope}~章），
+4-bit 可提供接近 8-bit 的源域精度；若刷新不可用，则 8-bit 是唯一漂移安全的选择。
+
+\subsection{模式间耦合与复合应力}
+\label{subsec:failure_compound}
+
+上述七种模式并非互斥。实际部署中常见的复合应力包括：
+\begin{itemize}
+    \item \textbf{NL + 相关D2D}：非线性放大空间结构的影响，但尚无zone 3C数据；
+    \item \textbf{NL + 保持漂移}：时间漂移与NL梯度失真叠加，可能加速退化；
+    \item \textbf{ADC悬崖 + 高$\sigma_{\mathrm{D2D}}$}：两种噪声源耦合，使操作窗口变窄。
+\end{itemize}
+
+当前框架对复合应力的覆盖是有限的。第\ref{chap:deployment-envelope}章将操作包络建模为独立参数贡献的叠加，但真实耦合效应（如Sobol交互项$<4\%$的iso-精度区域）仍需实验验证。
+
+
+% =============================================================================
+\section{诊断协议}
+\label{sec:diagnostic_protocols}
+
+\subsection{协议A：快速实例级筛选}
+\label{subsec:protocol_a}
+
+\textbf{目标}：在$<$1 GPU小时内判断一个训练检查点是否存在实例过拟合。
+
+\textbf{步骤}：
+\begin{enumerate}
+    \item 在训练实例上评估最佳检查点。若$<$70\%，直接判定为训练失败，无需新鲜实例测试。
+    \item 若$>$70\%，在3个独立D2D实例上各运行1次MC评估（共3个新鲜实例）。
+    \item 若3个实例均$<$15\%，判定为实例过拟合（高置信度）。
+    \item 若3个实例分散（如30\%、85\%、10\%），提示异常值敏感或训练不稳定，需扩展至10实例。
+\end{enumerate}
+
+\textbf{成本}：$\sim$0.3 GPU小时（3实例$\times$1运行）。
+
+\subsection{协议B：模块级瓶颈定位}
+\label{subsec:protocol_b}
+
+\textbf{目标}：确定瓶颈功能块（嵌入、QKV、输出投影、MLP）。
+
+\textbf{步骤}：
+\begin{enumerate}
+    \item 冻结训练好的检查点，在推断时逐组线性化（$NL=1.0$）。
+    \item 记录每组线性化后的准确率变化。
+    \item 若线性化MLP恢复$>$80\%而线性化QKV崩溃至$<$20\%，则瓶颈在注意力通路。
+    \item 若线性化所有组后仍$<$50\%，则瓶颈是全局性的（如ADC悬崖或极端$\sigma_{\mathrm{D2D}}$）。
+\end{enumerate}
+
+\textbf{已知结果（pre-fix diagnostic）}：QKV单独线性化$\rightarrow18.72\,\%$；输出投影单独线性化$\rightarrow18.86\,\%$；MLP单独线性化$\rightarrow$接近基线。注意力通路是瓶颈。这些数值来自config-sharing bug与pre-fix STE语义下的历史实验，仅作为诊断协议B的示例输出，不应用作修订配方下的zone 3A主张。
+
+\subsection{协议C：参数敏感性排序}
+\label{subsec:protocol_c}
+
+\textbf{目标}：用最小实验量确定主导物理参数。
+
+\textbf{步骤}：
+\begin{enumerate}
+    \item 运行63点联合扫描（$\sigma_{\mathrm{D2D}}\times$ADC）的稀疏子集（如$\sigma_{\mathrm{D2D}}\in\{5,10,20\}\%$，ADC$\in\{4,6,8\}$bit，各3 MC运行）。
+    \item 计算各参数的一阶Sobol指数$S_i$。
+    \item 若$S_{\mathrm{ADC}}>0.9$，则ADC是主导；若$S_{\mathrm{D2D}}>0.9$，则D2D是主导。
+    \item 若两者均$<$0.6，提示存在未建模因素（如NL或温度）。
+\end{enumerate}
+
+\textbf{已知结果（zone 3A）}：全网格$S_{\mathrm{ADC}}=0.98$；操作区$S_{\mathrm{D2D}}=0.92$；交互$<$4\%。
+
+\subsection{协议D：时序退化特征提取}
+\label{subsec:protocol_d}
+
+\textbf{目标}：区分保持漂移、温度漂移和一次性编程误差。
+
+\textbf{步骤}：
+\begin{enumerate}
+    \item 在编程后$t\in\{0,1,10,100,1000,10000\}$s评估。
+    \item 若快速下降后平台，符合保持漂移模型；
+    \item 若单调下降无平台，提示持续应力（如光照或偏压）；
+    \item 若波动无趋势，提示读出噪声或温度循环。
+\end{enumerate}
+
+
+% =============================================================================
+\section{案例研究}
+\label{sec:failure_case_studies}
+
+\subsection{案例一：从10\%到86\%——实例过拟合的治愈}
+\label{subsec:case_instance_overfitting}
+
+\textbf{背景}：Tiny-ViT V4 Standard HAT在$NL=1.0$下训练最优$87.95\,\%$，新鲜实例$10.00\,\%$。
+
+\textbf{诊断}：协议A（3实例筛选）判定为实例过拟合。协议B（模块级定位）显示所有模块均匀崩溃，确认全局共适应。
+
+\textbf{干预}：Ensemble HAT（每轮D2D重采样）。
+
+\textbf{结果}：新鲜实例恢复至$86.16\pm0.19\,\%$（zone 3A）。这里的$0.19$~pp为三种子汇总标准差，远小于$10$~pp量级的崩溃阈值。
+
+\textbf{启示}：实例过拟合是\emph{训练目标}问题，不是物理模型问题。改变目标（从单实例记忆到分布期望）即可治愈。
+
+\subsection{案例二：OPECT零样本迁移}
+\label{subsec:case_opect}
+
+\textbf{背景}：文献校准的OPECT器件轮廓（$\sigma_{\mathrm{C2C}}=2\%$，$\sigma_{\mathrm{D2D}}=3\%$）。
+
+\textbf{诊断}：协议C（参数排序）预测D2D贡献低（$\sigma_{\mathrm{D2D}}=3\%<10\%$），ADC贡献可忽略（$>$6bit）。预期高准确率。
+
+\textbf{干预}：无重训练，直接将Ensemble HAT检查点零样本部署。
+
+\textbf{结果}：$88.53\pm0.08\,\%$（zone 3A）。
+
+\textbf{启示}：当物理参数落在iso-精度图的安全区时，Ensemble HAT的分布训练目标自动泛化到新轮廓。
+
+\subsection{案例三：严重NL下的M系列证据}
+\label{subsec:case_m_series}
+
+\textbf{背景}：$NL=2.0$严重非线性，修订梯度缩放配方。
+
+\textbf{诊断}：协议A在6个独立训练上运行。所有6个检查点的新鲜实例均值$>$80\%，跨实例标准差$<$2~pp，排除实例过拟合。
+
+\textbf{干预对比}：
+\begin{itemize}
+    \item Standard HAT（固定掩码）：$81.2\,\%$均值（zone 3C）；
+    \item Ensemble HAT（均匀噪声，重采样）：$80.7\,\%$均值（zone 3C）；
+    \item Ensemble HAT（比例噪声，重采样）：$80.7\,\%$均值（zone 3C）。
+\end{itemize}
+
+\textbf{结果}：三种干预收敛至同一$\sim$80--82\%带。差距关闭至$<$1~pp，表明 severe NL 已成为\emph{绑定约束}，训练协议优化收益饱和。
+
+\textbf{启示}：当代理梯度失真超过阈值后，进一步改进训练目标（从重采样到噪声律对齐）的边际收益消失。\emph{设备层面}的线性化或\emph{算法层面}的高阶修正成为优先方向。
+
+\subsection{案例四：比例噪声的体制特异性}
+\label{subsec:case_proportional}
+
+\textbf{背景}：比例噪声在$NL=1.0$下达到$97.37\pm0.05\,\%$，但向均匀噪声迁移时崩溃至$10.38\pm0.44\,\%$。
+
+\textbf{诊断}：协议C显示噪声律不匹配是主导因素。比例噪声训练的权重几何与均匀噪声测试的扰动分布不兼容。
+
+\textbf{干预}：无（体制特异性是特征，不是缺陷）。
+
+\textbf{结果}：比例噪声检查点在其匹配体制下表现优异，但无跨体制泛化能力。
+
+\textbf{启示}：训练噪声律必须与部署噪声律\emph{严格对齐}。\emph{先诊断，再训练}的顺序不可颠倒。
+
+
+% =============================================================================
+\section{本章小结与向第六章的过渡}
+\label{sec:ch5_summary}
+
+本章建立了一个\textbf{七模式分类学}和四层诊断协议栈，将有机OEC-CIM部署中的准确率退化归因到可操作的物理来源：
+
+\begin{table}[htbp]
+\centering
+\caption{失效模式速查表}
+\label{tab:failure_mode_cheatsheet}
+\small
+\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{0.16\textwidth}>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}p{0.16\textwidth}>{\raggedright\arraybackslash}X@{}}
+\toprule
+\textbf{模式} & \textbf{触发} & \textbf{签名} & \textbf{主导参数} & \textbf{干预} \\
+\midrule
+实例过拟合 & 固定掩码训练 & 10\%单类预测 & 训练目标 & Ensemble HAT \\
+尺度掩蔽 & 低$\sigma_{\mathrm{D2D}}$+4bit & 退化$<$2~pp & ADC位宽 & 无需干预 \\
+ADC悬崖 & $<$6bit ADC & $>$5~pp跳跃 & ADC位宽 & $>$6bit \\
+相关D2D & 空间结构 & 单调有界退化 & $\rho$ & 保守下限 \\
+保持漂移 & 时间/温度 & 快速下降+平台 & 保持时间 & 动态重校准 \\
+严重NL & $|NL|\gg1$ & 系统性$\sim$5~pp降 & $NL$ & 设备线性化/高阶修正 \\
+精度--漂移权衡 & PCM 4-bit + 时间 & 源域近8-bit，1d后$\gg$3~pp & 电导态数/保持 & 刷新或升精度 \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+关键结论是\emph{层级性的}：
+\begin{enumerate}
+    \item 训练目标（实例过拟合）是最易修复的瓶颈，Ensemble HAT提供$+$76~pp的增益；
+    \item ADC位宽是最硬的\emph{设计规则}，低于6bit无挽救可能；
+    \item 精度--漂移权衡是PCM部署特有的\emph{精度--保持}瓶颈，4-bit可训练但保持受限，8-bit漂移安全；
+    \item 严重NL是最复杂的\emph{系统级}瓶颈，需要设备--算法协同优化，而非单一训练技巧。
+\end{enumerate}
+
+这些诊断工具和案例研究为第\ref{chap:deployment-envelope}章的部署框架提供了输入。下一章（第\ref{chap:deployment-envelope}章）将把这些理想化诊断置于更完整的物理语境中，引入IR压降、 sneak路径、温度依赖性和实测空间协方差核。

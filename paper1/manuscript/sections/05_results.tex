@@ -2,16 +2,16 @@
 \section{Results}
 \label{sec:results}
 
-The results are organized around two questions: whether training can generalize across unseen hardware instances, and which physical precision regime remains deployable once that algorithmic failure mode is controlled.
+The results are organized to avoid conflating two different questions. We first ask whether a low-precision model trained with analog perturbations transfers to a fresh hardware instance. We then reintroduce PCM device physics to determine which precision regime remains deployable after that transfer problem is separated from retention and readout limits.
 
 \subsection{IdealDevice Ablation: Fixed-Mask Failure and Algorithmic Rescue}
 \label{subsec:failure-rescue}
 
-We first measure the behavior of the tested AIHWKit IdealDevice quantization/noise baseline as an algorithmic ablation, not as the physical PCM deployment result. The fixed-mask HAT protocol mirrors the common hardware-aware-training practice of optimizing against one sampled hardware instance or analog tile configuration \citep{joshi2020accurate,rasch2021aihwkit}; here we replicate that protocol and test its failure boundary. As summarized in Table~\ref{tab:algorithmic_rescue}, standard per-batch hardware-aware training achieves 87.28\% fresh-instance accuracy at 8-bit precision, but completely collapses to 14.64\% at 4-bit (Figure~\ref{fig:algorithmic_rescue}A). This indicates a severe failure to generalize under fresh hardware instance shifts at extreme low precision.
+We first use the tested AIHWKit IdealDevice quantization/noise baseline as an algorithmic ablation, not as the physical PCM deployment result. The fixed-mask HAT protocol mirrors the common practice of optimizing against one sampled hardware instance or analog tile configuration \citep{joshi2020accurate,rasch2021aihwkit}. This setting is useful because it exposes the boundary of instance-specific training. As summarized in Table~\ref{tab:algorithmic_rescue}, standard per-batch hardware-aware training reaches 87.28\% fresh-instance accuracy at 8-bit precision, but falls to 14.64\% at 4-bit (Figure~\ref{fig:algorithmic_rescue}A). The failure is therefore not ordinary optimization failure; it is a transfer failure caused by fresh hardware instance shifts at extreme low precision.
 
 \begin{table}[htbp]
 \centering
-\caption{\textbf{IdealDevice pure-quantization ablation.} Data shows fresh-instance accuracy across three seeds for the AIHWKit IdealDevice model. These results establish algorithmic cross-instance robustness, not PCM physical deployment performance.}
+\caption{\textbf{IdealDevice pure-quantization ablation.} Data show fresh-instance accuracy across three seeds for the AIHWKit IdealDevice model. These results establish algorithmic cross-instance robustness, not PCM physical deployment performance.}
 \label{tab:algorithmic_rescue}
 \begin{tabular}{lccl}
 \toprule
@@ -24,7 +24,7 @@ Ensemble HAT & 4-bit & 86.16 $\pm$ 0.19\% & Algorithmic rescue \\
 \end{tabular}
 \end{table}
 
-To isolate the sources of error, we evaluate the system under sequential constraint removal (Table~\ref{tab:ablation_mapping}). Quantization and hybrid mapping alone (without noise) introduce only a minimal penalty ($98.06\% \rightarrow 97.39\%$). The primary failure is triggered by device-to-device mismatch, which Ensemble HAT successfully mitigates.
+To localize the error source, we remove constraints sequentially (Table~\ref{tab:ablation_mapping}). Quantization and hybrid mapping alone introduce only a small penalty ($98.06\% \rightarrow 97.39\%$). The collapse appears when a fixed mismatch mask is introduced, indicating that the model has learned a solution tied to one hardware draw rather than a solution that transfers across the mismatch distribution. Ensemble HAT mitigates this failure by forcing the optimizer to see a sequence of mismatch fields during training.
 
 \begin{table}[htbp]
 \centering
@@ -42,14 +42,14 @@ Ensemble HAT & 4-bit & Analog/Digital & Resampled & 86.16 $\pm$ 0.19\% \\
 \end{tabular}
 \end{table}
 
-By resampling the device-to-device (D2D) variation patterns during the forward pass (Figure~\ref{fig:algorithmic_rescue}A), Ensemble Hardware-Aware Training (HAT) rescues this 4-bit pure-quantization ablation. The model recovers to 86.16\% fresh-instance accuracy, effectively closing the gap with the 8-bit ideal-device baseline and demonstrating robust cross-instance transfer. This result establishes that 4-bit operation is algorithmically viable when device physics are idealized. It does not imply that 4-bit PCM is drift-stable. Loss-landscape interpolation along the D2D mismatch direction (Figure~\ref{fig:algorithmic_rescue}B) confirms that Ensemble HAT discovers a robust plateau, whereas Standard HAT falls into a sharp, instance-specific local minimum.
+By resampling the device-to-device (D2D) variation pattern during training (Figure~\ref{fig:algorithmic_rescue}A), Ensemble HAT restores this 4-bit pure-quantization ablation to 86.16\% fresh-instance accuracy. The interpretation is deliberately narrow: 4-bit operation can be algorithmically viable when device physics are idealized, but this does not imply that 4-bit PCM remains stable after programming. Loss-landscape interpolation along the D2D mismatch direction (Figure~\ref{fig:algorithmic_rescue}B) supports this interpretation. Ensemble HAT finds a broad plateau in the mismatch direction, whereas Standard HAT converges to a sharp, instance-specific minimum.
 
 \subsection{Realistic PCM Training and the Precision-Retention Frontier}
 \label{subsec:pcm-precision-ladder}
 
-While Ensemble HAT addresses the algorithmic generalization problem in a pure-quantization context, realistic analog deployment must account for complex device physics, particularly conductance drift. We evaluate our approach using the \texttt{PCMPresetUnitCell} model in AIHWKit, which incorporates non-linear update physics, finite dynamic range, and time-dependent drift.
+Having isolated the algorithmic transfer problem, we next ask whether a realistic memory model preserves the same low-precision promise. We evaluate the trained deployment with the \texttt{PCMPresetUnitCell} model in AIHWKit, which includes nonlinear update physics, finite dynamic range, and time-dependent conductance drift.
 
-Under the tested PCM UnitCell simulation regime, training is viable across 4-bit, 6-bit, and 8-bit precisions. However, the results reveal a non-monotonic precision--accuracy curve and a precision-retention deployment frontier. We mark a setting as drift-constrained when its 24-hour accuracy loss exceeds a 1~pp deployment SLA; by this criterion, 8-bit and 6-bit PCM remain effectively drift-flat, whereas the 4-bit configuration incurs a 4.01~pp retention penalty and is therefore drift-limited (Table~\ref{tab:pcm_precision_ladder}). Notably, 6-bit PCM achieves the lowest mean fresh accuracy despite its drift stability, reflecting a quantization-D2D interaction: at 1/64 resolution, device mismatch perturbations become comparable to quantization steps, allowing the model to overfit to its training-time D2D mask. At 4-bit, quantization noise masks D2D variability; at 8-bit, the fine grid absorbs it.
+Under the tested PCM UnitCell simulation regime, training remains viable at 4-bit, 6-bit, and 8-bit precision, but viability is not monotonic in bit width. We mark a setting as drift-constrained when its 24-hour accuracy loss exceeds a 1~pp deployment SLA. By this criterion, 8-bit and 6-bit PCM are effectively drift-flat, whereas 4-bit PCM incurs a 4.01~pp retention penalty and is therefore drift-limited (Table~\ref{tab:pcm_precision_ladder}). The important exception to a simple ``more bits is better'' reading is the 6-bit row: it is drift-stable, yet it has the lowest mean fresh accuracy. This behavior is consistent with a quantization-D2D interaction in which mismatch perturbations become comparable to the 1/64 conductance step. At 4-bit, coarser quantization masks part of the D2D perturbation; at 8-bit, the finer grid absorbs it; at 6-bit, the two effects interact unfavorably in this tested regime.
 
 \begin{table}[htbp]
 \centering
@@ -69,7 +69,7 @@ Under the tested PCM UnitCell simulation regime, training is viable across 4-bit
 \subsection{Iso-Accuracy Operating Envelope}
 \label{subsec:iso-accuracy}
 
-The architectural operating envelope becomes clear when ADC precision and device-to-device variability are swept jointly (Figure~\ref{fig:physical_frontier}). Accuracy is near chance below 5-bit ADC, and the transition from 5 to 6 bits produces a consistent $\sim$7~pp gain. Once readout precision reaches this threshold, further degradation is governed mainly by D2D variability rather than by ADC quantization. The Sobol analysis captures the same hierarchy: $S_{\mathrm{ADC}}=0.98$ over the full grid, whereas $S_{\mathrm{D2D}}=0.92$ after restricting to the operational regime. The practical implication is therefore sequential rather than simultaneous: first secure 6-bit readout, then optimize device variability.
+The same separation appears at the readout level. In the joint ADC-precision and D2D-variability sweep (Figure~\ref{fig:physical_frontier}), accuracy is near chance below 5-bit ADC, and moving from 5 to 6 bits produces a consistent $\sim$7~pp gain. Once readout precision reaches this threshold, the limiting factor changes: further degradation is governed mainly by D2D variability rather than ADC quantization. The Sobol analysis captures this hierarchy, with $S_{\mathrm{ADC}}=0.98$ over the full grid and $S_{\mathrm{D2D}}=0.92$ after restricting to the operational regime. The resulting hardware prescription is sequential rather than simultaneous: secure 6-bit readout first, then spend device-engineering effort on mismatch reduction.
 
 \begin{figure}[htbp]
 \centering
@@ -78,12 +78,4 @@ The architectural operating envelope becomes clear when ADC precision and device
 \label{fig:physical_frontier}
 \end{figure}
 
-\subsection{Deployment Guidance}
-\label{subsec:deployment-guidance}
-
-The precision ladder separates the algorithmic challenge of cross-instance robustness from the device-level precision-retention tradeoff, revealing a non-monotonic relationship between weight precision and fresh accuracy. 8-bit PCM is the strongest operating point: 77.60\% fresh accuracy with negligible drift. 4-bit PCM achieves comparable fresh accuracy (76.68\%) but loses $\sim$4.01~pp over one day and violates the 1~pp drift SLA. 6-bit PCM, while drift-stable, exhibits the lowest mean fresh accuracy (68.44\%) and high seed-to-seed variance (std 6.03\%), entering a D2D-sensitive transition zone where device mismatch perturbations are comparable to quantization steps at 1/64 resolution.
-
-\subsection{Future Directions}
-\label{subsec:future-directions}
-
-Extending these hardware-aware training principles to memory-bound inference components, such as analog KV-cache, presents a compelling future trajectory for large-scale deployment.
+The operating envelope turns the ablations into a deployment sequence rather than a single best training recipe. First, cross-instance overfitting must be removed by training against a distribution of mismatch fields. Second, the readout interface must clear the 6-bit ADC cliff. Third, the memory precision must be selected under the target retention constraint. Under the tested PCM model, 8-bit PCM is the strongest operating point because it combines 77.60\% fresh accuracy with negligible drift. 4-bit PCM remains competitive immediately after programming (76.68\%) but loses $\sim$4.01~pp over one day and violates the 1~pp drift SLA. 6-bit PCM is not drift-limited, but its 68.44\% fresh accuracy and high seed-to-seed variance (std 6.03\%) mark it as a D2D-sensitive transition zone rather than a deployment optimum.

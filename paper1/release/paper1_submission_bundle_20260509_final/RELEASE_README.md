@@ -1,8 +1,8 @@
 # Paper-1 Submission Bundle
 
-**Date:** 2026-05-09
+**Date:** 2026-05-10
 **Bundle:** `paper1_submission_bundle_20260509_final`
-**Status:** Submission-grade — accepted after DS/Mimo audit and Codex final acceptance; retained for final author review
+**Status:** Submission-grade candidate — refreshed after Codex narrative polish pass 2; retained for final author review
 
 ---
 
@@ -67,7 +67,7 @@ The following are intentionally excluded from this submission bundle and reside 
 Guard script: `python scripts/_gpt/check_local_pcm_precision_ladder.py`
 Result: **PASS**
 
-Stale-keyword scan: **0 active hits globally**
+Stale-keyword scan: **0 active main-text hits for stale numeric/wording guards**
 
 ---
 

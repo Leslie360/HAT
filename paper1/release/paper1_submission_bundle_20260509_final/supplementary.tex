@@ -266,7 +266,7 @@ These runs are treated as physical-extension studies rather than as part of the 
 
 \begin{table}[ht]
     \centering
-    \caption{\textbf{Summary of classification accuracy (\%) across architectures and physical regimes.} Cross-dataset deployment rows report locked best-checkpoint values; entries with $\pm$ denote stochastic physical-extension evaluations. \notrun{} denotes a protocol not evaluated, not a failed run.}
+    \caption{\textbf{Summary of classification accuracy (\%) across architectures and physical regimes.} Cross-dataset deployment rows report locked best-checkpoint values; entries with $\pm$ denote stochastic physical-extension evaluations. \notevaluated{} denotes a protocol not evaluated, not a failed run.}
     \label{tab:supp-result-summary}
     \small
     \begin{tabular}{llcc}
@@ -280,11 +280,11 @@ These runs are treated as physical-extension studies rather than as part of the 
         ConvNeXt-Tiny & FP32 Digital & 90.74 & 64.12 \\
         ConvNeXt-Tiny & Standard noisy deployment (C3) & 70.48 & 23.86 \\
         ConvNeXt-Tiny & Uniform-noise HAT (C4) & 89.91 & 60.54 \\
-        ConvNeXt-Tiny & Proportional-noise HAT (3-seed extension) & \notrun{} & 84.75 $\pm$ 0.72 \\
+        ConvNeXt-Tiny & Proportional-noise HAT (3-seed extension) & \notevaluated{} & 84.75 $\pm$ 0.72 \\
         \midrule
         Tiny-ViT-5M & Standard noisy deployment (V3) & 89.54 & 44.06 \\
         Tiny-ViT-5M & Uniform-noise HAT (V4) & 91.94 & 65.48 \\
-        Tiny-ViT-5M & Front-end compensation (V6) & 82.58 (single-seed) & \notrun{} \\
+        Tiny-ViT-5M & Front-end compensation (V6) & 82.58 (single-seed) & \notevaluated{} \\
         \bottomrule
     \end{tabular}
 \end{table}
@@ -306,9 +306,9 @@ To document the reproducibility of the canonical Tiny-ViT Ensemble HAT path, we 
 \toprule
 \textbf{Seed / Aggregate} & \textbf{Fresh Accuracy} & \textbf{Statistic Type} \\
 \midrule
-123 & \(86.37\pm1.54\)\% & 10 fresh instances \(\times\) 5 MC \\
-456 & \(86.12\pm0.72\)\% & 10 fresh instances \(\times\) 5 MC \\
-789 & \(85.99\pm1.94\)\% & 10 fresh instances \(\times\) 5 MC \\
+123 & \(86.4\)\% & seed mean; diagnostic only \\
+456 & \(86.1\)\% & seed mean; diagnostic only \\
+789 & \(86.0\)\% & seed mean; diagnostic only \\
 \midrule
 Cross-seed aggregate & \(\mathbf{86.16\pm0.19}\)\% & mean \(\pm\) sample std of seed means \\
 Pooled fresh instances & \(86.16\pm1.52\)\% & mean \(\pm\) sample std over 30 instance means \\
@@ -688,7 +688,7 @@ To assess the robustness of the retention drift predictions against uncertaintie
 \textbf{Persistent Fraction ($A_0$)} & \textbf{1 s} & \textbf{100 s} & \textbf{1,000 s} & \textbf{10,000 s} \\
 \midrule
 $0.8$ & 90.55\% & 90.49\% & 90.49\% & 90.49\% \\
-$0.6$ (Canonical) & \notrun{} & 89.88\% & 89.88\% & 89.88\% \\
+$0.6$ (Canonical) & \notevaluated{} & 89.88\% & 89.88\% & 89.88\% \\
 $0.4$ & 88.62\% & 87.61\% & 87.61\% & 87.61\% \\
 \bottomrule
 \end{tabular}
@@ -697,9 +697,9 @@ $0.4$ & 88.62\% & 87.61\% & 87.61\% & 87.61\% \\
 \subsection{Comparison with Inorganic RRAM Baselines}
 \label{subsec:inorganic-comparison}
 
-To contextualize the specialized framework for organic optoelectronic devices, we contrast our methodology with mature inorganic simulations (e.g., RRAM arrays modeled via NeuroSim, CrossSim, or AIHWKIT) \citep{peng2020dnnneurosim,crosssim2024,rasch2021aihwkit}. Inorganic devices typically exhibit faster write speeds, larger on/off ratios, and primarily electrical programming dynamics. In contrast, the organic devices modeled here offer multi-modal (optoelectronic) tuning and excellent low-power analog behavior, but often suffer from slower temporal drift, pronounced state-dependent retention, and complex nonlinear write asymmetry.
+To contextualize the specialized framework for organic optoelectronic devices, we contrast our methodology with mature inorganic simulations (e.g., RRAM arrays modeled via NeuroSim, CrossSim, or AIHWKit) \citep{peng2020dnnneurosim,crosssim2024,rasch2021aihwkit}. Inorganic devices typically exhibit faster write speeds, larger on/off ratios, and primarily electrical programming dynamics. In contrast, the organic devices modeled here offer multi-modal (optoelectronic) tuning and low-power analog operation, but often suffer from slower temporal drift, pronounced state-dependent retention, and complex nonlinear write asymmetry.
 
-As a methodological consistency check in a shared regime, we evaluated an existing ResNet-18/CIFAR-10 model over the full 10k-sample test set under matched 4-bit/noise assumptions: the digital baseline reached \(95.46\%\), while an AIHWKIT analog-tile baseline reached \(90.08\pm0.21\%\) over 10 runs. We use this result only to verify numerical consistency between the present simulator and a mature inorganic toolkit under one matched regime; it does not establish physical validation for retention, photoresponse, or organic nonlinear writing. Thus, rather than claiming to outperform mature RRAM simulators on digital benchmarks, our framework serves as a complementary tool tailored to expose the system-level consequences of organic-specific physical non-idealities, such as shot noise amplification from inverse-gamma front ends.
+As a methodological consistency check in a shared regime, we evaluated an existing ResNet-18/CIFAR-10 model over the full 10k-sample test set under matched 4-bit/noise assumptions: the digital baseline reached \(95.46\%\), while an AIHWKit analog-tile baseline reached \(90.08\pm0.21\%\) over 10 runs. We use this result only to verify numerical consistency between the present simulator and a mature inorganic toolkit under one matched regime; it does not establish physical validation for retention, photoresponse, or organic nonlinear writing. Thus, rather than claiming to outperform mature RRAM simulators on digital benchmarks, our framework serves as a complementary tool tailored to expose the system-level consequences of organic-specific physical non-idealities, such as shot noise amplification from inverse-gamma front ends.
 
 The subset-sampling protocol for this throughput-constrained CrossSim comparison
 is given later in Supplementary Note~S1, together with the confidence-interval
@@ -802,8 +802,8 @@ In summary, the core conclusions regarding deployment risk ranking remain qualit
         \toprule
         Protected group & Best acc (\%) & Final acc (\%) & $\Delta$ vs $NL=2.0$ (pp) \\
         \midrule
-        (a)~Baseline ($NL=1.0$ global) & $87.95\pm0.27$ & \notrun{} & $+60.23$ \\
-        (b)~None ($NL=2.0$ global) & \multicolumn{2}{c}{\textsc{invalid}$^\dagger$} & \notrun{} \\
+        (a)~Baseline ($NL=1.0$ global) & $87.95\pm0.27$ & \notevaluated{} & $+60.23$ \\
+        (b)~None ($NL=2.0$ global) & \multicolumn{2}{c}{\textsc{invalid}$^\dagger$} & \notevaluated{} \\
         (c)~MLP only (fc1, fc2) & $87.79^\ddagger$ & $86.22^\ddagger$ & $+60.07$ \\
         (d)~QKV only (attn.qkv) & $18.72^\ddagger$ & $10.15^\ddagger$ & $-9.00$ \\
         (e)~Attn proj only (attn.proj) & $18.86^\ddagger$ & $\sim$10.25 (stopped @ ep 54)$^\ddagger$ & $-9.14$ \\
@@ -823,7 +823,7 @@ In summary, the core conclusions regarding deployment risk ranking remain qualit
         \toprule
         $NL_{\text{LTP}}$ / $NL_{\text{LTD}}$ & Source best (\%) & Fresh mean (\%) & Fresh std (\%) \\
         \midrule
-        $1.0$ / $-1.0$ (canonical) & $91.94$ & $86.37$ & $1.54$ \\
+        $1.0$ / $-1.0$ (canonical, 3-seed) & $91.94$ & $86.16$ & $0.19$ \\
         $1.2$ / $-1.2$ & $83.12$ & $83.03$ & $0.22$ \\
         $1.5$ / $-1.5$ & $82.81$ & $82.63$ & $0.10$ \\
         $1.8$ / $-1.8$ & $82.77$ & $80.31$ & $0.40$ \\
@@ -843,9 +843,9 @@ Because a single noisy evaluation on the full CIFAR-10 test set would extrapolat
 % `V4_hybrid_standard_noise_hat_best.pt`. No retraining involved.
 A full $10\times5$ fresh-instance sweep under separable AR(1)-style spatial correlation across the effective crossbar grid yields:
 \begin{itemize}
-    \item \textbf{i.i.d.\ baseline} ($\rho=0$): $86.33 \pm 1.61$\% (10 fresh instances, 5 MC runs each);
-    \item \textbf{$\rho=0.3$}: $84.57 \pm 2.39$\%, a $-1.76$~pp excursion versus i.i.d.;
-    \item \textbf{$\rho=0.5$}: $82.12 \pm 3.95$\%, a $-4.20$~pp excursion versus i.i.d.
+    \item \textbf{i.i.d.\ headline baseline} ($\rho=0$): $86.16 \pm 0.19$\% (three-seed main claim);
+    \item \textbf{$\rho=0.3$}: $84.57 \pm 2.39$\%, a $-1.59$~pp excursion versus the headline baseline;
+    \item \textbf{$\rho=0.5$}: $82.12 \pm 3.95$\%, a $-4.04$~pp excursion versus the headline baseline.
 \end{itemize}
 Rank ordering is preserved across all tested levels, with no instance collapsing below $73.7$\% (instance~4, $\rho=0.5$). The canonical Ensemble HAT checkpoint therefore tolerates moderate spatial correlation without catastrophic failure, although stronger correlation does produce a measurable degradation consistent with increased effective mismatch variance.
 

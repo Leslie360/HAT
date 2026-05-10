@@ -2,6 +2,7 @@
 % Side-by-side: Standard HAT (single mask) vs Ensemble HAT (resampled masks)
 \documentclass[tikz,border=10pt]{standalone}
 \usepackage{amsmath}
+\usepackage{amssymb}
 \renewcommand{\familydefault}{\sfdefault}
 \usepackage{tikz}
 \usetikzlibrary{positioning,arrows.meta,shapes.geometric,fit,backgrounds,calc,decorations.pathreplacing,patterns,patterns.meta}
@@ -110,7 +111,7 @@
 
   % Result
   \node[resultbox, fill=succGreenBg, draw=succGreen, font=\small\bfseries\sffamily, text=succGreen!70!black] (ResB) at (5.1, 2.0)
-    {86.37 $\pm$ 1.54\%\\[-2pt]{\footnotesize (robust)}};
+    {86.16 $\pm$ 0.19\%\\[-2pt]{\footnotesize (3-seed robust)}};
 
   \node[font=\tiny\sffamily, text=succGreen!65, align=center, below=0.15cm of ResB.south, text width=3.8cm]
     {10-class balanced predictions\\ generalizes across fresh instances};

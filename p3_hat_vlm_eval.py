@@ -35,10 +35,11 @@ def detect_model_family(model_name):
     raise ValueError(f"Unsupported model: {model_name}. Use Qwen2-VL or Qwen3-VL.")
 
 
-def load_model_for_eval(model_name, device="cuda", fp16=True):
+def load_model_for_eval(model_name, device="cuda", fp16=True, checkpoint_dir=None):
     family = detect_model_family(model_name)
     dtype = torch.bfloat16 if fp16 else torch.float32
-    print(f"Loading {model_name} (family={family})...")
+    load_path = checkpoint_dir if checkpoint_dir else model_name
+    print(f"Loading {model_name} from {load_path} (family={family})...")
 
     if family == "qwen3":
         from transformers import Qwen3VLForConditionalGeneration, AutoProcessor
@@ -48,7 +49,7 @@ def load_model_for_eval(model_name, device="cuda", fp16=True):
         model_cls = Qwen2VLForConditionalGeneration
 
     model = model_cls.from_pretrained(
-        model_name,
+        load_path,
         torch_dtype=dtype,
         use_safetensors=True,
         local_files_only=False,
@@ -70,10 +71,14 @@ def _register_d2d_buffers(module, num_kv_heads, head_dim, max_length, analog_cfg
     module.register_buffer('_d2d_noise_v_neg', torch.randn(*shape, device=module.q_proj.weight.device) * sigma_d2d)
 
 
-def patch_vlm_for_hat(model, analog_cfg, analog_layers=None, max_length=512, d2d_seed=0xD2D):
+def patch_vlm_for_hat(model, analog_cfg, analog_layers=None, max_length=512, d2d_seed=0xD2D, family=None):
     """Monkey-patch VLM text decoder attention for analog KV noise."""
     import types
-    family = detect_model_family(getattr(model, "name_or_path", ""))
+    if family is None:
+        try:
+            family = detect_model_family(getattr(model, "name_or_path", ""))
+        except ValueError:
+            family = None
     if not family:
         # fallback: inspect first attention module
         for m in model.modules():
@@ -293,9 +298,10 @@ def main():
     parser.add_argument("--device", type=str, default="cuda")
     parser.add_argument("--fp16", action="store_true", default=True)
     parser.add_argument("--output_dir", type=str, default="/home/lisq753/projects/HAT_kv107/paper2/results/remote107")
+    parser.add_argument("--checkpoint_dir", type=str, default=None, help="Load model from trained checkpoint instead of HF hub")
     args = parser.parse_args()
 
-    model, processor, family = load_model_for_eval(args.model_name, device=args.device, fp16=args.fp16)
+    model, processor, family = load_model_for_eval(args.model_name, device=args.device, fp16=args.fp16, checkpoint_dir=args.checkpoint_dir)
 
     num_layers = getattr(model.config, "num_hidden_layers", None)
     if num_layers is None and hasattr(model.config, "text_config"):
@@ -348,9 +354,12 @@ def main():
         "analog_layers": sorted(analog_layers) if analog_layers else list(range(num_layers)),
         "d2d_seed": args.d2d_seed if args.analog else None,
     }
+    cfg_tag = "clean"
+    if args.analog and analog_layers is not None:
+        cfg_tag = f"last{len(analog_layers)}"
     out_file = os.path.join(
         args.output_dir,
-        f"vlm_{family}_{args.model_name.split('/')[-1]}_{os.path.basename(args.image_path).split('.')[0]}.json"
+        f"vlm_{family}_{args.model_name.split('/')[-1]}_{os.path.basename(args.image_path).split('.')[0]}_{cfg_tag}.json"
     )
     os.makedirs(args.output_dir, exist_ok=True)
     with open(out_file, "w") as f:

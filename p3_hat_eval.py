@@ -141,7 +141,7 @@ def main():
 
     out_file = os.path.join(
         args.output_dir,
-        f"eval_{args.checkpoint_dir.rstrip('/').split('/')[-1]}_c2c{args.sigma_c2c}_d2d{args.sigma_d2d}_rst{args.retention_step_time}_seed{d2d_seed}.json"
+        f"eval_{args.checkpoint_dir.rstrip('/').split('/')[-1]}_c2c{args.sigma_c2c}_d2d{args.sigma_d2d}_ns{args.n_states}_rst{args.retention_step_time}_seed{d2d_seed}.json"
     )
     with open(out_file, "w") as f:
         json.dump(result, f, indent=2, default=str)

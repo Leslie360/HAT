@@ -85,7 +85,9 @@ def patch_vlm_for_hat(model, analog_cfg, analog_layers=None, max_length=512, d2d
                 family = "qwen2"
                 break
 
-    num_layers = model.config.num_hidden_layers
+    num_layers = getattr(model.config, "num_hidden_layers", None)
+    if num_layers is None and hasattr(model.config, "text_config"):
+        num_layers = model.config.text_config.num_hidden_layers
     target = analog_layers if analog_layers is not None else set(range(num_layers))
     count = 0
 
@@ -113,6 +115,7 @@ def patch_vlm_for_hat(model, analog_cfg, analog_layers=None, max_length=512, d2d
             from transformers.models.qwen3_vl.modeling_qwen3_vl import apply_rotary_pos_emb
             def make_forward(attn_module, cfg):
                 def forward(
+                    self,
                     hidden_states,
                     position_embeddings,
                     attention_mask=None,
@@ -171,6 +174,7 @@ def patch_vlm_for_hat(model, analog_cfg, analog_layers=None, max_length=512, d2d
             from transformers.models.qwen2_vl.modeling_qwen2_vl import apply_multimodal_rotary_pos_emb
             def make_forward(attn_module, cfg):
                 def forward(
+                    self,
                     hidden_states,
                     attention_mask=None,
                     position_ids=None,
@@ -293,6 +297,10 @@ def main():
 
     model, processor, family = load_model_for_eval(args.model_name, device=args.device, fp16=args.fp16)
 
+    num_layers = getattr(model.config, "num_hidden_layers", None)
+    if num_layers is None and hasattr(model.config, "text_config"):
+        num_layers = model.config.text_config.num_hidden_layers
+
     analog_layers = None
     if args.analog_layers:
         analog_layers = set(int(x) for x in args.analog_layers.split(","))
@@ -337,7 +345,7 @@ def main():
         "sigma_c2c": args.sigma_c2c if args.analog else None,
         "sigma_d2d": args.sigma_d2d if args.analog else None,
         "n_states": args.n_states if args.analog else None,
-        "analog_layers": sorted(analog_layers) if analog_layers else list(range(model.config.num_hidden_layers)),
+        "analog_layers": sorted(analog_layers) if analog_layers else list(range(num_layers)),
         "d2d_seed": args.d2d_seed if args.analog else None,
     }
     out_file = os.path.join(

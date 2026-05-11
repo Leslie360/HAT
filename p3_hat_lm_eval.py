@@ -132,7 +132,8 @@ def main():
             return {k: _sanitize(v) for k, v in obj.items() if not callable(v)}
         elif isinstance(obj, list):
             return [_sanitize(v) for v in obj if not callable(v)]
-        elif hasattr(obj, 'dtype'):  # torch.dtype / numpy.dtype
+        elif isinstance(obj, type) and hasattr(obj, '__name__') and obj.__name__.endswith('dtype'):
+            # torch.dtype / numpy.dtype (torch.bfloat16 has no 'dtype' attr)
             return str(obj)
         elif hasattr(obj, 'item'):   # scalar tensor
             return obj.item()

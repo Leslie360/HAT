@@ -77,30 +77,39 @@
 
 ## 二、待办实验（近期）
 
-### P0: 数据补全
+> 完整依赖图与排期见 `PAPER2_CLOSURE_PLAN.md`。以下为精简状态。
+
+### P0: 数据补全（Blocking）
 - [x] 6.9B fixed 500（PPL 11.40，已完成）
-- [x] 2.8B last2 fixed 500 结果读取（PPL 12.61）
-- [x] 2.8B last4 fixed 500 结果读取（PPL 12.71）
-- [x] 410M 超参灵敏度扫描（σ_c2c/σ_d2d sweep，已完成）
-- [x] 410M n_states 扫描（128-1024，已完成）
-- [ ] 2.8B fixed500 downstream eval（lm-eval，运行中 GPU 4/5）
-- [ ] 6.9B fixed500 downstream eval（lm-eval，运行中 GPU 6/7）
-- [ ] 2.8B/6.9B 超参灵敏度扫描
+- [x] 2.8B last2/last4 fixed 500 结果读取
+- [x] 410M 超参灵敏度扫描（σ_c2c/σ_d2d sweep, n_states, mismatch, D2D seed）
+- [ ] **2.8B fixed500 downstream eval**（lm-eval clean/analog, GPU 4/5, 🔄 进行中）
+- [ ] **6.9B fixed500 downstream eval**（lm-eval clean/analog, GPU 6/7, 🔄 进行中）
+- [ ] **2.8B/6.9B 超参灵敏度扫描**（⏳ 等 lm-eval 完成后 pipeline 自动启动）
 
-### P1: 基线对比（已完成代码实现）
-- [x] INT4 RTN KV cache 量化baseline实现（`p3_hat_eval_quantized_baseline.py`）
-- [x] INT8 RTN KV cache 量化baseline实现
-- [x] 410M/2.8B/6.9B 上 HAT vs 量化 PPL 对比（6.9B: 11.40 vs 12.20/12.46）
-- [x] lm-evaluation-harness 接入（`p3_hat_lm_eval.py`，含 `_sanitize` 修复）
-- [x] 410M Lambada/HellaSwag/ARC 上 clean vs analog accuracy 对比
-- [ ] 2.8B/6.9B downstream accuracy 对比（运行中）
+### P1: 基线对比
+- [x] INT4/INT8 RTN KV cache 量化 baseline
+- [x] 410M/2.8B/6.9B HAT vs 量化 PPL 对比
+- [x] lm-evaluation-harness 接入（`p3_hat_lm_eval.py`，dtype sanitizer 已加固）
+- [x] 410M downstream accuracy 对比
+- [ ] 2.8B/6.9B downstream accuracy 对比（🔄 等 lm-eval 结束）
 
-### P2: 鲁棒性验证（已完成410M，待扩展2.8B/6.9B）
-- [x] Train-eval mismatch（410M 已完成：C2C +4.5% @ 10×train, D2D +3.4% @ 5×train）
-- [x] D2D seed cross-instance（410M 已完成：5 seeds, std=0.016）
-- [x] n_states 灵敏度（410M 已完成：128-1024 完全平坦）
-- [ ] Train-eval mismatch（2.8B/6.9B 待启动）
-- [ ] Retention 极端测试（retention_step_time=0.1/1.0）
+### P2: 鲁棒性验证
+- [x] 410M: mismatch / D2D seed / n_states 全部完成
+- [ ] **2.8B/6.9B robustness sweep**（σ_c2c, σ_d2d, mismatch, D2D seed, n_states）
+- [ ] Retention 极端测试（retention_step_time=0.1/1.0，可选）
+
+### P3: 多模态验证
+- [x] Qwen3-VL-2B-Instruct 模型下载
+- [ ] **Qwen3-VL clean vs analog generation**（❌ 未安排 GPU）
+
+### P4: 归档与可视化
+- [x] 410M selective KV claim-lock（41/41 JSONs + manifest + report）
+- [ ] 2.8B/6.9B downstream claim-lock
+- [ ] 2.8B/6.9B robustness claim-lock
+- [ ] 层数 tradeoff 曲线图
+- [ ] 规模曲线图（410M/2.8B/6.9B）
+- [ ] 超参扫描热力图
 
 ---
 

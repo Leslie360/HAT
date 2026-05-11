@@ -1,0 +1,10 @@
+strategy	protected_k	retention_time_s	accuracy_mean	accuracy_std	accuracy_min	accuracy_max	instance_count	label	delta_vs_0s
+fresh_all_analog	0	0.0	58.223	1.3856	56.29	60.5	10	Fresh all-analog	0.0
+fresh_all_analog	0	1000.0	55.5963	1.2285	54.21	58.04	10	Fresh all-analog	-2.6266999999999996
+fresh_all_analog	0	10000.0	55.4033	1.2715	53.89	57.91	10	Fresh all-analog	-2.8196999999999974
+freeze_top30_d2d	30	0.0	62.051	0.5865	61.22	62.8167	10	Freeze top-30 D2D	0.0
+freeze_top30_d2d	30	1000.0	59.2073	0.6078	58.1467	59.9367	10	Freeze top-30 D2D	-2.8437000000000054
+freeze_top30_d2d	30	10000.0	59.223	0.606	58.4467	60.18	10	Freeze top-30 D2D	-2.828000000000003
+freeze_top42_d2d	42	0.0	62.2477	0.5095	61.5067	62.9	10	Freeze top-42 D2D	0.0
+freeze_top42_d2d	42	1000.0	59.3923	0.6049	58.5733	60.1733	10	Freeze top-42 D2D	-2.855400000000003
+freeze_top42_d2d	42	10000.0	59.391	0.482	58.7867	60.06	10	Freeze top-42 D2D	-2.8567000000000036

@@ -1,70 +1,67 @@
 # Codex Command Dashboard
 
-Date: 2026-05-10
-Owner: Codex commander
-Mode: Parallel with separate CC model
+Date: 2026-05-10; refreshed by Claude on 2026-05-11
+Owner: Claude single-commander unless user reassigns
+Mode: Local execution with external agents only on explicit handoff
 
 ## High-level status
 
-| Lane | Status | Codex decision |
+| Lane | Status | Current decision |
 |---|---|---|
-| Paper1 | Final narrative polish complete; release refreshed | Current external tarball SHA is `343ae03de1dfd9c198ae614548dee14bddf04131e160598bc064f5d8544500f6`; release directory manifest and cold-unpack manifest checks pass. |
+| Paper1 | Final narrative polish complete; release refreshed | Current external tarball SHA is `343ae03de1dfd9c198ae614548dee14bddf04131e160598bc064f5d8544500f6`; do not reopen unless user asks. |
 | Workspace cleanup | Commit-prep pending | No commit or push without explicit user approval; stage exact path groups only. |
-| Paper2 / 107 | Claim lock blocked after CC harvest | Do not draft claims; request signed manifest or minimal corrected-noise rerun. |
-| Remote 105 | Supplement/defense only | Not a Paper1 submission blocker. |
-| Thesis | CN and EN compiled after CC EN prose-flow plus Codex layout polish | PDFs rebuilt; no active old-claim hits and no current overfull hbox entries. |
+| Paper2 / 107 | 410M claim-lock package completed; 107-clean push reviewed through `19038b2`; figure-led draft polished | Use only `paper2/manuscript/source_data/remote107_selective_kv_claim_lock_20260511/` for current claim-bearing Paper2 layer-scope evidence; Qwen3-VL/2.8B/6.9B remain validation lanes until claim-locked. |
+| Local GPU / Paper3 | Spatial variance 10×3 and retention×protection 10×3 completed on seed789 | GPU is free only after a fresh `nvidia-smi` check; treat completed floorplan/retention results as provisional synthetic/simulator evidence. |
+| Thesis | CN/EN/XJTU lanes active; XJTU format check updated | Formal metadata remains deferred; XJTU submission lane builds with placeholder metadata, and residual issues are font/bibliography line-breaking rather than unresolved content edits. |
 
 ## Current command priorities
 
-1. Keep Codex and CC write scopes disjoint.
-2. Keep Paper2/107 audit-only after CC confirmed metadata remains incomplete.
-3. Send the remote 107 manifest/minimal-rerun request if/when the user wants Paper2 unblocked.
-4. Keep Paper1 release frozen unless the user asks for another author wording pass or submission packaging.
-5. Keep thesis integration focused on formal metadata/layout polish, not claim changes.
-6. Push only after explicit user approval.
+1. Keep Paper2/107 claim-bearing rows restricted to the 2026-05-11 Remote107 source-data package; 107-clean scale-up/Qwen3-VL pushes stay provisional until claim-locked.
+2. Keep local cache-path, retention/refresh, and offline reconstruction results engineering-only.
+3. Retention×protection 10×3 expansion completed: 270 raw rows plus summary/plot. Keep it provisional simulator-retention evidence and run `nvidia-smi` before choosing the next GPU lane (drift-aware SAM, measured-profile/floorplan extension, or CNN-vs-ViT).
+4. Keep Paper1 release frozen unless the user asks for another author wording pass or submission packaging. Latest marker recheck found no `TinyImageNet` or `ion. n.` residue; KV-cache appears only as a separate Work-2 boundary note.
+5. Push only after explicit user approval.
 
 ## Active coordination files
 
 | File | Purpose |
 |---|---|
-| `coordination/active/CODEX_CC_PARALLEL_WORKPLAN_20260510.md` | No-conflict ownership map. |
-| `coordination/remote_tasks/107/CC_107_REMOTE_METADATA_HARVEST_TASKLIST_20260510.md` | Tasklist for the separate CC model. |
-| `coordination/remote_tasks/107/CODEX_107_EVIDENCE_GATE_LEDGER_20260510.md` | Current 107 evidence gate state. |
-| `coordination/remote_tasks/107/CODEX_107_METADATA_ACCEPTANCE_PROTOCOL_20260510.md` | Codex acceptance rules for CC findings. |
-| `coordination/remote_tasks/paper1/CC_PAPER1_AUTHOR_REVIEW_TASKLIST_20260510.md` | New read-only Paper1 review task for CC. |
-| `coordination/agent_reports/Codex/CODEX_PAPER1_POST_BROADCAST_RELEASE_20260510.md` | Paper1 post-broadcast fix and release-refresh report. |
-| `coordination/agent_reports/Codex/CODEX_THESIS_POST_CC_INTEGRATION_20260510.md` | Thesis integration report after CC EN prose-flow pass. |
+| `coordination/active/CLAUDE_TASK_gpt.md` | Current short task handoff. |
+| `coordination/active/NEXT_WORK_MASTER_TASKLIST_20260510.md` | Master workstream map and experiment closure status. |
+| `report_md/_gpt/CANONICAL_EVIDENCE_LEDGER_20260510.md` | Current claim-to-artifact ledger. |
+| `/home/qiaosir/projects/BROADCAST.md` | Append-only workspace broadcast. |
+| `paper2/manuscript/source_data/remote107_selective_kv_claim_lock_20260511/` | Claim-bearing Paper2 source-data package. |
 
 ## Hard boundaries
 
 - No `git push` without explicit user approval.
 - No broad `git add -A`.
-- No Paper1 release refresh unless Codex integrates a scoped review finding first.
+- No Paper1 release refresh unless a scoped review finding is integrated first.
 - No edits inside `/home/qiaosir/projects/remote_reviews/105` or `/home/qiaosir/projects/remote_reviews/107`.
-- No checkpoint/data moves or copies.
-- No GPU training/eval jobs unless the user explicitly asks.
+- No checkpoint/data moves or copies unless required by the active task and recorded in the ledger.
+- No additional GPU training/eval job unless a fresh `nvidia-smi` capacity check passes.
 
 ## Watch items
 
 | Item | Why it matters | Action |
 |---|---|---|
-| `paper2/results/METADATA_COMPLETENESS_107_20260510.tsv` | Appeared as untracked while parallel work is active | Do not overwrite; identify producer before integrating. |
-| Gemini 107 "locked" broadcasts | Superseded by strict review | Treat as invalid for claim drafting. |
-| `paper2/src/plot_107_results.py` | Generates audit plots only | Do not cite figures as manuscript evidence yet. |
+| Legacy 107 blocked wording | It predates the 2026-05-11 claim-lock package | Treat as historical only; do not let it override the new source-data package. |
+| Gemini-era 107 figures | Generated from candidate/audit lanes | Regenerate from the 2026-05-11 package before manuscript claim use. |
+| Local KV probes | Useful cache-path debugging but protocol differs from Remote107 | Use only as methods/supplementary engineering evidence. |
 | Root `BROADCAST.md` | Volatile coordination file | Keep updates concise and searchable. |
 | Thesis formal metadata | Advisor, department, degree wording, university, and official date still need confirmation | Do not invent these values; fill only after user/university confirmation. |
 
 ## Integrated 107 decision
 
-CC report integrated:
+Historical strict-review decision:
 
 `107 CLAIM LOCK BLOCKED - RERUN/MANIFEST REQUIRED`
 
-Reason: recovered facts are useful for planning, but no per-row producing commit, exact command, complete eval protocol, checkpoint SHA-256, or safe old-vs-corrected matched table exists in the local legacy JSON package.
+Current superseding state: the 2026-05-11 Remote107 selective-KV package contains 41/41 archived original JSON artifacts, manifest/report, aggregate summary, regenerated figure, and source-data package. It is canonical for the narrow claim that terminal-layer selective analog KV remains viable under the locked protocol and all-layer analog KV is rejected as the main route.
 
-## Next Codex actions
+## Next actions
 
-1. Keep Paper2/107 figures and TSVs audit-only.
-2. Use `coordination/remote_tasks/107/REMOTE_107_METADATA_RECOVERY_OR_MINIMAL_RERUN_REQUEST_20260510.md` to unblock Paper2 when remote execution/manifest is available.
-3. Treat Paper1 as release-refreshed after final narrative polish; next Paper1 action is only user-approved submission packaging or explicit wording changes.
-4. For thesis, keep content/claim lock; only formal metadata confirmation remains before official submission.
+1. Keep Paper2 manuscript claims tied to the 2026-05-11 source-data package.
+2. Spatial variance 10×3 expansion is closed; ledger and broadcast should stay synchronized with the provisional synthetic floorplan interpretation.
+3. Retention×protection 10×3 expansion is closed: 270 raw rows plus summary/plot. Next GPU choice is drift-aware SAM, measured-profile/floorplan extension, or CNN-vs-ViT after a fresh GPU capacity check.
+4. Decide later whether to convert the figure-led Paper2 draft into the formal manuscript template.

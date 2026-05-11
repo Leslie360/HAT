@@ -13,6 +13,7 @@ This package is for local Codex review/editing of manuscript text, figures, plot
 - Paper1 manuscript/release LaTeX, figures, and current reports.
 - Paper2 manuscript draft/snippets, figures, plotting scripts, source data, and result TSV/JSON artifacts.
 - Thesis CN/XJTU LaTeX lanes, figures, and current result tables.
+- Retention × protection 10×3 closure artifacts generated at `20260511_223530`, including source TSV, summary TSV, plot source, PNG/PDF figure, script, and log references.
 - Plotting/evaluation scripts needed to regenerate the included figure/data artifacts.
 - `report_md/_gpt` evidence reports, especially the canonical evidence ledger.
 - Internal `MANIFEST_FILES.txt` and `SHA256SUMS.txt` inside the archive.

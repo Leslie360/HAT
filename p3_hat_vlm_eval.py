@@ -51,9 +51,9 @@ def load_model_for_eval(model_name, device="cuda", fp16=True):
         model_name,
         torch_dtype=dtype,
         use_safetensors=True,
-        local_files_only=True,
+        local_files_only=False,
     )
-    processor = AutoProcessor.from_pretrained(model_name, local_files_only=True)
+    processor = AutoProcessor.from_pretrained(model_name, local_files_only=False)
     model = model.to(device)
     return model, processor, family
 

@@ -7,6 +7,9 @@ and reports PPL on WikiText-2 test.
 
 import math
 import os
+# Default to HF mirror to avoid network timeouts on direct HuggingFace access.
+if not os.environ.get("HF_ENDPOINT"):
+    os.environ["HF_ENDPOINT"] = "https://hf-mirror.com"
 import sys
 import json
 import argparse
@@ -51,6 +54,8 @@ def main():
     parser.add_argument("--device", type=str, default="cuda")
     parser.add_argument("--retention_step_time", type=float, default=0.0,
                         help="Retention decay step time in seconds per token position.")
+    parser.add_argument("--fp16", action="store_true",
+                        help="Load model in FP16 and use AMP autocast for eval.")
     args = parser.parse_args()
 
     # Default output_dir: parent of checkpoint_dir
@@ -81,11 +86,15 @@ def main():
     )
 
     print(f"Loading checkpoint from {args.checkpoint_dir}...")
+    # Use bfloat16 for half-precision eval (same dynamic range as fp32, no NaN risk)
+    dtype = torch.bfloat16 if args.fp16 else torch.float32
     model = AutoModelForCausalLM.from_pretrained(
         args.checkpoint_dir,
-        torch_dtype=torch.float32,
+        torch_dtype=dtype,
+        use_safetensors=True,
+        local_files_only=True,
     )
-    tokenizer = AutoTokenizer.from_pretrained(args.checkpoint_dir)
+    tokenizer = AutoTokenizer.from_pretrained(args.checkpoint_dir, local_files_only=True)
     tokenizer.pad_token = tokenizer.eos_token
     model = model.to(args.device)
 
@@ -96,7 +105,7 @@ def main():
                         d2d_seed=d2d_seed)
 
     print(f"\nEvaluating PPL (C2C={args.sigma_c2c}, D2D={args.sigma_d2d})...")
-    ppl = evaluate_ppl(model, tokenizer, args.device, max_length=args.max_length)
+    ppl = evaluate_ppl(model, tokenizer, args.device, max_length=args.max_length, fp16=args.fp16)
     print(f"PPL: {ppl:.2f}")
 
     analog_layers_list = sorted(analog_layers) if analog_layers else list(range(model.config.num_hidden_layers))

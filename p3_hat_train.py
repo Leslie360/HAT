@@ -5,8 +5,12 @@ Monkey-patches GPTNeoXAttention to inject analog KV noise during training.
 All operations are differentiable (STE quantization + C2C noise).
 """
 
+import copy
 import math
 import os
+# Default to HF mirror to avoid network timeouts on direct HuggingFace access.
+if not os.environ.get("HF_ENDPOINT"):
+    os.environ["HF_ENDPOINT"] = "https://hf-mirror.com"
 import sys
 import json
 import argparse
@@ -101,8 +105,8 @@ def analogize_kv_tensor(x: torch.Tensor, analog_cfg: AnalogLinearConfig,
 
     # D2D noise in conductance domain (fixed per cell, different for pos/neg crossbars)
     if analog_cfg.noise_enabled and d2d_noise_pos is not None and d2d_noise_neg is not None:
-        G_pos = G_pos + d2d_noise_pos
-        G_neg = G_neg + d2d_noise_neg
+        G_pos = (G_pos + d2d_noise_pos).clamp(analog_cfg.G_min, analog_cfg.G_max)
+        G_neg = (G_neg + d2d_noise_neg).clamp(analog_cfg.G_min, analog_cfg.G_max)
 
     # Differential read
     W_eff = G_pos - G_neg
@@ -132,9 +136,126 @@ def analogize_kv_tensor(x: torch.Tensor, analog_cfg: AnalogLinearConfig,
     return x_analog.to(x.dtype)
 
 
+class LoRALinear(nn.Module):
+    """Low-rank adaptation wrapper for nn.Linear.
+    y = Wx + BAx, where W is frozen and A,B are trainable.
+    """
+    def __init__(self, base_linear: nn.Linear, rank: int = 8, lora_alpha: float = 16.0):
+        super().__init__()
+        self.base = base_linear
+        self.rank = rank
+        self.lora_alpha = lora_alpha
+        self.scaling = lora_alpha / rank
+        in_features = base_linear.in_features
+        out_features = base_linear.out_features
+        device = base_linear.weight.device
+        self.lora_A = nn.Parameter(torch.zeros(in_features, rank, device=device))
+        self.lora_B = nn.Parameter(torch.zeros(rank, out_features, device=device))
+        nn.init.kaiming_uniform_(self.lora_A, a=math.sqrt(5))
+        nn.init.zeros_(self.lora_B)
+        # Freeze base weights
+        self.base.weight.requires_grad = False
+        if self.base.bias is not None:
+            self.base.bias.requires_grad = False
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        out = self.base(x)
+        if self.rank > 0:
+            out = out + (x @ self.lora_A @ self.lora_B) * self.scaling
+        return out
+
+
+def merge_and_uninject_lora(model) -> int:
+    """Merge LoRA deltas back into base weights and restore original nn.Linear.
+
+    Ensures checkpoints saved after LoRA training are loadable by standard
+    AutoModelForCausalLM.from_pretrained without any eval-side changes.
+    """
+    merged = 0
+    replacements = []
+    for name, module in model.named_modules():
+        if isinstance(module, LoRALinear):
+            # W_merged = W_base + scaling * (lora_A @ lora_B).T
+            delta = (module.lora_A @ module.lora_B).T * module.scaling
+            module.base.weight.data.add_(delta)
+            module.base.weight.requires_grad = True
+            if module.base.bias is not None:
+                module.base.bias.requires_grad = True
+            replacements.append((name, module.base))
+            merged += 1
+
+    for name, base_module in replacements:
+        parent = model
+        parts = name.split('.')
+        for p in parts[:-1]:
+            parent = getattr(parent, p)
+        setattr(parent, parts[-1], base_module)
+
+    if merged:
+        print(f"[LoRA] Merged and restored {merged} LoRA layers to standard Linear.")
+    return merged
+
+
+def inject_lora(model, target_layers: set, rank: int = 8):
+    """Inject LoRA into q/k/v/o_proj of target attention layers."""
+    replaced = 0
+    for name, module in model.named_modules():
+        if 'attention' in name.lower() and type(module).__name__ == 'GPTNeoXAttention':
+            layer_idx = None
+            for p in name.split('.'):
+                if p.isdigit():
+                    layer_idx = int(p)
+                    break
+            if layer_idx is None or layer_idx not in target_layers:
+                continue
+            for proj_name in ['query_key_value', 'dense']:
+                if hasattr(module, proj_name):
+                    proj = getattr(module, proj_name)
+                    if isinstance(proj, nn.Linear):
+                        setattr(module, proj_name, LoRALinear(proj, rank=rank))
+                        replaced += 1
+    print(f"[LoRA] Injected rank={rank} into {replaced} linear layers.")
+    return replaced
+
+
+def resample_d2d_noise(model, sigma_d2d: float):
+    """Re-generate D2D noise buffers for all patched attention layers.
+
+    Used for multi-noise training: each step can sample a different D2D
+    intensity to expose the model to a broader noise distribution.
+    """
+    G_range = None
+    for module in model.modules():
+        if type(module).__name__ == 'GPTNeoXAttention' and hasattr(module, '_d2d_noise_k_pos'):
+            if G_range is None:
+                # Infer from any existing buffer or fallback
+                if module._d2d_noise_k_pos is not None:
+                    # we only need G_range to compute per_leg_std
+                    # Use module's analog cfg if available
+                    cfg = getattr(module, '_analog_cfg', None)
+                    if cfg is not None:
+                        G_range = cfg.G_max - cfg.G_min
+                    else:
+                        G_range = 9.0  # fallback 10-1
+                else:
+                    continue
+            per_leg_std = sigma_d2d * G_range / (2 ** 0.5)
+            # Infer shape from existing buffer or parameter
+            if module._d2d_noise_k_pos is not None:
+                shape = module._d2d_noise_k_pos.shape
+            else:
+                shape = (1, module.num_attention_heads, getattr(module, '_max_length', 512), module.head_size)
+            device = next(module.parameters()).device
+            module._d2d_noise_k_pos = torch.randn(*shape, device=device) * per_leg_std
+            module._d2d_noise_k_neg = torch.randn(*shape, device=device) * per_leg_std
+            module._d2d_noise_v_pos = torch.randn(*shape, device=device) * per_leg_std
+            module._d2d_noise_v_neg = torch.randn(*shape, device=device) * per_leg_std
+
+
 def patch_model_for_hat(model, analog_cfg: AnalogLinearConfig,
                          analog_layers: Optional[set] = None, max_length: int = 512,
-                         retention_step_time: float = 0.0, d2d_seed: int = 0xD2D):
+                         retention_step_time: float = 0.0, d2d_seed: int = 0xD2D,
+                         adaptive_n_states: Optional[str] = None):
     """Monkey-patch model attention layers to inject analog KV noise.
 
     Args:
@@ -143,9 +264,23 @@ def patch_model_for_hat(model, analog_cfg: AnalogLinearConfig,
         analog_layers: set of layer indices to patch (None = all)
         max_length: max sequence length for D2D noise buffer sizing
         d2d_seed: base seed for D2D noise pattern (per-layer seed = d2d_seed + layer_idx)
+        adaptive_n_states: layer-wise n_states scaling, e.g. "linear:0.5:2.0"
     """
     num_layers = model.config.num_hidden_layers
     target_layers = analog_layers if analog_layers is not None else set(range(num_layers))
+
+    # Parse adaptive n_states schedule
+    adaptive_mode = None
+    adaptive_min = 1.0
+    adaptive_max = 1.0
+    if adaptive_n_states:
+        parts = adaptive_n_states.split(':')
+        if len(parts) == 3:
+            adaptive_mode = parts[0]
+            adaptive_min = float(parts[1])
+            adaptive_max = float(parts[2])
+        else:
+            raise ValueError(f"adaptive_n_states must be 'mode:min:max', got {adaptive_n_states}")
 
     G_range = analog_cfg.G_max - analog_cfg.G_min
     count = 0
@@ -162,7 +297,14 @@ def patch_model_for_hat(model, analog_cfg: AnalogLinearConfig,
             if layer_idx is not None and layer_idx in target_layers:
                 original_forward = module.forward
                 module._original_forward = original_forward
-                module._analog_cfg = analog_cfg
+
+                # Layer-wise adaptive n_states
+                layer_cfg = copy.copy(analog_cfg)
+                if adaptive_mode == "linear":
+                    progress = layer_idx / max(1, num_layers - 1)
+                    scale = adaptive_min + progress * (adaptive_max - adaptive_min)
+                    layer_cfg.n_states = max(2, int(round(analog_cfg.n_states * scale)))
+                module._analog_cfg = layer_cfg
                 module._layer_idx = layer_idx
                 module._retention_step_time = retention_step_time
 
@@ -276,32 +418,33 @@ def train_hat(
     analog_layers: Optional[set] = None,
     freeze_non_target: bool = False,
     fp16: bool = False,
+    lora_rank: int = 0,
+    d2d_schedule: str = "fixed",
+    teacher_model=None,
+    distill_alpha: float = 0.0,
+    distill_temp: float = 2.0,
 ):
     """Run HAT training on WikiText-2."""
-    # Memory optimization: only optimize patched attention layers when doing
-    # selective analog (e.g. last1). Full-model analog still optimizes everything.
+    # Determine parameters to optimize.
+    # Default: full-model fine-tuning. With freeze_non_target or LoRA: selective.
     num_layers = model.config.num_hidden_layers
     target_layers = analog_layers if analog_layers is not None else set(range(num_layers))
-    if len(target_layers) < num_layers:
-        params_to_optimize = []
-        for name, module in model.named_modules():
-            if 'attention' in name.lower() and hasattr(module, 'forward') and type(module).__name__ == 'GPTNeoXAttention':
-                layer_idx = None
-                for p in name.split('.'):
-                    if p.isdigit():
-                        layer_idx = int(p)
-                        break
-                if layer_idx is not None and layer_idx in target_layers:
-                    params_to_optimize.extend(list(module.parameters()))
-        if not params_to_optimize:
-            # Fallback: optimize everything if we failed to extract layer params
-            params_to_optimize = model.parameters()
-    else:
-        params_to_optimize = model.parameters()
 
-    # Optionally freeze non-target layers to save backward memory.
-    # Only meaningful when selective analog is used.
-    if freeze_non_target and len(target_layers) < num_layers:
+    # LoRA mode: only optimize LoRA parameters, freeze everything else.
+    if lora_rank > 0:
+        params_to_optimize = []
+        for name, p in model.named_parameters():
+            if 'lora_A' in name or 'lora_B' in name:
+                params_to_optimize.append(p)
+            else:
+                p.requires_grad = False
+        lora_params = sum(p.numel() for p in params_to_optimize)
+        print(f"[LoRA] Optimizing {lora_params:,} LoRA parameters (rank={lora_rank}).")
+        if not params_to_optimize:
+            raise RuntimeError("No LoRA parameters found. Did you call inject_lora()?")
+    elif freeze_non_target and len(target_layers) < num_layers:
+        # Freeze non-target layers; optimizer sees full model but only updates
+        # parameters where requires_grad=True.
         frozen_count = 0
         trainable_count = 0
         for name, p in model.named_parameters():
@@ -316,6 +459,10 @@ def train_hat(
             else:
                 trainable_count += p.numel()
         print(f"[freeze_non_target] Frozen {frozen_count:,} params, trainable {trainable_count:,} params")
+        params_to_optimize = model.parameters()
+    else:
+        # Full-model fine-tuning (default for selective analog without freeze).
+        params_to_optimize = model.parameters()
 
     optimizer = AdamW(params_to_optimize, lr=lr, weight_decay=0.01)
 
@@ -324,11 +471,17 @@ def train_hat(
     encodings = tokenizer(text, return_tensors="pt")
     seq_len = encodings.input_ids.size(1)
 
-    scaler = torch.amp.GradScaler("cuda") if fp16 else None
+    # FP16 weights: pure fp16 forward/backward, no GradScaler needed.
+    # FP32 weights: standard full-precision training.
+    use_amp = (not fp16) and torch.cuda.is_available()
+    scaler = torch.amp.GradScaler("cuda") if use_amp else None
 
     model.train()
     step = 0
     losses = []
+
+    if d2d_schedule != "fixed":
+        print(f"[multi-noise] D2D schedule: {d2d_schedule}, base sigma_d2d={analog_cfg.sigma_d2d}")
 
     pbar = tqdm(total=max_steps, desc="HAT Training")
     for epoch in range(epochs):
@@ -336,7 +489,18 @@ def train_hat(
             end_loc = min(begin_loc + max_length, seq_len)
             input_ids = encodings.input_ids[:, begin_loc:end_loc].to(device)
 
-            with torch.amp.autocast("cuda", enabled=fp16):
+            # Multi-noise D2D schedule: resample noise intensity each step
+            if d2d_schedule != "fixed" and analog_cfg.sigma_d2d > 0:
+                if d2d_schedule == "uniform":
+                    current_sigma = torch.rand(1).item() * analog_cfg.sigma_d2d
+                elif d2d_schedule == "linear":
+                    progress = step / max_steps if max_steps > 0 else 0.0
+                    current_sigma = progress * analog_cfg.sigma_d2d
+                else:
+                    current_sigma = analog_cfg.sigma_d2d
+                resample_d2d_noise(model, current_sigma)
+
+            with torch.amp.autocast("cuda", enabled=use_amp):
                 outputs = model(input_ids, use_cache=False)
                 logits = outputs.logits
 
@@ -344,15 +508,29 @@ def train_hat(
                 shift_logits = logits[..., :-1, :].contiguous()
                 shift_labels = input_ids[..., 1:].contiguous()
                 loss = F.cross_entropy(shift_logits.view(-1, shift_logits.size(-1)), shift_labels.view(-1))
+
+                # Distillation from clean teacher
+                if teacher_model is not None and distill_alpha > 0:
+                    with torch.no_grad():
+                        teacher_outputs = teacher_model(input_ids, use_cache=False)
+                        teacher_logits = teacher_outputs.logits[..., :-1, :].contiguous()
+                    student_log_probs = F.log_softmax(shift_logits / distill_temp, dim=-1)
+                    teacher_probs = F.softmax(teacher_logits / distill_temp, dim=-1)
+                    distill_loss = F.kl_div(
+                        student_log_probs.view(-1, student_log_probs.size(-1)),
+                        teacher_probs.view(-1, teacher_probs.size(-1)),
+                        reduction='batchmean'
+                    ) * (distill_temp ** 2)
+                    loss = (1 - distill_alpha) * loss + distill_alpha * distill_loss
             loss = loss / grad_accum
 
-            if fp16:
+            if use_amp:
                 scaler.scale(loss).backward()
             else:
                 loss.backward()
 
             if (step + 1) % grad_accum == 0:
-                if fp16:
+                if use_amp:
                     scaler.step(optimizer)
                     scaler.update()
                 else:
@@ -435,6 +613,17 @@ def main():
                         help="Set requires_grad=False on non-target layers to save backward memory.")
     parser.add_argument("--fp16", action="store_true",
                         help="Use FP16 weights + AMP training to reduce VRAM (required for 6.9B scale).")
+    parser.add_argument("--lora_rank", type=int, default=0,
+                        help="LoRA rank for parameter-efficient HAT. 0 = full fine-tune (default).")
+    parser.add_argument("--d2d_schedule", type=str, default="fixed",
+                        choices=["fixed", "uniform", "linear"],
+                        help="D2D noise schedule: fixed=constant, uniform=random per-step, linear=ramp-up.")
+    parser.add_argument("--distill_alpha", type=float, default=0.0,
+                        help="Knowledge distillation alpha from clean teacher. 0=disabled.")
+    parser.add_argument("--distill_temp", type=float, default=2.0,
+                        help="Distillation temperature.")
+    parser.add_argument("--adaptive_n_states", type=str, default=None,
+                        help="Layer-wise adaptive n_states, e.g. 'linear:0.5:2.0'.")
     args = parser.parse_args()
 
     torch.manual_seed(args.seed)
@@ -446,21 +635,44 @@ def main():
         sigma_c2c=args.sigma_c2c,
         sigma_d2d=args.sigma_d2d,
     )
+    if args.retention_step_time > 0:
+        analog_cfg.retention_enabled = True
 
     analog_layers = set(int(x) for x in args.analog_layers.split(",")) if args.analog_layers else None
 
     print("Loading %s..." % args.model_name)
-    dtype = torch.float16 if args.fp16 else torch.float32
-    model = AutoModelForCausalLM.from_pretrained(args.model_name, torch_dtype=dtype)
-    tokenizer = AutoTokenizer.from_pretrained(args.model_name)
+    # Use bfloat16 for half-precision: same dynamic range as fp32 (no GradScaler needed),
+    # but 50% memory savings vs fp32. fp16 is unstable for transformer training without scaler.
+    dtype = torch.bfloat16 if args.fp16 else torch.float32
+    model = AutoModelForCausalLM.from_pretrained(
+        args.model_name, torch_dtype=dtype, use_safetensors=True, local_files_only=True
+    )
+    tokenizer = AutoTokenizer.from_pretrained(args.model_name, local_files_only=True)
     tokenizer.pad_token = tokenizer.eos_token
     model = model.to(device)
+
+    teacher_model = None
+    if args.distill_alpha > 0:
+        print("Loading clean teacher model for distillation...")
+        teacher_model = AutoModelForCausalLM.from_pretrained(
+            args.model_name, torch_dtype=dtype, use_safetensors=True, local_files_only=True
+        )
+        teacher_model = teacher_model.to(device)
+        teacher_model.eval()
+        for p in teacher_model.parameters():
+            p.requires_grad = False
 
     print("Patching attention layers for analog KV...")
     patch_model_for_hat(model, analog_cfg, analog_layers,
                         max_length=args.max_length,
                         retention_step_time=args.retention_step_time,
-                        d2d_seed=args.d2d_seed)
+                        d2d_seed=args.d2d_seed,
+                        adaptive_n_states=args.adaptive_n_states)
+
+    if args.lora_rank > 0:
+        num_layers = model.config.num_hidden_layers
+        target_layers = analog_layers if analog_layers is not None else set(range(num_layers))
+        inject_lora(model, target_layers, rank=args.lora_rank)
 
     print("\nPre-HAT PPL eval...")
     ppl_before = evaluate_ppl(model, tokenizer, device, max_length=args.max_length, fp16=args.fp16)
@@ -474,6 +686,11 @@ def main():
         analog_layers=analog_layers,
         freeze_non_target=args.freeze_non_target_params,
         fp16=args.fp16,
+        lora_rank=args.lora_rank,
+        d2d_schedule=args.d2d_schedule,
+        teacher_model=teacher_model,
+        distill_alpha=args.distill_alpha,
+        distill_temp=args.distill_temp,
     )
 
     print("\nPost-HAT PPL eval...")
@@ -516,6 +733,11 @@ def main():
     }
 
     # Save checkpoint for downstream noise-generalization eval
+    # If LoRA was used, merge deltas back to base weights so eval can load
+    # with standard from_pretrained without LoRA re-injection.
+    if args.lora_rank > 0:
+        merge_and_uninject_lora(model)
+
     ckpt_dir = os.path.join(args.output_dir, "checkpoints", f"{args.name}_seed{args.seed}")
     os.makedirs(ckpt_dir, exist_ok=True)
     model.save_pretrained(ckpt_dir)

@@ -1,0 +1,80 @@
+{
+  "date": "2026-05-09",
+  "experiments": {
+    "410m_mismatch_c2c": {
+      "checkpoint": "p410m_fixed500_fullmodel_seed42",
+      "train_sigma_c2c": 0.01,
+      "train_sigma_d2d": 0.02,
+      "eval_sigma_d2d": 0.02,
+      "results": {
+        "0.0": 17.86,
+        "0.01": 17.88,
+        "0.02": 18.01,
+        "0.05": 18.28,
+        "0.10": 18.67
+      }
+    },
+    "410m_mismatch_d2d": {
+      "checkpoint": "p410m_fixed500_fullmodel_seed42",
+      "train_sigma_c2c": 0.01,
+      "train_sigma_d2d": 0.02,
+      "eval_sigma_c2c": 0.01,
+      "results": {
+        "0.0": 17.86,
+        "0.01": 17.88,
+        "0.02": 17.88,
+        "0.05": 18.22,
+        "0.10": 18.49
+      }
+    },
+    "410m_d2d_seed_cross_instance": {
+      "checkpoint": "p410m_fixed500_fullmodel_seed42",
+      "train_sigma_c2c": 0.01,
+      "train_sigma_d2d": 0.02,
+      "n_states": 256,
+      "results": {
+        "42": 18.30,
+        "123": 18.29,
+        "456": 18.29,
+        "789": 18.26,
+        "2024": 18.30
+      },
+      "std": 0.016,
+      "conclusion": "跨器件实例PPL标准差仅0.016，一致性极好"
+    },
+    "410m_n_states_sweep": {
+      "checkpoint": "p410m_fixed500_fullmodel_seed42",
+      "train_sigma_c2c": 0.01,
+      "train_sigma_d2d": 0.02,
+      "results": {
+        "128": 18.30,
+        "256": 18.30,
+        "512": 18.30,
+        "1024": 18.30
+      },
+      "conclusion": "n_states 128-1024 对PPL完全无影响，7-bit已足够"
+    },
+    "410m_sigma_c2c_sweep": {
+      "checkpoint": "p410m_fixed500_fullmodel_seed42",
+      "eval_sigma_d2d": 0.0,
+      "results": {
+        "0.0": 17.86,
+        "0.005": 17.87,
+        "0.01": 17.88,
+        "0.02": 18.01,
+        "0.05": 18.48
+      }
+    },
+    "410m_sigma_d2d_sweep": {
+      "checkpoint": "p410m_fixed500_fullmodel_seed42",
+      "eval_sigma_c2c": 0.0,
+      "results": {
+        "0.0": 17.86,
+        "0.01": 17.88,
+        "0.02": 17.88,
+        "0.05": 18.22,
+        "0.10": 18.49
+      }
+    }
+  }
+}

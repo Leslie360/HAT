@@ -1,0 +1,39 @@
+{
+  "run_id": "digital_c2c0.0_d2d0.0_seed42_20260511",
+  "commit": "6df8267",
+  "git_status_short": "",
+  "command": "python p3_hat_train.py --name combined_layerlast1_v2 --sigma_d2d 0.02 --sigma_c2c 0.01 --max_steps 500 --seed 42 --analog_layers \"23\" (Pre-HAT PPL eval embedded in training script)",
+  "config": {
+    "n_states": 256,
+    "analog_layers": [],
+    "max_length": 512,
+    "sigma_c2c": 0.0,
+    "sigma_d2d": 0.0,
+    "d2d_seed": 42,
+    "retention_step_time": 0.0
+  },
+  "dataset": "wikitext",
+  "dataset_split": "wikitext-2-raw-v1 (test)",
+  "eval_protocol": {
+    "context_length": 512,
+    "stride": 512,
+    "batch_size": 1,
+    "ppl_definition": "negative-log-likelihood token average then exp, non-overlapping stride=max_length"
+  },
+  "checkpoint_dir": "EleutherAI/pythia-410m-deduped (base model, no HAT training)",
+  "checkpoint_sha256": "N/A (base model from HuggingFace Hub)",
+  "analog_layers": [],
+  "layer_label": "digital",
+  "train_seed": 42,
+  "d2d_seed": 42,
+  "c2c_seed": 0,
+  "eval_seed": 42,
+  "sigma_c2c": 0.0,
+  "sigma_d2d": 0.0,
+  "ppl": 23.3,
+  "corrected_noise_code_path": "HAT/p3_hat_eval.py",
+  "corrected_noise_commit": "c727a43",
+  "_source_file": "train_layer_last1.log (Pre-HAT PPL eval)",
+  "_recovery_timestamp": "2026-05-11",
+  "_note": "PPL=23.30 is the Pre-HAT baseline measured by p3_hat_train.py before starting HAT training. Source-backed from timestamped training log."
+}

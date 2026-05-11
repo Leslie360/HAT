@@ -96,12 +96,20 @@ Day 1
 
 **Missing:** All 2.8B/6.9B scans. Pipeline will auto-fill once lm-eval unblocks.
 
-### Link 5: Multimodal Extension (NOT STARTED ❌)
+### Link 5: Multimodal Extension (PARTIAL ✅)
 
-| Task | Status | GPU needed |
-|---|---|---|
-| Qwen3-VL model download | ✅ | N/A |
-| Clean vs analog generation | ❌ | 1 GPU, ~10 min |
+| Task | Status | GPU needed | Result |
+|---|---|---|---|
+| Qwen3-VL model download | ✅ | N/A | 4.0GB cached |
+| Clean vs analog generation (all 28 layers) | ✅ | GPU 3 | **Complete degradation** — outputs only "er" |
+| Clean vs analog generation (selective last1, layer 27) | ✅ | GPU 3 | **Negligible degradation** — detailed description intact |
+
+**Key finding:** Selective terminal-layer analog KV works for VLM even without HAT training. Full-model analog KV destroys generation quality. This mirrors the language-model trend and strengthens the selective-KV story.
+
+**Open questions:**
+- Does HAT training on Qwen3-VL further improve tolerance (allow last2/last4)?
+- Are vision features inherently more robust to conductance noise than text embeddings?
+- Quantitative metric needed: CLIPScore / LLM-as-judge instead of human eyeballing.
 
 ---
 

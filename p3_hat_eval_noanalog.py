@@ -67,7 +67,7 @@ def main():
 
     out_file = os.path.join(args.output_dir, f"eval_{args.checkpoint_dir.rstrip('/').split('/')[-1]}_digital_noanalog.json")
     with open(out_file, "w") as f:
-        json.dump(result, f, indent=2)
+        json.dump(result, f, indent=2, default=str)
     print(f"Saved: {out_file}")
 
 if __name__ == "__main__":

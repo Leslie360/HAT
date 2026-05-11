@@ -346,7 +346,7 @@ def main():
     )
     os.makedirs(args.output_dir, exist_ok=True)
     with open(out_file, "w") as f:
-        json.dump(result, f, indent=2, ensure_ascii=False)
+        json.dump(result, f, indent=2, ensure_ascii=False, default=str)
     print(f"\nSaved: {out_file}")
 
 

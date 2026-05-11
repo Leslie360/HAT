@@ -123,8 +123,10 @@ def main():
     for task_name in tasks:
         task_res = results.get("results", {}).get(task_name, {})
         for metric_name, value in task_res.items():
-            if isinstance(value, float):
-                summary[f"{task_name}:{metric_name}"] = round(value, 4)
+            if hasattr(value, 'item'):
+                value = value.item()
+            if isinstance(value, (int, float)):
+                summary[f"{task_name}:{metric_name}"] = round(float(value), 4)
 
     def _sanitize(obj):
         """Remove non-JSON-serializable items (functions, dtypes, tensors, etc.)."""
@@ -132,10 +134,15 @@ def main():
             return {k: _sanitize(v) for k, v in obj.items() if not callable(v)}
         elif isinstance(obj, list):
             return [_sanitize(v) for v in obj if not callable(v)]
-        elif isinstance(obj, type) and hasattr(obj, '__name__') and obj.__name__.endswith('dtype'):
-            # torch.dtype / numpy.dtype (torch.bfloat16 has no 'dtype' attr)
+        elif isinstance(obj, tuple):
+            return tuple(_sanitize(v) for v in obj if not callable(v))
+        elif isinstance(obj, set):
+            return [_sanitize(v) for v in obj if not callable(v)]
+        elif isinstance(obj, bytes):
+            return obj.decode('utf-8', errors='replace')
+        elif type(obj).__name__ in ('dtype', 'DType') or 'dtype' in type(obj).__name__.lower():
             return str(obj)
-        elif hasattr(obj, 'item'):   # scalar tensor
+        elif hasattr(obj, 'item'):   # scalar tensor / numpy scalar
             return obj.item()
         return obj
 
@@ -161,7 +168,7 @@ def main():
     )
     os.makedirs(args.output_dir, exist_ok=True)
     with open(out_file, "w") as f:
-        json.dump(result_record, f, indent=2)
+        json.dump(result_record, f, indent=2, default=str)
     print(f"\nSaved: {out_file}")
     print("Summary:", summary)
 

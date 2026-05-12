@@ -1,0 +1,314 @@
+[
+  {
+    "model": "pythia-410m",
+    "seq_len": 512,
+    "kv_cache_mb": 48.0,
+    "digital": {
+      "area_mm2": 0.0216,
+      "attention_mac_ops": 536870912,
+      "attention_energy_nj": 214748364.8,
+      "kv_read_energy_nj": 402653184.0,
+      "total_energy_nj": 617401548.8
+    },
+    "rram": {
+      "area_mm2": 0.0008,
+      "attention_mac_ops": 536870912,
+      "attention_energy_nj": 53687091.2,
+      "adc_energy_nj": 8192.0,
+      "total_energy_nj": 53695283.2,
+      "energy_reduction_vs_digital": 11.5,
+      "area_reduction_vs_digital": 28.0
+    },
+    "pcm": {
+      "area_mm2": 0.0009,
+      "attention_mac_ops": 536870912,
+      "attention_energy_nj": 80530636.8,
+      "adc_energy_nj": 8192.0,
+      "total_energy_nj": 80538828.8,
+      "energy_reduction_vs_digital": 7.67,
+      "area_reduction_vs_digital": 23.33
+    },
+    "fefet": {
+      "area_mm2": 0.0006,
+      "attention_mac_ops": 536870912,
+      "attention_energy_nj": 42949672.96,
+      "adc_energy_nj": 8192.0,
+      "total_energy_nj": 42957864.96,
+      "energy_reduction_vs_digital": 14.37,
+      "area_reduction_vs_digital": 35.0
+    }
+  },
+  {
+    "model": "pythia-410m",
+    "seq_len": 2048,
+    "kv_cache_mb": 192.0,
+    "digital": {
+      "area_mm2": 0.0216,
+      "attention_mac_ops": 8589934592,
+      "attention_energy_nj": 3435973836.8,
+      "kv_read_energy_nj": 1610612736.0,
+      "total_energy_nj": 5046586572.8
+    },
+    "rram": {
+      "area_mm2": 0.0008,
+      "attention_mac_ops": 8589934592,
+      "attention_energy_nj": 858993459.2,
+      "adc_energy_nj": 32768.0,
+      "total_energy_nj": 859026227.2,
+      "energy_reduction_vs_digital": 5.87,
+      "area_reduction_vs_digital": 28.0
+    },
+    "pcm": {
+      "area_mm2": 0.0009,
+      "attention_mac_ops": 8589934592,
+      "attention_energy_nj": 1288490188.8,
+      "adc_energy_nj": 32768.0,
+      "total_energy_nj": 1288522956.8,
+      "energy_reduction_vs_digital": 3.92,
+      "area_reduction_vs_digital": 23.33
+    },
+    "fefet": {
+      "area_mm2": 0.0006,
+      "attention_mac_ops": 8589934592,
+      "attention_energy_nj": 687194767.36,
+      "adc_energy_nj": 32768.0,
+      "total_energy_nj": 687227535.36,
+      "energy_reduction_vs_digital": 7.34,
+      "area_reduction_vs_digital": 35.0
+    }
+  },
+  {
+    "model": "pythia-1b",
+    "seq_len": 512,
+    "kv_cache_mb": 96.0,
+    "digital": {
+      "area_mm2": 0.0432,
+      "attention_mac_ops": 1073741824,
+      "attention_energy_nj": 429496729.6,
+      "kv_read_energy_nj": 805306368.0,
+      "total_energy_nj": 1234803097.6
+    },
+    "rram": {
+      "area_mm2": 0.0015,
+      "attention_mac_ops": 1073741824,
+      "attention_energy_nj": 107374182.4,
+      "adc_energy_nj": 8192.0,
+      "total_energy_nj": 107382374.4,
+      "energy_reduction_vs_digital": 11.5,
+      "area_reduction_vs_digital": 28.0
+    },
+    "pcm": {
+      "area_mm2": 0.0018,
+      "attention_mac_ops": 1073741824,
+      "attention_energy_nj": 161061273.6,
+      "adc_energy_nj": 8192.0,
+      "total_energy_nj": 161069465.6,
+      "energy_reduction_vs_digital": 7.67,
+      "area_reduction_vs_digital": 23.33
+    },
+    "fefet": {
+      "area_mm2": 0.0012,
+      "attention_mac_ops": 1073741824,
+      "attention_energy_nj": 85899345.92,
+      "adc_energy_nj": 8192.0,
+      "total_energy_nj": 85907537.92,
+      "energy_reduction_vs_digital": 14.37,
+      "area_reduction_vs_digital": 35.0
+    }
+  },
+  {
+    "model": "pythia-1b",
+    "seq_len": 2048,
+    "kv_cache_mb": 384.0,
+    "digital": {
+      "area_mm2": 0.0432,
+      "attention_mac_ops": 17179869184,
+      "attention_energy_nj": 6871947673.6,
+      "kv_read_energy_nj": 3221225472.0,
+      "total_energy_nj": 10093173145.6
+    },
+    "rram": {
+      "area_mm2": 0.0015,
+      "attention_mac_ops": 17179869184,
+      "attention_energy_nj": 1717986918.4,
+      "adc_energy_nj": 32768.0,
+      "total_energy_nj": 1718019686.4,
+      "energy_reduction_vs_digital": 5.87,
+      "area_reduction_vs_digital": 28.0
+    },
+    "pcm": {
+      "area_mm2": 0.0018,
+      "attention_mac_ops": 17179869184,
+      "attention_energy_nj": 2576980377.6,
+      "adc_energy_nj": 32768.0,
+      "total_energy_nj": 2577013145.6,
+      "energy_reduction_vs_digital": 3.92,
+      "area_reduction_vs_digital": 23.33
+    },
+    "fefet": {
+      "area_mm2": 0.0012,
+      "attention_mac_ops": 17179869184,
+      "attention_energy_nj": 1374389534.72,
+      "adc_energy_nj": 32768.0,
+      "total_energy_nj": 1374422302.72,
+      "energy_reduction_vs_digital": 7.34,
+      "area_reduction_vs_digital": 35.0
+    }
+  },
+  {
+    "model": "pythia-2.8b",
+    "seq_len": 512,
+    "kv_cache_mb": 160.0,
+    "digital": {
+      "area_mm2": 0.0719,
+      "attention_mac_ops": 1342177280,
+      "attention_energy_nj": 536870912.0,
+      "kv_read_energy_nj": 1342177280.0,
+      "total_energy_nj": 1879048192.0
+    },
+    "rram": {
+      "area_mm2": 0.0026,
+      "attention_mac_ops": 1342177280,
+      "attention_energy_nj": 134217728.0,
+      "adc_energy_nj": 16384.0,
+      "total_energy_nj": 134234112.0,
+      "energy_reduction_vs_digital": 14.0,
+      "area_reduction_vs_digital": 28.0
+    },
+    "pcm": {
+      "area_mm2": 0.0031,
+      "attention_mac_ops": 1342177280,
+      "attention_energy_nj": 201326592.0,
+      "adc_energy_nj": 16384.0,
+      "total_energy_nj": 201342976.0,
+      "energy_reduction_vs_digital": 9.33,
+      "area_reduction_vs_digital": 23.33
+    },
+    "fefet": {
+      "area_mm2": 0.0021,
+      "attention_mac_ops": 1342177280,
+      "attention_energy_nj": 107374182.4,
+      "adc_energy_nj": 16384.0,
+      "total_energy_nj": 107390566.4,
+      "energy_reduction_vs_digital": 17.5,
+      "area_reduction_vs_digital": 35.0
+    }
+  },
+  {
+    "model": "pythia-2.8b",
+    "seq_len": 2048,
+    "kv_cache_mb": 640.0,
+    "digital": {
+      "area_mm2": 0.0719,
+      "attention_mac_ops": 21474836480,
+      "attention_energy_nj": 8589934592.0,
+      "kv_read_energy_nj": 5368709120.0,
+      "total_energy_nj": 13958643712.0
+    },
+    "rram": {
+      "area_mm2": 0.0026,
+      "attention_mac_ops": 21474836480,
+      "attention_energy_nj": 2147483648.0,
+      "adc_energy_nj": 65536.0,
+      "total_energy_nj": 2147549184.0,
+      "energy_reduction_vs_digital": 6.5,
+      "area_reduction_vs_digital": 28.0
+    },
+    "pcm": {
+      "area_mm2": 0.0031,
+      "attention_mac_ops": 21474836480,
+      "attention_energy_nj": 3221225472.0,
+      "adc_energy_nj": 65536.0,
+      "total_energy_nj": 3221291008.0,
+      "energy_reduction_vs_digital": 4.33,
+      "area_reduction_vs_digital": 23.33
+    },
+    "fefet": {
+      "area_mm2": 0.0021,
+      "attention_mac_ops": 21474836480,
+      "attention_energy_nj": 1717986918.4,
+      "adc_energy_nj": 65536.0,
+      "total_energy_nj": 1718052454.4,
+      "energy_reduction_vs_digital": 8.12,
+      "area_reduction_vs_digital": 35.0
+    }
+  },
+  {
+    "model": "pythia-6.9b",
+    "seq_len": 512,
+    "kv_cache_mb": 256.0,
+    "digital": {
+      "area_mm2": 0.1151,
+      "attention_mac_ops": 2147483648,
+      "attention_energy_nj": 858993459.2,
+      "kv_read_energy_nj": 2147483648.0,
+      "total_energy_nj": 3006477107.2
+    },
+    "rram": {
+      "area_mm2": 0.0041,
+      "attention_mac_ops": 2147483648,
+      "attention_energy_nj": 214748364.8,
+      "adc_energy_nj": 16384.0,
+      "total_energy_nj": 214764748.8,
+      "energy_reduction_vs_digital": 14.0,
+      "area_reduction_vs_digital": 28.0
+    },
+    "pcm": {
+      "area_mm2": 0.0049,
+      "attention_mac_ops": 2147483648,
+      "attention_energy_nj": 322122547.2,
+      "adc_energy_nj": 16384.0,
+      "total_energy_nj": 322138931.2,
+      "energy_reduction_vs_digital": 9.33,
+      "area_reduction_vs_digital": 23.33
+    },
+    "fefet": {
+      "area_mm2": 0.0033,
+      "attention_mac_ops": 2147483648,
+      "attention_energy_nj": 171798691.84,
+      "adc_energy_nj": 16384.0,
+      "total_energy_nj": 171815075.84,
+      "energy_reduction_vs_digital": 17.5,
+      "area_reduction_vs_digital": 35.0
+    }
+  },
+  {
+    "model": "pythia-6.9b",
+    "seq_len": 2048,
+    "kv_cache_mb": 1024.0,
+    "digital": {
+      "area_mm2": 0.1151,
+      "attention_mac_ops": 34359738368,
+      "attention_energy_nj": 13743895347.2,
+      "kv_read_energy_nj": 8589934592.0,
+      "total_energy_nj": 22333829939.2
+    },
+    "rram": {
+      "area_mm2": 0.0041,
+      "attention_mac_ops": 34359738368,
+      "attention_energy_nj": 3435973836.8,
+      "adc_energy_nj": 65536.0,
+      "total_energy_nj": 3436039372.8,
+      "energy_reduction_vs_digital": 6.5,
+      "area_reduction_vs_digital": 28.0
+    },
+    "pcm": {
+      "area_mm2": 0.0049,
+      "attention_mac_ops": 34359738368,
+      "attention_energy_nj": 5153960755.2,
+      "adc_energy_nj": 65536.0,
+      "total_energy_nj": 5154026291.2,
+      "energy_reduction_vs_digital": 4.33,
+      "area_reduction_vs_digital": 23.33
+    },
+    "fefet": {
+      "area_mm2": 0.0033,
+      "attention_mac_ops": 34359738368,
+      "attention_energy_nj": 2748779069.44,
+      "adc_energy_nj": 65536.0,
+      "total_energy_nj": 2748844605.44,
+      "energy_reduction_vs_digital": 8.12,
+      "area_reduction_vs_digital": 35.0
+    }
+  }
+]

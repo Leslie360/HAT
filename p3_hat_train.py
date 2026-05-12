@@ -26,6 +26,17 @@ from torch.optim import AdamW
 from transformers import AutoModelForCausalLM, AutoTokenizer
 from datasets import load_dataset
 from tqdm import tqdm
+from huggingface_hub import snapshot_download
+
+
+def _resolve_local_path(model_name):
+    """Resolve HF model name to local snapshot path when offline."""
+    if os.path.isdir(model_name):
+        return model_name
+    try:
+        return snapshot_download(model_name, local_files_only=True)
+    except Exception:
+        return model_name
 
 sys.path.insert(0, '/home/lisq753/projects/HAT/HAT')
 from analog_kv_cache import AnalogKVCacheConfig
@@ -342,9 +353,12 @@ def patch_model_for_hat(model, analog_cfg: AnalogLinearConfig,
                     module.register_buffer('_d2d_noise_v_pos', None)
                     module.register_buffer('_d2d_noise_v_neg', None)
 
-                def make_forward(attn_module, cfg):
+                def make_forward(attn_module):
                     def forward(self, hidden_states, attention_mask, layer_past=None, position_embeddings=None, **kwargs):
                         from transformers.models.gpt_neox.modeling_gpt_neox import apply_rotary_pos_emb
+
+                        # Runtime-read config so adaptive noise schedule mutations apply
+                        cfg = attn_module._analog_cfg
 
                         input_shape = hidden_states.shape[:-1]
                         hidden_shape = (*input_shape, -1, 3 * attn_module.head_size)
@@ -397,11 +411,42 @@ def patch_model_for_hat(model, analog_cfg: AnalogLinearConfig,
                         return attn_output, attn_weights
                     return forward
 
-                module.forward = types.MethodType(make_forward(module, analog_cfg), module)
+                module.forward = types.MethodType(make_forward(module), module)
                 count += 1
 
     print(f"Patched {count} attention layers for HAT training")
     return count
+
+
+def _apply_adaptive_noise_schedule(model, step, max_steps, noise_schedule, base_cfg, analog_layers):
+    """Dynamically adjust sigma_c2c per step and per layer on patched attention modules."""
+    if noise_schedule == "fixed":
+        return
+    progress = min(step / max_steps, 1.0) if max_steps > 0 else 0.0
+    for name, module in model.named_modules():
+        if not hasattr(module, '_analog_cfg'):
+            continue
+        layer_idx = getattr(module, '_layer_idx', None)
+        if analog_layers is not None and layer_idx not in analog_layers:
+            continue
+        cfg = module._analog_cfg
+        sigma_c2c = base_cfg.sigma_c2c
+        if noise_schedule == "cosine":
+            decay = 0.5 * (1 + math.cos(math.pi * progress))
+            sigma_c2c = base_cfg.sigma_c2c * (0.1 + 0.9 * decay)
+        elif noise_schedule == "layer_wise":
+            if layer_idx is not None:
+                num_layers = max(analog_layers) + 1 if analog_layers else 32
+                depth_ratio = layer_idx / max(num_layers - 1, 1)
+                scale = 0.5 + depth_ratio
+                sigma_c2c = base_cfg.sigma_c2c * scale
+        elif noise_schedule == "reverse_layer_wise":
+            if layer_idx is not None:
+                num_layers = max(analog_layers) + 1 if analog_layers else 32
+                depth_ratio = layer_idx / max(num_layers - 1, 1)
+                scale = 1.5 - depth_ratio * 0.5
+                sigma_c2c = base_cfg.sigma_c2c * scale
+        cfg.sigma_c2c = sigma_c2c
 
 
 def train_hat(
@@ -420,6 +465,7 @@ def train_hat(
     fp16: bool = False,
     lora_rank: int = 0,
     d2d_schedule: str = "fixed",
+    noise_schedule: str = "fixed",
     teacher_model=None,
     distill_alpha: float = 0.0,
     distill_temp: float = 2.0,
@@ -482,6 +528,8 @@ def train_hat(
 
     if d2d_schedule != "fixed":
         print(f"[multi-noise] D2D schedule: {d2d_schedule}, base sigma_d2d={analog_cfg.sigma_d2d}")
+    if noise_schedule != "fixed":
+        print(f"[adaptive-noise] Schedule: {noise_schedule}, base sigma_c2c={analog_cfg.sigma_c2c}, base sigma_d2d={analog_cfg.sigma_d2d}")
 
     pbar = tqdm(total=max_steps, desc="HAT Training")
     for epoch in range(epochs):
@@ -499,6 +547,10 @@ def train_hat(
                 else:
                     current_sigma = analog_cfg.sigma_d2d
                 resample_d2d_noise(model, current_sigma)
+
+            # Adaptive noise schedule: update sigma_c2c/sigma_d2d per step
+            if noise_schedule != "fixed":
+                _apply_adaptive_noise_schedule(model, step, max_steps, noise_schedule, analog_cfg, analog_layers)
 
             with torch.amp.autocast("cuda", enabled=use_amp):
                 outputs = model(input_ids, use_cache=False)
@@ -618,6 +670,9 @@ def main():
     parser.add_argument("--d2d_schedule", type=str, default="fixed",
                         choices=["fixed", "uniform", "linear"],
                         help="D2D noise schedule: fixed=constant, uniform=random per-step, linear=ramp-up.")
+    parser.add_argument("--noise_schedule", type=str, default="fixed",
+                        choices=["fixed", "cosine", "layer_wise", "reverse_layer_wise"],
+                        help="Adaptive noise schedule: fixed=constant, cosine=cosine decay, layer_wise=deeper layers get more noise, reverse_layer_wise=deeper layers get less noise.")
     parser.add_argument("--distill_alpha", type=float, default=0.0,
                         help="Knowledge distillation alpha from clean teacher. 0=disabled.")
     parser.add_argument("--distill_temp", type=float, default=2.0,
@@ -640,14 +695,15 @@ def main():
 
     analog_layers = set(int(x) for x in args.analog_layers.split(",")) if args.analog_layers else None
 
-    print("Loading %s..." % args.model_name)
+    model_path = _resolve_local_path(args.model_name)
+    print("Loading %s..." % model_path)
     # Use bfloat16 for half-precision: same dynamic range as fp32 (no GradScaler needed),
     # but 50% memory savings vs fp32. fp16 is unstable for transformer training without scaler.
     dtype = torch.bfloat16 if args.fp16 else torch.float32
     model = AutoModelForCausalLM.from_pretrained(
-        args.model_name, torch_dtype=dtype, use_safetensors=True, local_files_only=True
+        model_path, torch_dtype=dtype, local_files_only=True
     )
-    tokenizer = AutoTokenizer.from_pretrained(args.model_name, local_files_only=True)
+    tokenizer = AutoTokenizer.from_pretrained(model_path, local_files_only=True)
     tokenizer.pad_token = tokenizer.eos_token
     model = model.to(device)
 
@@ -655,7 +711,7 @@ def main():
     if args.distill_alpha > 0:
         print("Loading clean teacher model for distillation...")
         teacher_model = AutoModelForCausalLM.from_pretrained(
-            args.model_name, torch_dtype=dtype, use_safetensors=True, local_files_only=True
+            model_path, torch_dtype=dtype, local_files_only=True
         )
         teacher_model = teacher_model.to(device)
         teacher_model.eval()
@@ -688,6 +744,7 @@ def main():
         fp16=args.fp16,
         lora_rank=args.lora_rank,
         d2d_schedule=args.d2d_schedule,
+        noise_schedule=args.noise_schedule,
         teacher_model=teacher_model,
         distill_alpha=args.distill_alpha,
         distill_temp=args.distill_temp,

@@ -1,0 +1,117 @@
+% Paper2 figure-led manuscript draft — 2026-05-11
+% Evidence boundary: only the 2026-05-11 Remote107 selective-KV claim-lock package is claim-bearing.
+% Superseded candidate TSVs and Gemini-era figures are audit-only unless regenerated from that package.
+
+\section*{Selective Analog KV Cache for Session-Lifetime Language-Model Memory}
+
+\begin{abstract}
+Decoder-only language models store Key/Value tensors that are written during prefill or decoding, read repeatedly during one session, and discarded. This lifetime is different from both permanent model weights and short-lived activation buffers, making KV cache a distinct memory workload. We study whether analog memory should be used for the whole KV cache or only for selected layers. Under the locked Remote107 protocol for Pythia-410M on WikiText-2 raw-v1, last1/last2 terminal-layer scopes remain viable while all-layer analog KV degrades sharply. The result supports a selective analog cache tier and does not claim energy, endurance, refresh, long-context, or larger-model closure.
+\end{abstract}
+
+\paragraph{Central claim.}
+A decoder KV cache is not a smaller version of model-weight storage. Each entry is created during prefill or decoding, read repeatedly during one session, and discarded. This access pattern makes KV cache a candidate for session-lifetime analog memory tiers. The present claim is deliberately narrow: under the locked Remote107 protocol, last1/last2 terminal-layer analog KV remains viable, whereas all-layer analog KV degrades sharply and should be used only as a negative control.
+
+\section{Introduction}
+
+Long-context inference turns KV cache into a dominant memory object. The cache grows linearly with context and batch size, and it is accessed differently from both weights and activations. Weights are persistent and repeatedly reused across requests; activations are transient within a forward pass. KV entries occupy the middle: they are generated once, kept for the session, read at every following token, and then released.
+
+This access pattern suggests a different analog-memory question. The goal is not a fully analog language model or a replacement for digital compute. The question is narrower: can selected KV tensors be placed in a session-lifetime analog cache without corrupting perplexity, and which layer scope is safe enough to optimize further?
+
+\section{Memory model}
+
+Autoregressive inference repeatedly reads the accumulated Key/Value tensors. For a decoder with $L$ layers, $H$ heads, per-head dimension $D_h$, context length $S$, and element size $P$, the KV footprint is
+\begin{equation}
+M_{\mathrm{KV}} = 2 L H D_h S P.
+\end{equation}
+This footprint grows linearly with context and batch size. The write path is different from weights: each KV entry is created during prefill or decoding, read repeatedly during the session, and then released. The useful lifetime is therefore seconds to minutes, not years.
+
+That distinction changes the hardware question. Long-retention nonvolatile memories may be over-specified for KV cache, while SRAM is area-expensive at large contexts. Organic electrochemical memories have limited endurance and session-scale retention; those limits are constraints for weights, but they are a plausible fit for a write-once-read-many cache if the cache is selective and the protocol reports time-dependent cost explicitly.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{figures/fig_paper2_overview_selective_kv.pdf}
+\caption{\textbf{KV cache is a better physical match than permanent model weights.} A decoder KV cache is written once, read repeatedly, and released at session end; that lifetime is closer to a session-scale analog memory tier than to archival weight storage. The proposed route does not claim a fully analog language model: only selected terminal-layer K/V tensors are mapped to an analog cache while softmax, control flow, and most transformer layers remain digital.}
+\label{fig:paper2_overview}
+\end{figure}
+
+\section{Method: selective analog KV}
+
+The first design choice is not device type or bit width; it is layer scope. We compare four scopes: last1, last2, last4, and all24. If terminal layers tolerate analog KV but all layers do not, the correct architecture is a selective cache tier rather than a whole-model analog cache.
+
+The numerical rows below are taken from the 2026-05-11 Remote107 selective-KV claim-lock summary TSV in the manuscript source-data package. They intentionally do not use the older Fresh-D2D candidate index. Values below the digital reference should not be read as an analog-over-digital accuracy claim; the locked claim is layer-scope ordering under this protocol.
+
+\begin{table}[t]
+\centering
+\caption{\textbf{Remote107 claim-lock evidence supports terminal-layer selectivity and rejects all-layer analog KV as the main route.} The values come from the 2026-05-11 Remote107 selective-KV claim-lock summary TSV: Pythia-410M on WikiText-2 raw-v1 test with context length 512, non-overlapping stride 512, and batch size 1. Digital PPL is 23.30. Each analog row has five seeds and committed per-row JSON artifacts. The normalized ratio is a within-protocol reference only; values below 1x do not constitute an analog-over-digital baseline claim.}
+\label{tab:paper2_remote107_claimlock}
+\begin{tabular}{lccc}
+\toprule
+Scope & D2D & PPL & PPL / digital ref. \\
+\midrule
+last1 & 0.02 & $18.781\pm0.023$ & 0.806x \\
+last1 & 0.05 & $18.963\pm0.035$ & 0.814x \\
+last2 & 0.02 & $18.594\pm0.014$ & 0.798x \\
+last2 & 0.05 & $19.018\pm0.025$ & 0.816x \\
+last4 & 0.02 & $20.402\pm0.069$ & 0.876x \\
+last4 & 0.05 & $21.535\pm0.051$ & 0.924x \\
+all24 & 0.02 & $25.985\pm0.148$ & 1.115x \\
+all24 & 0.05 & $59.055\pm1.610$ & 2.535x \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.95\linewidth]{source_data/remote107_selective_kv_claim_lock_20260511/figures/fig_107_selective_kv_claim_lock.pdf}
+\caption{\textbf{Selective terminal-layer analog KV survives the locked protocol; all-layer analog KV does not.} The figure is regenerated from the verified Remote107 source-data package containing 41 manifest rows and 41 original JSON artifacts. These rows are claim-bearing for layer-scope ordering, but they do not establish energy, endurance, refresh, or long-context deployment claims.}
+\label{fig:paper2_remote107_claimlock}
+\end{figure}
+
+\section{Locked Remote107 evidence}
+
+The locked packet answers one question cleanly: which layer scopes remain plausible under the corrected-noise Remote107 protocol? The answer is selective terminal-layer KV. At both evaluated D2D levels, last1 and last2 stay tightly clustered, and all-layer analog KV is a high-exposure negative control. Last4 is still usable as an intermediate stress point. All24 exceeds the digital reference at D2D=0.02 and degrades sharply at D2D=0.05.
+
+This result should be framed as a design-rule result, not as a final product claim. The manuscript claim is: \emph{selective terminal-layer analog KV is the route worth optimizing; all-layer analog KV should be treated as a negative control}. It is not yet a claim of end-to-end energy savings, refresh-safe operation, or long-context deployment.
+
+The newer 107-clean validation lane is consistent with that claim but should remain explicitly secondary. In the frozen-target 410M adaptive-schedule study, fixed, cosine, and layer-wise training reach 18.75, 18.31, and 18.36 PPL, while reverse layer-wise degrades to 21.30. At larger scales, fixed/cosine/layer-wise nearly tie (2.8B: 12.68/12.68/12.70; 6.9B: 11.40/11.38/11.43), suggesting that schedule sensitivity weakens with scale. The clearest schedule-specific gain appears when the analog scope expands beyond last1: on Pythia-2.8B, \texttt{\detokenize{last2+cosine}} reaches 12.56 PPL, improving over \texttt{\detokenize{last2+fixed}} at 13.78 and slightly outperforming \texttt{\detokenize{last1+fixed}} at 12.68. These rows sharpen the engineering route, but they should stay out of the main claim table until their source-data package is frozen and audited to the same standard as the 2026-05-11 410M packet.
+
+\section{Evidence boundary}
+
+Local cache-path probes, retention/refresh scans, offline KV reconstruction sweeps, and the newer 107-clean scale-up or Qwen3-VL pushes are useful because they test plumbing and identify likely failure axes. They should stay out of the main claim table unless rerun or packaged under a locked protocol with dataset, command, commit, seed, checkpoint hash, and artifact completeness comparable to Remote107. The Gemini-era plots \texttt{\detokenize{fig_107_selective_kv}}, \texttt{\detokenize{fig_107_noise_sweep}}, and \texttt{\detokenize{fig_107_training_steps}} remain candidate/audit visuals unless regenerated from the 2026-05-11 source-data package.
+
+\begin{table}[t]
+\centering
+\caption{\textbf{Evidence boundary for the current Paper2 manuscript.} Only the Remote107 claim-lock package is used for the main layer-scope claim; all other rows are retained to define what must not be pooled into that claim.}
+\label{tab:paper2_evidence_boundary}
+\begin{tabular}{lll}
+\toprule
+Evidence source & Current role & Manuscript use \\
+\midrule
+Remote107 2026-05-11 claim-lock package & Claim-bearing & Main layer-scope result \\
+107-clean scale-up/Qwen3-VL updates & Active validation & Cite only after claim-lock packaging \\
+107-clean adaptive schedules / R3 figures & Active validation & Use only with explicit provisional boundary \\
+2026-05-10 Fresh-D2D TSV & Candidate/audit & Do not use as current claim table \\
+Gemini-era 107 figures & Candidate/audit & Regenerate before claim use \\
+Local cache-path probe & Engineering/debug & Methods or supplementary only \\
+Offline KV reconstruction & Engineering/debug & Mechanism diagnostic only \\
+Retention/refresh scan & Engineering/debug & Future protocol target \\
+Older 107-clean candidate lane & Superseded & Do not pool or cite as final \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Discussion}
+
+The main lesson is that analog KV cache should be designed as a selective memory hierarchy. The terminal layers are attractive because they reduce analog exposure while preserving the cache entries closest to the final token distribution. The all-layer result is valuable precisely because it degrades: it rules out an over-broad analogization strategy and turns Paper2 into an architecture-selection paper rather than a generic analog-memory paper.
+
+The next locked experiments should add time and scale without weakening the current evidence boundary. The latest 107-clean pushes point to 2.8B/6.9B and Qwen3-VL validation lanes, but those lanes should enter the manuscript only after they have source-data packages and manifests comparable to the 410M Remote107 packet. A retention-aware claim must jointly report PPL, $\tau$, refresh interval, write budget, and energy. Until then, organic memory should be described as a physically motivated candidate for session-lifetime KV cache, not as a proven deployment substrate.
+
+\section{Contributions and limits}
+
+The current manuscript contributes three bounded points. First, it reframes KV cache as a session-lifetime WORM memory workload rather than permanent weight storage. Second, it identifies layer scope as the primary architecture variable for analog KV cache. Third, it provides a locked Remote107 source-data package showing that terminal-layer selectivity and all-layer rejection are reproducible under the stated Pythia-410M/WikiText-2 protocol.
+
+The limits are equally important. The locked packet does not close retention, refresh, energy, endurance, long-context, or larger-model deployment. Those axes should be evaluated in a follow-on protocol that reports PPL together with $\tau$, refresh interval, write budget, and system cost.
+
+\section{Conclusion}
+
+The current Paper2 story can be short and strong. KV cache has a session-lifetime WORM access pattern; organic analog memory is physically plausible for that workload; and the locked Remote107 packet shows that terminal-layer selectivity is the viable route while all-layer analog KV is rejected. The next manuscript step is to upgrade retention/refresh from engineering probes to a locked protocol.

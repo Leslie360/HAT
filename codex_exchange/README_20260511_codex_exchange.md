@@ -14,6 +14,10 @@ This package is for local Codex review/editing of manuscript text, figures, plot
 - Paper2 manuscript draft/snippets, figures, plotting scripts, source data, and result TSV/JSON artifacts.
 - Thesis CN/XJTU LaTeX lanes, figures, and current result tables.
 - Retention × protection 10×3 closure artifacts generated at `20260511_223530`, including source TSV, summary TSV, plot source, PNG/PDF figure, script, and log references.
+- 2026-05-13 additions:
+  - Remote107 R3 adaptive-schedule snippets, plotting scripts, thesis/XJTU figures, and updated Work-2 chapter text.
+  - Local GPU ResNet R4 CIFAR-100 second-seed layer-sensitivity and topK-protection replicate reports, TSV summaries, and logs.
+  - A refreshed future-route note (`coordination/active/FUTURE_ROUTE_AFTER_20260513.md`) explaining why the next local GPU lane should move beyond repeated ResNet/ConvNeXt replication.
 - Plotting/evaluation scripts needed to regenerate the included figure/data artifacts.
 - `report_md/_gpt` evidence reports, especially the canonical evidence ledger.
 - Internal `MANIFEST_FILES.txt` and `SHA256SUMS.txt` inside the archive.
@@ -30,6 +34,7 @@ This package is for local Codex review/editing of manuscript text, figures, plot
 
 - Paper2 claim-bearing selective-KV evidence must come from `paper2/manuscript/source_data/remote107_selective_kv_claim_lock_20260511/` and `paper2/results/REMOTE107_SELECTIVE_KV_LOCK_SUMMARY_20260511.tsv`.
 - Paper2 local KV probes, offline reconstruction, refresh scans, and local cache-path checks are engineering/provisional only; do not pool them with Remote107 claim-lock rows.
+- Remote107 R3 adaptive-schedule rows are included as bounded validation/engineering evidence, not as a second claim-bearing packet; keep the 410M 2026-05-11 claim-lock package as the sole current Paper2 canonical source.
 - CIFAR-100 Ensemble HAT seed456/seed789 results are provisional multi-seed expansion evidence; mention cross-seed variance and do not report a closed canonical mean unless a final seed protocol is later locked.
 - Spatial variance / floorplan-aware mapping results are synthetic stress evidence only, not measured floorplan evidence.
 - Retention × protection results are simulator-default retention evidence only, not measured retention, refresh, energy, or endurance closure.

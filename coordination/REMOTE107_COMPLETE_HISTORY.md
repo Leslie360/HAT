@@ -84,9 +84,10 @@
 | R3-2.8B | 2.8B 自适应训练（fixed/cosine/layerwise） | ✅ | fixed=12.68, cosine=12.68, layerwise=12.70 |
 | R3-6.9B | 6.9B 自适应训练（fixed/cosine/layerwise） | ✅ | fixed=11.40, cosine=11.38, layerwise=11.43 |
 | R3-EVAL | 全部 9 组自适应模型下游评估 | ✅ | Lambada/Hellaswag/ARC-Easy clean + analog |
-| R3-REV | **Reverse layer-wise**（410M + 2.8B） | ⏳ GPU4/5 | 浅层 noise 大、深层 noise 小 |
-| R3-LAST2 | **Last2 + adaptive cosine**（p28b） | ⏳ GPU6 | 多层 analog + cosine schedule |
-| R3-1K | **410M adaptive cosine 1000 steps** | ⏳ GPU7 | 更长训练验证收敛优势 |
+| R3-REV | **Reverse layer-wise**（410M + 2.8B） | ✅ | 410M=21.30（差于layerwise 18.36）；p28b=12.68（与fixed持平） |
+| R3-LAST2 | **Last2 + adaptive cosine**（p28b） | ✅ | **12.56 PPL**，优于last2 fixed（13.78），甚至略优于last1 fixed（12.68） |
+| R3-1K | **410M adaptive cosine 1000 steps** | ✅ | 20.73 PPL（差于500-step cosine 18.31） |
+| R3-EXTRA | **410M/2.8B fixed 1000 steps** | ⏳ GPU7 | 410M fixed 1000=20.75（验证更长fixed有害）；p28b fixed 1000训练中 |
 | R3-LIT | 文献引用整理（Energy/Theory） | ✅ | `coordination/literature_citations_paper2.md` |
 
 ---
@@ -98,7 +99,7 @@
 | VLM-500 | Qwen3-VL HAT 训练（500 steps） | ✅ | last1 analog KV |
 | VLM-5000 | Qwen3-VL HAT 训练（5000 steps） | ✅ | last1 analog KV |
 | VLM-VAL | Qwen3-VL 验证评估 | ✅ | 5 images × 4 configs |
-| VLM-5K-EVAL | **Qwen3-VL 5000-step checkpoint eval** | ❌ Pending | 训练完但 eval 未跑 |
+| VLM-5K-EVAL | **Qwen3-VL 5000-step checkpoint eval** | ⏳ GPU6 | 5 images × 4 configs 评估中 |
 
 ---
 
@@ -119,7 +120,7 @@
 | # | 任务 | 状态 | 阻塞原因 |
 |---|---|:---|:---|
 | BLK-MMLU | p69b clean MMLU eval | ❌ Blocked | `datasets` cache corruption |
-| BLK-THEORY | 理论数学推导（PAC-Bayes 界） | ❌ Pending | 文献已有，推导未做 |
+| BLK-THEORY | 理论数学推导（PAC-Bayes 界） | ✅ Draft | `coordination/HAT_THEORETICAL_FRAMEWORK.md` 已起草 |
 | BLK-FIG | Paper 2 图表生成 | ⏸️ Deferred | 用户指定非本 agent 任务 |
 | BLK-6.9B | 6.9B 完整训练（非 500 steps） | ⏸️ Deferred | 需 AMP/BF16 或更大 GPU |
 
@@ -135,19 +136,19 @@
 | P3 大模型/基建 | 3 | 0 | 1 |
 | R1 鲁棒性/下游 | 8 | 0 | 0 |
 | R2 层消融/跨设备 | 4 | 0 | 0 |
-| R3 自适应调度 | 6 | 3 | 0 |
-| VLM | 3 | 0 | 1 |
+| R3 自适应调度 | 9 | 2 | 0 |
+| VLM | 3 | 1 | 0 |
 | 基础设施 | 4 | 0 | 1 |
-| 阻塞/长期 | 0 | 0 | 4 |
-| **总计** | **39** | **3** | **7** |
+| 阻塞/长期 | 0 | 1 | 3 |
+| **总计** | **42** | **4** | **6** |
 
 ---
 
 ## 当前 GPU 占用（2026-05-13）
 
-| GPU | 任务 | 预计完成 |
+| GPU | 任务 | 状态 |
 |---|---|---|
-| 4 | p410m reverse_layer_wise | ~25 min |
-| 5 | p28b reverse_layer_wise | ~30 min |
-| 6 | p28b last2 + adaptive cosine | ~35 min |
-| 7 | p410m adaptive cosine 1000 steps | ~55 min |
+| 4 | p28b last2 cosine **clean eval** | 运行中 |
+| 5 | p28b last2 cosine **analog eval** | 运行中 |
+| 6 | Qwen3-VL 5000-step **checkpoint eval** | 运行中 |
+| 7 | p28b fixed 1000 steps **训练** | 进行中（约20min剩余） |

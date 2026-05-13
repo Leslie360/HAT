@@ -45,22 +45,22 @@ Reason:
 
 ## 3. Best Next GPU Lane
 
-## Decision: move to drift-aware optimization pilot
+## Decision: drift-aware ranking is now the preferred retention heuristic
 
-The highest-value next local GPU direction is now:
+The highest-value local direction is now split into two layers:
 
-- **TinyViT V4 / CIFAR-100 drift-aware optimization pilot**
+- **closed heuristic lane**: drift-aware protection ranking for retention/protection
+- **next method lane**: drift-aware optimization or SAM-style training
 
 Why:
 
-1. It opens a **new scientific axis**, rather than repeating an old one.
+1. It already produced positive protection results under full `10×3` evaluation.
 2. It fits the current codebase better than local DeiT/Swin analogization.
 3. It connects directly to the strongest long-term thesis/Paper3/Paper4 story:
    - robustness should be aligned to the **physical drift direction**, not just generic flatness.
-4. We already have the prerequisite profiling artifact:
-   - `thesis/results/drift_aware_sam/drift_vectors_profile_20260512_004906.json`
+4. The prerequisite profiling and ranking artifacts already exist.
 
-This is the first local lane that can still move the project from "more evidence" toward "new method".
+This is now the first local lane that has already moved from "more evidence" into "promising mechanism."
 
 ## 4. Recommended Priority Order
 
@@ -73,22 +73,25 @@ Keep the boundary explicit:
 
 ### P1. Local GPU immediate
 
-Run a **drift-aware optimization pilot** on TinyViT V4 / CIFAR-100.
+Promote the drift-aware ranking into the default local retention/protection heuristic and close one more checkpoint if GPU time is available.
 
 Target output:
 
-- one small pilot matrix comparing:
-  - current baseline checkpoint,
-  - a simple flatness/regularization baseline if already cheap enough,
-  - a drift-aligned intervention or proxy objective.
+- seed789 full `10×3` confirmation
+- seed456 full `10×3` confirmation
+- optional seed123 background closure for three-checkpoint coverage
 
 Success criterion:
 
-- even a negative result is useful if it shows generic flatness is not enough for physical retention.
+- the ranking should keep beating or matching the older sensitivity-based heuristic without changing the fresh-all baseline.
 
-### P2. Local GPU after drift pilot
+### P2. Local GPU after heuristic closure
 
-If the drift pilot is inconclusive or blocked by implementation cost, the fallback lane is:
+If the ranking direction stays stable, the next lane is:
+
+- **drift-aware optimization / SAM-style training**
+
+If that is blocked by implementation cost, the fallback lane is:
 
 - **TinyViT / ConvNeXt cross-dataset transfer**, not more same-dataset repeats.
 
@@ -110,17 +113,82 @@ For the next GPU launch:
 
 - do **not** spend it on another ResNet sensitivity or topK rerun;
 - do **not** spend it on local DeiT unless we first wire an analog harness;
-- spend it on **drift-aware optimization** if we want the best science-per-GPU ratio.
+- spend it on either:
+  - **closing the third drift-aware checkpoint**, or
+  - **the first drift-aware optimization pilot**.
 
 ## 6. Short Thesis-Level Interpretation
 
-The project is now at a fork:
+The project is now at a cleaner fork:
 
 - **Paper2 main claim** is bottlenecked by external packaging, not by more local prose.
-- **Local GPU value** has shifted from "close architecture gap" to "open the next method/mechanism gap".
+- **Local GPU value** has shifted from "close architecture gap" to "upgrade the retention mechanism."
 
 So the right move is:
 
 - protect the current Paper2 boundary,
 - stop farming low-yield repeats,
+- treat drift-aware ranking as the current best heuristic,
 - invest the next local GPU wave into a genuinely new robustness mechanism.
+
+## 7. 2026-05-14 Full 10x3 Update
+
+The drift-aware route is no longer just a small pilot. The full seed789 `10×3` confirmation finished at:
+
+- `thesis/results/drift_aware_sam/drift_aware_protection_10x3_summary_20260514_000408.tsv`
+
+Matched against the previous D2D-sensitivity-based `10×3` retention/protection lane:
+
+- `fresh_all_analog` is unchanged to within `0.01 pp`
+- `top30` improves by:
+  - `+1.38 pp` at `0s`
+  - `+1.58 pp` at `1000s`
+  - `+1.51 pp` at `10000s`
+- `top42` improves by:
+  - `+2.70 pp` at `0s`
+  - `+2.83 pp` at `1000s`
+  - `+2.81 pp` at `10000s`
+
+Interpretation:
+
+- The gain is not a baseline artifact.
+- It is strongest for the larger protected set, which is consistent with the drift profile concentrating on late-stage MLP/attention layers.
+- The drift-informed ranking is therefore now the most promising protection heuristic in the current local retention lane.
+
+Updated immediate recommendation:
+
+1. finish the same drift-aware route on `seed456` for cross-checkpoint confirmation;
+2. if `seed456` agrees, promote drift-aware ranking from pilot to the preferred retention-lane heuristic;
+3. only after that, invest in the heavier drift-aware optimization / SAM-style training lane.
+
+## 8. 2026-05-14 Seed456 Confirmation
+
+The second full checkpoint confirmation finished at:
+
+- `thesis/results/drift_aware_sam/drift_aware_protection_seed456_10x3_summary_20260514_003908.tsv`
+
+Key numbers:
+
+- `fresh_all_analog`
+  - `63.2940 / 61.2480 / 61.2450` at `0 / 1000 / 10000 s`
+- `top30`
+  - `65.3847 / 63.3120 / 63.1883`
+- `top42`
+  - `66.6080 / 64.5563 / 64.4913`
+
+Within the same seed456 checkpoint, this means:
+
+- `top30` stays about `+2.09 / +2.06 / +1.94 pp` above `fresh_all`
+- `top42` stays about `+3.31 / +3.31 / +3.25 pp` above `fresh_all`
+
+Interpretation:
+
+- The positive drift-aware direction is no longer a one-checkpoint artifact.
+- Seed789 showed that the new ranking beats the older D2D-sensitivity ranking under a matched `10×3` protocol.
+- Seed456 shows that the same heuristic remains positive on a stronger checkpoint family and across all tested retention times.
+
+Current recommendation after seed456:
+
+1. treat drift-aware ranking as the preferred local retention/protection heuristic;
+2. if one more background closure is desired, run seed123 and stop there;
+3. otherwise move directly to a first drift-aware optimization or SAM-style training pilot.

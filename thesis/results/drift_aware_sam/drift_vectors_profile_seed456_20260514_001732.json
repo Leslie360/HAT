@@ -1,0 +1,352 @@
+{
+  "generated_at": "2026-05-14T00:32:27",
+  "times": [
+    0.0,
+    1000.0,
+    10000.0,
+    86400.0
+  ],
+  "model_type": "tinyvit",
+  "experiment": "V4",
+  "checkpoint": "/home/qiaosir/projects/compute_vit/checkpoints/_ensemble/cifar100_seed456/V4_hybrid_standard_noise_hat_best.pt",
+  "layer_count": 42,
+  "layers": [
+    {
+      "module_path": "patch_embed.conv1.conv",
+      "layer_index": 1,
+      "layer_type": "AnalogConv2d",
+      "num_parameters": 864,
+      "weight_abs_mean": 0.09786590188741684,
+      "base_effective_abs_mean": 2.277083396911621
+    },
+    {
+      "module_path": "patch_embed.conv2.conv",
+      "layer_index": 2,
+      "layer_type": "AnalogConv2d",
+      "num_parameters": 18432,
+      "weight_abs_mean": 0.0414402037858963,
+      "base_effective_abs_mean": 1.342903733253479
+    },
+    {
+      "module_path": "stages.1.blocks.0.attn.qkv",
+      "layer_index": 3,
+      "layer_type": "AnalogLinear",
+      "num_parameters": 49152,
+      "weight_abs_mean": 0.03482699766755104,
+      "base_effective_abs_mean": 1.54254150390625
+    },
+    {
+      "module_path": "stages.1.blocks.0.attn.proj",
+      "layer_index": 4,
+      "layer_type": "AnalogLinear",
+      "num_parameters": 16384,
+      "weight_abs_mean": 0.027825243771076202,
+      "base_effective_abs_mean": 1.2960572242736816
+    },
+    {
+      "module_path": "stages.1.blocks.0.mlp.fc1",
+      "layer_index": 5,
+      "layer_type": "AnalogLinear",
+      "num_parameters": 65536,
+      "weight_abs_mean": 0.036484912037849426,
+      "base_effective_abs_mean": 1.5304689407348633
+    },
+    {
+      "module_path": "stages.1.blocks.0.mlp.fc2",
+      "layer_index": 6,
+      "layer_type": "AnalogLinear",
+      "num_parameters": 65536,
+      "weight_abs_mean": 0.03460977226495743,
+      "base_effective_abs_mean": 1.5285005569458008
+    },
+    {
+      "module_path": "stages.1.blocks.1.attn.qkv",
+      "layer_index": 7,
+      "layer_type": "AnalogLinear",
+      "num_parameters": 49152,
+      "weight_abs_mean": 0.04060317203402519,
+      "base_effective_abs_mean": 1.5422486066818237
+    },
+    {
+      "module_path": "stages.1.blocks.1.attn.proj",
+      "layer_index": 8,
+      "layer_type": "AnalogLinear",
+      "num_parameters": 16384,
+      "weight_abs_mean": 0.032193105667829514,
+      "base_effective_abs_mean": 1.5946656465530396
+    },
+    {
+      "module_path": "stages.1.blocks.1.mlp.fc1",
+      "layer_index": 9,
+      "layer_type": "AnalogLinear",
+      "num_parameters": 65536,
+      "weight_abs_mean": 0.03655093535780907,
+      "base_effective_abs_mean": 1.6040863990783691
+    },
+    {
+      "module_path": "stages.1.blocks.1.mlp.fc2",
+      "layer_index": 10,
+      "layer_type": "AnalogLinear",
+      "num_parameters": 65536,
+      "weight_abs_mean": 0.03264933079481125,
+      "base_effective_abs_mean": 1.3039581775665283
+    },
+    {
+      "module_path": "stages.2.blocks.0.attn.qkv",
+      "layer_index": 11,
+      "layer_type": "AnalogLinear",
+      "num_parameters": 76800,
+      "weight_abs_mean": 0.03614727035164833,
+      "base_effective_abs_mean": 1.3298438787460327
+    },
+    {
+      "module_path": "stages.2.blocks.0.attn.proj",
+      "layer_index": 12,
+      "layer_type": "AnalogLinear",
+      "num_parameters": 25600,
+      "weight_abs_mean": 0.028734873980283737,
+      "base_effective_abs_mean": 1.4939062595367432
+    },
+    {
+      "module_path": "stages.2.blocks.0.mlp.fc1",
+      "layer_index": 13,
+      "layer_type": "AnalogLinear",
+      "num_parameters": 102400,
+      "weight_abs_mean": 0.039075881242752075,
+      "base_effective_abs_mean": 1.145490288734436
+    },
+    {
+      "module_path": "stages.2.blocks.0.mlp.fc2",
+      "layer_index": 14,
+      "layer_type": "AnalogLinear",
+      "num_parameters": 102400,
+      "weight_abs_mean": 0.0364462286233902,
+      "base_effective_abs_mean": 1.3928439617156982
+    },
+    {
+      "module_path": "stages.2.blocks.1.attn.qkv",
+      "layer_index": 15,
+      "layer_type": "AnalogLinear",
+      "num_parameters": 76800,
+      "weight_abs_mean": 0.025110071524977684,
+      "base_effective_abs_mean": 0.1436796933412552
+    },
+    {
+      "module_path": "stages.2.blocks.1.attn.proj",
+      "layer_index": 16,
+      "layer_type": "AnalogLinear",
+      "num_parameters": 25600,
+      "weight_abs_mean": 0.02002623863518238,
+      "base_effective_abs_mean": 1.5048985481262207
+    },
+    {
+      "module_path": "stages.2.blocks.1.mlp.fc1",
+      "layer_index": 17,
+      "layer_type": "AnalogLinear",
+      "num_parameters": 102400,
+      "weight_abs_mean": 0.04145354405045509,
+      "base_effective_abs_mean": 1.467234492301941
+    },
+    {
+      "module_path": "stages.2.blocks.1.mlp.fc2",
+      "layer_index": 18,
+      "layer_type": "AnalogLinear",
+      "num_parameters": 102400,
+      "weight_abs_mean": 0.038016919046640396,
+      "base_effective_abs_mean": 1.5186036825180054
+    },
+    {
+      "module_path": "stages.2.blocks.2.attn.qkv",
+      "layer_index": 19,
+      "layer_type": "AnalogLinear",
+      "num_parameters": 76800,
+      "weight_abs_mean": 0.04164968058466911,
+      "base_effective_abs_mean": 1.2296093702316284
+    },
+    {
+      "module_path": "stages.2.blocks.2.attn.proj",
+      "layer_index": 20,
+      "layer_type": "AnalogLinear",
+      "num_parameters": 25600,
+      "weight_abs_mean": 0.03642475977540016,
+      "base_effective_abs_mean": 1.6272189617156982
+    },
+    {
+      "module_path": "stages.2.blocks.2.mlp.fc1",
+      "layer_index": 21,
+      "layer_type": "AnalogLinear",
+      "num_parameters": 102400,
+      "weight_abs_mean": 0.042642928659915924,
+      "base_effective_abs_mean": 1.4609357118606567
+    },
+    {
+      "module_path": "stages.2.blocks.2.mlp.fc2",
+      "layer_index": 22,
+      "layer_type": "AnalogLinear",
+      "num_parameters": 102400,
+      "weight_abs_mean": 0.03872749209403992,
+      "base_effective_abs_mean": 1.3729629516601562
+    },
+    {
+      "module_path": "stages.2.blocks.3.attn.qkv",
+      "layer_index": 23,
+      "layer_type": "AnalogLinear",
+      "num_parameters": 76800,
+      "weight_abs_mean": 0.04308779910206795,
+      "base_effective_abs_mean": 1.5252814292907715
+    },
+    {
+      "module_path": "stages.2.blocks.3.attn.proj",
+      "layer_index": 24,
+      "layer_type": "AnalogLinear",
+      "num_parameters": 25600,
+      "weight_abs_mean": 0.03710079565644264,
+      "base_effective_abs_mean": 1.4793516397476196
+    },
+    {
+      "module_path": "stages.2.blocks.3.mlp.fc1",
+      "layer_index": 25,
+      "layer_type": "AnalogLinear",
+      "num_parameters": 102400,
+      "weight_abs_mean": 0.043195437639951706,
+      "base_effective_abs_mean": 1.3239963054656982
+    },
+    {
+      "module_path": "stages.2.blocks.3.mlp.fc2",
+      "layer_index": 26,
+      "layer_type": "AnalogLinear",
+      "num_parameters": 102400,
+      "weight_abs_mean": 0.038670431822538376,
+      "base_effective_abs_mean": 1.6109707355499268
+    },
+    {
+      "module_path": "stages.2.blocks.4.attn.qkv",
+      "layer_index": 27,
+      "layer_type": "AnalogLinear",
+      "num_parameters": 76800,
+      "weight_abs_mean": 0.04304714500904083,
+      "base_effective_abs_mean": 1.3232890367507935
+    },
+    {
+      "module_path": "stages.2.blocks.4.attn.proj",
+      "layer_index": 28,
+      "layer_type": "AnalogLinear",
+      "num_parameters": 25600,
+      "weight_abs_mean": 0.036847420036792755,
+      "base_effective_abs_mean": 1.6380468606948853
+    },
+    {
+      "module_path": "stages.2.blocks.4.mlp.fc1",
+      "layer_index": 29,
+      "layer_type": "AnalogLinear",
+      "num_parameters": 102400,
+      "weight_abs_mean": 0.04404066130518913,
+      "base_effective_abs_mean": 1.3437598943710327
+    },
+    {
+      "module_path": "stages.2.blocks.4.mlp.fc2",
+      "layer_index": 30,
+      "layer_type": "AnalogLinear",
+      "num_parameters": 102400,
+      "weight_abs_mean": 0.03832685202360153,
+      "base_effective_abs_mean": 1.6111758947372437
+    },
+    {
+      "module_path": "stages.2.blocks.5.attn.qkv",
+      "layer_index": 31,
+      "layer_type": "AnalogLinear",
+      "num_parameters": 76800,
+      "weight_abs_mean": 0.04366707056760788,
+      "base_effective_abs_mean": 1.5284063816070557
+    },
+    {
+      "module_path": "stages.2.blocks.5.attn.proj",
+      "layer_index": 32,
+      "layer_type": "AnalogLinear",
+      "num_parameters": 25600,
+      "weight_abs_mean": 0.0362575501203537,
+      "base_effective_abs_mean": 1.4930624961853027
+    },
+    {
+      "module_path": "stages.2.blocks.5.mlp.fc1",
+      "layer_index": 33,
+      "layer_type": "AnalogLinear",
+      "num_parameters": 102400,
+      "weight_abs_mean": 0.04313373565673828,
+      "base_effective_abs_mean": 1.461140751838684
+    },
+    {
+      "module_path": "stages.2.blocks.5.mlp.fc2",
+      "layer_index": 34,
+      "layer_type": "AnalogLinear",
+      "num_parameters": 102400,
+      "weight_abs_mean": 0.03709016740322113,
+      "base_effective_abs_mean": 1.4613866806030273
+    },
+    {
+      "module_path": "stages.3.blocks.0.attn.qkv",
+      "layer_index": 35,
+      "layer_type": "AnalogLinear",
+      "num_parameters": 307200,
+      "weight_abs_mean": 0.03962264955043793,
+      "base_effective_abs_mean": 1.5014961957931519
+    },
+    {
+      "module_path": "stages.3.blocks.0.attn.proj",
+      "layer_index": 36,
+      "layer_type": "AnalogLinear",
+      "num_parameters": 102400,
+      "weight_abs_mean": 0.03408624976873398,
+      "base_effective_abs_mean": 1.6287423372268677
+    },
+    {
+      "module_path": "stages.3.blocks.0.mlp.fc1",
+      "layer_index": 37,
+      "layer_type": "AnalogLinear",
+      "num_parameters": 409600,
+      "weight_abs_mean": 0.0490303598344326,
+      "base_effective_abs_mean": 1.4373339414596558
+    },
+    {
+      "module_path": "stages.3.blocks.0.mlp.fc2",
+      "layer_index": 38,
+      "layer_type": "AnalogLinear",
+      "num_parameters": 409600,
+      "weight_abs_mean": 0.04379963502287865,
+      "base_effective_abs_mean": 1.4607070684432983
+    },
+    {
+      "module_path": "stages.3.blocks.1.attn.qkv",
+      "layer_index": 39,
+      "layer_type": "AnalogLinear",
+      "num_parameters": 307200,
+      "weight_abs_mean": 0.044365234673023224,
+      "base_effective_abs_mean": 1.425455093383789
+    },
+    {
+      "module_path": "stages.3.blocks.1.attn.proj",
+      "layer_index": 40,
+      "layer_type": "AnalogLinear",
+      "num_parameters": 102400,
+      "weight_abs_mean": 0.03664788603782654,
+      "base_effective_abs_mean": 1.4639354944229126
+    },
+    {
+      "module_path": "stages.3.blocks.1.mlp.fc1",
+      "layer_index": 41,
+      "layer_type": "AnalogLinear",
+      "num_parameters": 409600,
+      "weight_abs_mean": 0.05112166330218315,
+      "base_effective_abs_mean": 1.504771113395691
+    },
+    {
+      "module_path": "stages.3.blocks.1.mlp.fc2",
+      "layer_index": 42,
+      "layer_type": "AnalogLinear",
+      "num_parameters": 409600,
+      "weight_abs_mean": 0.039975475519895554,
+      "base_effective_abs_mean": 1.4533681869506836
+    }
+  ],
+  "note": "Current simulator retention model only; not measured device drift."
+}

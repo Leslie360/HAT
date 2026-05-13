@@ -1,0 +1,10 @@
+strategy	protected_k	retention_time_s	accuracy_mean	accuracy_std	accuracy_min	accuracy_max	instance_count
+fresh_all_analog	0	0.0	63.294	0.8503	62.0	64.2567	10
+freeze_top30_d2d	30	0.0	65.3847	0.4609	64.5333	65.9133	10
+freeze_top42_d2d	42	0.0	66.608	0.136	66.4167	66.7633	10
+fresh_all_analog	0	1000.0	61.248	0.876	60.0367	62.2233	10
+freeze_top30_d2d	30	1000.0	63.312	0.3977	62.61	63.7267	10
+freeze_top42_d2d	42	1000.0	64.5563	0.1391	64.3167	64.7733	10
+fresh_all_analog	0	10000.0	61.245	0.7773	60.1	62.19	10
+freeze_top30_d2d	30	10000.0	63.1883	0.3545	62.5333	63.7533	10
+freeze_top42_d2d	42	10000.0	64.4913	0.1469	64.1767	64.67	10

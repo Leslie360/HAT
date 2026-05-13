@@ -1,6 +1,6 @@
 # Remote 105 Onboarding — HAT TinyImageNet Cross-Architecture Validation
 
-**Last updated:** 2026-05-07
+**Last updated:** 2026-05-13
 **Branch:** `105-remote-results`
 **GitHub:** `git@github-105:Leslie360/HAT.git`
 **Agent role:** Experiment-only validation (run experiments, preserve data, provide tables; do NOT write manuscript prose or edit LaTeX).
@@ -16,10 +16,11 @@ Remote 105 is the cross-architecture validation server for the HAT (Hybrid Analo
 **Testbed:** TinyImageNet-200 with ViT/DeiT.
 
 **Validation scope:**
-- DeiT-Small vs ViT-Small
-- 4 HAT modes: digital, proportional, ensemble, standard
-- 3 seeds: 123, 456, 789
+- Base comparison: DeiT-Small vs ViT-Small, `digital` vs `proportional`, seeds `123/456/789`
+- Follow-up: ViT `digital` / `proportional` seed `2025`
+- Controls: completed DeiT `ensemble` / `standard` seed `789`
 - Fresh eval: 10 instances × 5 MC runs per instance
+- Targeted diagnostics: ViT noise-off ablations and 30-instance fresh-eval follow-ups
 
 ---
 
@@ -47,12 +48,15 @@ Remote 105 is the cross-architecture validation server for the HAT (Hybrid Analo
 | `eval_t105e_noise_off.py` | T105-E ablation (evaluate proportional checkpoint with noise disabled) |
 | `analog_layers.py` | Proportional noise implementation |
 | `docs/handoff/20260508_full_return.md` | Main return report to local team |
+| `docs/handoff/20260513_followup_return.md` | Seed2025 + control-completion addendum |
 | `docs/handoff/REMOTE105_CANONICAL_FREEZE_20260508.md` | Frozen canonical package |
 | `docs/handoff/REMOTE105_VIT_SEED456_OUTLIER_NOTE_20260508.md` | Outlier diagnostic |
 | `results/summary/remote105_tinyimagenet_all_available_summary.csv` | All seeds machine-readable table |
-| `results/summary/remote105_tinyimagenet_seed789_summary.csv` | Seed789 only |
+| `results/summary/remote105_tinyimagenet_seed789_summary.csv` | Seed789 subset with completed DeiT controls |
 | `results/json/*seed789*_fresh_eval.json` | Seed789 JSON results |
-| `report_md/_gpt/json_gpt/*` | All JSON results (seed123/456/789) |
+| `results/json/*seed2025*_fresh_eval.json` | ViT seed2025 follow-up JSONs |
+| `report_md/_gpt/json_gpt/*noise_off.json` | ViT noise-off diagnostics |
+| `report_md/_gpt/json_gpt/*` | Historical JSON results (seed123/456/789) |
 | `checkpoints/_gpt/cross_arch_tinyimagenet/` | All checkpoints (best.pt + last.pt + train.log) |
 
 ---
@@ -67,7 +71,7 @@ conda run -n hat python -u train_vit_tinyimagenet.py \
   --arch {deit_small_patch16_224|vit_small_patch16_224} \
   --hat-type {digital|proportional|ensemble|standard} \
   --epochs 100 --batch-size 512 --lr 0.002 --warmup-epochs 5 \
-  --seed {123|456|789} --device cuda:{gpu_id} --amp --pretrained \
+  --seed {123|456|789|2025} --device cuda:{gpu_id} --amp --pretrained \
   --data-root ../data/tiny-imagenet-200 \
   --save-dir checkpoints/_gpt/cross_arch_tinyimagenet
 ```
@@ -120,8 +124,10 @@ conda run -n hat python -u eval_t105e_noise_off.py \
 | proportional | 456 | 54.06 | 53.90 | 0.13 | -0.16 |
 | digital | 789 | 50.86 | 50.86 | 0.00 | 0.00 |
 | proportional | 789 | 55.85 | 55.41 | 0.10 | -0.44 |
+| digital | 2025 | 50.00 | 50.00 | 0.00 | 0.00 |
+| proportional | 2025 | 49.77 | 49.85 | 0.08 | +0.08 |
 
-**P-D fresh gap:** seed123 +0.17pt, seed456 -0.68pt, seed789 +4.55pt. **Average +1.35pt.**
+**P-D fresh gap:** seed123 +0.17pt, seed456 -0.68pt, seed789 +4.55pt, seed2025 -0.15pt. **Average +0.97pt (2/4 seeds favor proportional).**
 
 ### Standard (Negative Control)
 
@@ -129,6 +135,7 @@ conda run -n hat python -u eval_t105e_noise_off.py \
 |---|---|---:|---:|---:|
 | DeiT | 123 | 40.61 | 6.39 | -34.23pt |
 | DeiT | 456 | 41.19 | 6.84 | -34.35pt |
+| DeiT | 789 | 41.28 | 5.77 | -35.51pt |
 | ViT | 123 | 39.22 | 5.22 | -34.00pt |
 | ViT | 456 | 38.43 | 8.62 | -29.81pt |
 
@@ -138,6 +145,7 @@ conda run -n hat python -u eval_t105e_noise_off.py \
 |---|---|---:|---:|---:|
 | DeiT | 123 | 45.26 | 40.44 | -4.82pt |
 | DeiT | 456 | 44.52 | 41.11 | -3.41pt |
+| DeiT | 789 | 44.73 | 39.92 | -4.81pt |
 | ViT | 123 | 43.64 | 40.24 | -3.40pt |
 | ViT | 456 | 44.79 | 40.08 | -4.71pt |
 
@@ -151,15 +159,24 @@ conda run -n hat python -u eval_t105e_noise_off.py \
 
 Regularization gain: **+0.91pt** (noise_off > digital).
 
+### Additional 20260513 Diagnostics
+
+| Experiment | Result |
+|---|---:|
+| ViT proportional seed456 noise_off | 53.99% |
+| ViT proportional seed789 noise_off | 55.49% |
+| DeiT proportional seed789 fresh `30x5` | 56.32 ± 0.12 |
+| ViT proportional seed789 fresh `30x5` | 55.46 ± 0.11 |
+
 ---
 
 ## 6. Key Findings
 
-1. **DeiT proportional > digital in all 3 seeds.** Highly confident.
-2. **ViT proportional > digital in 2/3 seeds.** seed456 digital is an outlier (54.58% vs 48.83%/50.86%). Average still favors proportional (+1.35pt).
-3. **Fresh degradation for proportional is tiny** (<0.5pt), confirming cross-instance stability.
-4. **Standard mode collapses ~-34pt**, validating the negative control.
-5. **Overall label:** provisional-cross-architecture. DeiT is strong; ViT is consistent but has larger seed variance.
+1. **DeiT proportional > digital in all 3 base seeds.** Highly confident.
+2. **ViT is mixed after seed2025.** `proportional` beats `digital` in `2/4` seeds, with fresh-gap mean `+0.97pt`, but seed variance is too high for a stable positive claim.
+3. **Fresh degradation for proportional remains tiny** on the main DeiT / ViT checkpoints, and the `30x5` seed789 follow-ups stay in the same mean / std regime.
+4. **Standard mode still collapses ~-34 to -35pt, and ensemble still degrades ~-3 to -5pt**, validating the control story after completing DeiT seed789.
+5. **Overall label:** DeiT-validated / ViT-mixed. Remote105 no longer supports a strong positive cross-architecture claim on ViT.
 
 ---
 
@@ -172,12 +189,17 @@ original_repo/
 │   │   ├── best.pt
 │   │   ├── last.pt
 │   │   └── train.log
-│   └── vit_small_patch16_224_{digital|proportional|ensemble|standard}_seed{123|456|789}/
+│   ├── vit_small_patch16_224_{digital|proportional}_seed{123|456|789|2025}/
+│   │   ├── best.pt
+│   │   ├── last.pt
+│   │   └── train.log
+│   └── vit_small_patch16_224_{ensemble|standard}_seed{123|456}/
 │       ├── best.pt
 │       ├── last.pt
 │       └── train.log
 ├── docs/handoff/
 │   ├── 20260508_full_return.md
+│   ├── 20260513_followup_return.md
 │   ├── REMOTE105_BOUNDARY_AND_NEXT_TASKS_20260508.md
 │   ├── REMOTE105_CANONICAL_FREEZE_20260508.md
 │   └── REMOTE105_VIT_SEED456_OUTLIER_NOTE_20260508.md
@@ -222,8 +244,9 @@ git push origin HEAD:105-remote-results
 
 1. **No resume in training script.** Kill = restart from epoch 0. `last.pt` exists but is not auto-loaded.
 2. **Nohup log redirect broken with `conda run`.** Training logs go to `train.log` inside `save_dir`; eval has no persistent log (stdout only).
-3. **Seed123/456 JSONs lack metadata.** `commit_hash`, `pytorch_version`, `cuda_device_name` are missing. Values are known from environment notes.
-4. **ViT digital seed456 is an outlier.** 54.58% vs ~49-51% on other seeds. No protocol violation found; likely legitimate seed variance.
+3. **Older metadata-gap notes are stale.** The current checked seed123/456 JSONs already include `commit_hash`, `pytorch_version`, `cuda_device_name`, and `git_worktree_dirty`.
+4. **ViT digital seed456 remains a high outlier.** 54.58% vs 48.83 / 50.86 / 50.00 on seeds 123 / 789 / 2025. No protocol violation found; treat as legitimate seed variance, not artifact.
+5. **Two follow-up trainings stopped before a clean terminal logger line.** `vit_small_patch16_224_proportional_seed2025` and `deit_small_patch16_224_ensemble_seed789` were evaluated from saved `best.pt`; no checkpoint corruption was observed, but the logs do not show an explicit final `Finished.` line.
 
 ---
 

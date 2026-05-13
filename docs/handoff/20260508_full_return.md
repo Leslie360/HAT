@@ -140,21 +140,22 @@ The seed456 digital value (54.58%) is an outlier compared to seed123 (48.83%) an
 
 ---
 
-## Metadata Patch Note
+## Metadata Note
 
-Seed 123/456 JSON files (generated during earlier phase) lack the following fields present in seed789 JSONs:
+The current checked JSON files for seed123/456 and seed789 all include:
 - `commit_hash`
 - `pytorch_version`
 - `cuda_device_name`
 - `git_worktree_dirty`
 
-These values are known from the experiment environment:
-- Git commit: `a6c2ea1` (local branch `105-remote-results`) for seed789; seed123/456 were run at `fbfda71` on branch `remote-exploration`.
+Recorded provenance:
+- Seed123/456 were run at `fbfda71` on branch `remote-exploration`.
+- Seed789 was run at `a6c2ea1` on branch `105-remote-results`.
 - PyTorch: 2.4.1+cu121
 - CUDA: 12.1
 - GPU: NVIDIA PH402 SKU 200
 
-All other required metadata (arch, hat_type, seed, best_epoch, source_acc, fresh_mean, fresh_std, instances, mc_runs) is present in all JSONs.
+All required experiment metadata (arch, hat_type, seed, best_epoch, source_acc, fresh_mean, fresh_std, instances, mc_runs) is present in all JSONs.
 
 ---
 

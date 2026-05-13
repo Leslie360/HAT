@@ -1,0 +1,61 @@
+{
+  "checkpoint_path": "checkpoints/_gpt/cross_arch_tinyimagenet/deit_small_patch16_224_ensemble_seed789/best.pt",
+  "exp_id": "deit_small_patch16_224_ensemble_seed789",
+  "fresh_instances": 10,
+  "mc_runs_per_instance": 5,
+  "nl_ltp": 1.0,
+  "nl_ltd": -1.0,
+  "noise_mode": "uniform",
+  "allow_eval_nl_override": false,
+  "eval_provenance_mismatches": [],
+  "checkpoint_epoch": 52,
+  "checkpoint_best_epoch": 52,
+  "checkpoint_best_acc": 44.73,
+  "checkpoint_seed": 789,
+  "checkpoint_nl_ltp": 1.0,
+  "checkpoint_nl_ltd": -1.0,
+  "checkpoint_noise_mode": "uniform",
+  "checkpoint_experiment_name": "deit_small_patch16_224_ensemble_seed789",
+  "checkpoint_arch": "deit_small_patch16_224",
+  "checkpoint_hat_type": "ensemble",
+  "amp_enabled": true,
+  "commit_hash": "983703e7b526b7a18d04eb7726799026f3193ec1",
+  "git_worktree_dirty": true,
+  "cuda_device_name": "NVIDIA PH402 SKU 200",
+  "pytorch_version": "2.4.1+cu121",
+  "cross_instance_mean": 39.92,
+  "cross_instance_std": 0.3459017201460548,
+  "instance_means": [
+    40.2,
+    39.528,
+    39.744,
+    39.902,
+    39.442,
+    39.8,
+    40.058,
+    39.648,
+    40.61,
+    40.267999999999994
+  ],
+  "fresh_per_instance_mean": [
+    40.2,
+    39.528,
+    39.744,
+    39.902,
+    39.442,
+    39.8,
+    40.058,
+    39.648,
+    40.61,
+    40.267999999999994
+  ],
+  "fresh_aggregate": {
+    "mean": 39.92,
+    "std": 0.3459017201460548,
+    "median": 39.851,
+    "range": [
+      39.442,
+      40.61
+    ]
+  }
+}

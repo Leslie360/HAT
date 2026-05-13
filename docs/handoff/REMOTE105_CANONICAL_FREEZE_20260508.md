@@ -85,16 +85,15 @@ Fresh protocol: 10 instances × 5 MC runs per instance. D2D resampled per instan
 
 ---
 
-## 5. Metadata Gap Note
+## 5. Metadata Note
 
-Seed 123/456 JSONs lack `commit_hash`, `pytorch_version`, `cuda_device_name`, and `git_worktree_dirty`. These values are known:
+The current checked JSONs for seed123/456 and seed789 all contain `commit_hash`, `pytorch_version`, `cuda_device_name`, and `git_worktree_dirty`.
 
-- Git commit: `fbfda71` (branch `remote-exploration`)
-- PyTorch: 2.4.1+cu121
-- CUDA: 12.1
-- GPU: NVIDIA PH402 SKU 200
+- Seed123/456 JSONs record commit `fbfda71` (branch `remote-exploration`).
+- Seed789 JSONs record commit `a6c2ea1` (branch `105-remote-results`).
+- PyTorch is `2.4.1+cu121`, CUDA is `12.1`, and GPU is `NVIDIA PH402 SKU 200`.
 
-Seed 789 JSONs contain full metadata (`commit_hash=a6c2ea1`). All JSONs contain required fields: arch, hat_type, seed, best_epoch, source_acc, fresh_mean, fresh_std, instances, mc_runs.
+All JSONs contain the required experiment fields: arch, hat_type, seed, best_epoch, source_acc, fresh_mean, fresh_std, instances, mc_runs.
 
 ---
 

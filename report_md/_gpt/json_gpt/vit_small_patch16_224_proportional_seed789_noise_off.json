@@ -1,0 +1,11 @@
+{
+  "checkpoint_path": "checkpoints/_gpt/cross_arch_tinyimagenet/vit_small_patch16_224_proportional_seed789/best.pt",
+  "exp_id": "vit_small_patch16_224_proportional_seed789",
+  "mode": "noise_off",
+  "test_loss": 2.511688931274414,
+  "test_acc": 55.49,
+  "analog_layers_disabled": 48,
+  "source_acc": 55.85,
+  "checkpoint_epoch": 90,
+  "checkpoint_best_epoch": 90
+}

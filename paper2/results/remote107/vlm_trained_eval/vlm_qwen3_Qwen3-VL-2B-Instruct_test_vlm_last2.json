@@ -1,0 +1,19 @@
+{
+  "model": "Qwen/Qwen3-VL-2B-Instruct",
+  "family": "qwen3",
+  "image": "/tmp/test_vlm.jpg",
+  "prompt": "Describe this image in detail.",
+  "clean_output": "This is a close-up, low-angle photograph of a tabby cat against a vibrant, clear blue sky. The cat is the central subject, positioned in the frame with its head tilted slightly upward and to the right, giving it an alert and curious expression. Its large, round eyes are a striking, vivid green, and they are wide open, suggesting it is focused on something just out of the frame. The cat's fur is a classic tabby pattern, featuring a mix of brown, black, and grey stripes and spots, with a lighter, cream-colored patch on its muzzle and chin. Its ears are pointed and alert, with",
+  "clean_time": 9.776054382324219,
+  "analog": true,
+  "analog_output": "This is a close-up, low-angle photograph of a tabby cat's head and shoulders against a vibrant, clear blue sky. The image is a portrait shot that captures the cat's intense gaze and alert expression.\n\nThe cat is the central subject, positioned in the foreground and looking directly at the viewer. Its head is tilted slightly to its right, but its eyes are fixed forward, creating a direct and engaging connection with the viewer. The cat's fur is a classic tabby pattern, featuring a mix of brown, black, and grey stripes and spots, with a lighter, cream-colored muzzle and a white patch on its chin. The",
+  "analog_time": 9.489782571792603,
+  "sigma_c2c": 0.01,
+  "sigma_d2d": 0.02,
+  "n_states": 256,
+  "analog_layers": [
+    26,
+    27
+  ],
+  "d2d_seed": 3373
+}

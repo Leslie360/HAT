@@ -1,0 +1,9 @@
+{
+  "name": "p3b_retention_step1.0",
+  "seed": 123,
+  "n_states": 64,
+  "profile": "organic",
+  "retention": true,
+  "decode_step_time": 1.0,
+  "ppl": 15584.475813654457
+}

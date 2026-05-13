@@ -1,0 +1,9 @@
+{
+  "name": "probe_layer23_256_realistic",
+  "seed": 42,
+  "n_states": 256,
+  "profile": "organic",
+  "retention": false,
+  "decode_step_time": 0.1,
+  "ppl": 16.717880613875607
+}

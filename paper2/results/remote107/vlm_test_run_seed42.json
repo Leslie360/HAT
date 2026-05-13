@@ -1,0 +1,37 @@
+{
+  "git_commit": "5ebbcd634a2499fc9ac8a5c5acfa88ca02b7c8c6",
+  "git_status_short": "?? p3_hat_vlm_train.py\n?? quick_vlm_sweep.py\n?? run_vlm_path_a.sh",
+  "script": "p3_hat_vlm_train.py",
+  "command": "p3_hat_vlm_train.py --model_name Qwen/Qwen3-VL-2B-Instruct --analog_layers 27 --max_steps 5 --fp16 --name vlm_test_run",
+  "mode": "train",
+  "model": "Qwen/Qwen3-VL-2B-Instruct",
+  "dataset_train": "wikitext-2-raw-v1 (train)",
+  "dataset_eval": "wikitext-2-raw-v1 (test)",
+  "train_seed": 42,
+  "train_d2d_seed": 3373,
+  "eval_d2d_seed": null,
+  "n_states": 256,
+  "sigma_c2c": 0.01,
+  "sigma_d2d": 0.0,
+  "analog_layers": [
+    27
+  ],
+  "ctx_len": 512,
+  "stride": 256,
+  "max_steps": 5,
+  "batch_size": 1,
+  "epochs": 1,
+  "lr": 1e-05,
+  "ppl_before": 15.872100356801543,
+  "ppl_after": 15.196611770598922,
+  "losses": [
+    2.875,
+    3.15625,
+    3.28125,
+    3.5,
+    3.34375
+  ],
+  "wall_clock_time": 653.3327965736389,
+  "gpu_id": "3",
+  "gpu_name": "NVIDIA PH402 SKU 200"
+}

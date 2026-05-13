@@ -1,0 +1,18 @@
+{
+  "model": "Qwen/Qwen3-VL-2B-Instruct",
+  "family": "qwen3",
+  "image": "/tmp/vlm_landscape.jpg",
+  "prompt": "Describe this image in detail.",
+  "clean_output": "This is a serene and atmospheric photograph of a natural landscape, likely taken during sunrise or sunset. The image is composed with a river in the foreground, leading the viewer's eye towards a distant valley and mountains.\n\nThe river, which occupies the lower half of the frame, is a central element. Its surface is calm and reflects the soft, warm colors of the sky above. The water is a mix of dark and light tones, with visible rocks and pebbles scattered across its bed. The riverbanks are lined with lush green vegetation, including tall grasses in the immediate foreground and a dense line of trees and shrubs along the far",
+  "clean_time": 8.092033386230469,
+  "analog": true,
+  "analog_output": "This is a serene and atmospheric landscape photograph taken during sunrise or sunset, featuring a river flowing through a valley flanked by towering mountains. The scene is enveloped in a soft, hazy mist that gives the distant peaks a dreamlike quality.\n\nIn the foreground, a river flows from the lower left towards the center, its surface reflecting the warm, golden light of the sun. The water is dotted with smooth, rounded stones, and the riverbanks are lined with lush green grass and a dense forest of coniferous trees. The river itself appears to be a tributary of a larger river, possibly the American River, which is",
+  "analog_time": 7.857011556625366,
+  "sigma_c2c": 0.01,
+  "sigma_d2d": 0.02,
+  "n_states": 256,
+  "analog_layers": [
+    27
+  ],
+  "d2d_seed": 3373
+}

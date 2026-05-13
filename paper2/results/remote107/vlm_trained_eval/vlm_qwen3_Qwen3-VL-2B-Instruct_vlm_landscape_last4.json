@@ -1,0 +1,21 @@
+{
+  "model": "Qwen/Qwen3-VL-2B-Instruct",
+  "family": "qwen3",
+  "image": "/tmp/vlm_landscape.jpg",
+  "prompt": "Describe this image in detail.",
+  "clean_output": "This is a serene and atmospheric photograph of a natural landscape, likely taken during sunrise or sunset. The image is composed with a river in the foreground, leading the viewer's eye towards a distant valley and mountains.\n\nThe river, which occupies the lower half of the frame, is a central element. Its surface is calm and reflects the soft, warm colors of the sky above. The water is a mix of dark and light tones, with visible rocks and pebbles scattered across its bed. The riverbanks are lined with lush green vegetation, including tall grasses in the immediate foreground and a dense line of trees and shrubs along the far",
+  "clean_time": 8.282445192337036,
+  "analog": true,
+  "analog_output": "This is a serene and atmospheric landscape photograph of Yosemite National Park, likely taken during sunrise or sunset. The image is composed with a wide river in the foreground, leading the viewer's eye toward a majestic mountain range in the background.\n\nThe river, which appears to be the Merced River, flows from the lower left to the right, its surface reflecting the soft, warm light of the sky. The water is a mix of dark and light tones, with visible rocks and pebbles scattered throughout. The riverbanks are lined with lush green vegetation, including tall grasses and trees, which frame the scene.\n\nThe mountains, which are the",
+  "analog_time": 8.375150442123413,
+  "sigma_c2c": 0.01,
+  "sigma_d2d": 0.02,
+  "n_states": 256,
+  "analog_layers": [
+    24,
+    25,
+    26,
+    27
+  ],
+  "d2d_seed": 3373
+}

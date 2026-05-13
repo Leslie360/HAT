@@ -1,0 +1,1 @@
+[PENDING] p0_sweep_c2c_0.0 seed123 — killed to make room for sanity_256_nonoise, requeue when GPU available

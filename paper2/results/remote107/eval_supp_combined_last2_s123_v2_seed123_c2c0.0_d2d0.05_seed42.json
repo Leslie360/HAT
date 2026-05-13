@@ -1,0 +1,13 @@
+{
+  "checkpoint_dir": "/home/lisq753/projects/HAT_kv107/paper2/results/remote107/checkpoints/supp_combined_last2_s123_v2_seed123",
+  "n_states": 256,
+  "sigma_c2c": 0.0,
+  "sigma_d2d": 0.05,
+  "d2d_seed": 42,
+  "retention_step_time": 0.0,
+  "analog_layers": [
+    22,
+    23
+  ],
+  "ppl": 19.363526860055288
+}

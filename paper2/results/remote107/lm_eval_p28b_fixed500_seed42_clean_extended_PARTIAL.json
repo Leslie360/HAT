@@ -1,0 +1,33 @@
+{
+  "script": "p3_hat_lm_eval.py",
+  "command": "RECONSTRUCTED FROM LOG — p28b_fixed500_seed42 clean extended eval (MMLU+Winogrande+PIQA+BoolQ)",
+  "checkpoint_dir": "/home/lisq753/projects/HAT_kv107/paper2/results/remote107/checkpoints/p28b_fixed500_seed42",
+  "analog": false,
+  "n_states": 256,
+  "sigma_c2c": 0.01,
+  "sigma_d2d": 0.02,
+  "analog_layers": [
+    31
+  ],
+  "tasks": [
+    "mmlu",
+    "winogrande",
+    "piqa",
+    "boolq"
+  ],
+  "summary": {
+    "mmlu:acc,none": 0.2497,
+    "mmlu:acc_stderr,none": 0.0036,
+    "winogrande:acc,none": 0.5919,
+    "winogrande:acc_stderr,none": 0.0138,
+    "piqa:acc,none": 0.7339,
+    "piqa:acc_stderr,none": 0.0103,
+    "piqa:acc_norm,none": 0.7388,
+    "piqa:acc_norm_stderr,none": 0.0102,
+    "boolq:acc,none": 0.626,
+    "boolq:acc_stderr,none": 0.0085
+  },
+  "full_results": {},
+  "wall_clock_time": null,
+  "note": "PARTIAL RECONSTRUCTION — MMLU per-subtask scores unavailable in recovered logs. Aggregate MMLU + Winogrande/PIQA/BoolQ preserved."
+}

@@ -1,0 +1,235 @@
+{
+  "claim": "HAT selective analog KV (last1) on Pythia-2.8B shows minimal degradation on downstream tasks and robust PPL under noise variation.",
+  "model": "Pythia-2.8B (EleutherAI/pythia-2.8b)",
+  "git_commit": "19038b2",
+  "git_branch": "107-clean",
+  "checkpoint_dir": "/home/lisq753/projects/HAT_kv107/paper2/results/remote107/checkpoints/p28b_fixed500_seed42",
+  "checkpoint_sha256": "21485c564f30ca576632f5e89954c4f1646d857e8fb6105e5927bdc6786e0877",
+  "analog_config": {
+    "analog_layers": [
+      23
+    ],
+    "n_states": 256,
+    "sigma_c2c": 0.01,
+    "sigma_d2d": 0.02,
+    "train_steps": 500,
+    "train_seed": 42,
+    "train_d2d_seed": 53714
+  },
+  "lm_eval": {
+    "tasks": [
+      "lambada_openai",
+      "hellaswag",
+      "arc_easy"
+    ],
+    "clean": {
+      "command": "p3_hat_lm_eval.py --checkpoint_dir /home/lisq753/projects/HAT_kv107/paper2/results/remote107/checkpoints/p28b_fixed500_seed42 --tasks lambada_openai,hellaswag,arc_easy --device cuda --fp16 --batch_size 1",
+      "lambada_ppl": 5.0999,
+      "lambada_acc": 0.6487,
+      "hellaswag_acc": 0.5937,
+      "arc_easy_acc": 0.5812
+    },
+    "analog": {
+      "command": "p3_hat_lm_eval.py --checkpoint_dir /home/lisq753/projects/HAT_kv107/paper2/results/remote107/checkpoints/p28b_fixed500_seed42 --tasks lambada_openai,hellaswag,arc_easy --analog --device cuda --fp16 --batch_size 1",
+      "lambada_ppl": 5.1424,
+      "lambada_acc": 0.646,
+      "hellaswag_acc": 0.5946,
+      "arc_easy_acc": 0.5808
+    }
+  },
+  "robustness": {
+    "total_eval_runs": 27,
+    "unique_configs": 20,
+    "note": "Includes both old-format (pre-bug-fix) and new-format (post-bug-fix) result files. Old-format files lack _ns{N} in filename but n_states is correctly recorded in JSON metadata.",
+    "eval_command_template": "p3_hat_eval.py --checkpoint_dir {CKPT} --n_states {NS} --sigma_c2c {C2C} --sigma_d2d {D2D} --max_length 512 --d2d-seed {SEED} --fp16",
+    "results": [
+      {
+        "file": "eval_p28b_fixed500_seed42_c2c0.0_d2d0.02_ns256_rst0.0_seed3373.json",
+        "sigma_c2c": 0.0,
+        "sigma_d2d": 0.02,
+        "n_states": 256,
+        "eval_d2d_seed": 3373,
+        "ppl": 12.682001410767382
+      },
+      {
+        "file": "eval_p28b_fixed500_seed42_c2c0.005_d2d0.02_ns256_rst0.0_seed3373.json",
+        "sigma_c2c": 0.005,
+        "sigma_d2d": 0.02,
+        "n_states": 256,
+        "eval_d2d_seed": 3373,
+        "ppl": 12.683449617377347
+      },
+      {
+        "file": "eval_p28b_fixed500_seed42_c2c0.01_d2d0.0_rst0.0_seed3373.json",
+        "sigma_c2c": 0.01,
+        "sigma_d2d": 0.0,
+        "n_states": 256,
+        "eval_d2d_seed": 3373,
+        "ppl": 12.674851701669693
+      },
+      {
+        "file": "eval_p28b_fixed500_seed42_c2c0.01_d2d0.01_rst0.0_seed3373.json",
+        "sigma_c2c": 0.01,
+        "sigma_d2d": 0.01,
+        "n_states": 256,
+        "eval_d2d_seed": 3373,
+        "ppl": 12.677188110264051
+      },
+      {
+        "file": "eval_p28b_fixed500_seed42_c2c0.01_d2d0.02_ns128_rst0.0_seed3373.json",
+        "sigma_c2c": 0.01,
+        "sigma_d2d": 0.02,
+        "n_states": 128,
+        "eval_d2d_seed": 3373,
+        "ppl": 12.689674701903797
+      },
+      {
+        "file": "eval_p28b_fixed500_seed42_c2c0.01_d2d0.02_rst0.0_seed42.json",
+        "sigma_c2c": 0.01,
+        "sigma_d2d": 0.02,
+        "n_states": 256,
+        "eval_d2d_seed": 42,
+        "ppl": 12.70213875727219
+      },
+      {
+        "file": "eval_p28b_fixed500_seed42_c2c0.01_d2d0.02_rst0.0_seed123.json",
+        "sigma_c2c": 0.01,
+        "sigma_d2d": 0.02,
+        "n_states": 256,
+        "eval_d2d_seed": 123,
+        "ppl": 12.7033023583415
+      },
+      {
+        "file": "eval_p28b_fixed500_seed42_c2c0.01_d2d0.02_rst0.0_seed456.json",
+        "sigma_c2c": 0.01,
+        "sigma_d2d": 0.02,
+        "n_states": 256,
+        "eval_d2d_seed": 456,
+        "ppl": 12.70118655597221
+      },
+      {
+        "file": "eval_p28b_fixed500_seed42_c2c0.01_d2d0.02_rst0.0_seed789.json",
+        "sigma_c2c": 0.01,
+        "sigma_d2d": 0.02,
+        "n_states": 256,
+        "eval_d2d_seed": 789,
+        "ppl": 12.697596843665416
+      },
+      {
+        "file": "eval_p28b_fixed500_seed42_c2c0.01_d2d0.02_rst0.0_seed1001.json",
+        "sigma_c2c": 0.01,
+        "sigma_d2d": 0.02,
+        "n_states": 256,
+        "eval_d2d_seed": 1001,
+        "ppl": 12.6985896635616
+      },
+      {
+        "file": "eval_p28b_fixed500_seed42_c2c0.01_d2d0.02_rst0.0_seed2024.json",
+        "sigma_c2c": 0.01,
+        "sigma_d2d": 0.02,
+        "n_states": 256,
+        "eval_d2d_seed": 2024,
+        "ppl": 12.701314582365583
+      },
+      {
+        "file": "eval_p28b_fixed500_seed42_c2c0.01_d2d0.02_ns256_rst0.0_seed3373.json",
+        "sigma_c2c": 0.01,
+        "sigma_d2d": 0.02,
+        "n_states": 256,
+        "eval_d2d_seed": 3373,
+        "ppl": 12.688046256954289
+      },
+      {
+        "file": "eval_p28b_fixed500_seed42_c2c0.01_d2d0.02_ns512_rst0.0_seed3373.json",
+        "sigma_c2c": 0.01,
+        "sigma_d2d": 0.02,
+        "n_states": 512,
+        "eval_d2d_seed": 3373,
+        "ppl": 12.687691060399809
+      },
+      {
+        "file": "eval_p28b_fixed500_seed42_c2c0.01_d2d0.02_rst0.0_seed3373.json",
+        "sigma_c2c": 0.01,
+        "sigma_d2d": 0.02,
+        "n_states": 1024,
+        "eval_d2d_seed": 3373,
+        "ppl": 12.689437045790445
+      },
+      {
+        "file": "eval_p28b_fixed500_seed42_c2c0.01_d2d0.04_rst0.0_seed3373.json",
+        "sigma_c2c": 0.01,
+        "sigma_d2d": 0.04,
+        "n_states": 256,
+        "eval_d2d_seed": 3373,
+        "ppl": 12.72734786178243
+      },
+      {
+        "file": "eval_p28b_fixed500_seed42_c2c0.01_d2d0.05_rst0.0_seed3373.json",
+        "sigma_c2c": 0.01,
+        "sigma_d2d": 0.05,
+        "n_states": 256,
+        "eval_d2d_seed": 3373,
+        "ppl": 12.74422262893421
+      },
+      {
+        "file": "eval_p28b_fixed500_seed42_c2c0.01_d2d0.1_rst0.0_seed3373.json",
+        "sigma_c2c": 0.01,
+        "sigma_d2d": 0.1,
+        "n_states": 256,
+        "eval_d2d_seed": 3373,
+        "ppl": 12.813021803043265
+      },
+      {
+        "file": "eval_p28b_fixed500_seed42_c2c0.02_d2d0.02_rst0.0_seed3373.json",
+        "sigma_c2c": 0.02,
+        "sigma_d2d": 0.02,
+        "n_states": 256,
+        "eval_d2d_seed": 3373,
+        "ppl": 12.70610637941619
+      },
+      {
+        "file": "eval_p28b_fixed500_seed42_c2c0.05_d2d0.02_rst0.0_seed3373.json",
+        "sigma_c2c": 0.05,
+        "sigma_d2d": 0.02,
+        "n_states": 256,
+        "eval_d2d_seed": 3373,
+        "ppl": 12.781721479243014
+      },
+      {
+        "file": "eval_p28b_fixed500_seed42_c2c0.1_d2d0.02_rst0.0_seed3373.json",
+        "sigma_c2c": 0.1,
+        "sigma_d2d": 0.02,
+        "n_states": 256,
+        "eval_d2d_seed": 3373,
+        "ppl": 12.898977438799069
+      }
+    ]
+  },
+  "result_files": {
+    "lm_eval_clean": "checkpoints/lm_eval_p28b_fixed500_seed42_clean.json",
+    "lm_eval_analog": "checkpoints/lm_eval_p28b_fixed500_seed42_analog.json",
+    "robustness_results": [
+      "eval_p28b_fixed500_seed42_c2c0.0_d2d0.02_ns256_rst0.0_seed3373.json",
+      "eval_p28b_fixed500_seed42_c2c0.005_d2d0.02_ns256_rst0.0_seed3373.json",
+      "eval_p28b_fixed500_seed42_c2c0.01_d2d0.0_rst0.0_seed3373.json",
+      "eval_p28b_fixed500_seed42_c2c0.01_d2d0.01_rst0.0_seed3373.json",
+      "eval_p28b_fixed500_seed42_c2c0.01_d2d0.02_ns128_rst0.0_seed3373.json",
+      "eval_p28b_fixed500_seed42_c2c0.01_d2d0.02_rst0.0_seed42.json",
+      "eval_p28b_fixed500_seed42_c2c0.01_d2d0.02_rst0.0_seed123.json",
+      "eval_p28b_fixed500_seed42_c2c0.01_d2d0.02_rst0.0_seed456.json",
+      "eval_p28b_fixed500_seed42_c2c0.01_d2d0.02_rst0.0_seed789.json",
+      "eval_p28b_fixed500_seed42_c2c0.01_d2d0.02_rst0.0_seed1001.json",
+      "eval_p28b_fixed500_seed42_c2c0.01_d2d0.02_rst0.0_seed2024.json",
+      "eval_p28b_fixed500_seed42_c2c0.01_d2d0.02_ns256_rst0.0_seed3373.json",
+      "eval_p28b_fixed500_seed42_c2c0.01_d2d0.02_ns512_rst0.0_seed3373.json",
+      "eval_p28b_fixed500_seed42_c2c0.01_d2d0.02_rst0.0_seed3373.json",
+      "eval_p28b_fixed500_seed42_c2c0.01_d2d0.04_rst0.0_seed3373.json",
+      "eval_p28b_fixed500_seed42_c2c0.01_d2d0.05_rst0.0_seed3373.json",
+      "eval_p28b_fixed500_seed42_c2c0.01_d2d0.1_rst0.0_seed3373.json",
+      "eval_p28b_fixed500_seed42_c2c0.02_d2d0.02_rst0.0_seed3373.json",
+      "eval_p28b_fixed500_seed42_c2c0.05_d2d0.02_rst0.0_seed3373.json",
+      "eval_p28b_fixed500_seed42_c2c0.1_d2d0.02_rst0.0_seed3373.json"
+    ]
+  },
+  "generated_at": "2026-05-12T09:15:00"
+}

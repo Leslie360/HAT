@@ -1,0 +1,199 @@
+{
+  "claim_lock": "VLM-5K-EVAL",
+  "checkpoint": "vlm_hat_last1_seed42 (Qwen3-VL-2B-Instruct, 5000-step HAT)",
+  "date": "2026-05-13 10:18",
+  "total_configs": 20,
+  "images": [
+    "test_vlm.jpg",
+    "vlm_chart.png",
+    "vlm_interior.jpg",
+    "vlm_landscape.jpg",
+    "vlm_person.jpg"
+  ],
+  "analog_configs": [
+    "False",
+    "True"
+  ],
+  "records": [
+    {
+      "file": "vlm_qwen3_Qwen3-VL-2B-Instruct_test_vlm_clean.json",
+      "image": "test_vlm.jpg",
+      "analog": false,
+      "clean_time": 14.011061429977417,
+      "analog_time": null,
+      "clean_output_len": 548,
+      "analog_output_len": 0
+    },
+    {
+      "file": "vlm_qwen3_Qwen3-VL-2B-Instruct_test_vlm_last1.json",
+      "image": "test_vlm.jpg",
+      "analog": true,
+      "clean_time": 13.265754222869873,
+      "analog_time": 14.793488264083862,
+      "clean_output_len": 548,
+      "analog_output_len": 562
+    },
+    {
+      "file": "vlm_qwen3_Qwen3-VL-2B-Instruct_test_vlm_last2.json",
+      "image": "test_vlm.jpg",
+      "analog": true,
+      "clean_time": 13.423084020614624,
+      "analog_time": 13.29024624824524,
+      "clean_output_len": 548,
+      "analog_output_len": 594
+    },
+    {
+      "file": "vlm_qwen3_Qwen3-VL-2B-Instruct_test_vlm_last4.json",
+      "image": "test_vlm.jpg",
+      "analog": true,
+      "clean_time": 12.36494493484497,
+      "analog_time": 12.5125093460083,
+      "clean_output_len": 548,
+      "analog_output_len": 588
+    },
+    {
+      "file": "vlm_qwen3_Qwen3-VL-2B-Instruct_vlm_chart_clean.json",
+      "image": "vlm_chart.png",
+      "analog": false,
+      "clean_time": 22.61933660507202,
+      "analog_time": null,
+      "clean_output_len": 536,
+      "analog_output_len": 0
+    },
+    {
+      "file": "vlm_qwen3_Qwen3-VL-2B-Instruct_vlm_chart_last1.json",
+      "image": "vlm_chart.png",
+      "analog": true,
+      "clean_time": 13.739790201187134,
+      "analog_time": 14.093817234039307,
+      "clean_output_len": 536,
+      "analog_output_len": 511
+    },
+    {
+      "file": "vlm_qwen3_Qwen3-VL-2B-Instruct_vlm_chart_last2.json",
+      "image": "vlm_chart.png",
+      "analog": true,
+      "clean_time": 19.109816312789917,
+      "analog_time": 14.078200101852417,
+      "clean_output_len": 536,
+      "analog_output_len": 538
+    },
+    {
+      "file": "vlm_qwen3_Qwen3-VL-2B-Instruct_vlm_chart_last4.json",
+      "image": "vlm_chart.png",
+      "analog": true,
+      "clean_time": 21.006474256515503,
+      "analog_time": 21.331453323364258,
+      "clean_output_len": 536,
+      "analog_output_len": 532
+    },
+    {
+      "file": "vlm_qwen3_Qwen3-VL-2B-Instruct_vlm_interior_clean.json",
+      "image": "vlm_interior.jpg",
+      "analog": false,
+      "clean_time": 8.6301109790802,
+      "analog_time": null,
+      "clean_output_len": 541,
+      "analog_output_len": 0
+    },
+    {
+      "file": "vlm_qwen3_Qwen3-VL-2B-Instruct_vlm_interior_last1.json",
+      "image": "vlm_interior.jpg",
+      "analog": true,
+      "clean_time": 9.614620685577393,
+      "analog_time": 10.321065187454224,
+      "clean_output_len": 541,
+      "analog_output_len": 600
+    },
+    {
+      "file": "vlm_qwen3_Qwen3-VL-2B-Instruct_vlm_interior_last2.json",
+      "image": "vlm_interior.jpg",
+      "analog": true,
+      "clean_time": 9.409868240356445,
+      "analog_time": 9.942875146865845,
+      "clean_output_len": 541,
+      "analog_output_len": 600
+    },
+    {
+      "file": "vlm_qwen3_Qwen3-VL-2B-Instruct_vlm_interior_last4.json",
+      "image": "vlm_interior.jpg",
+      "analog": true,
+      "clean_time": 9.971464395523071,
+      "analog_time": 10.023238897323608,
+      "clean_output_len": 541,
+      "analog_output_len": 623
+    },
+    {
+      "file": "vlm_qwen3_Qwen3-VL-2B-Instruct_vlm_landscape_clean.json",
+      "image": "vlm_landscape.jpg",
+      "analog": false,
+      "clean_time": 11.788480997085571,
+      "analog_time": null,
+      "clean_output_len": 591,
+      "analog_output_len": 0
+    },
+    {
+      "file": "vlm_qwen3_Qwen3-VL-2B-Instruct_vlm_landscape_last1.json",
+      "image": "vlm_landscape.jpg",
+      "analog": true,
+      "clean_time": 9.861170768737793,
+      "analog_time": 10.887627363204956,
+      "clean_output_len": 591,
+      "analog_output_len": 630
+    },
+    {
+      "file": "vlm_qwen3_Qwen3-VL-2B-Instruct_vlm_landscape_last2.json",
+      "image": "vlm_landscape.jpg",
+      "analog": true,
+      "clean_time": 11.094297409057617,
+      "analog_time": 9.360833644866943,
+      "clean_output_len": 591,
+      "analog_output_len": 621
+    },
+    {
+      "file": "vlm_qwen3_Qwen3-VL-2B-Instruct_vlm_landscape_last4.json",
+      "image": "vlm_landscape.jpg",
+      "analog": true,
+      "clean_time": 9.20726203918457,
+      "analog_time": 9.275881290435791,
+      "clean_output_len": 591,
+      "analog_output_len": 594
+    },
+    {
+      "file": "vlm_qwen3_Qwen3-VL-2B-Instruct_vlm_person_clean.json",
+      "image": "vlm_person.jpg",
+      "analog": false,
+      "clean_time": 13.344372987747192,
+      "analog_time": null,
+      "clean_output_len": 633,
+      "analog_output_len": 0
+    },
+    {
+      "file": "vlm_qwen3_Qwen3-VL-2B-Instruct_vlm_person_last1.json",
+      "image": "vlm_person.jpg",
+      "analog": true,
+      "clean_time": 13.386719226837158,
+      "analog_time": 13.578602313995361,
+      "clean_output_len": 633,
+      "analog_output_len": 643
+    },
+    {
+      "file": "vlm_qwen3_Qwen3-VL-2B-Instruct_vlm_person_last2.json",
+      "image": "vlm_person.jpg",
+      "analog": true,
+      "clean_time": 14.763570785522461,
+      "analog_time": 13.356207609176636,
+      "clean_output_len": 633,
+      "analog_output_len": 643
+    },
+    {
+      "file": "vlm_qwen3_Qwen3-VL-2B-Instruct_vlm_person_last4.json",
+      "image": "vlm_person.jpg",
+      "analog": true,
+      "clean_time": 12.68897819519043,
+      "analog_time": 12.729720830917358,
+      "clean_output_len": 633,
+      "analog_output_len": 625
+    }
+  ]
+}

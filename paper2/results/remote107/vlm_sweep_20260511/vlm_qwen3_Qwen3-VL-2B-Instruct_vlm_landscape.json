@@ -1,0 +1,21 @@
+{
+  "model": "Qwen/Qwen3-VL-2B-Instruct",
+  "family": "qwen3",
+  "image": "/tmp/vlm_landscape.jpg",
+  "prompt": "Describe this image in detail.",
+  "clean_output": "This is a serene and atmospheric landscape photograph taken during either sunrise or sunset, capturing a natural scene in a mountainous region. The image is composed with a strong sense of depth and tranquility.\n\nIn the foreground, a river flows from the lower left towards the center, its surface reflecting the soft, warm light of the sky. The water is not still; it is dotted with numerous rocks of various sizes, and the banks are lined with lush green grass and a dense collection of trees. The river's edge is defined by a thick, green bank on the left and a more open, grassy area on the right.\n\nThe middle ground",
+  "clean_time": 8.279309511184692,
+  "analog": true,
+  "analog_output": "This is a serene and atmospheric landscape photograph taken during either dawn or dusk, featuring a river flowing through a valley with majestic mountains in the background.\n\nThe scene is dominated by a large, misty valley with a river flowing through it. The river, which occupies the lower half of the frame, has a gentle current and is bordered by lush green vegetation, including grasses and trees. The water reflects the soft, warm light of the sky, creating a shimmering, golden-orange reflection on its surface.\n\nIn the middle ground, a dense forest of coniferous trees lines the riverbank. The trees are silhouetted against the",
+  "analog_time": 8.394792079925537,
+  "sigma_c2c": 0.01,
+  "sigma_d2d": 0.02,
+  "n_states": 256,
+  "analog_layers": [
+    24,
+    25,
+    26,
+    27
+  ],
+  "d2d_seed": 3373
+}

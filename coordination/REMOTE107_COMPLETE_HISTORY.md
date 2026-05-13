@@ -59,7 +59,7 @@
 | R1-MIS-D2D | eval σ_d2d mismatch 扫描 | ✅ | 训练/推理 d2d 不匹配 |
 | R1-XD2D | Cross-instance D2D 一致性 | ✅ | 多 seed 验证 |
 | R1-NS | n_states 量化精度扫描 | ✅ | 128/256/512/1024 |
-| R1-EXT | 扩展下游评估 | ✅ | MMLU/Winogrande/PIQA/BoolQ on p28b/p69b |
+| R1-EXT | 扩展下游评估 | ⏳ 重跑中 | MMLU/Winogrande/PIQA/BoolQ on p28b/p69b；**统一协议：max_length=2048**（旧版因 buffer 不足 crash） |
 | R1-RET | Retention noise 扫描 | ✅ | 0.001/0.01/0.1/1.0 on p28b + p69b |
 
 ---
@@ -119,7 +119,7 @@
 
 | # | 任务 | 状态 | 阻塞原因 |
 |---|---|:---|:---|
-| BLK-MMLU | p69b clean MMLU eval | ❌ Blocked | `datasets` cache corruption |
+| BLK-MMLU | p69b clean MMLU eval | ⏳ 运行中 | 统一协议重跑（max_length=2048）中；原 `datasets` cache corruption 已通过环境隔离解决 |
 | BLK-THEORY | 理论数学推导（PAC-Bayes 界） | ✅ Draft | `coordination/HAT_THEORETICAL_FRAMEWORK.md` 已起草 |
 | BLK-FIG | Paper 2 图表生成 | ⏸️ Deferred | 用户指定非本 agent 任务 |
 | BLK-6.9B | 6.9B 完整训练（非 500 steps） | ⏸️ Deferred | 需 AMP/BF16 或更大 GPU |
@@ -134,21 +134,27 @@
 | P1 核心 K107 | 6 | 0 | 0 |
 | P2 规模 | 3 | 0 | 0 |
 | P3 大模型/基建 | 3 | 0 | 1 |
-| R1 鲁棒性/下游 | 8 | 0 | 0 |
+| R1 鲁棒性/下游 | 7 | 1 | 0 |
 | R2 层消融/跨设备 | 4 | 0 | 0 |
 | R3 自适应调度 | 9 | 2 | 0 |
 | VLM | 3 | 1 | 0 |
 | 基础设施 | 4 | 0 | 1 |
-| 阻塞/长期 | 0 | 1 | 3 |
-| **总计** | **42** | **4** | **6** |
+| 阻塞/长期 | 0 | 2 | 2 |
+| **总计** | **41** | **6** | **5** |
 
 ---
 
-## 当前 GPU 占用（2026-05-13）
+## 当前 GPU 占用（2026-05-13 更新）
 
 | GPU | 任务 | 状态 |
 |---|---|---|
-| 4 | p28b last2 cosine **clean eval** | 运行中 |
-| 5 | p28b last2 cosine **analog eval** | 运行中 |
-| 6 | Qwen3-VL 5000-step **checkpoint eval** | 运行中 |
-| 7 | p28b fixed 1000 steps **训练** | 进行中（约20min剩余） |
+| 4 | p28b fixed500 **clean extended** (mmlu+wg+piqa+boolq) | 运行中 |
+| 5 | p28b fixed500 **analog extended** (mmlu+wg+piqa+boolq) | 运行中 |
+| 6 | p69b fixed500 **clean extended** (mmlu+wg+piqa+boolq) | 运行中 |
+| 7 | p69b fixed500 **analog extended** (mmlu+wg+piqa+boolq) | 运行中 |
+
+> 统一评估协议：`--max_length 2048`，保证 clean/analog 间 strict 可比性，避免 D2D buffer 不足 crash。
+>
+> **下班后备跑脚本**：`results/remote107/run_robustness_sweep_4567.sh`
+> - 等 extended eval 全部结束后执行：`nohup bash run_robustness_sweep_4567.sh > robustness_sweep.log 2>&1 &`
+> - 自动轮询 GPU4/5/6/7，跑完 p28b + p69b 的 σ_c2c / σ_d2d / mismatch / D2D seed / n_states 全部 sweep

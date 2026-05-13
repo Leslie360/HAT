@@ -26,6 +26,21 @@ from analog_layers import AnalogLinearConfig
 from p3_hat_train import patch_model_for_hat
 
 
+def _tasks_slug(tasks_str: str) -> str:
+    """Return a short slug for a comma-separated task list to disambiguate output filenames."""
+    parts = sorted(tasks_str.split(","))
+    if parts == ["arc_easy", "hellaswag", "lambada_openai"]:
+        return "standard3"
+    if parts == ["boolq", "piqa", "winogrande"]:
+        return "ext3"
+    if parts == ["mmlu"]:
+        return "mmlu"
+    abbr = "_".join(p.split("_")[0] for p in parts)
+    if len(abbr) > 40:
+        abbr = abbr[:40] + f"_{len(parts)}tasks"
+    return abbr
+
+
 def run_lm_eval(model, tokenizer, tasks: list, device: str = "cuda", batch_size: int = 1):
     """Run lm-evaluation-harness on the given model."""
     from lm_eval import evaluator
@@ -162,9 +177,10 @@ def main():
     }
 
     suffix = "analog" if args.analog else "clean"
+    tasks_slug = _tasks_slug(args.tasks)
     out_file = os.path.join(
         args.output_dir,
-        f"lm_eval_{args.checkpoint_dir.rstrip('/').split('/')[-1]}_{suffix}.json"
+        f"lm_eval_{args.checkpoint_dir.rstrip('/').split('/')[-1]}_{suffix}_{tasks_slug}.json"
     )
     os.makedirs(args.output_dir, exist_ok=True)
     with open(out_file, "w") as f:

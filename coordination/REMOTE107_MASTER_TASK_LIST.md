@@ -132,7 +132,21 @@
 
 | GPU | 任务 | 状态 |
 |---|---|---|
-| 4 | p28b last2 cosine clean eval | 运行中 |
-| 5 | p28b last2 cosine analog eval | 运行中 |
-| 6 | Qwen3-VL 5000-step checkpoint eval | 运行中 |
-| 7 | p28b fixed 1000 steps 训练 | 进行中 |
+| 4 | p28b adaptive reverse_v1 standard eval | 运行中 |
+| 5 | p28b adaptive fixed_1000 standard eval | 运行中 |
+| 6 | p69b fixed500 clean extended (mmlu+wg+piqa+boolq) | 运行中 |
+| 7 | p69b fixed500 analog extended (mmlu+wg+piqa+boolq) | 运行中 |
+
+---
+
+## 八、统一评估协议变更（2026-05-13）
+
+| 任务 | 状态 | 备注 |
+|---|---|---|
+| p69b clean extended 重跑（max_length=2048） | ⏳ GPU6 运行中 | 旧版 log 因 max_length=512 在部分样本上报错（`Sequence length 1090 exceeds D2D buffer size 512`），已修正参数重启 |
+| p69b analog extended 重跑（max_length=2048） | ⏳ GPU7 运行中 | 同上 |
+| p28b clean extended 重跑（max_length=2048） | ⏳ GPU4 运行中 | 已启动 |
+| p28b analog extended 重跑（max_length=2048） | ⏳ GPU5 运行中 | 已启动 |
+| p28b/p69b robustness sweep | ⏳ 脚本就绪 | `run_robustness_sweep_4567.sh`，等 extended 结束后 `nohup` 启动 |
+
+**变更原因**：`--max_length` 控制 D2D noise buffer 的预分配长度（`torch.randn(1, num_heads, max_length, head_size)`），当序列长度超过 buffer 时会直接 crash；同时不同 max_length 会导致 D2D noise 采样张量形状不同，影响 analog 结果。为保证 clean/analog 间 strict 可比性，所有 extended eval 统一使用 `max_length=2048`（覆盖当前出现的 1090+ 最长序列），旧版 PARTIAL 数据仅作参考、不入 claim-lock。

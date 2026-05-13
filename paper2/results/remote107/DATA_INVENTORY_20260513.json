@@ -1,0 +1,1721 @@
+{
+  "generated_at": "2026-05-13T15:15:31.930109",
+  "branch": "107-clean",
+  "note": "Auto-generated inventory of all experimental results on Remote 107",
+  "categories": {
+    "training_metadata": {
+      "count": 107,
+      "files": [
+        {
+          "file": "p0_sweep_c2c_0.005_seed42.json",
+          "model": "N/A",
+          "ppl_before": null,
+          "ppl_after": null,
+          "steps": null,
+          "analog_layers": [],
+          "schedule": "fixed"
+        },
+        {
+          "file": "p0_sweep_c2c_0.015_seed42.json",
+          "model": "N/A",
+          "ppl_before": null,
+          "ppl_after": null,
+          "steps": null,
+          "analog_layers": [],
+          "schedule": "fixed"
+        },
+        {
+          "file": "p0_sweep_c2c_0.01_seed42.json",
+          "model": "N/A",
+          "ppl_before": null,
+          "ppl_after": null,
+          "steps": null,
+          "analog_layers": [],
+          "schedule": "fixed"
+        },
+        {
+          "file": "p0_sweep_c2c_0.02_seed42.json",
+          "model": "N/A",
+          "ppl_before": null,
+          "ppl_after": null,
+          "steps": null,
+          "analog_layers": [],
+          "schedule": "fixed"
+        },
+        {
+          "file": "p0_sweep_c2c_0.03_seed42.json",
+          "model": "N/A",
+          "ppl_before": null,
+          "ppl_after": null,
+          "steps": null,
+          "analog_layers": [],
+          "schedule": "fixed"
+        },
+        {
+          "file": "p0_sweep_c2c_0.05_seed42.json",
+          "model": "N/A",
+          "ppl_before": null,
+          "ppl_after": null,
+          "steps": null,
+          "analog_layers": [],
+          "schedule": "fixed"
+        },
+        {
+          "file": "p0_sweep_c2c_0.0_seed42.json",
+          "model": "N/A",
+          "ppl_before": null,
+          "ppl_after": null,
+          "steps": null,
+          "analog_layers": [],
+          "schedule": "fixed"
+        },
+        {
+          "file": "p0_sweep_d2d_0.01_seed42.json",
+          "model": "N/A",
+          "ppl_before": null,
+          "ppl_after": null,
+          "steps": null,
+          "analog_layers": [],
+          "schedule": "fixed"
+        },
+        {
+          "file": "p0_sweep_d2d_0.02_seed42.json",
+          "model": "N/A",
+          "ppl_before": null,
+          "ppl_after": null,
+          "steps": null,
+          "analog_layers": [],
+          "schedule": "fixed"
+        },
+        {
+          "file": "p0_sweep_d2d_0.05_seed42.json",
+          "model": "N/A",
+          "ppl_before": null,
+          "ppl_after": null,
+          "steps": null,
+          "analog_layers": [],
+          "schedule": "fixed"
+        },
+        {
+          "file": "p0_sweep_d2d_0.0_seed42.json",
+          "model": "N/A",
+          "ppl_before": null,
+          "ppl_after": null,
+          "steps": null,
+          "analog_layers": [],
+          "schedule": "fixed"
+        },
+        {
+          "file": "p0_sweep_d2d_0.1_seed42.json",
+          "model": "N/A",
+          "ppl_before": null,
+          "ppl_after": null,
+          "steps": null,
+          "analog_layers": [],
+          "schedule": "fixed"
+        },
+        {
+          "file": "p1b_last1_c2c_v2_seed42.json",
+          "model": "N/A",
+          "ppl_before": 17.447211995001606,
+          "ppl_after": 13.903112147529077,
+          "steps": 500,
+          "analog_layers": [
+            15
+          ],
+          "schedule": "fixed"
+        },
+        {
+          "file": "p1b_last1_d2d_v2_seed42.json",
+          "model": "N/A",
+          "ppl_before": 17.478536861137652,
+          "ppl_after": 13.916637205474673,
+          "steps": 500,
+          "analog_layers": [
+            15
+          ],
+          "schedule": "fixed"
+        },
+        {
+          "file": "p1b_last1_e10_v2_seed42.json",
+          "model": "N/A",
+          "ppl_before": 18.412225609635737,
+          "ppl_after": 14.278835975466373,
+          "steps": 500,
+          "analog_layers": [
+            15
+          ],
+          "schedule": "fixed"
+        },
+        {
+          "file": "p1b_last1_e15_v2_seed42.json",
+          "model": "N/A",
+          "ppl_before": 19.59787756515558,
+          "ppl_after": 14.589973781459534,
+          "steps": 500,
+          "analog_layers": [
+            15
+          ],
+          "schedule": "fixed"
+        },
+        {
+          "file": "p1b_last1_e20_v2_seed42.json",
+          "model": "N/A",
+          "ppl_before": 21.319314431820175,
+          "ppl_after": 14.909268764800869,
+          "steps": 500,
+          "analog_layers": [
+            15
+          ],
+          "schedule": "fixed"
+        },
+        {
+          "file": "p28b_adaptive_cosine_last2_seed42.json",
+          "model": "EleutherAI/pythia-2.8b-deduped",
+          "ppl_before": 13.866615321672267,
+          "ppl_after": 12.55658215784389,
+          "steps": 500,
+          "analog_layers": [
+            30,
+            31
+          ],
+          "schedule": "fixed"
+        },
+        {
+          "file": "p28b_adaptive_cosine_v1_seed42.json",
+          "model": "EleutherAI/pythia-2.8b-deduped",
+          "ppl_before": 13.694164783474925,
+          "ppl_after": 12.67656415163942,
+          "steps": 500,
+          "analog_layers": [
+            31
+          ],
+          "schedule": "fixed"
+        },
+        {
+          "file": "p28b_adaptive_fixed_1000_seed42.json",
+          "model": "EleutherAI/pythia-2.8b-deduped",
+          "ppl_before": 13.694164783474925,
+          "ppl_after": 12.405885912476831,
+          "steps": 1000,
+          "analog_layers": [
+            31
+          ],
+          "schedule": "fixed"
+        },
+        {
+          "file": "p28b_adaptive_fixed_v1_seed42.json",
+          "model": "EleutherAI/pythia-2.8b-deduped",
+          "ppl_before": 13.694164783474925,
+          "ppl_after": 12.683319734769386,
+          "steps": 500,
+          "analog_layers": [
+            31
+          ],
+          "schedule": "fixed"
+        },
+        {
+          "file": "p28b_adaptive_layerwise_v1_seed42.json",
+          "model": "EleutherAI/pythia-2.8b-deduped",
+          "ppl_before": 13.694164783474925,
+          "ppl_after": 12.695432326337126,
+          "steps": 500,
+          "analog_layers": [
+            31
+          ],
+          "schedule": "fixed"
+        },
+        {
+          "file": "p28b_adaptive_reverse_v1_seed42.json",
+          "model": "EleutherAI/pythia-2.8b-deduped",
+          "ppl_before": 13.694164783474925,
+          "ppl_after": 12.683319734769386,
+          "steps": 500,
+          "analog_layers": [
+            31
+          ],
+          "schedule": "fixed"
+        },
+        {
+          "file": "p28b_distill100_seed42.json",
+          "model": "EleutherAI/pythia-2.8b-deduped",
+          "ppl_before": 13.707439414289201,
+          "ppl_after": 13.294639331001127,
+          "steps": 100,
+          "analog_layers": [
+            31
+          ],
+          "schedule": "fixed"
+        },
+        {
+          "file": "p28b_distill500_seed42.json",
+          "model": "EleutherAI/pythia-2.8b-deduped",
+          "ppl_before": 13.707439414289201,
+          "ppl_after": 12.803693778537275,
+          "steps": 500,
+          "analog_layers": [
+            31
+          ],
+          "schedule": "fixed"
+        },
+        {
+          "file": "p28b_fixed100_feasibility_seed42.json",
+          "model": "EleutherAI/pythia-2.8b-deduped",
+          "ppl_before": 13.707439414289201,
+          "ppl_after": 13.268714950065572,
+          "steps": 100,
+          "analog_layers": [
+            31
+          ],
+          "schedule": "fixed"
+        },
+        {
+          "file": "p28b_fixed500_seed42.json",
+          "model": "EleutherAI/pythia-2.8b-deduped",
+          "ppl_before": 13.707439414289201,
+          "ppl_after": 12.691416911970375,
+          "steps": 500,
+          "analog_layers": [
+            31
+          ],
+          "schedule": "fixed"
+        },
+        {
+          "file": "p28b_hat_last2_fixed500_seed42_seed42.json",
+          "model": "EleutherAI/pythia-2.8b-deduped",
+          "ppl_before": 13.866615321672267,
+          "ppl_after": 10.722899993164642,
+          "steps": 500,
+          "analog_layers": [
+            30,
+            31
+          ],
+          "schedule": "fixed"
+        },
+        {
+          "file": "p28b_hat_last4_fixed500_seed42_seed42.json",
+          "model": "EleutherAI/pythia-2.8b-deduped",
+          "ppl_before": 14.33971133997443,
+          "ppl_after": 10.902265601665261,
+          "steps": 500,
+          "analog_layers": [
+            28,
+            29,
+            30,
+            31
+          ],
+          "schedule": "fixed"
+        },
+        {
+          "file": "p28b_last2_fixed500_seed42.json",
+          "model": "EleutherAI/pythia-2.8b-deduped",
+          "ppl_before": 13.923294121293367,
+          "ppl_after": 12.606451585925495,
+          "steps": 500,
+          "analog_layers": [
+            30,
+            31
+          ],
+          "schedule": "fixed"
+        },
+        {
+          "file": "p28b_last4_fixed500_seed42.json",
+          "model": "EleutherAI/pythia-2.8b-deduped",
+          "ppl_before": 14.493768760336648,
+          "ppl_after": 12.706103900799343,
+          "steps": 500,
+          "analog_layers": [
+            28,
+            29,
+            30,
+            31
+          ],
+          "schedule": "fixed"
+        },
+        {
+          "file": "p28b_multi_u100_seed42.json",
+          "model": "EleutherAI/pythia-2.8b-deduped",
+          "ppl_before": 13.707439414289201,
+          "ppl_after": 13.244635135256127,
+          "steps": 100,
+          "analog_layers": [
+            31
+          ],
+          "schedule": "fixed"
+        },
+        {
+          "file": "p28b_multi_u500_seed42.json",
+          "model": "EleutherAI/pythia-2.8b-deduped",
+          "ppl_before": 13.707439414289201,
+          "ppl_after": 12.670239897499068,
+          "steps": 500,
+          "analog_layers": [
+            31
+          ],
+          "schedule": "fixed"
+        },
+        {
+          "file": "p28b_retention100_seed42.json",
+          "model": "EleutherAI/pythia-2.8b-deduped",
+          "ppl_before": 13.754283759039813,
+          "ppl_after": 13.293909089623947,
+          "steps": 100,
+          "analog_layers": [
+            31
+          ],
+          "schedule": "fixed"
+        },
+        {
+          "file": "p28b_retention500_seed42.json",
+          "model": "EleutherAI/pythia-2.8b-deduped",
+          "ppl_before": 13.754283759039813,
+          "ppl_after": 12.71760284440268,
+          "steps": 500,
+          "analog_layers": [
+            31
+          ],
+          "schedule": "fixed"
+        },
+        {
+          "file": "p2d8b_last1_d2d002_seed42.json",
+          "model": "EleutherAI/pythia-2.8b-deduped",
+          "ppl_before": 13.719897230441914,
+          "ppl_after": 13.30898432583992,
+          "steps": 100,
+          "analog_layers": [
+            31
+          ],
+          "schedule": "fixed"
+        },
+        {
+          "file": "p3a_organic_states16_seed42.json",
+          "model": "N/A",
+          "ppl_before": null,
+          "ppl_after": null,
+          "steps": null,
+          "analog_layers": [],
+          "schedule": "fixed"
+        },
+        {
+          "file": "p3a_organic_states256_seed42.json",
+          "model": "N/A",
+          "ppl_before": null,
+          "ppl_after": null,
+          "steps": null,
+          "analog_layers": [],
+          "schedule": "fixed"
+        },
+        {
+          "file": "p3a_organic_states32_seed42.json",
+          "model": "N/A",
+          "ppl_before": null,
+          "ppl_after": null,
+          "steps": null,
+          "analog_layers": [],
+          "schedule": "fixed"
+        },
+        {
+          "file": "p3a_organic_states64_seed42.json",
+          "model": "N/A",
+          "ppl_before": null,
+          "ppl_after": null,
+          "steps": null,
+          "analog_layers": [],
+          "schedule": "fixed"
+        },
+        {
+          "file": "p3b_retention_step1.0_seed42.json",
+          "model": "N/A",
+          "ppl_before": null,
+          "ppl_after": null,
+          "steps": null,
+          "analog_layers": [],
+          "schedule": "fixed"
+        },
+        {
+          "file": "p410m_adaptive_cosine_1000_seed42.json",
+          "model": "EleutherAI/pythia-410m-deduped",
+          "ppl_before": 23.25028179971035,
+          "ppl_after": 20.73385264636513,
+          "steps": 1000,
+          "analog_layers": [
+            23
+          ],
+          "schedule": "fixed"
+        },
+        {
+          "file": "p410m_adaptive_cosine_seed42.json",
+          "model": "EleutherAI/pythia-410m-deduped",
+          "ppl_before": 22.209647403543876,
+          "ppl_after": 17.409011572797002,
+          "steps": 500,
+          "analog_layers": [
+            31
+          ],
+          "schedule": "fixed"
+        },
+        {
+          "file": "p410m_adaptive_cosine_v2_seed42.json",
+          "model": "EleutherAI/pythia-410m-deduped",
+          "ppl_before": 22.209647403543876,
+          "ppl_after": 17.409011572797002,
+          "steps": 500,
+          "analog_layers": [
+            31
+          ],
+          "schedule": "fixed"
+        },
+        {
+          "file": "p410m_adaptive_cosine_v3_fixlayer_seed42.json",
+          "model": "EleutherAI/pythia-410m-deduped",
+          "ppl_before": 23.227458091597544,
+          "ppl_after": 18.748053076418945,
+          "steps": 500,
+          "analog_layers": [
+            23
+          ],
+          "schedule": "fixed"
+        },
+        {
+          "file": "p410m_adaptive_cosine_v3_seed42.json",
+          "model": "EleutherAI/pythia-410m-deduped",
+          "ppl_before": 22.209647403543876,
+          "ppl_after": 17.409011572797002,
+          "steps": 500,
+          "analog_layers": [
+            31
+          ],
+          "schedule": "fixed"
+        },
+        {
+          "file": "p410m_adaptive_cosine_v4_seed42.json",
+          "model": "EleutherAI/pythia-410m-deduped",
+          "ppl_before": 23.227458091597544,
+          "ppl_after": 18.3107981983601,
+          "steps": 500,
+          "analog_layers": [
+            23
+          ],
+          "schedule": "fixed"
+        },
+        {
+          "file": "p410m_adaptive_fixed_1000_seed42.json",
+          "model": "EleutherAI/pythia-410m-deduped",
+          "ppl_before": 23.25028179971035,
+          "ppl_after": 20.749522674237202,
+          "steps": 1000,
+          "analog_layers": [
+            23
+          ],
+          "schedule": "fixed"
+        },
+        {
+          "file": "p410m_adaptive_fixed_baseline_seed42.json",
+          "model": "EleutherAI/pythia-410m-deduped",
+          "ppl_before": 22.209647403543876,
+          "ppl_after": 17.409011572797002,
+          "steps": 500,
+          "analog_layers": [
+            31
+          ],
+          "schedule": "fixed"
+        },
+        {
+          "file": "p410m_adaptive_fixed_v2_seed42.json",
+          "model": "EleutherAI/pythia-410m-deduped",
+          "ppl_before": 22.209647403543876,
+          "ppl_after": 17.409011572797002,
+          "steps": 500,
+          "analog_layers": [
+            31
+          ],
+          "schedule": "fixed"
+        },
+        {
+          "file": "p410m_adaptive_fixed_v3_fixlayer_seed42.json",
+          "model": "EleutherAI/pythia-410m-deduped",
+          "ppl_before": 23.227458091597544,
+          "ppl_after": 18.748053076418945,
+          "steps": 500,
+          "analog_layers": [
+            23
+          ],
+          "schedule": "fixed"
+        },
+        {
+          "file": "p410m_adaptive_fixed_v3_seed42.json",
+          "model": "EleutherAI/pythia-410m-deduped",
+          "ppl_before": 22.209647403543876,
+          "ppl_after": 17.409011572797002,
+          "steps": 500,
+          "analog_layers": [
+            31
+          ],
+          "schedule": "fixed"
+        },
+        {
+          "file": "p410m_adaptive_fixed_v4_seed42.json",
+          "model": "EleutherAI/pythia-410m-deduped",
+          "ppl_before": 23.227458091597544,
+          "ppl_after": 18.748053076418945,
+          "steps": 500,
+          "analog_layers": [
+            23
+          ],
+          "schedule": "fixed"
+        },
+        {
+          "file": "p410m_adaptive_layerwise_seed42.json",
+          "model": "EleutherAI/pythia-410m-deduped",
+          "ppl_before": 22.209647403543876,
+          "ppl_after": 17.409011572797002,
+          "steps": 500,
+          "analog_layers": [
+            31
+          ],
+          "schedule": "fixed"
+        },
+        {
+          "file": "p410m_adaptive_layerwise_v2_seed42.json",
+          "model": "EleutherAI/pythia-410m-deduped",
+          "ppl_before": 22.209647403543876,
+          "ppl_after": 17.409011572797002,
+          "steps": 500,
+          "analog_layers": [
+            31
+          ],
+          "schedule": "fixed"
+        },
+        {
+          "file": "p410m_adaptive_layerwise_v3_fixlayer_seed42.json",
+          "model": "EleutherAI/pythia-410m-deduped",
+          "ppl_before": 23.227458091597544,
+          "ppl_after": 18.748053076418945,
+          "steps": 500,
+          "analog_layers": [
+            23
+          ],
+          "schedule": "fixed"
+        },
+        {
+          "file": "p410m_adaptive_layerwise_v3_seed42.json",
+          "model": "EleutherAI/pythia-410m-deduped",
+          "ppl_before": 22.209647403543876,
+          "ppl_after": 17.409011572797002,
+          "steps": 500,
+          "analog_layers": [
+            31
+          ],
+          "schedule": "fixed"
+        },
+        {
+          "file": "p410m_adaptive_layerwise_v4_seed42.json",
+          "model": "EleutherAI/pythia-410m-deduped",
+          "ppl_before": 23.227458091597544,
+          "ppl_after": 18.362231325609063,
+          "steps": 500,
+          "analog_layers": [
+            23
+          ],
+          "schedule": "fixed"
+        },
+        {
+          "file": "p410m_adaptive_ns_seed42.json",
+          "model": "EleutherAI/pythia-410m-deduped",
+          "ppl_before": 23.299391239025578,
+          "ppl_after": 22.978047932040706,
+          "steps": 20,
+          "analog_layers": [
+            23
+          ],
+          "schedule": "fixed"
+        },
+        {
+          "file": "p410m_adaptive_reverse_v1_nofreeze_seed42.json",
+          "model": "EleutherAI/pythia-410m-deduped",
+          "ppl_before": 23.227458091597544,
+          "ppl_after": 18.748053076418945,
+          "steps": 500,
+          "analog_layers": [
+            23
+          ],
+          "schedule": "fixed"
+        },
+        {
+          "file": "p410m_adaptive_reverse_v1_seed42.json",
+          "model": "EleutherAI/pythia-410m-deduped",
+          "ppl_before": 23.25028179971035,
+          "ppl_after": 21.29858727082094,
+          "steps": 500,
+          "analog_layers": [
+            23
+          ],
+          "schedule": "fixed"
+        },
+        {
+          "file": "p410m_bf16freeze_500_full_seed42.json",
+          "model": "EleutherAI/pythia-410m-deduped",
+          "ppl_before": 23.326517788169028,
+          "ppl_after": 21.345562954648553,
+          "steps": 500,
+          "analog_layers": [
+            23
+          ],
+          "schedule": "fixed"
+        },
+        {
+          "file": "p410m_bf16freeze_500_seed42.json",
+          "model": "EleutherAI/pythia-410m-deduped",
+          "ppl_before": 23.326517788169028,
+          "ppl_after": 22.179531630316678,
+          "steps": 500,
+          "analog_layers": [
+            23
+          ],
+          "schedule": "fixed"
+        },
+        {
+          "file": "p410m_c2c0005_500_seed42.json",
+          "model": "EleutherAI/pythia-410m-deduped",
+          "ppl_before": 23.23208222283676,
+          "ppl_after": 18.091205030489707,
+          "steps": 500,
+          "analog_layers": [
+            23
+          ],
+          "schedule": "fixed"
+        },
+        {
+          "file": "p410m_c2c002_500_seed42.json",
+          "model": "EleutherAI/pythia-410m-deduped",
+          "ppl_before": 23.32092364131499,
+          "ppl_after": 18.12986899243468,
+          "steps": 500,
+          "analog_layers": [
+            23
+          ],
+          "schedule": "fixed"
+        },
+        {
+          "file": "p410m_c2c_only_500_seed42.json",
+          "model": "EleutherAI/pythia-410m-deduped",
+          "ppl_before": 23.092486793959427,
+          "ppl_after": 17.914777600770524,
+          "steps": 500,
+          "analog_layers": [
+            23
+          ],
+          "schedule": "fixed"
+        },
+        {
+          "file": "p410m_d2d_only_500_seed42.json",
+          "model": "EleutherAI/pythia-410m-deduped",
+          "ppl_before": 23.197925988387976,
+          "ppl_after": 18.020375082990487,
+          "steps": 500,
+          "analog_layers": [
+            23
+          ],
+          "schedule": "fixed"
+        },
+        {
+          "file": "p410m_distill_500_full_seed42.json",
+          "model": "EleutherAI/pythia-410m-deduped",
+          "ppl_before": 23.299391239025578,
+          "ppl_after": 18.1288839192242,
+          "steps": 500,
+          "analog_layers": [
+            23
+          ],
+          "schedule": "fixed"
+        },
+        {
+          "file": "p410m_distill_500_seed42.json",
+          "model": "EleutherAI/pythia-410m-deduped",
+          "ppl_before": 23.299391239025578,
+          "ppl_after": 21.494162505613883,
+          "steps": 500,
+          "analog_layers": [
+            23
+          ],
+          "schedule": "fixed"
+        },
+        {
+          "file": "p410m_distill_a05_seed42.json",
+          "model": "EleutherAI/pythia-410m-deduped",
+          "ppl_before": 23.299391239025578,
+          "ppl_after": 22.987130181852077,
+          "steps": 20,
+          "analog_layers": [
+            23
+          ],
+          "schedule": "fixed"
+        },
+        {
+          "file": "p410m_distill_u100_seed42.json",
+          "model": "EleutherAI/pythia-410m-deduped",
+          "ppl_before": 23.299391239025578,
+          "ppl_after": 22.31852453495556,
+          "steps": 100,
+          "analog_layers": [
+            23
+          ],
+          "schedule": "fixed"
+        },
+        {
+          "file": "p410m_fixed500_fullmodel_seed42.json",
+          "model": "EleutherAI/pythia-410m-deduped",
+          "ppl_before": 23.299391239025578,
+          "ppl_after": 18.337179440315026,
+          "steps": 500,
+          "analog_layers": [
+            23
+          ],
+          "schedule": "fixed"
+        },
+        {
+          "file": "p410m_fixed_500_seed42.json",
+          "model": "EleutherAI/pythia-410m-deduped",
+          "ppl_before": 23.299391239025578,
+          "ppl_after": 21.313574582701076,
+          "steps": 500,
+          "analog_layers": [
+            23
+          ],
+          "schedule": "fixed"
+        },
+        {
+          "file": "p410m_last1_retention_seed42.json",
+          "model": "EleutherAI/pythia-410m-deduped",
+          "ppl_before": 22.715975516761482,
+          "ppl_after": 18.513532731661297,
+          "steps": 500,
+          "analog_layers": [
+            23
+          ],
+          "schedule": "fixed"
+        },
+        {
+          "file": "p410m_last2_fixed500_seed42.json",
+          "model": "EleutherAI/pythia-410m-deduped",
+          "ppl_before": 24.9548985505156,
+          "ppl_after": 18.850696140087383,
+          "steps": 500,
+          "analog_layers": [
+            22,
+            23
+          ],
+          "schedule": "fixed"
+        },
+        {
+          "file": "p410m_last4_distill_seed42.json",
+          "model": "EleutherAI/pythia-410m-deduped",
+          "ppl_before": 31.2660764292713,
+          "ppl_after": 20.098426067250646,
+          "steps": 500,
+          "analog_layers": [
+            20,
+            21,
+            22,
+            23
+          ],
+          "schedule": "fixed"
+        },
+        {
+          "file": "p410m_last4_fixed500_seed42.json",
+          "model": "EleutherAI/pythia-410m-deduped",
+          "ppl_before": 31.2660764292713,
+          "ppl_after": 20.926650198193784,
+          "steps": 500,
+          "analog_layers": [
+            20,
+            21,
+            22,
+            23
+          ],
+          "schedule": "fixed"
+        },
+        {
+          "file": "p410m_lora_r32_seed42.json",
+          "model": "EleutherAI/pythia-410m-deduped",
+          "ppl_before": 23.300360140920112,
+          "ppl_after": 23.136608294715668,
+          "steps": 100,
+          "analog_layers": [
+            23
+          ],
+          "schedule": "fixed"
+        },
+        {
+          "file": "p410m_lora_r8_seed42.json",
+          "model": "EleutherAI/pythia-410m-deduped",
+          "ppl_before": 23.300360140920112,
+          "ppl_after": 23.225365983137863,
+          "steps": 20,
+          "analog_layers": [
+            23
+          ],
+          "schedule": "fixed"
+        },
+        {
+          "file": "p410m_multi_l100_seed42.json",
+          "model": "EleutherAI/pythia-410m-deduped",
+          "ppl_before": 23.299391239025578,
+          "ppl_after": 22.29701985141429,
+          "steps": 100,
+          "analog_layers": [
+            23
+          ],
+          "schedule": "fixed"
+        },
+        {
+          "file": "p410m_multi_l500_full_seed42.json",
+          "model": "EleutherAI/pythia-410m-deduped",
+          "ppl_before": 23.299391239025578,
+          "ppl_after": 18.33518229951862,
+          "steps": 500,
+          "analog_layers": [
+            23
+          ],
+          "schedule": "fixed"
+        },
+        {
+          "file": "p410m_multi_u100_fp32_seed42.json",
+          "model": "EleutherAI/pythia-410m-deduped",
+          "ppl_before": 23.299391239025578,
+          "ppl_after": 22.13363813530419,
+          "steps": 100,
+          "analog_layers": [
+            23
+          ],
+          "schedule": "fixed"
+        },
+        {
+          "file": "p410m_multi_u100_seed42.json",
+          "model": "EleutherAI/pythia-410m-deduped",
+          "ppl_before": 23.299391239025578,
+          "ppl_after": 22.13363813530419,
+          "steps": 100,
+          "analog_layers": [
+            23
+          ],
+          "schedule": "fixed"
+        },
+        {
+          "file": "p410m_multi_u500_full_seed42.json",
+          "model": "EleutherAI/pythia-410m-deduped",
+          "ppl_before": 23.299391239025578,
+          "ppl_after": 18.565997615900773,
+          "steps": 500,
+          "analog_layers": [
+            23
+          ],
+          "schedule": "fixed"
+        },
+        {
+          "file": "p410m_multi_u500_seed42.json",
+          "model": "EleutherAI/pythia-410m-deduped",
+          "ppl_before": 23.299391239025578,
+          "ppl_after": 21.11770150242696,
+          "steps": 500,
+          "analog_layers": [
+            23
+          ],
+          "schedule": "fixed"
+        },
+        {
+          "file": "p410m_multi_uniform_seed42.json",
+          "model": "EleutherAI/pythia-410m-deduped",
+          "ppl_before": 23.299391239025578,
+          "ppl_after": 22.885074208683722,
+          "steps": 20,
+          "analog_layers": [
+            23
+          ],
+          "schedule": "fixed"
+        },
+        {
+          "file": "p410m_n128_500_seed42.json",
+          "model": "EleutherAI/pythia-410m-deduped",
+          "ppl_before": 23.25943162439096,
+          "ppl_after": 18.066644650231222,
+          "steps": 500,
+          "analog_layers": [
+            23
+          ],
+          "schedule": "fixed"
+        },
+        {
+          "file": "p69b_adaptive_cosine_v1_seed42.json",
+          "model": "EleutherAI/pythia-6.9b-deduped",
+          "ppl_before": 12.296247287712857,
+          "ppl_after": 11.375737887776173,
+          "steps": 500,
+          "analog_layers": [
+            31
+          ],
+          "schedule": "fixed"
+        },
+        {
+          "file": "p69b_adaptive_fixed_v1_seed42.json",
+          "model": "EleutherAI/pythia-6.9b-deduped",
+          "ppl_before": 12.296247287712857,
+          "ppl_after": 11.396130340325799,
+          "steps": 500,
+          "analog_layers": [
+            31
+          ],
+          "schedule": "fixed"
+        },
+        {
+          "file": "p69b_adaptive_layerwise_v1_seed42.json",
+          "model": "EleutherAI/pythia-6.9b-deduped",
+          "ppl_before": 12.296247287712857,
+          "ppl_after": 11.426911157588709,
+          "steps": 500,
+          "analog_layers": [
+            31
+          ],
+          "schedule": "fixed"
+        },
+        {
+          "file": "p69b_fixed100_feasibility_seed42.json",
+          "model": "EleutherAI/pythia-6.9b-deduped",
+          "ppl_before": 12.296247287712857,
+          "ppl_after": 11.930593557935396,
+          "steps": 100,
+          "analog_layers": [
+            31
+          ],
+          "schedule": "fixed"
+        },
+        {
+          "file": "p69b_fixed500_seed42.json",
+          "model": "EleutherAI/pythia-6.9b-deduped",
+          "ppl_before": 12.296247287712857,
+          "ppl_after": 11.396130340325799,
+          "steps": 500,
+          "analog_layers": [
+            31
+          ],
+          "schedule": "fixed"
+        },
+        {
+          "file": "p69b_hat_last2_fixed500_seed42_seed42.json",
+          "model": "EleutherAI/pythia-6.9b-deduped",
+          "ppl_before": 12.446533430065626,
+          "ppl_after": 11.335390133620718,
+          "steps": 500,
+          "analog_layers": [
+            30,
+            31
+          ],
+          "schedule": "fixed"
+        },
+        {
+          "file": "p69b_hat_last4_fixed500_seed42_seed42.json",
+          "model": "EleutherAI/pythia-6.9b-deduped",
+          "ppl_before": 12.821496253178825,
+          "ppl_after": 11.373297592055831,
+          "steps": 500,
+          "analog_layers": [
+            28,
+            29,
+            30,
+            31
+          ],
+          "schedule": "fixed"
+        },
+        {
+          "file": "probe_layer12_256_nonoise_seed42.json",
+          "model": "N/A",
+          "ppl_before": null,
+          "ppl_after": null,
+          "steps": null,
+          "analog_layers": [
+            12
+          ],
+          "schedule": "fixed"
+        },
+        {
+          "file": "probe_layer18_256_nonoise_seed42.json",
+          "model": "N/A",
+          "ppl_before": null,
+          "ppl_after": null,
+          "steps": null,
+          "analog_layers": [
+            18
+          ],
+          "schedule": "fixed"
+        },
+        {
+          "file": "probe_layer18_256_realistic_seed42.json",
+          "model": "N/A",
+          "ppl_before": null,
+          "ppl_after": null,
+          "steps": null,
+          "analog_layers": [
+            18
+          ],
+          "schedule": "fixed"
+        },
+        {
+          "file": "probe_layer23_256_nonoise_seed42.json",
+          "model": "N/A",
+          "ppl_before": null,
+          "ppl_after": null,
+          "steps": null,
+          "analog_layers": [],
+          "schedule": "fixed"
+        },
+        {
+          "file": "probe_layer23_256_realistic_seed42.json",
+          "model": "N/A",
+          "ppl_before": null,
+          "ppl_after": null,
+          "steps": null,
+          "analog_layers": [],
+          "schedule": "fixed"
+        },
+        {
+          "file": "probe_layer6_256_nonoise_seed42.json",
+          "model": "N/A",
+          "ppl_before": null,
+          "ppl_after": null,
+          "steps": null,
+          "analog_layers": [
+            6
+          ],
+          "schedule": "fixed"
+        },
+        {
+          "file": "pythia1b_all_v2_seed42.json",
+          "model": "N/A",
+          "ppl_before": 19.22242084854636,
+          "ppl_after": 14.648287134886116,
+          "steps": 500,
+          "analog_layers": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15
+          ],
+          "schedule": "fixed"
+        },
+        {
+          "file": "pythia1b_c2c01_v2_seed42.json",
+          "model": "N/A",
+          "ppl_before": 17.465577081843556,
+          "ppl_after": 13.914742058496596,
+          "steps": 500,
+          "analog_layers": [
+            14,
+            15
+          ],
+          "schedule": "fixed"
+        },
+        {
+          "file": "pythia1b_d2d05_v2_seed42.json",
+          "model": "N/A",
+          "ppl_before": 18.18436276530892,
+          "ppl_after": 14.217890152973625,
+          "steps": 500,
+          "analog_layers": [
+            14,
+            15
+          ],
+          "schedule": "fixed"
+        },
+        {
+          "file": "pythia1b_hs05_v2_seed42.json",
+          "model": "N/A",
+          "ppl_before": 18.207842401287543,
+          "ppl_after": 14.247840498184734,
+          "steps": 500,
+          "analog_layers": [
+            14,
+            15
+          ],
+          "schedule": "fixed"
+        },
+        {
+          "file": "pythia1b_last1_v2_seed42.json",
+          "model": "N/A",
+          "ppl_before": 17.489791538082567,
+          "ppl_after": 13.92799190294971,
+          "steps": 500,
+          "analog_layers": [
+            15
+          ],
+          "schedule": "fixed"
+        },
+        {
+          "file": "pythia1b_last2_v2_seed42.json",
+          "model": "N/A",
+          "ppl_before": 17.606142787224403,
+          "ppl_after": 13.994048762830221,
+          "steps": 500,
+          "analog_layers": [
+            14,
+            15
+          ],
+          "schedule": "fixed"
+        },
+        {
+          "file": "pythia1b_last4_v2_seed42.json",
+          "model": "N/A",
+          "ppl_before": 17.83450683673975,
+          "ppl_after": 14.099500298050929,
+          "steps": 500,
+          "analog_layers": [
+            12,
+            13,
+            14,
+            15
+          ],
+          "schedule": "fixed"
+        }
+      ]
+    },
+    "downstream_eval_standard3": {
+      "count": 12,
+      "models": {
+        "p28b_adaptive_cosine_last2_seed42": [
+          "analog",
+          "clean"
+        ],
+        "p28b_adaptive_cosine_v1_seed42": [
+          "analog",
+          "clean"
+        ],
+        "p28b_adaptive_fixed_1000_seed42": [
+          "clean"
+        ],
+        "p28b_adaptive_fixed_v1_seed42": [
+          "analog",
+          "clean"
+        ],
+        "p28b_adaptive_layerwise_v1_seed42": [
+          "analog",
+          "clean"
+        ],
+        "p28b_adaptive_reverse_v1_seed42": [
+          "clean"
+        ],
+        "p28b_fixed500_seed42": [
+          "analog",
+          "clean"
+        ],
+        "p69b_adaptive_cosine_v1_seed42": [
+          "analog",
+          "clean"
+        ],
+        "p69b_adaptive_fixed_v1_seed42": [
+          "analog",
+          "clean"
+        ],
+        "p69b_adaptive_layerwise_v1_seed42": [
+          "analog",
+          "clean"
+        ],
+        "p69b_fixed500_seed42": [
+          "analog",
+          "clean"
+        ],
+        "p69b_fixed500_seed42_clean_extended": [
+          "PARTIAL"
+        ]
+      }
+    },
+    "downstream_eval_extended": {
+      "count": 4,
+      "files": [
+        "lm_eval_p28b_fixed500_seed42_analog_extended.json",
+        "lm_eval_p28b_fixed500_seed42_clean_extended.json",
+        "lm_eval_p69b_fixed500_seed42_analog_extended.json",
+        "lm_eval_p69b_fixed500_seed42_clean_extended_PARTIAL.json"
+      ]
+    },
+    "cross_device_eval": {
+      "count": 6,
+      "results": [
+        {
+          "file": "eval_p28b_fixed500_seed42_c2c0.05_d2d0.1_ns256_rst0.001_seed3373.json",
+          "type": "rram",
+          "ppl": 12.849502975377085
+        },
+        {
+          "file": "eval_p69b_fixed500_seed42_c2c0.05_d2d0.1_ns256_rst0.001_seed3373.json",
+          "type": "rram",
+          "ppl": 11.793161262847239
+        },
+        {
+          "file": "eval_p28b_fixed500_seed42_c2c0.02_d2d0.05_ns256_rst0.01_seed3373.json",
+          "type": "pcm",
+          "ppl": 12.799750666501541
+        },
+        {
+          "file": "eval_p69b_fixed500_seed42_c2c0.02_d2d0.05_ns256_rst0.01_seed3373.json",
+          "type": "pcm",
+          "ppl": 11.556913293677157
+        },
+        {
+          "file": "eval_p28b_fixed500_seed42_c2c0.005_d2d0.01_ns256_rst0.0001_seed3373.json",
+          "type": "fefet",
+          "ppl": 12.699495246425405
+        },
+        {
+          "file": "eval_p69b_fixed500_seed42_c2c0.005_d2d0.01_ns256_rst0.0001_seed3373.json",
+          "type": "fefet",
+          "ppl": 11.491065931476475
+        }
+      ]
+    },
+    "retention_noise_eval": {
+      "count": 68,
+      "results": [
+        {
+          "file": "eval_p28b_fixed500_seed42_c2c0.01_d2d0.01_rst0.0_seed3373.json",
+          "rst": 0.0,
+          "ppl": 12.677188110264051
+        },
+        {
+          "file": "eval_p28b_fixed500_seed42_c2c0.01_d2d0.02_ns128_rst0.0_seed3373.json",
+          "rst": 0.0,
+          "ppl": 12.689674701903797
+        },
+        {
+          "file": "eval_p28b_fixed500_seed42_c2c0.01_d2d0.02_ns256_rst0.001_seed3373.json",
+          "rst": 0.001,
+          "ppl": 12.748369960970514
+        },
+        {
+          "file": "eval_p28b_fixed500_seed42_c2c0.01_d2d0.02_ns256_rst0.01_seed3373.json",
+          "rst": 0.01,
+          "ppl": 12.762599801788053
+        },
+        {
+          "file": "eval_p28b_fixed500_seed42_c2c0.01_d2d0.02_ns256_rst0.0_seed3373.json",
+          "rst": 0.0,
+          "ppl": 12.688046256954289
+        },
+        {
+          "file": "eval_p28b_fixed500_seed42_c2c0.01_d2d0.02_ns256_rst0.1_seed3373.json",
+          "rst": 0.1,
+          "ppl": 12.76121115974589
+        },
+        {
+          "file": "eval_p28b_fixed500_seed42_c2c0.01_d2d0.02_ns256_rst1.0_seed3373.json",
+          "rst": 1.0,
+          "ppl": 12.759720840594955
+        },
+        {
+          "file": "eval_p28b_fixed500_seed42_c2c0.01_d2d0.02_ns256_rst10.0_seed3373.json",
+          "rst": 10.0,
+          "ppl": 12.760972558491176
+        },
+        {
+          "file": "eval_p28b_fixed500_seed42_c2c0.01_d2d0.02_ns512_rst0.0_seed3373.json",
+          "rst": 0.0,
+          "ppl": 12.687691060399809
+        },
+        {
+          "file": "eval_p28b_fixed500_seed42_c2c0.01_d2d0.02_rst0.0_seed1001.json",
+          "rst": 0.0,
+          "ppl": 12.6985896635616
+        },
+        {
+          "file": "eval_p28b_fixed500_seed42_c2c0.01_d2d0.02_rst0.0_seed123.json",
+          "rst": 0.0,
+          "ppl": 12.7033023583415
+        },
+        {
+          "file": "eval_p28b_fixed500_seed42_c2c0.01_d2d0.02_rst0.0_seed2024.json",
+          "rst": 0.0,
+          "ppl": 12.701314582365583
+        },
+        {
+          "file": "eval_p28b_fixed500_seed42_c2c0.01_d2d0.02_rst0.0_seed3373.json",
+          "rst": 0.0,
+          "ppl": 12.689437045790445
+        },
+        {
+          "file": "eval_p28b_fixed500_seed42_c2c0.01_d2d0.02_rst0.0_seed42.json",
+          "rst": 0.0,
+          "ppl": 12.70213875727219
+        },
+        {
+          "file": "eval_p28b_fixed500_seed42_c2c0.01_d2d0.02_rst0.0_seed456.json",
+          "rst": 0.0,
+          "ppl": 12.70118655597221
+        },
+        {
+          "file": "eval_p28b_fixed500_seed42_c2c0.01_d2d0.02_rst0.0_seed789.json",
+          "rst": 0.0,
+          "ppl": 12.697596843665416
+        },
+        {
+          "file": "eval_p28b_fixed500_seed42_c2c0.01_d2d0.04_rst0.0_seed3373.json",
+          "rst": 0.0,
+          "ppl": 12.72734786178243
+        },
+        {
+          "file": "eval_p28b_fixed500_seed42_c2c0.01_d2d0.05_rst0.0_seed3373.json",
+          "rst": 0.0,
+          "ppl": 12.74422262893421
+        },
+        {
+          "file": "eval_p28b_fixed500_seed42_c2c0.01_d2d0.0_rst0.0_seed3373.json",
+          "rst": 0.0,
+          "ppl": 12.674851701669693
+        },
+        {
+          "file": "eval_p28b_fixed500_seed42_c2c0.01_d2d0.1_rst0.0_seed3373.json",
+          "rst": 0.0,
+          "ppl": 12.813021803043265
+        },
+        {
+          "file": "eval_p28b_fixed500_seed42_c2c0.0_d2d0.02_ns256_rst0.0_seed3373.json",
+          "rst": 0.0,
+          "ppl": 12.682001410767382
+        },
+        {
+          "file": "eval_p28b_fixed500_seed42_c2c0.0_d2d0.02_rst0.0_seed3373.json",
+          "rst": 0.0,
+          "ppl": 12.682001410767382
+        },
+        {
+          "file": "eval_p28b_fixed500_seed42_c2c0.1_d2d0.02_rst0.0_seed3373.json",
+          "rst": 0.0,
+          "ppl": 12.898977438799069
+        },
+        {
+          "file": "eval_p28b_hat_last2_fixed500_seed42_seed42_c2c0.01_d2d0.02_ns256_rst0.0_seed3373.json",
+          "rst": 0.0,
+          "ppl": 10.723839340112614
+        },
+        {
+          "file": "eval_p28b_hat_last2_fixed500_seed42_seed42_c2c0.0_d2d0.0_ns256_rst0.0_seed3373.json",
+          "rst": 0.0,
+          "ppl": 10.663965185902963
+        },
+        {
+          "file": "eval_p28b_hat_last4_fixed500_seed42_seed42_c2c0.01_d2d0.02_ns256_rst0.0_seed3373.json",
+          "rst": 0.0,
+          "ppl": 10.904680514126513
+        },
+        {
+          "file": "eval_p28b_hat_last4_fixed500_seed42_seed42_c2c0.0_d2d0.0_ns256_rst0.0_seed3373.json",
+          "rst": 0.0,
+          "ppl": 10.694038932521511
+        },
+        {
+          "file": "eval_p28b_last2_fixed500_seed42_c2c0.01_d2d0.02_rst0.0_seed3373.json",
+          "rst": 0.0,
+          "ppl": 12.591901828255171
+        },
+        {
+          "file": "eval_p28b_last2_fixed500_seed42_c2c0.0_d2d0.0_rst0.0_seed3373.json",
+          "rst": 0.0,
+          "ppl": 12.475179155905137
+        },
+        {
+          "file": "eval_p28b_last4_fixed500_seed42_c2c0.01_d2d0.02_rst0.0_seed3373.json",
+          "rst": 0.0,
+          "ppl": 12.630301205023803
+        },
+        {
+          "file": "eval_p28b_last4_fixed500_seed42_c2c0.0_d2d0.0_rst0.0_seed3373.json",
+          "rst": 0.0,
+          "ppl": 12.268087203712316
+        },
+        {
+          "file": "eval_p69b_fixed500_seed42_c2c0.01_d2d0.01_ns256_rst0.0_seed3373.json",
+          "rst": 0.0,
+          "ppl": 11.36028193292054
+        },
+        {
+          "file": "eval_p69b_fixed500_seed42_c2c0.01_d2d0.01_rst0.0_seed3373.json",
+          "rst": 0.0,
+          "ppl": 11.361486253901708
+        },
+        {
+          "file": "eval_p69b_fixed500_seed42_c2c0.01_d2d0.02_ns1024_rst0.0_seed3373.json",
+          "rst": 0.0,
+          "ppl": 11.391890585882926
+        },
+        {
+          "file": "eval_p69b_fixed500_seed42_c2c0.01_d2d0.02_ns128_rst0.0_seed3373.json",
+          "rst": 0.0,
+          "ppl": 11.399025264278551
+        },
+        {
+          "file": "eval_p69b_fixed500_seed42_c2c0.01_d2d0.02_ns256_rst0.001_seed3373.json",
+          "rst": 0.001,
+          "ppl": 11.543923288984628
+        },
+        {
+          "file": "eval_p69b_fixed500_seed42_c2c0.01_d2d0.02_ns256_rst0.01_seed3373.json",
+          "rst": 0.01,
+          "ppl": 11.46196323579575
+        },
+        {
+          "file": "eval_p69b_fixed500_seed42_c2c0.01_d2d0.02_ns256_rst0.0_seed1001.json",
+          "rst": 0.0,
+          "ppl": 11.405927327879562
+        },
+        {
+          "file": "eval_p69b_fixed500_seed42_c2c0.01_d2d0.02_ns256_rst0.0_seed123.json",
+          "rst": 0.0,
+          "ppl": 11.42314090115189
+        },
+        {
+          "file": "eval_p69b_fixed500_seed42_c2c0.01_d2d0.02_ns256_rst0.0_seed3373.json",
+          "rst": 0.0,
+          "ppl": 11.394471824067649
+        },
+        {
+          "file": "eval_p69b_fixed500_seed42_c2c0.01_d2d0.02_ns256_rst0.0_seed42.json",
+          "rst": 0.0,
+          "ppl": 11.401311992892625
+        },
+        {
+          "file": "eval_p69b_fixed500_seed42_c2c0.01_d2d0.02_ns256_rst0.0_seed456.json",
+          "rst": 0.0,
+          "ppl": 11.419382605897617
+        },
+        {
+          "file": "eval_p69b_fixed500_seed42_c2c0.01_d2d0.02_ns256_rst0.0_seed789.json",
+          "rst": 0.0,
+          "ppl": 11.43859885960453
+        },
+        {
+          "file": "eval_p69b_fixed500_seed42_c2c0.01_d2d0.02_ns256_rst0.1_seed3373.json",
+          "rst": 0.1,
+          "ppl": 11.430822082111494
+        },
+        {
+          "file": "eval_p69b_fixed500_seed42_c2c0.01_d2d0.02_ns256_rst1.0_seed3373.json",
+          "rst": 1.0,
+          "ppl": 11.429273247084405
+        },
+        {
+          "file": "eval_p69b_fixed500_seed42_c2c0.01_d2d0.02_ns256_rst10.0_seed3373.json",
+          "rst": 10.0,
+          "ppl": 11.427173899284869
+        },
+        {
+          "file": "eval_p69b_fixed500_seed42_c2c0.01_d2d0.02_ns512_rst0.0_seed3373.json",
+          "rst": 0.0,
+          "ppl": 11.392668288654829
+        },
+        {
+          "file": "eval_p69b_fixed500_seed42_c2c0.01_d2d0.02_rst0.0_seed123.json",
+          "rst": 0.0,
+          "ppl": 11.42367696505242
+        },
+        {
+          "file": "eval_p69b_fixed500_seed42_c2c0.01_d2d0.02_rst0.0_seed2024.json",
+          "rst": 0.0,
+          "ppl": 11.427950658384116
+        },
+        {
+          "file": "eval_p69b_fixed500_seed42_c2c0.01_d2d0.02_rst0.0_seed3373.json",
+          "rst": 0.0,
+          "ppl": 11.39620045795976
+        },
+        {
+          "file": "eval_p69b_fixed500_seed42_c2c0.01_d2d0.02_rst0.0_seed42.json",
+          "rst": 0.0,
+          "ppl": 11.404027035327333
+        },
+        {
+          "file": "eval_p69b_fixed500_seed42_c2c0.01_d2d0.02_rst0.0_seed456.json",
+          "rst": 0.0,
+          "ppl": 11.419960532286172
+        },
+        {
+          "file": "eval_p69b_fixed500_seed42_c2c0.01_d2d0.02_rst0.0_seed789.json",
+          "rst": 0.0,
+          "ppl": 11.44285480031904
+        },
+        {
+          "file": "eval_p69b_fixed500_seed42_c2c0.01_d2d0.04_ns256_rst0.0_seed3373.json",
+          "rst": 0.0,
+          "ppl": 11.524521471784654
+        },
+        {
+          "file": "eval_p69b_fixed500_seed42_c2c0.01_d2d0.05_ns256_rst0.0_seed3373.json",
+          "rst": 0.0,
+          "ppl": 11.595604729771207
+        },
+        {
+          "file": "eval_p69b_fixed500_seed42_c2c0.01_d2d0.05_rst0.0_seed3373.json",
+          "rst": 0.0,
+          "ppl": 11.589936273794638
+        },
+        {
+          "file": "eval_p69b_fixed500_seed42_c2c0.01_d2d0.0_ns256_rst0.0_seed3373.json",
+          "rst": 0.0,
+          "ppl": 11.353974478853713
+        },
+        {
+          "file": "eval_p69b_fixed500_seed42_c2c0.01_d2d0.0_rst0.0_seed3373.json",
+          "rst": 0.0,
+          "ppl": 11.35541388050918
+        },
+        {
+          "file": "eval_p69b_fixed500_seed42_c2c0.01_d2d0.1_ns256_rst0.0_seed3373.json",
+          "rst": 0.0,
+          "ppl": 11.871074485511775
+        },
+        {
+          "file": "eval_p69b_fixed500_seed42_c2c0.01_d2d0.1_rst0.0_seed3373.json",
+          "rst": 0.0,
+          "ppl": 11.874488490748766
+        },
+        {
+          "file": "eval_p69b_fixed500_seed42_c2c0.0_d2d0.02_ns256_rst0.0_seed3373.json",
+          "rst": 0.0,
+          "ppl": 11.373734249859405
+        },
+        {
+          "file": "eval_p69b_fixed500_seed42_c2c0.0_d2d0.02_rst0.0_seed3373.json",
+          "rst": 0.0,
+          "ppl": 11.373734249859405
+        },
+        {
+          "file": "eval_p69b_fixed500_seed42_c2c0.1_d2d0.02_ns256_rst0.0_seed3373.json",
+          "rst": 0.0,
+          "ppl": 12.23608884812556
+        },
+        {
+          "file": "eval_p69b_fixed500_seed42_c2c0.1_d2d0.02_rst0.0_seed3373.json",
+          "rst": 0.0,
+          "ppl": 12.230707158871846
+        },
+        {
+          "file": "eval_p69b_hat_last2_fixed500_seed42_seed42_c2c0.01_d2d0.02_ns256_rst0.0_seed3373.json",
+          "rst": 0.0,
+          "ppl": 11.334376853304075
+        },
+        {
+          "file": "eval_p69b_hat_last2_fixed500_seed42_seed42_c2c0.0_d2d0.0_ns256_rst0.0_seed3373.json",
+          "rst": 0.0,
+          "ppl": 11.18357117677664
+        },
+        {
+          "file": "eval_p69b_hat_last4_fixed500_seed42_seed42_c2c0.01_d2d0.02_ns256_rst0.0_seed3373.json",
+          "rst": 0.0,
+          "ppl": 11.371961701018968
+        },
+        {
+          "file": "eval_p69b_hat_last4_fixed500_seed42_seed42_c2c0.0_d2d0.0_ns256_rst0.0_seed3373.json",
+          "rst": 0.0,
+          "ppl": 11.022273315576784
+        }
+      ]
+    },
+    "robustness_sweeps": {
+      "count": 10,
+      "files": [
+        "combined_layerall_v2_seed42.json",
+        "combined_layerlast1_v2_seed42.json",
+        "combined_layerlast2_v2_seed42.json",
+        "combined_layerlast4_v2_seed42.json",
+        "combined_layerlast8_v2_seed42.json",
+        "combined_sweep_d2d01_c2c01_v2_seed42.json",
+        "combined_sweep_d2d02_c2c005_v2_seed42.json",
+        "combined_sweep_d2d02_c2c01_v2_seed42.json",
+        "combined_sweep_d2d02_c2c02_v2_seed42.json",
+        "combined_sweep_d2d03_c2c01_v2_seed42.json"
+      ]
+    },
+    "vlm_eval": {
+      "count": 65,
+      "files": [
+        "vlm_5000step_eval/vlm_qwen3_Qwen3-VL-2B-Instruct_test_vlm_clean.json",
+        "vlm_5000step_eval/vlm_qwen3_Qwen3-VL-2B-Instruct_test_vlm_last1.json",
+        "vlm_5000step_eval/vlm_qwen3_Qwen3-VL-2B-Instruct_test_vlm_last2.json",
+        "vlm_5000step_eval/vlm_qwen3_Qwen3-VL-2B-Instruct_test_vlm_last4.json",
+        "vlm_5000step_eval/vlm_qwen3_Qwen3-VL-2B-Instruct_vlm_chart_clean.json",
+        "vlm_5000step_eval/vlm_qwen3_Qwen3-VL-2B-Instruct_vlm_chart_last1.json",
+        "vlm_5000step_eval/vlm_qwen3_Qwen3-VL-2B-Instruct_vlm_chart_last2.json",
+        "vlm_5000step_eval/vlm_qwen3_Qwen3-VL-2B-Instruct_vlm_chart_last4.json",
+        "vlm_5000step_eval/vlm_qwen3_Qwen3-VL-2B-Instruct_vlm_interior_clean.json",
+        "vlm_5000step_eval/vlm_qwen3_Qwen3-VL-2B-Instruct_vlm_interior_last1.json",
+        "vlm_5000step_eval/vlm_qwen3_Qwen3-VL-2B-Instruct_vlm_interior_last2.json",
+        "vlm_5000step_eval/vlm_qwen3_Qwen3-VL-2B-Instruct_vlm_interior_last4.json",
+        "vlm_5000step_eval/vlm_qwen3_Qwen3-VL-2B-Instruct_vlm_landscape_clean.json",
+        "vlm_5000step_eval/vlm_qwen3_Qwen3-VL-2B-Instruct_vlm_landscape_last1.json",
+        "vlm_5000step_eval/vlm_qwen3_Qwen3-VL-2B-Instruct_vlm_landscape_last2.json",
+        "vlm_5000step_eval/vlm_qwen3_Qwen3-VL-2B-Instruct_vlm_landscape_last4.json",
+        "vlm_5000step_eval/vlm_qwen3_Qwen3-VL-2B-Instruct_vlm_person_clean.json",
+        "vlm_5000step_eval/vlm_qwen3_Qwen3-VL-2B-Instruct_vlm_person_last1.json",
+        "vlm_5000step_eval/vlm_qwen3_Qwen3-VL-2B-Instruct_vlm_person_last2.json",
+        "vlm_5000step_eval/vlm_qwen3_Qwen3-VL-2B-Instruct_vlm_person_last4.json",
+        "vlm_5k_eval/vlm_qwen3_Qwen3-VL-2B-Instruct_test_vlm_clean.json",
+        "vlm_5k_eval/vlm_qwen3_Qwen3-VL-2B-Instruct_test_vlm_last1.json",
+        "vlm_5k_eval/vlm_qwen3_Qwen3-VL-2B-Instruct_test_vlm_last2.json",
+        "vlm_5k_eval/vlm_qwen3_Qwen3-VL-2B-Instruct_test_vlm_last4.json",
+        "vlm_5k_eval/vlm_qwen3_Qwen3-VL-2B-Instruct_vlm_chart_clean.json",
+        "vlm_5k_eval/vlm_qwen3_Qwen3-VL-2B-Instruct_vlm_chart_last1.json",
+        "vlm_5k_eval/vlm_qwen3_Qwen3-VL-2B-Instruct_vlm_chart_last2.json",
+        "vlm_5k_eval/vlm_qwen3_Qwen3-VL-2B-Instruct_vlm_chart_last4.json",
+        "vlm_5k_eval/vlm_qwen3_Qwen3-VL-2B-Instruct_vlm_interior_clean.json",
+        "vlm_5k_eval/vlm_qwen3_Qwen3-VL-2B-Instruct_vlm_interior_last1.json",
+        "vlm_5k_eval/vlm_qwen3_Qwen3-VL-2B-Instruct_vlm_interior_last2.json",
+        "vlm_5k_eval/vlm_qwen3_Qwen3-VL-2B-Instruct_vlm_interior_last4.json",
+        "vlm_5k_eval/vlm_qwen3_Qwen3-VL-2B-Instruct_vlm_landscape_clean.json",
+        "vlm_5k_eval/vlm_qwen3_Qwen3-VL-2B-Instruct_vlm_landscape_last1.json",
+        "vlm_5k_eval/vlm_qwen3_Qwen3-VL-2B-Instruct_vlm_landscape_last2.json",
+        "vlm_5k_eval/vlm_qwen3_Qwen3-VL-2B-Instruct_vlm_landscape_last4.json",
+        "vlm_5k_eval/vlm_qwen3_Qwen3-VL-2B-Instruct_vlm_person_clean.json",
+        "vlm_5k_eval/vlm_qwen3_Qwen3-VL-2B-Instruct_vlm_person_last1.json",
+        "vlm_5k_eval/vlm_qwen3_Qwen3-VL-2B-Instruct_vlm_person_last2.json",
+        "vlm_5k_eval/vlm_qwen3_Qwen3-VL-2B-Instruct_vlm_person_last4.json",
+        "vlm_sweep_20260511/vlm_qwen3_Qwen3-VL-2B-Instruct_test_vlm.json",
+        "vlm_sweep_20260511/vlm_qwen3_Qwen3-VL-2B-Instruct_vlm_chart.json",
+        "vlm_sweep_20260511/vlm_qwen3_Qwen3-VL-2B-Instruct_vlm_interior.json",
+        "vlm_sweep_20260511/vlm_qwen3_Qwen3-VL-2B-Instruct_vlm_landscape.json",
+        "vlm_sweep_20260511/vlm_qwen3_Qwen3-VL-2B-Instruct_vlm_person.json",
+        "vlm_trained_eval/vlm_qwen3_Qwen3-VL-2B-Instruct_test_vlm_clean.json",
+        "vlm_trained_eval/vlm_qwen3_Qwen3-VL-2B-Instruct_test_vlm_last1.json",
+        "vlm_trained_eval/vlm_qwen3_Qwen3-VL-2B-Instruct_test_vlm_last2.json",
+        "vlm_trained_eval/vlm_qwen3_Qwen3-VL-2B-Instruct_test_vlm_last4.json",
+        "vlm_trained_eval/vlm_qwen3_Qwen3-VL-2B-Instruct_vlm_chart_clean.json",
+        "vlm_trained_eval/vlm_qwen3_Qwen3-VL-2B-Instruct_vlm_chart_last1.json",
+        "vlm_trained_eval/vlm_qwen3_Qwen3-VL-2B-Instruct_vlm_chart_last2.json",
+        "vlm_trained_eval/vlm_qwen3_Qwen3-VL-2B-Instruct_vlm_chart_last4.json",
+        "vlm_trained_eval/vlm_qwen3_Qwen3-VL-2B-Instruct_vlm_interior_clean.json",
+        "vlm_trained_eval/vlm_qwen3_Qwen3-VL-2B-Instruct_vlm_interior_last1.json",
+        "vlm_trained_eval/vlm_qwen3_Qwen3-VL-2B-Instruct_vlm_interior_last2.json",
+        "vlm_trained_eval/vlm_qwen3_Qwen3-VL-2B-Instruct_vlm_interior_last4.json",
+        "vlm_trained_eval/vlm_qwen3_Qwen3-VL-2B-Instruct_vlm_landscape_clean.json",
+        "vlm_trained_eval/vlm_qwen3_Qwen3-VL-2B-Instruct_vlm_landscape_last1.json",
+        "vlm_trained_eval/vlm_qwen3_Qwen3-VL-2B-Instruct_vlm_landscape_last2.json",
+        "vlm_trained_eval/vlm_qwen3_Qwen3-VL-2B-Instruct_vlm_landscape_last4.json",
+        "vlm_trained_eval/vlm_qwen3_Qwen3-VL-2B-Instruct_vlm_person_clean.json",
+        "vlm_trained_eval/vlm_qwen3_Qwen3-VL-2B-Instruct_vlm_person_last1.json",
+        "vlm_trained_eval/vlm_qwen3_Qwen3-VL-2B-Instruct_vlm_person_last2.json",
+        "vlm_trained_eval/vlm_qwen3_Qwen3-VL-2B-Instruct_vlm_person_last4.json"
+      ]
+    },
+    "energy_profile": {
+      "file": "energy_profile_kv_cache.json",
+      "exists": true
+    }
+  }
+}

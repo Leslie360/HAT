@@ -1,0 +1,21 @@
+{
+  "model": "Qwen/Qwen3-VL-2B-Instruct",
+  "family": "qwen3",
+  "image": "/tmp/vlm_interior.jpg",
+  "prompt": "Describe this image in detail.",
+  "clean_output": "This is a modern, minimalist interior photograph of a living room. The room is characterized by a neutral color palette, with light gray walls, a warm-toned wooden floor, and a large, dark, paneled wardrobe on the left. The central focus is a vibrant, mustard-yellow armchair with a modern design, featuring a high back, a plush seat, and thin, dark metal legs. The chair is positioned in front of a large, black-framed abstract artwork that features a black circle on a white background. To the right of the chair, a small, round side table holds a clear glass vase with delicate, dark branches",
+  "clean_time": 12.875658988952637,
+  "analog": true,
+  "analog_output": "This is a photograph of a modern, minimalist living room, presented in a clean and stylish interior design style. The room is characterized by a neutral color palette, with light gray walls, a warm-toned wooden floor, and a large, dark, paneled wardrobe on the left. The central focus is a vibrant, mustard-yellow armchair with a modern, slightly curved design, featuring a plush seat and backrest, and thin, dark metal legs. The chair is positioned in front of a large, framed artwork that hangs on the wall. The artwork is a minimalist piece in a black frame, featuring a white background with a large,",
+  "analog_time": 12.227806806564331,
+  "sigma_c2c": 0.01,
+  "sigma_d2d": 0.02,
+  "n_states": 256,
+  "analog_layers": [
+    24,
+    25,
+    26,
+    27
+  ],
+  "d2d_seed": 3373
+}

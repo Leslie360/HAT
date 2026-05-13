@@ -1,0 +1,9 @@
+{
+  "name": "p0_sweep_d2d_0.01",
+  "seed": 42,
+  "n_states": 64,
+  "profile": "organic",
+  "retention": false,
+  "decode_step_time": 0.1,
+  "ppl": 60.298050686029214
+}

@@ -1,0 +1,18 @@
+{
+  "model": "Qwen/Qwen3-VL-2B-Instruct",
+  "family": "qwen3",
+  "image": "/tmp/vlm_person.jpg",
+  "prompt": "Describe this image in detail.",
+  "clean_output": "This is a close-up portrait of a woman, captured in a soft, natural light that suggests either sunrise or sunset. The image is composed with a shallow depth of field, which blurs the background into a smooth, out-of-focus tapestry of greens and earthy tones, drawing the viewer's full attention to the subject.\n\nThe woman is the central focus, positioned slightly off-center. She has long, straight, dark brown hair that falls over her right shoulder and partially frames her face. Her gaze is directed towards the camera, her eyes are wide and expressive, and her lips are slightly parted in a gentle, neutral expression. Her",
+  "clean_time": 12.059282779693604,
+  "analog": true,
+  "analog_output": "This is a close-up portrait of a woman, captured in a soft, natural light that suggests the time is either sunrise or sunset. The image is composed with a shallow depth of field, which keeps the woman in sharp focus while the background is blurred into a smooth, out-of-focus tapestry of greens and browns.\n\nThe woman has long, straight, brown hair that falls over her right shoulder and partially frames her face. Her eyes are a striking green, and she is looking directly at the camera with a calm, neutral expression. Her makeup is subtle, highlighting her natural features, and her lips are parted slightly.\n\nShe is wearing",
+  "analog_time": 12.14468002319336,
+  "sigma_c2c": 0.01,
+  "sigma_d2d": 0.02,
+  "n_states": 256,
+  "analog_layers": [
+    27
+  ],
+  "d2d_seed": 3373
+}

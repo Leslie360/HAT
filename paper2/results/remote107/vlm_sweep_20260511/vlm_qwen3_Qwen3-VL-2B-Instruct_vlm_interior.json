@@ -1,0 +1,21 @@
+{
+  "model": "Qwen/Qwen3-VL-2B-Instruct",
+  "family": "qwen3",
+  "image": "/tmp/vlm_interior.jpg",
+  "prompt": "Describe this image in detail.",
+  "clean_output": "This is a modern, minimalist living room with a clean and sophisticated aesthetic. The room is characterized by a neutral color palette, with light gray walls, a warm wooden floor, and a bold accent of a vibrant yellow armchair.\n\nThe central focus is a bright yellow armchair with a modern design, featuring a plush, cushioned seat and back, and slender, dark-colored legs. It is positioned in the center of the room, facing the viewer. To the left of the chair stands a tall, slender floor lamp with a gold-colored, minimalist base and a straight, adjustable arm that extends upwards to illuminate the space.\n\nAbove the arm",
+  "clean_time": 9.063281297683716,
+  "analog": true,
+  "analog_output": "This is a modern, minimalist living room with a clean and contemporary aesthetic. The room is characterized by a neutral color palette, with light gray walls, light wood flooring, and a prominent, vibrant yellow armchair that serves as the focal point.\n\n- **Furniture and Color**: The central piece is a vibrant yellow armchair with a modern, slightly curved design. It has a plush, cushioned seat and backrest, and is supported by thin, dark metal legs. To the left of the chair is a tall, slender floor lamp with a gold-finished metal frame and a floor-mounted base. The floor is made of light-colored",
+  "analog_time": 9.147452354431152,
+  "sigma_c2c": 0.01,
+  "sigma_d2d": 0.02,
+  "n_states": 256,
+  "analog_layers": [
+    24,
+    25,
+    26,
+    27
+  ],
+  "d2d_seed": 3373
+}

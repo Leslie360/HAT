@@ -1,0 +1,52 @@
+{
+  "event": "complete",
+  "summary": {
+    "n_layers": 1,
+    "k_mse": 0.0,
+    "v_mse": 0.0,
+    "kv_mse": 0.0,
+    "k_relative_mse": 0.0,
+    "v_relative_mse": 0.0,
+    "kv_relative_mse": 0.0
+  },
+  "layers": [
+    {
+      "layer_idx": 23,
+      "shape": [
+        4,
+        16,
+        19,
+        64
+      ],
+      "instances": 2,
+      "read_repeats": 2,
+      "instance_metrics": [
+        {
+          "instance": 0,
+          "k_mse": 0.0,
+          "v_mse": 0.0,
+          "kv_mse": 0.0,
+          "k_relative_mse": 0.0,
+          "v_relative_mse": 0.0,
+          "kv_relative_mse": 0.0
+        },
+        {
+          "instance": 1,
+          "k_mse": 0.0,
+          "v_mse": 0.0,
+          "kv_mse": 0.0,
+          "k_relative_mse": 0.0,
+          "v_relative_mse": 0.0,
+          "kv_relative_mse": 0.0
+        }
+      ],
+      "k_mse": 0.0,
+      "v_mse": 0.0,
+      "kv_mse": 0.0,
+      "k_relative_mse": 0.0,
+      "v_relative_mse": 0.0,
+      "kv_relative_mse": 0.0
+    }
+  ],
+  "elapsed_s": 5.674065828323364
+}

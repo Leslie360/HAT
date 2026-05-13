@@ -1,0 +1,21 @@
+{
+  "model": "Qwen/Qwen3-VL-2B-Instruct",
+  "family": "qwen3",
+  "image": "/tmp/vlm_chart.png",
+  "prompt": "Describe this image in detail.",
+  "clean_output": "This is a stacked bar chart titled \"Number of penguins by sex\". The chart displays the number of male and female penguins for three different species: Adelie, Chinstrap, and Gentoo.\n\nThe chart is organized as follows:\n- The vertical axis (y-axis) represents the number of penguins, ranging from 0 to 140.\n- The horizontal axis (x-axis) lists the three penguin species: Adelie, Chinstrap, and Gentoo.\n- A legend in the upper right corner indicates that the blue color represents \"Male\" and the orange color represents \"Female\".\n\nThe data is",
+  "clean_time": 14.741223812103271,
+  "analog": true,
+  "analog_output": "This is a stacked bar chart titled \"Number of penguins by sex,\" which displays the population of penguins by sex for three different species: Adelie, Chinstrap, and Gentoo.\n\nThe chart is organized into three vertical bars, each representing a species. The legend in the upper right corner indicates that the blue portion of each bar represents \"Male\" penguins, and the orange portion represents \"Female\" penguins.\n\n-   **Adelie Penguins:** The bar for Adelie penguins is the tallest. The blue section, representing males, has a value of 73. The orange section, representing females",
+  "analog_time": 15.245240211486816,
+  "sigma_c2c": 0.01,
+  "sigma_d2d": 0.02,
+  "n_states": 256,
+  "analog_layers": [
+    24,
+    25,
+    26,
+    27
+  ],
+  "d2d_seed": 3373
+}

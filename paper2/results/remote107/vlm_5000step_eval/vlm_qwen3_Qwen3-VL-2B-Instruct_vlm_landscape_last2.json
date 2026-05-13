@@ -1,0 +1,19 @@
+{
+  "model": "Qwen/Qwen3-VL-2B-Instruct",
+  "family": "qwen3",
+  "image": "/tmp/vlm_landscape.jpg",
+  "prompt": "Describe this image in detail.",
+  "clean_output": "This is a photograph of a river in the Yosemite National Park in California, USA. The image is taken from a low angle, looking across the river towards a range of mountains in the distance. The river is in the foreground and is flowing from the left to the right of the image. It is a shallow river with many rocks and pebbles in it. The water is dark and reflects the sky and the trees on the banks. The river is surrounded by green grass and trees. The trees are mostly conifers and are in the middle ground of the image. The mountains are in the background and are covered in fog or mist.",
+  "clean_time": 9.062675714492798,
+  "analog": true,
+  "analog_output": "This is a photograph of a river in Yosemite National Park, likely taken during sunrise or sunset. The image is dominated by a wide river in the foreground, which flows from the lower right to the left, its surface reflecting the warm, soft light of the sky. The river is flanked by lush green vegetation, including grasses and small trees along its banks. In the middle ground, a dense forest of coniferous trees lines the riverbank, leading the eye toward the distant mountains. The mountains themselves are a prominent feature, with their peaks and ridges visible through a layer of mist or fog. The sky above is a soft",
+  "analog_time": 8.303093433380127,
+  "sigma_c2c": 0.01,
+  "sigma_d2d": 0.02,
+  "n_states": 256,
+  "analog_layers": [
+    26,
+    27
+  ],
+  "d2d_seed": 3373
+}

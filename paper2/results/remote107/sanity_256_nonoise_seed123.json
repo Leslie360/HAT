@@ -1,0 +1,9 @@
+{
+  "name": "sanity_256_nonoise",
+  "seed": 123,
+  "n_states": 256,
+  "profile": "organic",
+  "retention": false,
+  "decode_step_time": 0.1,
+  "ppl": 17.482752270864307
+}

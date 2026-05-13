@@ -1,0 +1,18 @@
+{
+  "model": "Qwen/Qwen3-VL-2B-Instruct",
+  "family": "qwen3",
+  "image": "/tmp/vlm_person.jpg",
+  "prompt": "Describe this image in detail.",
+  "clean_output": "This is a close-up portrait of a woman with a soft, contemplative expression, set against a softly blurred natural background. The image is characterized by its warm, golden lighting, which suggests the photo was taken during the golden hour, either at sunrise or sunset.\n\nThe woman has long, straight, dark brown hair that falls over her right shoulder and partially frames her face. Her eyes are a striking green, and she is looking directly at the camera with a gentle, neutral expression. Her lips are slightly parted, and her skin has a smooth, fair complexion with a soft, natural glow.\n\nShe is wearing a button-up shirt with a",
+  "clean_time": 13.167821407318115,
+  "analog": true,
+  "analog_output": "This is a close-up portrait of a woman with a soft, contemplative expression, set against a softly blurred natural background. The image is characterized by its warm, golden light, suggesting it was taken during the golden hour, either at sunrise or sunset.\n\nThe woman has long, straight brown hair that falls over her right shoulder and partially frames her face. Her makeup is subtle, with defined eyebrows, a natural-looking lip color, and a soft, neutral complexion. Her eyes are a striking green, and she is looking directly at the camera with a gentle, almost serene expression.\n\nShe is wearing a button-up shirt with a classic black and",
+  "analog_time": 12.05492877960205,
+  "sigma_c2c": 0.01,
+  "sigma_d2d": 0.02,
+  "n_states": 256,
+  "analog_layers": [
+    27
+  ],
+  "d2d_seed": 3373
+}

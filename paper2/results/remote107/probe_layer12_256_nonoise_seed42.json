@@ -1,0 +1,12 @@
+{
+  "name": "probe_layer12_256_nonoise",
+  "seed": 42,
+  "n_states": 256,
+  "profile": "organic",
+  "retention": false,
+  "decode_step_time": 0.1,
+  "analog_layers": [
+    12
+  ],
+  "ppl": 15.679362321766341
+}

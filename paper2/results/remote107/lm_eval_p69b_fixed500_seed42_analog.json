@@ -1,0 +1,64 @@
+{
+  "script": "p3_hat_lm_eval.py",
+  "command": "/home/lisq753/projects/HAT/HAT/p3_hat_lm_eval.py --checkpoint_dir /home/lisq753/projects/HAT_kv107/paper2/results/remote107/checkpoints/p69b_fixed500_seed42 --tasks lambada_openai,hellaswag,arc_easy --analog --device cuda --fp16 --output_dir /home/lisq753/projects/HAT_kv107/paper2/results/remote107",
+  "checkpoint_dir": "/home/lisq753/projects/HAT_kv107/paper2/results/remote107/checkpoints/p69b_fixed500_seed42",
+  "analog": true,
+  "n_states": 256,
+  "sigma_c2c": 0.01,
+  "sigma_d2d": 0.02,
+  "analog_layers": [
+    31
+  ],
+  "tasks": [
+    "lambada_openai",
+    "hellaswag",
+    "arc_easy"
+  ],
+  "summary": {
+    "lambada_openai:perplexity,none": 5.2907,
+    "lambada_openai:perplexity_stderr,none": 0.1234,
+    "lambada_openai:acc,none": 0.6293,
+    "lambada_openai:acc_stderr,none": 0.0067,
+    "hellaswag:acc,none": 0.4945,
+    "hellaswag:acc_stderr,none": 0.005,
+    "hellaswag:acc_norm,none": 0.6559,
+    "hellaswag:acc_norm_stderr,none": 0.0047,
+    "arc_easy:acc,none": 0.6789,
+    "arc_easy:acc_stderr,none": 0.0096,
+    "arc_easy:acc_norm,none": 0.6309,
+    "arc_easy:acc_norm_stderr,none": 0.0099
+  },
+  "full_results": {
+    "results": {
+      "arc_easy": {
+        "alias": "arc_easy",
+        "acc,none": 0.6789,
+        "acc_stderr,none": 0.0096,
+        "acc_norm,none": 0.6309,
+        "acc_norm_stderr,none": 0.0099
+      },
+      "hellaswag": {
+        "alias": "hellaswag",
+        "acc,none": 0.4945,
+        "acc_stderr,none": 0.005,
+        "acc_norm,none": 0.6559,
+        "acc_norm_stderr,none": 0.0047
+      },
+      "lambada_openai": {
+        "alias": "lambada_openai",
+        "perplexity,none": 5.2907,
+        "perplexity_stderr,none": 0.1234,
+        "acc,none": 0.6293,
+        "acc_stderr,none": 0.0067
+      }
+    },
+    "group_subtasks": {
+      "lambada_openai": [],
+      "hellaswag": [],
+      "arc_easy": []
+    }
+  },
+  "reconstructed_from_log": true,
+  "reconstructed_at": "2026-05-13T14:13:29.758957",
+  "original_log": "/home/lisq753/projects/HAT_kv107/paper2/results/remote107/lm_eval_p69b_fixed500_analog_v2.log"
+}

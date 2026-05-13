@@ -1,0 +1,28 @@
+{
+  "git_commit": "51ff4241cfe03f30b846a86bf434127fe54c1b50",
+  "git_status_short": "M p3_hat_eval.py\n M p3_hat_train.py\n?? p3_hat_eval_quantized_baseline.py\n?? p3_hat_lm_eval.py",
+  "script": "p3_hat_eval.py",
+  "command": "/home/lisq753/projects/HAT/HAT/p3_hat_eval.py --checkpoint_dir /home/lisq753/projects/HAT_kv107/paper2/results/remote107/checkpoints/p410m_fixed500_fullmodel_seed42 --sigma_c2c 0.0 --sigma_d2d 0.05 --max_length 512 --device cuda --fp16 --output_dir /home/lisq753/projects/HAT_kv107/paper2/results/remote107",
+  "mode": "eval",
+  "model": "/home/lisq753/projects/HAT_kv107/paper2/results/remote107/checkpoints/p410m_fixed500_fullmodel_seed42",
+  "dataset_train": null,
+  "dataset_eval": "wikitext-2-raw-v1 (test)",
+  "train_seed": null,
+  "train_d2d_seed": null,
+  "eval_d2d_seed": 3373,
+  "n_states": 256,
+  "sigma_c2c": 0.0,
+  "sigma_d2d": 0.05,
+  "retention_step_time": 0.0,
+  "analog_layers": [
+    23
+  ],
+  "ctx_len": 512,
+  "stride": 512,
+  "max_steps": null,
+  "batch_size": 1,
+  "ppl": 18.403657541959518,
+  "wall_clock_time": 71.39771270751953,
+  "gpu_id": "3",
+  "gpu_name": "NVIDIA PH402 SKU 200"
+}

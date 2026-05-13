@@ -1,0 +1,28 @@
+{
+  "git_commit": "e827696a4c55117304ba9aead7e1acb205759b63",
+  "git_status_short": "?? coordination/REMOTE107_NEXT_TASKS_20260512.md\n?? coordination/remote_tasks/107/REMOTE_107_REMAINING_TASKS_20260512.md",
+  "script": "p3_hat_eval.py",
+  "command": "/home/lisq753/projects/HAT/HAT/p3_hat_eval.py --checkpoint_dir /home/lisq753/projects/HAT_kv107/paper2/results/remote107/checkpoints/p28b_fixed500_seed42 --n_states 256 --sigma_c2c 0.01 --sigma_d2d 0.02 --max_length 512 --output_dir /home/lisq753/projects/HAT_kv107/paper2/results/remote107 --d2d-seed 3373 --fp16 --retention_step_time 0.001",
+  "mode": "eval",
+  "model": "/home/lisq753/projects/HAT_kv107/paper2/results/remote107/checkpoints/p28b_fixed500_seed42",
+  "dataset_train": null,
+  "dataset_eval": "wikitext-2-raw-v1 (test)",
+  "train_seed": null,
+  "train_d2d_seed": null,
+  "eval_d2d_seed": 3373,
+  "n_states": 256,
+  "sigma_c2c": 0.01,
+  "sigma_d2d": 0.02,
+  "retention_step_time": 0.001,
+  "analog_layers": [
+    31
+  ],
+  "ctx_len": 512,
+  "stride": 512,
+  "max_steps": null,
+  "batch_size": 1,
+  "ppl": 12.748369960970514,
+  "wall_clock_time": 387.3194942474365,
+  "gpu_id": "6",
+  "gpu_name": "NVIDIA PH402 SKU 200"
+}

@@ -1,0 +1,9 @@
+{
+  "name": "p3a_organic_states64",
+  "seed": 42,
+  "n_states": 64,
+  "profile": "organic",
+  "retention": false,
+  "decode_step_time": 0.1,
+  "ppl": 12864.751589853364
+}

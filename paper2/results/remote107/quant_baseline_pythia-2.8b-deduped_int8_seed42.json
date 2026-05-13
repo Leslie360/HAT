@@ -1,0 +1,16 @@
+{
+  "script": "p3_hat_eval_quantized_baseline.py",
+  "command": "/home/lisq753/projects/HAT/HAT/p3_hat_eval_quantized_baseline.py --model_name EleutherAI/pythia-2.8b-deduped --n_bits 8 --analog_layers 31 --fp16 --output_dir /home/lisq753/projects/HAT_kv107/paper2/results/remote107",
+  "mode": "eval_quantized_baseline",
+  "model": "EleutherAI/pythia-2.8b-deduped",
+  "dataset_eval": "wikitext-2-raw-v1 (test)",
+  "n_bits": 8,
+  "analog_layers": [
+    31
+  ],
+  "ctx_len": 512,
+  "stride": 512,
+  "batch_size": 1,
+  "ppl": 13.661476036795303,
+  "wall_clock_time": 384.35977602005005
+}

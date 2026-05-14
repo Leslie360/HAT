@@ -80,6 +80,8 @@ def main():
     parser.add_argument("--batch_size", type=int, default=1)
     parser.add_argument("--device", type=str, default="cuda")
     parser.add_argument("--output_dir", type=str, default=None)
+    parser.add_argument("--output_suffix", type=str, default=None,
+                        help="Optional suffix appended to output filename to disambiguate sweeps")
     parser.add_argument("--fp16", action="store_true")
     args = parser.parse_args()
 
@@ -178,9 +180,10 @@ def main():
 
     suffix = "analog" if args.analog else "clean"
     tasks_slug = _tasks_slug(args.tasks)
+    extra = f"_{args.output_suffix}" if args.output_suffix else ""
     out_file = os.path.join(
         args.output_dir,
-        f"lm_eval_{args.checkpoint_dir.rstrip('/').split('/')[-1]}_{suffix}_{tasks_slug}.json"
+        f"lm_eval_{args.checkpoint_dir.rstrip('/').split('/')[-1]}_{suffix}{extra}_{tasks_slug}.json"
     )
     os.makedirs(args.output_dir, exist_ok=True)
     with open(out_file, "w") as f:

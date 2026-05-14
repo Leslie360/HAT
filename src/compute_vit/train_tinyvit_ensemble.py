@@ -705,6 +705,7 @@ def history_last(history: dict, key: str, default: float = float("nan")) -> floa
 def build_retention_metadata(exp_id: str, exp_cfg: TinyViTExperimentConfig,
                              checkpoint_path: str, ckpt: dict, eval_runs: int) -> dict:
     """Create a metadata dict describing a retention sweep run."""
+    ckpt_cfg = ckpt.get("exp_cfg") or {}
     return {
         "checkpoint_path": checkpoint_path,
         "source_experiment": exp_cfg.name,
@@ -714,6 +715,10 @@ def build_retention_metadata(exp_id: str, exp_cfg: TinyViTExperimentConfig,
         "trained_epochs": (ckpt.get("exp_cfg") or {}).get("epochs", exp_cfg.epochs),
         "dataset": ckpt.get("dataset"),
         "mc_runs": eval_runs,
+        "drift_regularizer_enabled": ckpt_cfg.get("drift_regularizer_enabled", getattr(exp_cfg, "drift_regularizer_enabled", False)),
+        "drift_regularizer_weight": ckpt_cfg.get("drift_regularizer_weight", getattr(exp_cfg, "drift_regularizer_weight", 0.0)),
+        "drift_regularizer_time_s": ckpt_cfg.get("drift_regularizer_time_s", getattr(exp_cfg, "drift_regularizer_time_s", 1000.0)),
+        "drift_regularizer_state_dependent": ckpt_cfg.get("drift_regularizer_state_dependent", getattr(exp_cfg, "drift_regularizer_state_dependent", False)),
     }
 
 
@@ -969,12 +974,17 @@ def run_eval(exp_id: str, exp_cfg: TinyViTExperimentConfig, dataset: str,
             logger.log(f"  eval_run={run_idx + 1}/{eval_runs}: test_loss={test_loss:.4f}, test_acc={test_acc:.2f}%")
 
     summary = summarize_eval_runs(losses, accuracies)
+    ckpt_cfg = ckpt.get("exp_cfg") or {}
     summary.update({
         "experiment": exp_id,
         "experiment_name": exp_cfg.name,
         "checkpoint_path": checkpoint_path,
         "checkpoint_epoch": ckpt.get("epoch"),
         "checkpoint_best_acc": ckpt.get("best_acc"),
+        "drift_regularizer_enabled": ckpt_cfg.get("drift_regularizer_enabled", getattr(exp_cfg, "drift_regularizer_enabled", False)),
+        "drift_regularizer_weight": ckpt_cfg.get("drift_regularizer_weight", getattr(exp_cfg, "drift_regularizer_weight", 0.0)),
+        "drift_regularizer_time_s": ckpt_cfg.get("drift_regularizer_time_s", getattr(exp_cfg, "drift_regularizer_time_s", 1000.0)),
+        "drift_regularizer_state_dependent": ckpt_cfg.get("drift_regularizer_state_dependent", getattr(exp_cfg, "drift_regularizer_state_dependent", False)),
     })
 
     if logger is not None:

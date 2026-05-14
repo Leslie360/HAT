@@ -344,6 +344,15 @@ Interpretation:
 - lowering the state-dependent regularizer weight recovers the absolute floor,
 - but it eliminates the positive lift effect that made the higher-weight state-dependent run interesting.
 
+Matched source-domain comparison:
+
+- baseline:
+  `67.3367%`
+- candidate:
+  `67.2967%`
+- delta:
+  `-0.0400 pp`
+
 ## Current Best Reading
 
 Across four pilots:

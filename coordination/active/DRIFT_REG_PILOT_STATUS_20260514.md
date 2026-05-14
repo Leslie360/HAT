@@ -112,6 +112,11 @@ Practical interpretation:
 
 - relative to the original seed123 train best `67.75%`, the source-domain cost is about `-0.62 pp`
 - that is small enough that the pilot remains worth finishing through the retention/protection stage
+- note:
+  this first eval JSON was produced before the eval-path metadata fix landed, so the
+  `drift_regularizer_*` fields inside that file are stale. A metadata-corrected eval
+  plus a matched baseline source eval are queued in the postprocess watcher and should
+  be treated as the final source-domain comparison artifacts.
 
 ## Ranking-Difference Diagnostic
 

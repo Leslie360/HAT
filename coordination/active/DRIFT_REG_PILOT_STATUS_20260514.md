@@ -228,6 +228,67 @@ The next meaningful variant should change one of these assumptions:
 2. top-risk-subset-weighted regularizer
 3. explicit late-MLP / top-`K` ranking-aware objective
 
+## State-Dependent Follow-Up
+
+A third pilot was run with a matched state-dependent train/eval lane:
+
+- tag:
+  `regw5e-3_t1000_state_dep`
+- filter:
+  `stages.3`
+- regularizer:
+  state-dependent
+- eval lane:
+  state-dependent retention enabled
+
+Matched source-domain comparison:
+
+- baseline:
+  `67.2467%`
+- candidate:
+  `67.0433%`
+- delta:
+  `-0.2033 pp`
+
+Absolute retention deltas vs original seed123 baseline:
+
+- `fresh_all_analog`
+  - `-1.3904 / -1.5173 / -1.5597 pp`
+- `freeze_top30_d2d`
+  - `-0.6553 / -0.4450 / -0.4943 pp`
+- `freeze_top42_d2d`
+  - `-0.2597 / +0.0044 / -0.1657 pp`
+
+Lift-relative deltas versus `fresh_all_analog`:
+
+- `top30`
+  - `+0.7351 / +1.0723 / +1.0654 pp`
+- `top42`
+  - `+1.1307 / +1.5217 / +1.3940 pp`
+
+Interpretation:
+
+- this is the first pilot that improves protection lift,
+- but it does so by lowering the fresh-all checkpoint floor.
+
+Current best reading:
+
+- the state-dependent lane is mechanistically real,
+- but it is not yet an absolute deployment improvement.
+
+## Updated Next Step
+
+The next rational variant is:
+
+1. keep the state-dependent setup,
+2. reduce `drift_reg_weight`, and/or
+3. regularize only the most retention-sensitive late layers within `stages.3`
+
+The target is now explicit:
+
+- preserve the lift gain,
+- recover the `fresh_all_analog` floor.
+
 ## First Readout Checklist
 
 When the active pilot finishes, check these files first:

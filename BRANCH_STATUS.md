@@ -7,7 +7,8 @@ Purpose: keep GitHub branch roles explicit so future work does not keep adding a
 ## Canonical remote branches
 
 - `master`
-  - historical canonical base
+  - default branch on GitHub as of 2026-05-14
+  - canonical base branch
 - `107-clean`
   - active Remote107 review / source-data lane
 - `105-remote-results`
@@ -25,15 +26,17 @@ Purpose: keep GitHub branch roles explicit so future work does not keep adding a
   - historical Paper1 release lane
   - treat as frozen unless release packaging must be re-opened
 
-## Historical remote branches
+## Remaining historical remote branches
 
 - `main`
+  - duplicate historical base; currently kept as compatibility branch
+
+Branches already removed on 2026-05-14:
+
 - `main-clean-20260429`
 - `backup-master-before-clean-20260429`
 - `remote-exploration`
 - `remote-107-kv-20260429`
-
-These should be treated as historical until someone shows an active dependency.
 
 ## Working rule
 

@@ -192,3 +192,34 @@ Current recommendation after seed456:
 1. treat drift-aware ranking as the preferred local retention/protection heuristic;
 2. if one more background closure is desired, run seed123 and stop there;
 3. otherwise move directly to a first drift-aware optimization or SAM-style training pilot.
+
+## 9. 2026-05-14 Seed123 Closure
+
+The optional third-checkpoint closure also finished:
+
+- `thesis/results/drift_aware_sam/drift_aware_protection_seed123_10x3_summary_20260514_011900.tsv`
+
+Key numbers:
+
+- `fresh_all_analog`
+  - `63.2497 / 60.9010 / 60.9537` at `0 / 1000 / 10000 s`
+- `top30`
+  - `66.4673 / 64.0343 / 64.0320`
+- `top42`
+  - `67.2830 / 64.8983 / 65.0227`
+
+Within the same seed123 checkpoint, this means:
+
+- `top30` stays about `+3.22 / +3.13 / +3.08 pp` above `fresh_all`
+- `top42` stays about `+4.03 / +4.00 / +4.07 pp` above `fresh_all`
+
+Interpretation:
+
+- The drift-aware direction now survives across three checkpoints, not just two.
+- The seed123 comparison to the older static-sensitivity lane is not a perfect matched A/B because the instance draws are different, so the safest closure statement is checkpoint-internal: the heuristic remains clearly positive at all tested retention times.
+
+Current recommendation after seed123:
+
+1. stop spending GPU on more ranking confirmations of the same lane;
+2. treat drift-aware ranking as a closed local heuristic result;
+3. move the next method cycle to drift-aware optimization / SAM-style training.

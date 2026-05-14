@@ -129,6 +129,7 @@ def snapshot_analog_state(model: nn.Module) -> Dict[str, dict]:
             "NL_LTD": float(getattr(module.config, "NL_LTD", -1.0)),
             "retention_enabled": bool(module.config.retention_enabled),
             "inference_time": float(module.config.inference_time),
+            "retention_state_dependent": bool(getattr(module.config, "retention_state_dependent", False)),
             "retention_recalibrate_scale": bool(getattr(module.config, "retention_recalibrate_scale", False)),
             "retention_scales_d2d": bool(getattr(module.config, "retention_scales_d2d", False)),
             "inl_table": inl.detach().cpu().tolist() if isinstance(inl, torch.Tensor) else inl,
@@ -153,6 +154,7 @@ def restore_analog_state(model: nn.Module, state: Dict[str, dict]):
         module.config.NL_LTD = saved.get("NL_LTD", -1.0)
         module.config.retention_enabled = saved["retention_enabled"]
         module.config.inference_time = saved["inference_time"]
+        module.config.retention_state_dependent = saved.get("retention_state_dependent", False)
         module.config.retention_recalibrate_scale = saved.get("retention_recalibrate_scale", False)
         module.config.retention_scales_d2d = saved.get("retention_scales_d2d", False)
         saved_inl = saved.get("inl_table")
@@ -181,12 +183,14 @@ def set_uniform_noise(model: nn.Module, sigma_c2c: float, sigma_d2d: float,
 
 
 def set_uniform_retention(model: nn.Module, inference_time: float,
+                          state_dependent: bool = False,
                           recalibrate_scale: bool = False,
                           scale_d2d: bool = False):
     """Configure retention decay parameters for all analog layers."""
     for _, module in iter_analog_modules(model):
         module.config.retention_enabled = inference_time > 0
         module.config.inference_time = inference_time
+        module.config.retention_state_dependent = state_dependent
         module.config.retention_recalibrate_scale = recalibrate_scale
         module.config.retention_scales_d2d = scale_d2d
 

@@ -443,7 +443,7 @@ def maybe_resize_on_gpu(inputs: torch.Tensor, image_size: Optional[int]) -> torc
 def compute_drift_regularizer(model: nn.Module, exp_cfg: TinyViTExperimentConfig) -> torch.Tensor:
     """Compute a differentiable retention-drift penalty over analog layers.
 
-    The penalty is the mean relative effective-weight drift across analog layers
+    The penalty is the mean absolute effective-weight drift across analog layers
     at a target inference time. It is evaluated in conductance space before
     D2D/C2C noise injection, so it regularizes the learned mapping itself rather
     than a particular sampled hardware instance.
@@ -478,9 +478,7 @@ def compute_drift_regularizer(model: nn.Module, exp_cfg: TinyViTExperimentConfig
 
         base_eff = g_pos - g_neg
         drift_eff = (g_pos_d - g_neg_d) - base_eff
-        drift_power = drift_eff.pow(2).mean()
-        base_power = base_eff.pow(2).mean().detach().clamp_min(eps)
-        penalties.append(drift_power / base_power)
+        penalties.append(drift_eff.pow(2).mean().clamp_min(eps))
 
     if not penalties:
         device = next(model.parameters()).device

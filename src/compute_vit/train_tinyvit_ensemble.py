@@ -100,6 +100,10 @@ class TinyViTExperimentConfig:
     physical_gamma: float = 1.0
     physical_I_dark: float = 1e-10
     adc_bits: int = 8
+    drift_regularizer_enabled: bool = False
+    drift_regularizer_weight: float = 0.0
+    drift_regularizer_time_s: float = 1000.0
+    drift_regularizer_state_dependent: bool = False
     epochs: int = 100
     batch_size: int = 64
     lr: float = 5e-4
@@ -436,16 +440,66 @@ def maybe_resize_on_gpu(inputs: torch.Tensor, image_size: Optional[int]) -> torc
     return F.interpolate(inputs, size=target_size, mode="bilinear", align_corners=False)
 
 
+def compute_drift_regularizer(model: nn.Module, exp_cfg: TinyViTExperimentConfig) -> torch.Tensor:
+    """Compute a differentiable retention-drift penalty over analog layers.
+
+    The penalty is the mean relative effective-weight drift across analog layers
+    at a target inference time. It is evaluated in conductance space before
+    D2D/C2C noise injection, so it regularizes the learned mapping itself rather
+    than a particular sampled hardware instance.
+    """
+    if not exp_cfg.drift_regularizer_enabled or exp_cfg.drift_regularizer_weight <= 0.0:
+        device = next(model.parameters()).device
+        return torch.zeros((), device=device)
+
+    penalties = []
+    eps = 1e-8
+    for module in model.modules():
+        if not isinstance(module, (AnalogLinear, AnalogConv2d)):
+            continue
+
+        saved = (
+            module.config.retention_enabled,
+            module.config.inference_time,
+            module.config.retention_state_dependent,
+        )
+        module.config.retention_enabled = True
+        module.config.inference_time = float(exp_cfg.drift_regularizer_time_s)
+        module.config.retention_state_dependent = bool(exp_cfg.drift_regularizer_state_dependent)
+        try:
+            g_pos, g_neg = module._weight_to_conductance(module.weight)
+            g_pos_d, g_neg_d = module._apply_retention(g_pos, g_neg)
+        finally:
+            (
+                module.config.retention_enabled,
+                module.config.inference_time,
+                module.config.retention_state_dependent,
+            ) = saved
+
+        base_eff = g_pos - g_neg
+        drift_eff = (g_pos_d - g_neg_d) - base_eff
+        drift_power = drift_eff.pow(2).mean()
+        base_power = base_eff.pow(2).mean().detach().clamp_min(eps)
+        penalties.append(drift_power / base_power)
+
+    if not penalties:
+        device = next(model.parameters()).device
+        return torch.zeros((), device=device)
+
+    return torch.stack(penalties).mean()
+
+
 def train_one_epoch(model: nn.Module, trainloader, optimizer, criterion, device: str,
                     exp_cfg: TinyViTExperimentConfig, frontend: Optional[nn.Module] = None,
                     amp_enabled: bool = False, scaler=None,
                     gpu_resize_size: Optional[int] = None):
-    """Run one training epoch and return (loss, accuracy)."""
+    """Run one training epoch and return (loss, accuracy, drift_penalty_mean)."""
     model.train()
     set_noise_for_train(model, exp_cfg)
     running_loss = 0.0
     correct = 0
     total = 0
+    drift_penalty_running = 0.0
 
     for inputs, targets in trainloader:
         inputs, targets = inputs.to(device), targets.to(device)
@@ -458,6 +512,9 @@ def train_one_epoch(model: nn.Module, trainloader, optimizer, criterion, device:
         with autocast_context(device, amp_enabled):
             outputs = model(inputs)
             loss = criterion(outputs, targets)
+            drift_penalty = compute_drift_regularizer(model, exp_cfg)
+            if exp_cfg.drift_regularizer_enabled and exp_cfg.drift_regularizer_weight > 0.0:
+                loss = loss + exp_cfg.drift_regularizer_weight * drift_penalty
 
         if scaler is not None and scaler.is_enabled():
             scaler.scale(loss).backward()
@@ -468,11 +525,12 @@ def train_one_epoch(model: nn.Module, trainloader, optimizer, criterion, device:
             optimizer.step()
 
         running_loss += loss.item() * inputs.size(0)
+        drift_penalty_running += float(drift_penalty.detach().item()) * inputs.size(0)
         _, predicted = outputs.max(1)
         correct += predicted.eq(targets).sum().item()
         total += targets.size(0)
 
-    return running_loss / total, 100.0 * correct / total
+    return running_loss / total, 100.0 * correct / total, drift_penalty_running / total
 
 
 @torch.no_grad()
@@ -725,6 +783,12 @@ def run_experiment(exp_id: str, exp_cfg: TinyViTExperimentConfig, dataset: str,
             f"  hybrid={exp_cfg.use_hybrid}, noise={exp_cfg.noise_enabled}, "
             f"C2C={exp_cfg.sigma_c2c}, D2D={exp_cfg.sigma_d2d}, HAT={exp_cfg.hat_training}"
         )
+        if exp_cfg.drift_regularizer_enabled and exp_cfg.drift_regularizer_weight > 0.0:
+            logger.log(
+                f"  drift_regularizer=on, weight={exp_cfg.drift_regularizer_weight}, "
+                f"time={exp_cfg.drift_regularizer_time_s}s, "
+                f"state_dependent={exp_cfg.drift_regularizer_state_dependent}"
+            )
         if exp_cfg.noise_enabled and not exp_cfg.hat_training:
             logger.log("  standard-noise policy: fixed D2D on during train, C2C off during train")
         logger.log(f"  amp={'on' if active_amp else 'off'}")
@@ -749,7 +813,7 @@ def run_experiment(exp_id: str, exp_cfg: TinyViTExperimentConfig, dataset: str,
                 logger.log(f"  Ensemble HAT active: Resampled D2D mismatch for {resampled_count} analog modules.")
 
         current_lr = optimizer.param_groups[0]["lr"]
-        train_loss, train_acc = train_one_epoch(
+        train_loss, train_acc, drift_penalty_mean = train_one_epoch(
             model, trainloader, optimizer, criterion, device, exp_cfg, frontend,
             amp_enabled=active_amp, scaler=scaler, gpu_resize_size=224 if gpu_resize else None,
         )
@@ -777,7 +841,8 @@ def run_experiment(exp_id: str, exp_cfg: TinyViTExperimentConfig, dataset: str,
             logger.log(
                 f"  Epoch {epoch:3d}/{exp_cfg.epochs}: "
                 f"train_loss={train_loss:.4f}, train_acc={train_acc:.2f}%, "
-                f"test_acc={test_acc:.2f}% (best={best_acc:.2f}%), lr={current_lr:.6f}"
+                f"test_acc={test_acc:.2f}% (best={best_acc:.2f}%), "
+                f"drift_penalty={drift_penalty_mean:.6f}, lr={current_lr:.6f}"
             )
 
         scheduler.step()
@@ -1279,6 +1344,10 @@ def build_result_row_base(mode: str, exp_id: str, exp_cfg: TinyViTExperimentConf
         "use_physical_frontend": exp_cfg.use_physical_frontend,
         "retention_enabled": exp_cfg.retention_enabled,
         "inference_time": exp_cfg.inference_time,
+        "drift_regularizer_enabled": exp_cfg.drift_regularizer_enabled,
+        "drift_regularizer_weight": exp_cfg.drift_regularizer_weight,
+        "drift_regularizer_time_s": exp_cfg.drift_regularizer_time_s,
+        "drift_regularizer_state_dependent": exp_cfg.drift_regularizer_state_dependent,
         "epochs": exp_cfg.epochs,
         "batch_size": exp_cfg.batch_size,
         "lr": exp_cfg.lr,
@@ -1536,6 +1605,12 @@ def main():
                         help="Load only model weights from the given checkpoint path; reset epoch/optimizer/scheduler/history")
     parser.add_argument("--compile", action="store_true",
                         help="Enable torch.compile(model) for ~15-30%% training speedup (PyTorch 2.x+)")
+    parser.add_argument("--drift-reg-weight", type=float, default=0.0,
+                        help="Enable drift-aware training with this relative-drift penalty weight.")
+    parser.add_argument("--drift-reg-time", type=float, default=1000.0,
+                        help="Target inference time in seconds for the drift-aware regularizer.")
+    parser.add_argument("--drift-reg-state-dependent", action="store_true",
+                        help="Use state-dependent retention acceleration inside the drift-aware regularizer.")
     parser.add_argument("--report-path", type=str, default=DEFAULT_REPORT_PATH)
     parser.add_argument("--log-path", type=str, default=DEFAULT_LOG_PATH)
     parser.add_argument("--results-json-path", type=str, default=DEFAULT_RESULTS_JSON_PATH)
@@ -1562,6 +1637,11 @@ def main():
             cfg.lr = args.lr_override
         if args.noise_mode is not None:
             cfg.noise_mode = args.noise_mode
+        if args.drift_reg_weight > 0.0:
+            cfg.drift_regularizer_enabled = True
+            cfg.drift_regularizer_weight = args.drift_reg_weight
+            cfg.drift_regularizer_time_s = args.drift_reg_time
+            cfg.drift_regularizer_state_dependent = args.drift_reg_state_dependent
         cfg.seed = args.seed
     experiment_ids = resolve_experiment_ids(args.experiment, args.experiments, configs)
     if args.mode == "dry-run" and len(experiment_ids) != 1:

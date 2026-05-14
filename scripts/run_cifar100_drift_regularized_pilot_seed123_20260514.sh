@@ -4,13 +4,29 @@ set -euo pipefail
 ROOT="/home/qiaosir/projects/compute_vit"
 PY="/home/qiaosir/miniconda3/bin/python"
 STAMP="$(date +%Y%m%d_%H%M%S)"
-SAVE_DIR="$ROOT/checkpoints/_drift_aware/cifar100_seed123_regw5e-3_t1000"
+DRIFT_TAG="${DRIFT_TAG:-regw5e-3_t1000}"
+DRIFT_EPOCHS="${DRIFT_EPOCHS:-12}"
+DRIFT_BATCH_SIZE="${DRIFT_BATCH_SIZE:-128}"
+DRIFT_NUM_WORKERS="${DRIFT_NUM_WORKERS:-4}"
+DRIFT_SEED="${DRIFT_SEED:-123}"
+DRIFT_LR="${DRIFT_LR:-1e-4}"
+DRIFT_REG_WEIGHT="${DRIFT_REG_WEIGHT:-0.005}"
+DRIFT_REG_TIME="${DRIFT_REG_TIME:-1000}"
+DRIFT_EARLY_STOP_PATIENCE="${DRIFT_EARLY_STOP_PATIENCE:-6}"
+DRIFT_RET_BASE_SEED="${DRIFT_RET_BASE_SEED:-20260522}"
+DRIFT_WARMSTART="${DRIFT_WARMSTART:-$ROOT/checkpoints/_ensemble/cifar100_seed123/V4_hybrid_standard_noise_hat_best.pt}"
+DRIFT_STATE_DEP_FLAG=()
+if [[ "${DRIFT_REG_STATE_DEPENDENT:-0}" == "1" ]]; then
+  DRIFT_STATE_DEP_FLAG=(--drift-reg-state-dependent)
+fi
+
+SAVE_DIR="$ROOT/checkpoints/_drift_aware/cifar100_seed123_${DRIFT_TAG}"
 LOG="$ROOT/logs/cifar100_drift_regularized_pilot_seed123_${STAMP}.log"
-PROFILE_TSV="$ROOT/thesis/results/drift_aware_sam/drift_vectors_profile_driftreg_seed123_${STAMP}.tsv"
-PROFILE_JSON="$ROOT/thesis/results/drift_aware_sam/drift_vectors_profile_driftreg_seed123_${STAMP}.json"
-RANK_TSV="$ROOT/thesis/results/drift_aware_sam/drift_aware_ranking_driftreg_seed123_1000s_${STAMP}.tsv"
-RET_RAW="$ROOT/thesis/results/drift_aware_sam/drift_aware_retention_driftreg_seed123_10x3_${STAMP}.tsv"
-RET_SUMMARY="$ROOT/thesis/results/drift_aware_sam/drift_aware_retention_driftreg_seed123_10x3_summary_${STAMP}.tsv"
+PROFILE_TSV="$ROOT/thesis/results/drift_aware_sam/drift_vectors_profile_driftreg_seed123_${DRIFT_TAG}_${STAMP}.tsv"
+PROFILE_JSON="$ROOT/thesis/results/drift_aware_sam/drift_vectors_profile_driftreg_seed123_${DRIFT_TAG}_${STAMP}.json"
+RANK_TSV="$ROOT/thesis/results/drift_aware_sam/drift_aware_ranking_driftreg_seed123_1000s_${DRIFT_TAG}_${STAMP}.tsv"
+RET_RAW="$ROOT/thesis/results/drift_aware_sam/drift_aware_retention_driftreg_seed123_10x3_${DRIFT_TAG}_${STAMP}.tsv"
+RET_SUMMARY="$ROOT/thesis/results/drift_aware_sam/drift_aware_retention_driftreg_seed123_10x3_summary_${DRIFT_TAG}_${STAMP}.tsv"
 
 mkdir -p "$SAVE_DIR"
 mkdir -p "$ROOT/logs"
@@ -18,28 +34,30 @@ mkdir -p "$ROOT/logs"
 {
   echo "[start] $(date -Iseconds)"
   echo "[save_dir] $SAVE_DIR"
+  echo "[tag] $DRIFT_TAG"
   nvidia-smi --query-gpu=name,memory.total,memory.used,memory.free,utilization.gpu,temperature.gpu --format=csv,noheader
 
   "$PY" "$ROOT/src/compute_vit/train_tinyvit_ensemble.py" \
     --mode train \
     --experiment V4 \
     --dataset cifar100 \
-    --epochs 12 \
-    --batch-size 128 \
+    --epochs "$DRIFT_EPOCHS" \
+    --batch-size "$DRIFT_BATCH_SIZE" \
     --device cuda \
     --data-root "$ROOT/data" \
-    --num-workers 4 \
+    --num-workers "$DRIFT_NUM_WORKERS" \
     --pin-memory auto \
     --gpu-resize \
     --amp \
-    --seed 123 \
+    --seed "$DRIFT_SEED" \
     --save-dir "$SAVE_DIR" \
-    --warm-start-from "$ROOT/checkpoints/_ensemble/cifar100_seed123/V4_hybrid_standard_noise_hat_best.pt" \
-    --lr-override 1e-4 \
-    --drift-reg-weight 0.005 \
-    --drift-reg-time 1000 \
+    --warm-start-from "$DRIFT_WARMSTART" \
+    --lr-override "$DRIFT_LR" \
+    --drift-reg-weight "$DRIFT_REG_WEIGHT" \
+    --drift-reg-time "$DRIFT_REG_TIME" \
+    "${DRIFT_STATE_DEP_FLAG[@]}" \
     --log-interval 2 \
-    --early-stop-patience 6 \
+    --early-stop-patience "$DRIFT_EARLY_STOP_PATIENCE" \
     --results-json-path "$ROOT/thesis/results/drift_aware_sam/drift_reg_pilot_train_seed123_${STAMP}.json" \
     --results-csv-path "$ROOT/thesis/results/drift_aware_sam/drift_reg_pilot_train_seed123_${STAMP}.csv" \
     --results-md-path "$ROOT/coordination/agent_reports/Codex/DRIFT_REG_PILOT_TRAIN_SEED123_${STAMP}.md"
@@ -50,7 +68,7 @@ mkdir -p "$ROOT/logs"
     --dataset cifar100 \
     --device cuda \
     --data-root "$ROOT/data" \
-    --num-workers 4 \
+    --num-workers "$DRIFT_NUM_WORKERS" \
     --pin-memory auto \
     --gpu-resize \
     --amp \
@@ -86,9 +104,9 @@ mkdir -p "$ROOT/logs"
     --retention_times 0,1000,10000 \
     --num_instances 10 \
     --mc_runs 3 \
-    --batch_size 128 \
+    --batch_size "$DRIFT_BATCH_SIZE" \
     --device cuda \
-    --base_seed 20260522 \
+    --base_seed "$DRIFT_RET_BASE_SEED" \
     --recalibrate_scale \
     --scale_d2d \
     --tsv_out "$RET_RAW" \

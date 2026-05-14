@@ -26,13 +26,9 @@ Purpose: keep GitHub branch roles explicit so future work does not keep adding a
   - historical Paper1 release lane
   - treat as frozen unless release packaging must be re-opened
 
-## Remaining historical remote branches
+## Branches already removed on 2026-05-14
 
 - `main`
-  - duplicate historical base; currently kept as compatibility branch
-
-Branches already removed on 2026-05-14:
-
 - `main-clean-20260429`
 - `backup-master-before-clean-20260429`
 - `remote-exploration`

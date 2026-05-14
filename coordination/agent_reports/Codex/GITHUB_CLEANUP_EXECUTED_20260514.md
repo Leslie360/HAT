@@ -17,11 +17,11 @@ Deleted remote branches:
 - `main-clean-20260429`
 - `remote-107-kv-20260429`
 - `remote-exploration`
+- `main`
 
 Remaining remote branches:
 
 - `origin/master`
-- `origin/main`
 - `origin/107-clean`
 - `origin/105-remote-results`
 - `origin/paper1-release-20260501`
@@ -48,17 +48,11 @@ Kept local active worktrees:
 
 ## Remaining intentional mess
 
-Two non-deleted items are intentional:
+One non-deleted item is intentional:
 
-1. `origin/main`
-   - kept as compatibility branch because it points to the same base commit line as `origin/master`
-2. `worktree-agent-abb5677aa6a460fef`
+1. `worktree-agent-abb5677aa6a460fef`
    - left in place because it is locked and may still be referenced by the local Codex/Claude workflow
 
 ## Recommendation
 
-The GitHub branch layout is now materially cleaner.
-
-If you want the repo even stricter later, the only likely next destructive step is:
-
-- decide whether `origin/main` should also be deleted or kept permanently as a compatibility alias for `master`
+The GitHub branch layout is now materially cleaner and close to minimal.

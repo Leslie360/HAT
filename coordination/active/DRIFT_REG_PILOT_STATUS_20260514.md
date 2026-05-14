@@ -289,6 +289,85 @@ The target is now explicit:
 - preserve the lift gain,
 - recover the `fresh_all_analog` floor.
 
+## Fourth Pilot In Flight
+
+A fourth pilot is now running with exactly one variable changed relative to the
+third pilot:
+
+- state-dependent retention regularizer
+- `stages.3` filter
+- `drift_reg_weight = 0.002`
+- tag:
+  `regw2e-3_t1000_state_dep`
+
+Current background sessions:
+
+- `tmux` session: `drift_reg_pilot_state_dep_w2_20260514`
+- watcher: `drift_reg_post_state_dep_w2_20260514`
+
+Early readout:
+
+- epoch `0/12`: `test_acc=67.18%`
+- epoch `1/12`: `test_acc=66.82%`
+
+This run is intentionally not interpreted yet; wait for the matched source eval
+and full retention/protection summary before judging whether the lower weight
+recovers the `fresh_all_analog` floor without losing the positive lift effect.
+
+## Fourth Pilot Outcome
+
+The low-weight state-dependent pilot finished with:
+
+- tag:
+  `regw2e-3_t1000_state_dep`
+- matched source eval delta:
+  `-0.0400 pp`
+
+Absolute retention deltas vs original seed123 baseline:
+
+- `fresh_all_analog`
+  - `+0.6486 / +0.7073 / +0.6266 pp`
+- `freeze_top30_d2d`
+  - `-0.2776 / -0.0733 / -0.0903 pp`
+- `freeze_top42_d2d`
+  - `-0.0637 / +0.1134 / -0.0534 pp`
+
+Lift-relative deltas versus `fresh_all_analog`:
+
+- `top30`
+  - `-0.9262 / -0.7806 / -0.7169 pp`
+- `top42`
+  - `-0.7123 / -0.5939 / -0.6800 pp`
+
+Interpretation:
+
+- lowering the state-dependent regularizer weight recovers the absolute floor,
+- but it eliminates the positive lift effect that made the higher-weight state-dependent run interesting.
+
+## Current Best Reading
+
+Across four pilots:
+
+1. global state-independent: negative
+2. stage3-filtered state-independent: negative
+3. stage3-filtered state-dependent (`0.005`): mixed but mechanistically real
+4. stage3-filtered state-dependent (`0.002`): source preserved, lift lost
+
+So the best current conclusion is:
+
+- state-dependent regularization is the first lane that truly changes the retention/protection mechanism,
+- but the current scalar penalty still does not yield a good Pareto point between `fresh_all_analog` and protection lift.
+
+## Current Next Step
+
+Do not open another scalar-weight sweep immediately.
+
+The next useful variant should change the objective structure:
+
+1. top-risk-subset-weighted state-dependent regularizer
+2. late-MLP-output-weighted state-dependent regularizer
+3. protected-set-stability-oriented objective
+
 ## First Readout Checklist
 
 When the active pilot finishes, check these files first:

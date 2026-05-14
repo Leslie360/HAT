@@ -1,6 +1,6 @@
 # Remote 107 完整历史任务总表（按闭环分段）
 
-> 最后更新：2026-05-13  
+> 最后更新：2026-05-14  
 > 分支：`107-clean`
 
 ---
@@ -59,7 +59,7 @@
 | R1-MIS-D2D | eval σ_d2d mismatch 扫描 | ✅ | 训练/推理 d2d 不匹配 |
 | R1-XD2D | Cross-instance D2D 一致性 | ✅ | 多 seed 验证 |
 | R1-NS | n_states 量化精度扫描 | ✅ | 128/256/512/1024 |
-| R1-EXT | 扩展下游评估 | ⏳ 重跑中 | MMLU/Winogrande/PIQA/BoolQ on p28b/p69b；**统一协议：max_length=2048**（旧版因 buffer 不足 crash） |
+| R1-EXT | 扩展下游评估 | ✅ | p28b/p69b clean + analog extended 全部完成（max_length=2048）；p28b clean: MMLU24.97/WG59.19/PIQA73.39/BoolQ62.60；p69b clean: MMLU26.51/WG62.12/PIQA75.73/BoolQ64.50；analog 最大退化 <0.86% |
 | R1-RET | Retention noise 扫描 | ✅ | 0.001/0.01/0.1/1.0 on p28b + p69b |
 
 ---
@@ -87,7 +87,8 @@
 | R3-REV | **Reverse layer-wise**（410M + 2.8B） | ✅ | 410M=21.30（差于layerwise 18.36）；p28b=12.68（与fixed持平） |
 | R3-LAST2 | **Last2 + adaptive cosine**（p28b） | ✅ | **12.56 PPL**，优于last2 fixed（13.78），甚至略优于last1 fixed（12.68） |
 | R3-1K | **410M adaptive cosine 1000 steps** | ✅ | 20.73 PPL（差于500-step cosine 18.31） |
-| R3-EXTRA | **410M/2.8B fixed 1000 steps** | ⏳ GPU7 | 410M fixed 1000=20.75（验证更长fixed有害）；p28b fixed 1000训练中 |
+| R3-EXTRA | **410M/2.8B fixed 1000 steps** | ✅ | 410M fixed 1000=20.75（验证更长fixed有害）；p28b fixed 1000=12.41（训练完成） |
+| R3-REV-EVAL | **Reverse / fixed_1000 标准 eval** | ✅ | p28b reverse_v1 clean/analog standard3 完成；p28b fixed_1000 clean/analog standard3 完成 |
 | R3-LIT | 文献引用整理（Energy/Theory） | ✅ | `coordination/literature_citations_paper2.md` |
 
 ---
@@ -99,7 +100,7 @@
 | VLM-500 | Qwen3-VL HAT 训练（500 steps） | ✅ | last1 analog KV |
 | VLM-5000 | Qwen3-VL HAT 训练（5000 steps） | ✅ | last1 analog KV |
 | VLM-VAL | Qwen3-VL 验证评估 | ✅ | 5 images × 4 configs |
-| VLM-5K-EVAL | **Qwen3-VL 5000-step checkpoint eval** | ⏳ GPU6 | 5 images × 4 configs 评估中 |
+| VLM-5K-EVAL | **Qwen3-VL 5000-step checkpoint eval** | ✅ | 20 configs 全部完成（5 images × clean/last1/last2/last4）；manifest 已生成 |
 
 ---
 
@@ -134,27 +135,30 @@
 | P1 核心 K107 | 6 | 0 | 0 |
 | P2 规模 | 3 | 0 | 0 |
 | P3 大模型/基建 | 3 | 0 | 1 |
-| R1 鲁棒性/下游 | 7 | 1 | 0 |
+| R1 鲁棒性/下游 | 8 | 0 | 0 |
 | R2 层消融/跨设备 | 4 | 0 | 0 |
-| R3 自适应调度 | 9 | 2 | 0 |
-| VLM | 3 | 1 | 0 |
+| R3 自适应调度 | 11 | 1 | 0 |
+| VLM | 4 | 0 | 0 |
 | 基础设施 | 4 | 0 | 1 |
 | 阻塞/长期 | 0 | 2 | 2 |
-| **总计** | **41** | **6** | **5** |
+| **总计** | **45** | **3** | **4** |
 
 ---
 
-## 当前 GPU 占用（2026-05-13 更新）
+## 当前 GPU 占用（2026-05-14 更新）
 
-| GPU | 任务 | 状态 |
-|---|---|---|
-| 4 | p28b fixed500 **clean extended** (mmlu+wg+piqa+boolq) | 运行中 |
-| 5 | p28b fixed500 **analog extended** (mmlu+wg+piqa+boolq) | 运行中 |
-| 6 | p69b fixed500 **clean extended** (mmlu+wg+piqa+boolq) | 运行中 |
-| 7 | p69b fixed500 **analog extended** (mmlu+wg+piqa+boolq) | 运行中 |
+| GPU | 任务 | 状态 | 备注 |
+|---|---|---|---|
+| 4 | p28b fixed500 **robustness sweep** (σ_c2c 0.0/0.01/0.02/0.05/0.10) | ⚠️ 运行中 | **已知问题**：5 job 并发挤在单卡，脚本 `wait_for_all` 因 subshell PID 捕获 bug 失效；等自然结束/oom 后重启修好的串行脚本 |
+| 5 | p28b adaptive fixed_1000 **clean extended** → analog | 运行中 | clean 先跑，完事后自动串行 analog |
+| 6 | p28b adaptive reverse_v1 **clean extended** → analog | 运行中 | clean 先跑，完事后自动串行 analog |
+| 7 | p69b adaptive（fixed→cosine→layerwise）**clean→analog extended** | 运行中 | 6 job 串行；p69b 单 eval 2-3h，预估总时长 12-18h |
 
 > 统一评估协议：`--max_length 2048`，保证 clean/analog 间 strict 可比性，避免 D2D buffer 不足 crash。
 >
-> **下班后备跑脚本**：`results/remote107/run_robustness_sweep_4567.sh`
-> - 等 extended eval 全部结束后执行：`nohup bash run_robustness_sweep_4567.sh > robustness_sweep.log 2>&1 &`
-> - 自动轮询 GPU4/5/6/7，跑完 p28b + p69b 的 σ_c2c / σ_d2d / mismatch / D2D seed / n_states 全部 sweep
+> **Robustness sweep 脚本修复记录**：
+> - Bug 1：`$(launch_eval)` 命令替换导致后台 job 成为 subshell 子进程，父 shell `wait` 失效
+> - Bug 2：`launch_eval` 中 `echo` 信息混入 PID 捕获
+> - Bug 3：单 GPU 模式下 `wait_for_gpu` 始终返回同一 GPU，job 堆积 OOM
+> - 修复：`LAST_PID` 全局变量传递 PID + 单 GPU 时 `queue_job` 内立即 `wait` 串行
+> - 修复后脚本：`results/remote107/run_robustness_sweep_4567.sh`

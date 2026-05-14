@@ -79,7 +79,7 @@ Target output:
 
 - seed789 full `10×3` confirmation
 - seed456 full `10×3` confirmation
-- optional seed123 background closure for three-checkpoint coverage
+- seed123 full `10×3` closure for three-checkpoint coverage
 
 Success criterion:
 
@@ -190,7 +190,7 @@ Interpretation:
 Current recommendation after seed456:
 
 1. treat drift-aware ranking as the preferred local retention/protection heuristic;
-2. if one more background closure is desired, run seed123 and stop there;
+2. complete seed123 closure and stop there;
 3. otherwise move directly to a first drift-aware optimization or SAM-style training pilot.
 
 ## 9. 2026-05-14 Seed123 Closure

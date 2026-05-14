@@ -104,6 +104,7 @@ class TinyViTExperimentConfig:
     drift_regularizer_weight: float = 0.0
     drift_regularizer_time_s: float = 1000.0
     drift_regularizer_state_dependent: bool = False
+    drift_regularizer_include_substrings: Optional[str] = None
     epochs: int = 100
     batch_size: int = 64
     lr: float = 5e-4
@@ -454,8 +455,18 @@ def compute_drift_regularizer(model: nn.Module, exp_cfg: TinyViTExperimentConfig
 
     penalties = []
     eps = 1e-8
-    for module in model.modules():
+    include_tokens = None
+    if exp_cfg.drift_regularizer_include_substrings:
+        include_tokens = [
+            token.strip()
+            for token in exp_cfg.drift_regularizer_include_substrings.split(",")
+            if token.strip()
+        ]
+
+    for name, module in model.named_modules():
         if not isinstance(module, (AnalogLinear, AnalogConv2d)):
+            continue
+        if include_tokens is not None and not any(token in name for token in include_tokens):
             continue
 
         saved = (
@@ -792,6 +803,10 @@ def run_experiment(exp_id: str, exp_cfg: TinyViTExperimentConfig, dataset: str,
                 f"time={exp_cfg.drift_regularizer_time_s}s, "
                 f"state_dependent={exp_cfg.drift_regularizer_state_dependent}"
             )
+            if exp_cfg.drift_regularizer_include_substrings:
+                logger.log(
+                    f"  drift_regularizer_filter={exp_cfg.drift_regularizer_include_substrings}"
+                )
         if exp_cfg.noise_enabled and not exp_cfg.hat_training:
             logger.log("  standard-noise policy: fixed D2D on during train, C2C off during train")
         logger.log(f"  amp={'on' if active_amp else 'off'}")
@@ -1356,6 +1371,7 @@ def build_result_row_base(mode: str, exp_id: str, exp_cfg: TinyViTExperimentConf
         "drift_regularizer_weight": exp_cfg.drift_regularizer_weight,
         "drift_regularizer_time_s": exp_cfg.drift_regularizer_time_s,
         "drift_regularizer_state_dependent": exp_cfg.drift_regularizer_state_dependent,
+        "drift_regularizer_include_substrings": exp_cfg.drift_regularizer_include_substrings,
         "epochs": exp_cfg.epochs,
         "batch_size": exp_cfg.batch_size,
         "lr": exp_cfg.lr,
@@ -1619,6 +1635,8 @@ def main():
                         help="Target inference time in seconds for the drift-aware regularizer.")
     parser.add_argument("--drift-reg-state-dependent", action="store_true",
                         help="Use state-dependent retention acceleration inside the drift-aware regularizer.")
+    parser.add_argument("--drift-reg-include-substrings", type=str, default=None,
+                        help="Comma-separated module-name substrings; if set, only matching analog layers contribute to the drift regularizer.")
     parser.add_argument("--report-path", type=str, default=DEFAULT_REPORT_PATH)
     parser.add_argument("--log-path", type=str, default=DEFAULT_LOG_PATH)
     parser.add_argument("--results-json-path", type=str, default=DEFAULT_RESULTS_JSON_PATH)
@@ -1650,6 +1668,7 @@ def main():
             cfg.drift_regularizer_weight = args.drift_reg_weight
             cfg.drift_regularizer_time_s = args.drift_reg_time
             cfg.drift_regularizer_state_dependent = args.drift_reg_state_dependent
+            cfg.drift_regularizer_include_substrings = args.drift_reg_include_substrings
         cfg.seed = args.seed
     experiment_ids = resolve_experiment_ids(args.experiment, args.experiments, configs)
     if args.mode == "dry-run" and len(experiment_ids) != 1:

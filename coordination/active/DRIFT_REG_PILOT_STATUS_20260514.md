@@ -61,13 +61,9 @@ This is not constant and does provide gradient information.
 
 This only validates that the penalty is live and training still runs.
 
-## Active Pilot
+## Pilot Run
 
-Detached session:
-
-- `tmux` session: `drift_reg_pilot_seed123_20260514`
-
-Active log:
+Run log:
 
 - `logs/cifar100_drift_regularized_pilot_seed123_20260514_092715.log`
 
@@ -92,7 +88,7 @@ Post-train chain in the launcher:
 3. rebuilt drift-aware ranking
 4. full retention/protection `10x3`
 
-## Current Readout
+## Final Readout
 
 Training phase finished with early stop:
 
@@ -118,6 +114,17 @@ Practical interpretation:
   plus a matched baseline source eval are queued in the postprocess watcher and should
   be treated as the final source-domain comparison artifacts.
 
+Matched source-domain comparison after postprocess:
+
+- baseline seed123 source eval:
+  `67.1533%`
+- drift-regularized checkpoint source eval:
+  `67.1400%`
+- delta:
+  `-0.0133 pp`
+
+So the source-domain cost is effectively zero at the matched eval level.
+
 ## Ranking-Difference Diagnostic
 
 The rebuilt ranking already exists:
@@ -129,21 +136,62 @@ Important detail:
 - top-`30` overlap with the old seed123 drift-aware ranking: `30/30`
 - top-`42` overlap with the old seed123 drift-aware ranking: `42/42`
 
-So this pilot does **not** currently change the protected-set membership. If the downstream retention/protection summary improves, the gain is coming from the checkpoint itself rather than from a different top-`K` layer set.
+So this pilot does **not** change the protected-set membership. Any downstream gain would have to come from the checkpoint itself rather than from a different top-`K` layer set.
+
+## Retention/Protection Outcome
+
+Final summary:
+
+- `thesis/results/drift_aware_sam/drift_aware_retention_driftreg_seed123_10x3_summary_20260514_092715.tsv`
+
+Compared with the old seed123 drift-aware baseline:
+
+- `fresh_all_analog`
+  - `+0.0996 / +0.1140 / +0.0483 pp` at `0 / 1000 / 10000 s`
+- `freeze_top30_d2d`
+  - `-0.2856 / -0.0810 / -0.0347 pp`
+- `freeze_top42_d2d`
+  - `-0.3090 / -0.0896 / -0.2147 pp`
+
+Lift-relative deltas versus `fresh_all_analog`:
+
+- `top30`: `-0.3852 / -0.1950 / -0.0830 pp`
+- `top42`: `-0.4086 / -0.2036 / -0.2630 pp`
+
+Interpretation:
+
+- the checkpoint became marginally better on `fresh_all_analog`,
+- but the protected strategies did not improve,
+- so the pilot fails the actual retention/protection objective.
 
 ## Decision Criteria
 
-This pilot is a success only if both conditions hold:
+This pilot was a success only if both conditions held:
 
 1. source-domain cost is small:
    - ideally `<= 1 pp` below the original seed123 source-domain level
 2. retention/protection improves on the old seed123 drift-aware baseline:
    - especially `top30` and `top42` at `1000s` / `10000s`
 
-If source-domain drops materially while retention does not improve, this lane should be treated as a negative pilot and the next step should be:
+Outcome:
 
-- try smaller `drift_reg_weight`, or
-- move to a mixed objective that regularizes only late-stage analog layers
+- source-domain stayed essentially unchanged,
+- retention/protection did not improve,
+- therefore this is a **negative pilot**.
+
+## Next Step
+
+Do not repeat the same global state-independent regularizer.
+
+Preferred next variant:
+
+- **late-stage filtered regularizer**, starting with modules whose names contain `stages.3`
+
+Reason:
+
+- it preserves the current state-independent retention evaluation protocol,
+- introduces non-uniform pressure across layers,
+- and is more likely to change the late-layer bottleneck than the global regularizer that left top-`30`/top-`42` membership untouched.
 
 ## First Readout Checklist
 

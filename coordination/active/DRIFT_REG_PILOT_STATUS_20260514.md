@@ -179,19 +179,54 @@ Outcome:
 - retention/protection did not improve,
 - therefore this is a **negative pilot**.
 
-## Next Step
+## Stage-3 Filtered Follow-Up
 
-Do not repeat the same global state-independent regularizer.
+A second pilot was run immediately after the global one:
 
-Preferred next variant:
+- regularizer filter:
+  `stages.3`
+- tag:
+  `regw5e-3_t1000_stage3`
 
-- **late-stage filtered regularizer**, starting with modules whose names contain `stages.3`
+Matched source-domain comparison:
 
-Reason:
+- baseline:
+  `67.3633%`
+- stage3-filtered candidate:
+  `67.1533%`
+- delta:
+  `-0.2100 pp`
 
-- it preserves the current state-independent retention evaluation protocol,
-- introduces non-uniform pressure across layers,
-- and is more likely to change the late-layer bottleneck than the global regularizer that left top-`30`/top-`42` membership untouched.
+Retention/protection comparison vs original seed123 drift-aware baseline:
+
+- `fresh_all_analog`
+  - `+0.6643 / +0.8313 / +0.7026 pp`
+- `freeze_top30_d2d`
+  - `-0.1456 / +0.0724 / +0.0867 pp`
+- `freeze_top42_d2d`
+  - `-0.0810 / +0.1530 / -0.0084 pp`
+
+But lift-relative deltas are still all negative:
+
+- `top30`
+  - `-0.8099 / -0.7589 / -0.6159 pp`
+- `top42`
+  - `-0.7453 / -0.6783 / -0.7110 pp`
+
+Interpretation:
+
+- stage3 filtering is numerically better than the global regularizer,
+- but still fails the real objective because it lifts `fresh_all_analog` even more than the protected strategies.
+
+## Current Next Step
+
+Do not keep tuning the same state-independent setup by tiny increments.
+
+The next meaningful variant should change one of these assumptions:
+
+1. state-dependent retention regularizer + matched state-dependent eval lane
+2. top-risk-subset-weighted regularizer
+3. explicit late-MLP / top-`K` ranking-aware objective
 
 ## First Readout Checklist
 

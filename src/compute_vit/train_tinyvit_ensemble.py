@@ -14,6 +14,7 @@ import json
 import os
 import random
 import sys
+from functools import lru_cache
 from dataclasses import asdict, dataclass
 from datetime import datetime
 from statistics import mean, stdev
@@ -105,6 +106,9 @@ class TinyViTExperimentConfig:
     drift_regularizer_time_s: float = 1000.0
     drift_regularizer_state_dependent: bool = False
     drift_regularizer_include_substrings: Optional[str] = None
+    drift_regularizer_focus_tsv: Optional[str] = None
+    drift_regularizer_focus_topk: int = 0
+    drift_regularizer_focus_multiplier: float = 1.0
     epochs: int = 100
     batch_size: int = 64
     lr: float = 5e-4
@@ -441,6 +445,22 @@ def maybe_resize_on_gpu(inputs: torch.Tensor, image_size: Optional[int]) -> torc
     return F.interpolate(inputs, size=target_size, mode="bilinear", align_corners=False)
 
 
+@lru_cache(maxsize=16)
+def load_focus_modules(path: str, topk: int) -> tuple[str, ...]:
+    if not path or topk <= 0:
+        return ()
+    modules: list[str] = []
+    with open(path, "r", encoding="utf-8") as fh:
+        reader = csv.DictReader(fh, delimiter="\t")
+        for row in reader:
+            module_path = row.get("module_path")
+            if module_path:
+                modules.append(module_path)
+            if len(modules) >= topk:
+                break
+    return tuple(modules)
+
+
 def compute_drift_regularizer(model: nn.Module, exp_cfg: TinyViTExperimentConfig) -> torch.Tensor:
     """Compute a differentiable retention-drift penalty over analog layers.
 
@@ -462,6 +482,16 @@ def compute_drift_regularizer(model: nn.Module, exp_cfg: TinyViTExperimentConfig
             for token in exp_cfg.drift_regularizer_include_substrings.split(",")
             if token.strip()
         ]
+    focus_modules = set()
+    if exp_cfg.drift_regularizer_focus_tsv and exp_cfg.drift_regularizer_focus_topk > 0:
+        focus_modules = set(
+            load_focus_modules(
+                exp_cfg.drift_regularizer_focus_tsv,
+                int(exp_cfg.drift_regularizer_focus_topk),
+            )
+        )
+    weighted_penalties = []
+    penalty_weights = []
 
     for name, module in model.named_modules():
         if not isinstance(module, (AnalogLinear, AnalogConv2d)):
@@ -490,12 +520,16 @@ def compute_drift_regularizer(model: nn.Module, exp_cfg: TinyViTExperimentConfig
         base_eff = g_pos - g_neg
         drift_eff = (g_pos_d - g_neg_d) - base_eff
         penalties.append(drift_eff.pow(2).mean().clamp_min(eps))
+        module_weight = float(exp_cfg.drift_regularizer_focus_multiplier) if name in focus_modules else 1.0
+        weighted_penalties.append(penalties[-1] * module_weight)
+        penalty_weights.append(module_weight)
 
-    if not penalties:
+    if not weighted_penalties:
         device = next(model.parameters()).device
         return torch.zeros((), device=device)
 
-    return torch.stack(penalties).mean()
+    total_weight = sum(penalty_weights)
+    return torch.stack(weighted_penalties).sum() / max(total_weight, eps)
 
 
 def train_one_epoch(model: nn.Module, trainloader, optimizer, criterion, device: str,
@@ -806,6 +840,12 @@ def run_experiment(exp_id: str, exp_cfg: TinyViTExperimentConfig, dataset: str,
             if exp_cfg.drift_regularizer_include_substrings:
                 logger.log(
                     f"  drift_regularizer_filter={exp_cfg.drift_regularizer_include_substrings}"
+                )
+            if exp_cfg.drift_regularizer_focus_tsv and exp_cfg.drift_regularizer_focus_topk > 0:
+                logger.log(
+                    f"  drift_regularizer_focus=top{exp_cfg.drift_regularizer_focus_topk} "
+                    f"from {exp_cfg.drift_regularizer_focus_tsv} "
+                    f"multiplier={exp_cfg.drift_regularizer_focus_multiplier}"
                 )
         if exp_cfg.noise_enabled and not exp_cfg.hat_training:
             logger.log("  standard-noise policy: fixed D2D on during train, C2C off during train")
@@ -1372,6 +1412,9 @@ def build_result_row_base(mode: str, exp_id: str, exp_cfg: TinyViTExperimentConf
         "drift_regularizer_time_s": exp_cfg.drift_regularizer_time_s,
         "drift_regularizer_state_dependent": exp_cfg.drift_regularizer_state_dependent,
         "drift_regularizer_include_substrings": exp_cfg.drift_regularizer_include_substrings,
+        "drift_regularizer_focus_tsv": exp_cfg.drift_regularizer_focus_tsv,
+        "drift_regularizer_focus_topk": exp_cfg.drift_regularizer_focus_topk,
+        "drift_regularizer_focus_multiplier": exp_cfg.drift_regularizer_focus_multiplier,
         "epochs": exp_cfg.epochs,
         "batch_size": exp_cfg.batch_size,
         "lr": exp_cfg.lr,
@@ -1637,6 +1680,12 @@ def main():
                         help="Use state-dependent retention acceleration inside the drift-aware regularizer.")
     parser.add_argument("--drift-reg-include-substrings", type=str, default=None,
                         help="Comma-separated module-name substrings; if set, only matching analog layers contribute to the drift regularizer.")
+    parser.add_argument("--drift-reg-focus-tsv", type=str, default=None,
+                        help="Optional TSV with a ranked module_path column; top-k rows get extra regularizer weight.")
+    parser.add_argument("--drift-reg-focus-topk", type=int, default=0,
+                        help="How many module_path rows from --drift-reg-focus-tsv receive extra regularizer weight.")
+    parser.add_argument("--drift-reg-focus-multiplier", type=float, default=1.0,
+                        help="Extra weight multiplier for modules selected by --drift-reg-focus-tsv/--drift-reg-focus-topk.")
     parser.add_argument("--report-path", type=str, default=DEFAULT_REPORT_PATH)
     parser.add_argument("--log-path", type=str, default=DEFAULT_LOG_PATH)
     parser.add_argument("--results-json-path", type=str, default=DEFAULT_RESULTS_JSON_PATH)
@@ -1669,6 +1718,9 @@ def main():
             cfg.drift_regularizer_time_s = args.drift_reg_time
             cfg.drift_regularizer_state_dependent = args.drift_reg_state_dependent
             cfg.drift_regularizer_include_substrings = args.drift_reg_include_substrings
+            cfg.drift_regularizer_focus_tsv = args.drift_reg_focus_tsv
+            cfg.drift_regularizer_focus_topk = args.drift_reg_focus_topk
+            cfg.drift_regularizer_focus_multiplier = args.drift_reg_focus_multiplier
         cfg.seed = args.seed
     experiment_ids = resolve_experiment_ids(args.experiment, args.experiments, configs)
     if args.mode == "dry-run" and len(experiment_ids) != 1:

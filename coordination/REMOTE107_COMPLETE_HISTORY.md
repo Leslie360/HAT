@@ -68,8 +68,8 @@
 
 | # | 任务 | 状态 | 关键结果 |
 |---|---|:---|:---|
-| R2-LAST2 | Layer ablation last2（p28b/p69b） | ✅ | p28b last2: 13.78；p69b last2: 11.56 |
-| R2-LAST4 | Layer ablation last4（p28b/p69b） | ✅ | p28b last4: 14.12；p69b last4: 11.85 |
+| R2-LAST2 | Layer ablation last2（p28b/p69b） | ✅ PPL + ⏳ downstream | PPL: p28b 13.78 / p69b 11.56；standard3 downstream eval 正在 GPU5/6 运行中 |
+| R2-LAST4 | Layer ablation last4（p28b/p69b） | ✅ PPL + ⏳ downstream | PPL: p28b 14.12 / p69b 11.85；standard3 downstream eval 正在 GPU5/6 运行中 |
 | R2-DEV | Cross-device eval（RRAM/PCM/FeFET） | ✅ | 基于已有 checkpoint 评估 3 种器件参数 |
 | R2-ENG | Energy/Area 分析脚本 | ✅ | `scripts/energy_profile_kv_cache.py` + 基线 JSON |
 
@@ -120,7 +120,7 @@
 
 | # | 任务 | 状态 | 阻塞原因 |
 |---|---|:---|:---|
-| BLK-MMLU | p69b clean MMLU eval | ⏳ 运行中 | 统一协议重跑（max_length=2048）中；原 `datasets` cache corruption 已通过环境隔离解决 |
+| BLK-MMLU | p69b clean MMLU eval | ✅ 已完成 | `lm_eval_p69b_fixed500_seed42_clean_boolq_mmlu_piqa_winogrande.json` 已存在（max_length=2048）；Task #76 待关闭 |
 | BLK-THEORY | 理论数学推导（PAC-Bayes 界） | ✅ Draft | `coordination/HAT_THEORETICAL_FRAMEWORK.md` 已起草 |
 | BLK-FIG | Paper 2 图表生成 | ⏸️ Deferred | 用户指定非本 agent 任务 |
 | BLK-6.9B | 6.9B 完整训练（非 500 steps） | ⏸️ Deferred | 需 AMP/BF16 或更大 GPU |
@@ -136,29 +136,50 @@
 | P2 规模 | 3 | 0 | 0 |
 | P3 大模型/基建 | 3 | 0 | 1 |
 | R1 鲁棒性/下游 | 8 | 0 | 0 |
-| R2 层消融/跨设备 | 4 | 0 | 0 |
-| R3 自适应调度 | 11 | 1 | 0 |
+| R2 层消融/跨设备 | 2 | 2 | 0 |
+| R3 自适应调度 | 11 | 0 | 0 |
 | VLM | 4 | 0 | 0 |
 | 基础设施 | 4 | 0 | 1 |
-| 阻塞/长期 | 0 | 2 | 2 |
-| **总计** | **45** | **3** | **4** |
+| 阻塞/长期 | 1 | 0 | 3 |
+| **总计** | **44** | **2** | **5** |
+
+> 注：R2 中 LAST2/LAST4 的 PPL eval 已完成，downstream eval 正在 GPU5/6 运行，故记为 2 进行中。
+> 新增 5 个 GAP 项（p28b adaptive cosine last2 extended、VLM manifest、commit/push、JSON 压缩、robustness 日志清理）待后续处理。
 
 ---
 
-## 当前 GPU 占用（2026-05-14 更新）
+## 当前 GPU 占用（2026-05-18 10:35 更新）
 
 | GPU | 任务 | 状态 | 备注 |
 |---|---|---|---|
-| 4 | p28b fixed500 **robustness sweep** (σ_c2c 0.0/0.01/0.02/0.05/0.10) | ⚠️ 运行中 | **已知问题**：5 job 并发挤在单卡，脚本 `wait_for_all` 因 subshell PID 捕获 bug 失效；等自然结束/oom 后重启修好的串行脚本 |
-| 5 | p28b adaptive fixed_1000 **clean extended** → analog | 运行中 | clean 先跑，完事后自动串行 analog |
-| 6 | p28b adaptive reverse_v1 **clean extended** → analog | 运行中 | clean 先跑，完事后自动串行 analog |
-| 7 | p69b adaptive（fixed→cosine→layerwise）**clean→analog extended** | 运行中 | 6 job 串行；p69b 单 eval 2-3h，预估总时长 12-18h |
+| 4 | **p28b adaptive cosine last2 extended eval** | 运行中 | clean + analog（boolq/mmlu/piqa/winogrande），约 3h |
+| 5 | **p28b last2 extended eval** | 运行中 | clean + analog（boolq/mmlu/piqa/winogrande），约 3h |
+| 6 | **p28b last4 extended eval** | 运行中 | clean + analog（boolq/mmlu/piqa/winogrande），约 3h |
+| 7 | **p69b last2 extended eval** | 运行中 | clean + analog（boolq/mmlu/piqa/winogrande），约 6-7h |
 
-> 统一评估协议：`--max_length 2048`，保证 clean/analog 间 strict 可比性，避免 D2D buffer 不足 crash。
->
-> **Robustness sweep 脚本修复记录**：
-> - Bug 1：`$(launch_eval)` 命令替换导致后台 job 成为 subshell 子进程，父 shell `wait` 失效
-> - Bug 2：`launch_eval` 中 `echo` 信息混入 PID 捕获
-> - Bug 3：单 GPU 模式下 `wait_for_gpu` 始终返回同一 GPU，job 堆积 OOM
-> - 修复：`LAST_PID` 全局变量传递 PID + 单 GPU 时 `queue_job` 内立即 `wait` 串行
-> - 修复后脚本：`results/remote107/run_robustness_sweep_4567.sh`
+> **Robustness sweep 已完成**（2026-05-15~2026-05-18）：
+> - 42 个 robustness eval jobs 全部完成（p28b 21 + p69b 21），零崩溃
+> - 4 卡并行切片部署成功，从预估 8-10 天压缩至 ~2.5 天
+> - 后台 monitor + 4 份 recovery 脚本保障容错
+
+---
+
+## 待补缺口与后续实验
+
+| # | 缺口/任务 | 状态 | 备注 |
+|---|---|---|---|
+| GAP-1 | p28b adaptive cosine last2 **extended eval** | 🟡 运行中 | GPU4 正在跑（clean + analog）；见当前 GPU 占用表 |
+| GAP-2 | p69b fixed500 clean MMLU（统一协议重跑） | ✅ 实际已完成 | `lm_eval_p69b_fixed500_seed42_clean_boolq_mmlu_piqa_winogrande.json` 已存在 |
+| GAP-3 | VLM 5K eval claim-lock manifest | ⏳ 待生成 | 待本轮 extended eval 完成后处理 |
+| GAP-4 | 全量结果 commit + push | ✅ 已执行 | `05e7685` 已推送到 `107-clean`；88 LFS objects / 5.9 GB |
+| GAP-5 | 大型 eval JSON 压缩/清理 | ⏳ 待处理 | LFS 已上线（`*.json` tracked via git-lfs），旧已提交的文件不受影响 |
+
+---
+
+## 时间线预警
+
+- **GPU4**：50 job × ~4h = **8-10 天**（robustness sweep 为当前最长线）
+- **GPU5/6**：4 job × ~10h = **~2 天/卡**（last2/last4 standard3）
+- **GPU7**：6 job × ~12-15h = **3-4 天**（p69b adaptive extended）
+- 全部当前运行批次完成预计：**5月16日-5月18日**
+- 若需补 GAP-1（p28b adaptive cosine last2 extended），再加 **~1 天/卡**

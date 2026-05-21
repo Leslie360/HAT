@@ -26,22 +26,32 @@ from analog_layers import AnalogLinearConfig
 from p3_hat_train import patch_model_for_hat
 
 
-def _tasks_slug(tasks_str: str) -> str:
+def _tasks_slug(tasks_str: str, num_fewshot: int = 0) -> str:
     """Return a short slug for a comma-separated task list to disambiguate output filenames."""
     parts = sorted(tasks_str.split(","))
     if parts == ["arc_easy", "hellaswag", "lambada_openai"]:
-        return "standard3"
-    if parts == ["boolq", "piqa", "winogrande"]:
-        return "ext3"
-    if parts == ["mmlu"]:
-        return "mmlu"
-    abbr = "_".join(p.split("_")[0] for p in parts)
-    if len(abbr) > 40:
-        abbr = abbr[:40] + f"_{len(parts)}tasks"
-    return abbr
+        base = "standard3"
+    elif parts == ["boolq", "mmlu", "piqa", "winogrande"]:
+        base = "extended"
+    elif parts == ["boolq", "piqa", "winogrande"]:
+        base = "ext3"
+    elif parts == ["mmlu"]:
+        base = "mmlu"
+    elif parts == ["gsm8k"]:
+        base = "gsm8k"
+    elif parts == ["truthfulqa"] or parts == ["truthfulqa_mc1"]:
+        base = "truthfulqa"
+    elif parts == ["ai2_arc"]:
+        base = "ai2_arc"
+    else:
+        abbr = "_".join(p.split("_")[0] for p in parts)
+        base = abbr[:40] + f"_{len(parts)}tasks" if len(abbr) > 40 else abbr
+    if num_fewshot > 0:
+        base = f"{base}_{num_fewshot}fs"
+    return base
 
 
-def run_lm_eval(model, tokenizer, tasks: list, device: str = "cuda", batch_size: int = 1):
+def run_lm_eval(model, tokenizer, tasks: list, device: str = "cuda", batch_size: int = 1, num_fewshot: int = 0):
     """Run lm-evaluation-harness on the given model."""
     from lm_eval import evaluator
     from lm_eval.models.huggingface import HFLM
@@ -59,6 +69,7 @@ def run_lm_eval(model, tokenizer, tasks: list, device: str = "cuda", batch_size:
         tasks=tasks,
         batch_size=batch_size,
         device=device,
+        num_fewshot=num_fewshot,
     )
     return results
 
@@ -77,6 +88,8 @@ def main():
                         help="Override analog layers (auto-load from hat_config.json if not set)")
     parser.add_argument("--d2d-seed", type=int, default=None, dest="d2d_seed")
     parser.add_argument("--max_length", type=int, default=512)
+    parser.add_argument("--num_fewshot", type=int, default=0,
+                        help="Number of few-shot examples (0 = zero-shot)")
     parser.add_argument("--batch_size", type=int, default=1)
     parser.add_argument("--device", type=str, default="cuda")
     parser.add_argument("--output_dir", type=str, default=None)
@@ -132,7 +145,7 @@ def main():
     tasks = [t.strip() for t in args.tasks.split(",")]
     print(f"\nRunning lm-eval tasks: {tasks}")
     start = time.time()
-    results = run_lm_eval(model, tokenizer, tasks, device=args.device, batch_size=args.batch_size)
+    results = run_lm_eval(model, tokenizer, tasks, device=args.device, batch_size=args.batch_size, num_fewshot=args.num_fewshot)
     wall_time = time.time() - start
 
     # Summarize key metrics
@@ -179,7 +192,7 @@ def main():
     }
 
     suffix = "analog" if args.analog else "clean"
-    tasks_slug = _tasks_slug(args.tasks)
+    tasks_slug = _tasks_slug(args.tasks, args.num_fewshot)
     extra = f"_{args.output_suffix}" if args.output_suffix else ""
     out_file = os.path.join(
         args.output_dir,

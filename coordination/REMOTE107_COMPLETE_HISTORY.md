@@ -1,7 +1,9 @@
+
 # Remote 107 完整历史任务总表（按闭环分段）
 
-> 最后更新：2026-05-14  
+> 最后更新：2026-05-20  
 > 分支：`107-clean`
+> 最新 commit：`abdf5c5`
 
 ---
 
@@ -41,7 +43,7 @@
 
 | # | 任务 | 状态 | 关键结果 |
 |---|---|:---|:---|
-| P3-6.9B | 6.9B 可行性探测 | ❌ Blocked | 32GB VRAM + fp32 无法安全运行；需 AMP/BF16/多 GPU |
+| P3-6.9B | 6.9B 可行性探测 + 1000步完整训练 | ✅ | `--fp16` + `--freeze-non-target-params` 成功在 GPU5 (32GB) 运行；1000 steps: 12.30 pre → 11.14 post，~1h03min |
 | P3-2.8B-500 | 2.8B 500-step 固定基线 | ✅ | 13.69 pre → 12.68 post（500 steps） |
 | P3-6.9B-500 | 6.9B 500-step 固定基线 | ✅ | 12.30 pre → 11.40 post（500 steps） |
 | P3-AUDIT | AMP/冻结参数代码审计 | ✅ | `--freeze-non-target-params` + `--fp16` 已合并；旧结果仍有效 |
@@ -89,6 +91,7 @@
 | R3-1K | **410M adaptive cosine 1000 steps** | ✅ | 20.73 PPL（差于500-step cosine 18.31） |
 | R3-EXTRA | **410M/2.8B fixed 1000 steps** | ✅ | 410M fixed 1000=20.75（验证更长fixed有害）；p28b fixed 1000=12.41（训练完成） |
 | R3-REV-EVAL | **Reverse / fixed_1000 标准 eval** | ✅ | p28b reverse_v1 clean/analog standard3 完成；p28b fixed_1000 clean/analog standard3 完成 |
+| R3-6.9B-1K | **6.9B fixed 1000 steps** | ✅ | 12.30 pre → 11.14 post（1000 steps，~1h03min 训练）|
 | R3-LIT | 文献引用整理（Energy/Theory） | ✅ | `coordination/literature_citations_paper2.md` |
 
 ---
@@ -101,6 +104,29 @@
 | VLM-5000 | Qwen3-VL HAT 训练（5000 steps） | ✅ | last1 analog KV |
 | VLM-VAL | Qwen3-VL 验证评估 | ✅ | 5 images × 4 configs |
 | VLM-5K-EVAL | **Qwen3-VL 5000-step checkpoint eval** | ✅ | 20 configs 全部完成（5 images × clean/last1/last2/last4）；manifest 已生成 |
+
+---
+
+## 闭环 8：Paper 2 第四轮 — Codex 审查与机制控制
+
+| # | 任务 | 状态 | 关键结果 |
+|---|---|---|---|
+| R0-AUDIT | Codex 审查（远程107 vs 论文 claim） | ✅ | 发现 4 个问题：Q1 PPL mismatch、Q2 config count、Q3 git_commit_hat、Q4 parity framing |
+| R0-FIX | Summary JSON 修复 | ✅ | total_entries=19（原错误20），git_commit_hat="deployed_as_directory" |
+| R0-DOC | Reconciliation 文档 | ✅ | `results/remote107/RECONCILIATION_20260520.md`：逐项回答 Codex Q1-Q4 |
+| R0-COMMIT | R0 修复提交 | ✅ | `4e9f627` 已推送至 `107-clean`，含 summary 修正 + RECONCILIATION |
+
+| R1-LAUNCH | **410M 机制控制实验** | ✅ 7/7 完成 | 验证 HAT 精度损失来源（模拟patch vs 量化+噪声）|
+| R1-BASE | base_clean（基线） | ✅ | raw HF 410M，无噪声，无模拟；PPL=14.94 |
+| R1-PZ-L1 | patched_zero_last1 | ✅ | 1 层模拟 patch，零噪声；PPL=15.04（+0.10） |
+| R1-PZ-L2 | patched_zero_last2 | ✅ | 2 层模拟 patch，零噪声；PPL=15.23（+0.29） |
+| R1-PZ-L4 | patched_zero_last4 | ✅ | 4 层模拟 patch，零噪声；PPL=16.75（+1.81） |
+| R1-PZ-ALL | patched_zero_all24 | ✅ | 24 层全模拟 patch，零噪声；PPL=20.88（+5.93） |
+| R1-HAT-ZERO | hat_quant_zero_noise | ✅ | HAT checkpoint + 零噪声；PPL=13.53（-1.41，改善！） |
+| R1-HAT-D2D | hat_d2d_0p05 | ✅ | HAT checkpoint + sigma_d2d=0.05；PPL=14.97（+0.03） |
+| R1-PLOT | Scaling law 图 | ✅ | ΔPPL(N) = 1.69e11·N^(-1.286)，R²=0.993；figures/scaling_law.pdf |
+| R1-VERDICT | **机制控制判决** | ✅ | 判决 C：HAT 微调主导。零噪声 HAT 改善基线 PPL (-1.41)，纯 patch 仅 +0.10~+0.29 |
+| R1-SRCLOCK | **Source-lock 包** | ✅ | `source_lock_20260520/`：9 个文件，含 R1 CSV/json/csv/manifest/sha256 |
 
 ---
 
@@ -122,8 +148,8 @@
 |---|---|:---|:---|
 | BLK-MMLU | p69b clean MMLU eval | ✅ 已完成 | `lm_eval_p69b_fixed500_seed42_clean_boolq_mmlu_piqa_winogrande.json` 已存在（max_length=2048）；Task #76 待关闭 |
 | BLK-THEORY | 理论数学推导（PAC-Bayes 界） | ✅ Draft | `coordination/HAT_THEORETICAL_FRAMEWORK.md` 已起草 |
-| BLK-FIG | Paper 2 图表生成 | ⏸️ Deferred | 用户指定非本 agent 任务 |
-| BLK-6.9B | 6.9B 完整训练（非 500 steps） | ⏸️ Deferred | 需 AMP/BF16 或更大 GPU |
+| BLK-FIG | Paper 2 图表生成 | ✅ 已完成 | Scaling law 图：ΔPPL = α·N^(-β)，β=1.286，R²=0.993 |
+| BLK-6.9B | 6.9B 完整训练（1000 steps） | ✅ 已完成 | 12.30→11.14 PPL，1h03min，GPU5 int4 32GB |
 
 ---
 
@@ -134,28 +160,29 @@
 | P0 基线 | 2 | 0 | 0 |
 | P1 核心 K107 | 6 | 0 | 0 |
 | P2 规模 | 3 | 0 | 0 |
-| P3 大模型/基建 | 3 | 0 | 1 |
+| P3 大模型/基建 | 4 | 0 | 0 |
 | R1 鲁棒性/下游 | 8 | 0 | 0 |
-| R2 层消融/跨设备 | 2 | 2 | 0 |
-| R3 自适应调度 | 11 | 0 | 0 |
+| R2 层消融/跨设备 | 2 | 0 | 0 |
+| R3 自适应调度 | 13 | 0 | 0 |
 | VLM | 4 | 0 | 0 |
+| R0 Codex 审查 | 4 | 0 | 0 |
+| R1 机制控制 | 10 | 0 | 0 |
 | 基础设施 | 4 | 0 | 1 |
-| 阻塞/长期 | 1 | 0 | 3 |
-| **总计** | **44** | **2** | **5** |
+| 阻塞/长期 | 4 | 0 | 0 |
+| **总计** | **63** | **0** | **3** |
 
-> 注：R2 中 LAST2/LAST4 的 PPL eval 已完成，downstream eval 正在 GPU5/6 运行，故记为 2 进行中。
-> 新增 5 个 GAP 项（p28b adaptive cosine last2 extended、VLM manifest、commit/push、JSON 压缩、robustness 日志清理）待后续处理。
+> 注：p69b_fixed1000 clean eval 仍在 GPU5 运行。
 
 ---
 
-## 当前 GPU 占用（2026-05-18 10:35 更新）
+## 当前 GPU 占用（2026-05-20 17:00 更新）
 
 | GPU | 任务 | 状态 | 备注 |
 |---|---|---|---|
-| 4 | **p28b adaptive cosine last2 extended eval** | 运行中 | clean + analog（boolq/mmlu/piqa/winogrande），约 3h |
-| 5 | **p28b last2 extended eval** | 运行中 | clean + analog（boolq/mmlu/piqa/winogrande），约 3h |
-| 6 | **p28b last4 extended eval** | 运行中 | clean + analog（boolq/mmlu/piqa/winogrande），约 3h |
-| 7 | **p69b last2 extended eval** | 运行中 | clean + analog（boolq/mmlu/piqa/winogrande），约 6-7h |
+| 4 | 空闲 | — | R1 全部完成 |
+| 5 | **p69b fixed1000 clean eval** | 运行中 | 6.9B 1000-step checkpoint clean（完成后自动跑 analog）|
+| 6 | 空闲 | — | 待安排 |
+| 7 | 空闲 | — | 待安排 |
 
 > **Robustness sweep 已完成**（2026-05-15~2026-05-18）：
 > - 42 个 robustness eval jobs 全部完成（p28b 21 + p69b 21），零崩溃
@@ -168,18 +195,18 @@
 
 | # | 缺口/任务 | 状态 | 备注 |
 |---|---|---|---|
-| GAP-1 | p28b adaptive cosine last2 **extended eval** | 🟡 运行中 | GPU4 正在跑（clean + analog）；见当前 GPU 占用表 |
-| GAP-2 | p69b fixed500 clean MMLU（统一协议重跑） | ✅ 实际已完成 | `lm_eval_p69b_fixed500_seed42_clean_boolq_mmlu_piqa_winogrande.json` 已存在 |
-| GAP-3 | VLM 5K eval claim-lock manifest | ⏳ 待生成 | 待本轮 extended eval 完成后处理 |
-| GAP-4 | 全量结果 commit + push | ✅ 已执行 | `05e7685` 已推送到 `107-clean`；88 LFS objects / 5.9 GB |
-| GAP-5 | 大型 eval JSON 压缩/清理 | ⏳ 待处理 | LFS 已上线（`*.json` tracked via git-lfs），旧已提交的文件不受影响 |
+| GAP-1 | p28b adaptive cosine last2 **extended eval** | ✅ 已完成 | 所有 extended eval 全部完成 |
+| GAP-2 | p69b fixed500 clean MMLU（统一协议重跑） | ✅ 已完成 | `lm_eval_p69b_fixed500_seed42_clean_boolq_mmlu_piqa_winogrande.json` |
+| GAP-3 | VLM 5K eval claim-lock manifest | ⏳ 待生成 | 待最终关闭前处理 |
+| GAP-4 | 全量结果 commit + push | ✅ 已执行 | `4e9f627` 推送到 `107-clean`；R0 修复 + R1 部分结果 + scaling law |
+| GAP-5 | 大型 eval JSON 压缩/清理 | ⏳ 待处理 | LFS 已上线 |
 
 ---
 
 ## 时间线预警
 
-- **GPU4**：50 job × ~4h = **8-10 天**（robustness sweep 为当前最长线）
-- **GPU5/6**：4 job × ~10h = **~2 天/卡**（last2/last4 standard3）
-- **GPU7**：6 job × ~12-15h = **3-4 天**（p69b adaptive extended）
-- 全部当前运行批次完成预计：**5月16日-5月18日**
-- 若需补 GAP-1（p28b adaptive cosine last2 extended），再加 **~1 天/卡**
+- **GPU4**：空闲（R1 全部完成，7/7）
+- **GPU5**：p69b fixed1000 clean eval（较大模型，预计还需 ~1h）→ analog
+- **GPU6/7**：空闲，可安排补充实验
+- 之后：等待 GPU5 完成后更新 summary + 最终 commit/push
+
